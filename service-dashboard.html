@@ -3,915 +3,446 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RSP Service Dashboard</title>
+<title>RSP — Service Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ricoh-red: #D7063B;
-    --ricoh-red-dark: #a8002d;
-    --ricoh-red-light: #f5e0e6;
-    --ricoh-charcoal: #1a1a1a;
-    --ricoh-dark: #2a2a2a;
-    --ricoh-mid: #444444;
-    --ricoh-muted: #888888;
-    --ricoh-border: #e5e5e5;
-    --ricoh-bg: #f7f7f6;
-    --ricoh-surface: #ffffff;
-    --ricoh-surface-2: #f2f2f1;
-    --status-new: #0057b8;
-    --status-new-bg: #e8f0fb;
-    --status-woi: #1a6e2e;
-    --status-woi-bg: #e6f4ea;
-    --status-invoice: #8a5200;
-    --status-invoice-bg: #fef3dc;
-    --status-waiting: #555555;
-    --status-waiting-bg: #efefef;
-    --status-escalated: #c0392b;
-    --status-escalated-bg: #fdecea;
-    --status-stop: #c0392b;
-    --status-stop-bg: #fdecea;
-    --green: #1a6e2e;
-    --green-bg: #e6f4ea;
-    --amber: #8a5200;
-    --amber-bg: #fef3dc;
-    --danger: #c0392b;
-    --danger-bg: #fdecea;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--ricoh-bg);
-    color: var(--ricoh-charcoal);
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* ── HEADER ── */
-  header {
-    background: var(--ricoh-charcoal);
-    border-bottom: 3px solid var(--ricoh-red);
-    padding: 0 32px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .ricoh-wordmark {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--ricoh-red);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-  }
-
-  .header-divider {
-    width: 1px;
-    height: 22px;
-    background: #444;
-  }
-
-  .header-title {
-    font-size: 13px;
-    font-weight: 400;
-    color: #aaa;
-    letter-spacing: 0.03em;
-  }
-
-  .header-meta {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .live-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: #aaa;
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.05em;
-  }
-
-  .live-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #4caf50;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .as-of {
-    font-size: 11px;
-    color: #666;
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* ── LAYOUT ── */
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px 24px 64px;
-  }
-
-  /* ── SECTION LABELS ── */
-  .section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ricoh-muted);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--ricoh-border);
-  }
-
-  /* ── METRIC GRID ── */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: 32px;
-  }
-
-  .kpi-grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  .kpi-grid-4 {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  .kpi-card {
-    background: var(--ricoh-surface);
-    border: 1px solid var(--ricoh-border);
-    border-radius: 6px;
-    padding: 18px 20px;
-    position: relative;
-    overflow: hidden;
-    transition: box-shadow 0.15s;
-  }
-
-  .kpi-card:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-  }
-
-  .kpi-card.alert::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--ricoh-red);
-  }
-
-  .kpi-card.good::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--green);
-  }
-
-  .kpi-card.accent::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--ricoh-red);
-  }
-
-  .kpi-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--ricoh-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 8px;
-  }
-
-  .kpi-value {
-    font-size: 32px;
-    font-weight: 300;
-    color: var(--ricoh-charcoal);
-    line-height: 1;
-    margin-bottom: 6px;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .kpi-value.alert { color: var(--danger); }
-  .kpi-value.good { color: var(--green); }
-  .kpi-value.muted { color: var(--ricoh-mid); }
-
-  .kpi-sub {
-    font-size: 11px;
-    color: var(--ricoh-muted);
-    line-height: 1.4;
-  }
-
-  .kpi-trend {
-    font-size: 11px;
-    margin-top: 5px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .trend-good { color: var(--green); }
-  .trend-bad { color: var(--danger); }
-
-  .progress-bar {
-    height: 4px;
-    background: var(--ricoh-border);
-    border-radius: 2px;
-    margin-top: 10px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.8s ease;
-  }
-
-  .fill-green { background: var(--green); }
-  .fill-muted { background: var(--ricoh-muted); }
-  .fill-red { background: var(--ricoh-red); }
-
-  /* ── DIVIDER ── */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--ricoh-border);
-    margin: 28px 0;
-  }
-
-  /* ── TWO COLUMN LAYOUT ── */
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-
-  .panel-card {
-    background: var(--ricoh-surface);
-    border: 1px solid var(--ricoh-border);
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .panel-header {
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--ricoh-border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--ricoh-surface-2);
-  }
-
-  .panel-title {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--ricoh-mid);
-  }
-
-  .panel-count {
-    font-size: 11px;
-    color: var(--ricoh-muted);
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* ── TABS ── */
-  .tab-container {
-    background: var(--ricoh-surface);
-    border: 1px solid var(--ricoh-border);
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 32px;
-  }
-
-  .tab-bar {
-    display: flex;
-    border-bottom: 1px solid var(--ricoh-border);
-    background: var(--ricoh-surface-2);
-    padding: 0 4px;
-    gap: 2px;
-  }
-
-  .tab-btn {
-    padding: 12px 18px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--ricoh-muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: color 0.15s;
-    letter-spacing: 0.02em;
-    font-family: 'DM Sans', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    font-size: 11px;
-  }
-
-  .tab-btn:hover { color: var(--ricoh-charcoal); }
-
-  .tab-btn.active {
-    color: var(--ricoh-red);
-    border-bottom-color: var(--ricoh-red);
-    font-weight: 600;
-  }
-
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-
-  /* ── TABLES ── */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  th {
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.09em;
-    color: var(--ricoh-muted);
-    padding: 10px 16px;
-    text-align: left;
-    border-bottom: 1px solid var(--ricoh-border);
-    background: var(--ricoh-surface-2);
-    white-space: nowrap;
-  }
-
-  th.right { text-align: right; }
-
-  td {
-    padding: 10px 16px;
-    font-size: 13px;
-    color: var(--ricoh-charcoal);
-    border-bottom: 1px solid #f0f0f0;
-    vertical-align: middle;
-  }
-
-  tr:last-child td { border-bottom: none; }
-
-  .tr-territory td {
-    background: var(--ricoh-surface-2);
-    font-weight: 600;
-    font-size: 12px;
-    color: var(--ricoh-mid);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 8px 16px;
-    border-bottom: 1px solid var(--ricoh-border);
-  }
-
-  .tr-territory .terr-count {
-    font-weight: 400;
-    color: var(--ricoh-muted);
-    text-transform: none;
-    letter-spacing: 0;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-  }
-
-  td.indent { padding-left: 32px; }
-  td.right { text-align: right; }
-  td.mono {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-  }
-
-  td.count {
-    text-align: right;
-    font-family: 'DM Mono', monospace;
-    font-weight: 500;
-    font-size: 13px;
-  }
-
-  td.pct {
-    text-align: right;
-    color: var(--ricoh-muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-  }
-
-  td.danger { color: var(--danger); font-weight: 500; }
-  td.good-text { color: var(--green); font-weight: 500; }
-
-  .total-row td {
-    font-weight: 600;
-    border-top: 1px solid var(--ricoh-border);
-    background: var(--ricoh-surface-2);
-  }
-
-  /* ── BADGES ── */
-  .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-size: 11px;
-    font-weight: 500;
-    white-space: nowrap;
-    letter-spacing: 0.02em;
-  }
-
-  .b-new { background: var(--status-new-bg); color: var(--status-new); }
-  .b-woi { background: var(--status-woi-bg); color: var(--status-woi); }
-  .b-invoice { background: var(--status-invoice-bg); color: var(--status-invoice); }
-  .b-waiting { background: var(--status-waiting-bg); color: var(--status-waiting); }
-  .b-escalated { background: var(--status-escalated-bg); color: var(--status-escalated); }
-  .b-stop { background: var(--status-stop-bg); color: var(--status-stop); }
+    --red:#D7063B; --red-dark:#a8002d; --red-light:#f5e0e6;
+    --charcoal:#1a1a1a; --dark:#2a2a2a; --mid:#444; --muted:#888;
+    --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
+    --green:#1a6e2e; --green-bg:#e6f4ea;
+    --amber:#8a5200; --amber-bg:#fef3dc;
+    --danger:#c0392b; --danger-bg:#fdecea;
+    --blue:#0057b8; --blue-bg:#e8f0fb;
+    --gray:#555; --gray-bg:#efefef;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+  /* HEADER */
+  header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
+  .header-center{display:flex;align-items:center;gap:16px;}
+  .header-divider{width:1px;height:22px;background:#444;}
+  .header-title{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em;}
+  .header-right{display:flex;align-items:center;gap:16px;}
+  .live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:#aaa;font-family:'DM Mono',monospace;letter-spacing:.05em;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite;}
+  .as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+  .back-link{font-size:11px;color:#666;text-decoration:none;letter-spacing:.03em;transition:color .15s;}
+  .back-link:hover{color:#aaa;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+  /* LAYOUT */
+  main{max-width:1200px;margin:0 auto;padding:32px 24px 64px;}
+
+  /* SECTION LABEL */
+  .section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* KPI GRID */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:32px;}
+  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px 20px;position:relative;overflow:hidden;transition:box-shadow .15s;animation:fadeUp .4s ease both;}
+  .kpi-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07);}
+  .kpi-card.accent::before,.kpi-card.alert::before,.kpi-card.good::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+  .kpi-card.accent::before{background:var(--red);}
+  .kpi-card.alert::before{background:var(--red);}
+  .kpi-card.good::before{background:var(--green);}
+  .kpi-card:nth-child(1){animation-delay:.05s;}.kpi-card:nth-child(2){animation-delay:.1s;}.kpi-card:nth-child(3){animation-delay:.15s;}.kpi-card:nth-child(4){animation-delay:.2s;}
+  .kpi-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+  .kpi-value{font-size:32px;font-weight:300;color:var(--charcoal);line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;}
+  .kpi-value.alert{color:var(--danger);}.kpi-value.good{color:var(--green);}.kpi-value.muted{color:var(--mid);}
+  .kpi-sub{font-size:11px;color:var(--muted);line-height:1.4;}
+  .kpi-trend{font-size:11px;margin-top:5px;font-weight:500;}
+  .trend-good{color:var(--green);}.trend-bad{color:var(--danger);}
+  .progress-bar{height:4px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden;}
+  .progress-fill{height:100%;border-radius:2px;}
+  .fill-green{background:var(--green);}.fill-muted{background:var(--muted);}
+
+  /* DIVIDER */
+  hr.divider{border:none;border-top:1px solid var(--border);margin:28px 0;}
+
+  /* TABS */
+  .tab-container{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:32px;}
+  .tab-bar{display:flex;border-bottom:1px solid var(--border);background:var(--surface2);padding:0 4px;gap:2px;}
+  .tab-btn{padding:12px 18px;font-size:11px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s;letter-spacing:.07em;font-family:'DM Sans',sans-serif;text-transform:uppercase;}
+  .tab-btn:hover{color:var(--charcoal);}
+  .tab-btn.active{color:var(--red);border-bottom-color:var(--red);font-weight:600;}
+  .tab-panel{display:none;}.tab-panel.active{display:block;}
+
+  /* TABLE */
+  table{width:100%;border-collapse:collapse;}
+  th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);white-space:nowrap;}
+  th.right{text-align:right;}
+  td{padding:10px 16px;font-size:13px;color:var(--charcoal);border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  td.indent{padding-left:32px;}
+  td.count{text-align:right;font-family:'DM Mono',monospace;font-weight:500;font-size:13px;}
+  td.pct{text-align:right;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;}
+  td.danger{color:var(--danger);font-weight:500;}
+  .tr-territory td{background:var(--surface2);font-weight:600;font-size:12px;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;padding:8px 16px;border-bottom:1px solid var(--border);}
+  .tr-territory .terr-count{font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;font-family:'DM Mono',monospace;font-size:11px;margin-left:8px;}
+  .total-row td{font-weight:600;border-top:1px solid var(--border);background:var(--surface2);}
+
+  /* BADGE */
+  .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;white-space:nowrap;letter-spacing:.02em;}
+  .b-New{background:var(--blue-bg);color:var(--blue);}
+  .b-WOI{background:var(--green-bg);color:var(--green);}
+  .b-Invoice{background:var(--amber-bg);color:var(--amber);}
+  .b-Waiting{background:var(--gray-bg);color:var(--gray);}
+  .b-Escalated,.b-Stop{background:var(--danger-bg);color:var(--danger);}
+
+  /* INLINE BAR */
+  .bar-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;width:100px;}
+  .bar-fill{height:100%;border-radius:3px;background:var(--red);}
+  .bar-fill.muted{background:var(--muted);}
+
+  /* OVER 72h GRID */
+  .overage-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--border);}
+  .overage-cell{background:var(--surface);padding:18px 20px;}
+  .overage-name{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;}
+  .overage-nums{display:flex;align-items:baseline;gap:6px;margin-bottom:6px;}
+  .overage-big{font-size:28px;font-weight:300;color:var(--danger);font-variant-numeric:tabular-nums;line-height:1;}
+  .overage-of{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;}
+  .overage-pct{font-size:11px;font-weight:500;color:var(--danger);margin-bottom:6px;}
+  .overage-bar-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+  .overage-bar-fill{height:100%;background:var(--red);border-radius:2px;}
+  .overage-total-row{padding:14px 20px;background:var(--surface2);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+  .overage-total-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+  .overage-total-val{font-size:13px;font-weight:600;color:var(--danger);font-family:'DM Mono',monospace;}
 
-  /* ── INLINE BAR ── */
-  .inline-bar { width: 100px; }
+  /* FOOTER */
+  footer{text-align:center;padding:24px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;letter-spacing:.04em;}
 
-  .bar-bg {
-    height: 5px;
-    background: var(--ricoh-border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  .bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: var(--ricoh-red);
-  }
-
-  .bar-fill.muted { background: var(--ricoh-muted); }
-
-  /* ── TERRITORY MINI CARDS (72h panel) ── */
-  .overage-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 1px;
-    background: var(--ricoh-border);
-  }
-
-  .overage-cell {
-    background: var(--ricoh-surface);
-    padding: 18px 20px;
-  }
-
-  .overage-name {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--ricoh-muted);
-    margin-bottom: 8px;
-  }
-
-  .overage-nums {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 8px;
-  }
-
-  .overage-big {
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--danger);
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-  }
-
-  .overage-of {
-    font-size: 12px;
-    color: var(--ricoh-muted);
-    font-family: 'DM Mono', monospace;
-  }
-
-  .overage-pct {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--danger);
-    margin-bottom: 6px;
-  }
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 
-  .overage-bar-bg {
-    height: 3px;
-    background: var(--ricoh-border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .overage-bar-fill {
-    height: 100%;
-    background: var(--ricoh-red);
-    border-radius: 2px;
-  }
-
-  .overage-total-row {
-    padding: 14px 20px;
-    background: var(--ricoh-surface-2);
-    border-top: 1px solid var(--ricoh-border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .overage-total-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--ricoh-muted);
-  }
-
-  .overage-total-val {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--danger);
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    text-align: center;
-    padding: 24px;
-    font-size: 11px;
-    color: var(--ricoh-muted);
-    border-top: 1px solid var(--ricoh-border);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.04em;
-  }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .kpi-card { animation: fadeUp 0.4s ease both; }
-  .kpi-card:nth-child(1) { animation-delay: 0.05s; }
-  .kpi-card:nth-child(2) { animation-delay: 0.10s; }
-  .kpi-card:nth-child(3) { animation-delay: 0.15s; }
-  .kpi-card:nth-child(4) { animation-delay: 0.20s; }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 900px) {
-    .kpi-grid, .kpi-grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
-    .two-col { grid-template-columns: 1fr; }
-    .overage-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
-  }
-
-  @media (max-width: 600px) {
-    main { padding: 16px 12px 48px; }
-    .kpi-grid, .kpi-grid-4, .kpi-grid-2 { grid-template-columns: 1fr 1fr; }
-    header { padding: 0 16px; }
-    .header-title { display: none; }
-  }
+  @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.overage-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-title{display:none;}.kpi-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-left">
-    <span class="ricoh-wordmark">Ricoh</span>
+  <div class="header-center">
+    <span class="wordmark">Ricoh</span>
     <div class="header-divider"></div>
     <span class="header-title">South Pacific — Service Dashboard</span>
   </div>
-  <div class="header-meta">
-    <span class="live-badge">
-      <span class="live-dot"></span>
-      LIVE
-    </span>
-    <span class="as-of">As of 16 Mar 2026</span>
+  <div class="header-right">
+    <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+    <span class="as-of" id="asOf"></span>
+    <a href="index.html" class="back-link">← Scorecards</a>
   </div>
 </header>
 
 <main>
-
-  <!-- ── OPEN CASES SNAPSHOT ── -->
   <div class="section-label">Open cases snapshot</div>
-  <div class="kpi-grid">
-    <div class="kpi-card accent">
-      <div class="kpi-label">Total open cases</div>
-      <div class="kpi-value">121</div>
-      <div class="kpi-sub">Across 5 territories</div>
-    </div>
-    <div class="kpi-card alert">
-      <div class="kpi-label">Open &gt;72 hours</div>
-      <div class="kpi-value alert">96</div>
-      <div class="kpi-sub">79% of all open cases</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Highest load</div>
-      <div class="kpi-value muted">NZ</div>
-      <div class="kpi-sub">37 open · 36 over 72h</div>
-    </div>
-    <div class="kpi-card alert">
-      <div class="kpi-label">Escalated</div>
-      <div class="kpi-value alert">1</div>
-      <div class="kpi-sub">Tonga</div>
-    </div>
-  </div>
+  <div class="kpi-grid" id="kpiSnapshot"></div>
 
   <hr class="divider">
 
-  <!-- ── SERVICE CALL PERFORMANCE ── -->
   <div class="section-label">Service call performance — closed cases</div>
-  <div class="kpi-grid-4" style="margin-bottom: 32px;">
-    <div class="kpi-card good">
-      <div class="kpi-label">Avg days to close — Mar MTD</div>
-      <div class="kpi-value good">6.4</div>
-      <div class="kpi-sub">99 closed service calls</div>
-      <div class="kpi-trend trend-good">▼ 1.9 days vs Feb</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Avg days to close — Feb</div>
-      <div class="kpi-value muted">8.3</div>
-      <div class="kpi-sub">241 closed service calls</div>
-    </div>
-    <div class="kpi-card good">
-      <div class="kpi-label">First time fix — Mar MTD</div>
-      <div class="kpi-value good">78.8%</div>
-      <div class="kpi-sub">78 of 99 cases</div>
-      <div class="kpi-trend trend-good">▲ 6.6pp vs Feb</div>
-      <div class="progress-bar">
-        <div class="progress-fill fill-green" style="width:78.8%"></div>
-      </div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">First time fix — Feb</div>
-      <div class="kpi-value muted">72.2%</div>
-      <div class="kpi-sub">174 of 241 cases</div>
-      <div class="progress-bar">
-        <div class="progress-fill fill-muted" style="width:72.2%"></div>
-      </div>
-    </div>
-  </div>
+  <div class="kpi-grid" id="kpiPerformance"></div>
 
   <hr class="divider">
 
-  <!-- ── TERRITORY BREAKDOWN TABS ── -->
   <div class="section-label">Territory breakdown</div>
   <div class="tab-container">
     <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('status', this)">By Status</button>
-      <button class="tab-btn" onclick="switchTab('worktype', this)">By Work Type</button>
-      <button class="tab-btn" onclick="switchTab('overage', this)">Over 72 Hours</button>
+      <button class="tab-btn active" onclick="switchTab('status',this)">By Status</button>
+      <button class="tab-btn" onclick="switchTab('worktype',this)">By Work Type</button>
+      <button class="tab-btn" onclick="switchTab('overage',this)">Over 72 Hours</button>
     </div>
-
-    <!-- STATUS TAB -->
-    <div id="tab-status" class="tab-panel active">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:50%">Territory / Status</th>
-            <th class="right">Cases</th>
-            <th class="right">Share</th>
-            <th class="right" style="width:120px">Bar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- NEW ZEALAND -->
-          <tr class="tr-territory">
-            <td>New Zealand <span class="terr-count">37 total</span></td>
-            <td></td><td></td><td></td>
-          </tr>
-          <tr><td class="indent"><span class="badge b-invoice">Processing Invoice</span></td><td class="count">15</td><td class="pct">41%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-woi">Work Order Issued</span></td><td class="count">14</td><td class="pct">38%</td><td><div class="bar-bg"><div class="bar-fill" style="width:93%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-new">New</span></td><td class="count">6</td><td class="pct">16%</td><td><div class="bar-bg"><div class="bar-fill" style="width:40%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-stop">Stop Credit</span></td><td class="count">1</td><td class="pct">3%</td><td><div class="bar-bg"><div class="bar-fill" style="width:7%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Quotation Approval</span></td><td class="count">1</td><td class="pct">3%</td><td><div class="bar-bg"><div class="bar-fill" style="width:7%"></div></div></td></tr>
-          <!-- VANUATU -->
-          <tr class="tr-territory">
-            <td>Vanuatu <span class="terr-count">23 total</span></td>
-            <td></td><td></td><td></td>
-          </tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Quotation Approval</span></td><td class="count">6</td><td class="pct">26%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-woi">Work Order Issued</span></td><td class="count">5</td><td class="pct">22%</td><td><div class="bar-bg"><div class="bar-fill" style="width:83%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Parts Delivery</span></td><td class="count">5</td><td class="pct">22%</td><td><div class="bar-bg"><div class="bar-fill" style="width:83%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Customer</span></td><td class="count">3</td><td class="pct">13%</td><td><div class="bar-bg"><div class="bar-fill" style="width:50%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-invoice">Processing Invoice</span></td><td class="count">2</td><td class="pct">9%</td><td><div class="bar-bg"><div class="bar-fill" style="width:33%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-new">New</span></td><td class="count">1</td><td class="pct">4%</td><td><div class="bar-bg"><div class="bar-fill" style="width:17%"></div></div></td></tr>
-          <!-- SOLOMON ISLANDS -->
-          <tr class="tr-territory">
-            <td>Solomon Islands <span class="terr-count">22 total</span></td>
-            <td></td><td></td><td></td>
-          </tr>
-          <tr><td class="indent"><span class="badge b-woi">Work Order Issued</span></td><td class="count">9</td><td class="pct">41%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-new">New</span></td><td class="count">5</td><td class="pct">23%</td><td><div class="bar-bg"><div class="bar-fill" style="width:56%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Parts Delivery</span></td><td class="count">2</td><td class="pct">9%</td><td><div class="bar-bg"><div class="bar-fill" style="width:22%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-invoice">Processing Invoice</span></td><td class="count">2</td><td class="pct">9%</td><td><div class="bar-bg"><div class="bar-fill" style="width:22%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Customer</span></td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Quotation Approval</span></td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Parts Request Approval</span></td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-stop">Stop Credit</span></td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <!-- TONGA -->
-          <tr class="tr-territory">
-            <td>Tonga <span class="terr-count">21 total</span></td>
-            <td></td><td></td><td></td>
-          </tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Quotation Approval</span></td><td class="count">9</td><td class="pct">43%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-woi">Work Order Issued</span></td><td class="count">4</td><td class="pct">19%</td><td><div class="bar-bg"><div class="bar-fill" style="width:44%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-invoice">Processing Invoice</span></td><td class="count">3</td><td class="pct">14%</td><td><div class="bar-bg"><div class="bar-fill" style="width:33%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Parts Request Approval</span></td><td class="count">2</td><td class="pct">10%</td><td><div class="bar-bg"><div class="bar-fill" style="width:22%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Customer</span></td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-escalated">Escalated</span></td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Parts Delivery</span></td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <!-- SAMOA -->
-          <tr class="tr-territory">
-            <td>Samoa <span class="terr-count">14 total</span></td>
-            <td></td><td></td><td></td>
-          </tr>
-          <tr><td class="indent"><span class="badge b-invoice">Processing Invoice</span></td><td class="count">3</td><td class="pct">21%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Quotation Approval</span></td><td class="count">3</td><td class="pct">21%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Parts Delivery</span></td><td class="count">3</td><td class="pct">21%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-woi">Work Order Issued</span></td><td class="count">3</td><td class="pct">21%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Customer</span></td><td class="count">1</td><td class="pct">7%</td><td><div class="bar-bg"><div class="bar-fill" style="width:33%"></div></div></td></tr>
-          <tr><td class="indent"><span class="badge b-waiting">Waiting on Parts Request Approval</span></td><td class="count">1</td><td class="pct">7%</td><td><div class="bar-bg"><div class="bar-fill" style="width:33%"></div></div></td></tr>
-          <!-- UNASSIGNED -->
-          <tr class="tr-territory">
-            <td style="font-style:italic;font-weight:400;color:var(--ricoh-muted)">No territory assigned <span class="terr-count">4 total</span></td>
-            <td></td><td></td><td></td>
-          </tr>
-          <tr><td class="indent"><span class="badge b-new">New</span></td><td class="count">4</td><td class="pct">100%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- WORK TYPE TAB -->
-    <div id="tab-worktype" class="tab-panel">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:50%">Territory / Work Type</th>
-            <th class="right">Cases</th>
-            <th class="right">Share</th>
-            <th class="right" style="width:120px">Bar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="tr-territory"><td>New Zealand <span class="terr-count">37 total</span></td><td></td><td></td><td></td></tr>
-          <tr><td class="indent">Service Call</td><td class="count">9</td><td class="pct">24%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent">Parts Fitting</td><td class="count">7</td><td class="pct">19%</td><td><div class="bar-bg"><div class="bar-fill" style="width:78%"></div></div></td></tr>
-          <tr><td class="indent">Toner Delivery</td><td class="count">4</td><td class="pct">11%</td><td><div class="bar-bg"><div class="bar-fill" style="width:44%"></div></div></td></tr>
-          <tr><td class="indent">Asset Maintenance Service</td><td class="count">4</td><td class="pct">11%</td><td><div class="bar-bg"><div class="bar-fill" style="width:44%"></div></div></td></tr>
-          <tr><td class="indent">Asset Installation</td><td class="count">4</td><td class="pct">11%</td><td><div class="bar-bg"><div class="bar-fill" style="width:44%"></div></div></td></tr>
-          <tr><td class="indent">IT &amp; Network Support</td><td class="count">2</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:22%"></div></div></td></tr>
-          <tr><td class="indent">Asset Run Up</td><td class="count">2</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:22%"></div></div></td></tr>
-          <tr><td class="indent">Fusing Unit Rebuild</td><td class="count">1</td><td class="pct">3%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <tr><td class="indent" style="color:var(--ricoh-muted);font-style:italic;">No work type</td><td class="count" style="color:var(--ricoh-muted)">4</td><td class="pct">11%</td><td><div class="bar-bg"><div class="bar-fill muted" style="width:44%"></div></div></td></tr>
-
-          <tr class="tr-territory"><td>Vanuatu <span class="terr-count">23 total</span></td><td></td><td></td><td></td></tr>
-          <tr><td class="indent">Toner Delivery</td><td class="count">9</td><td class="pct">39%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent">Service Call</td><td class="count">6</td><td class="pct">26%</td><td><div class="bar-bg"><div class="bar-fill" style="width:67%"></div></div></td></tr>
-          <tr><td class="indent">Parts Robbing</td><td class="count">2</td><td class="pct">9%</td><td><div class="bar-bg"><div class="bar-fill" style="width:22%"></div></div></td></tr>
-          <tr><td class="indent">Parts Fitting</td><td class="count">2</td><td class="pct">9%</td><td><div class="bar-bg"><div class="bar-fill" style="width:22%"></div></div></td></tr>
-          <tr><td class="indent">Asset Run Up</td><td class="count">1</td><td class="pct">4%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <tr><td class="indent">Asset Assessment</td><td class="count">1</td><td class="pct">4%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <tr><td class="indent">Asset Maintenance Service</td><td class="count">1</td><td class="pct">4%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-          <tr><td class="indent">Paper Delivery</td><td class="count">1</td><td class="pct">4%</td><td><div class="bar-bg"><div class="bar-fill" style="width:11%"></div></div></td></tr>
-
-          <tr class="tr-territory"><td>Solomon Islands <span class="terr-count">22 total</span></td><td></td><td></td><td></td></tr>
-          <tr><td class="indent">Service Call</td><td class="count">13</td><td class="pct">59%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent">Toner Delivery</td><td class="count">5</td><td class="pct">23%</td><td><div class="bar-bg"><div class="bar-fill" style="width:38%"></div></div></td></tr>
-          <tr><td class="indent">Parts Robbing</td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:8%"></div></div></td></tr>
-          <tr><td class="indent">Asset Run Up</td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:8%"></div></div></td></tr>
-          <tr><td class="indent">Parts Fitting</td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:8%"></div></div></td></tr>
-          <tr><td class="indent">Relief Machine Run Up</td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:8%"></div></div></td></tr>
-
-          <tr class="tr-territory"><td>Tonga <span class="terr-count">21 total</span></td><td></td><td></td><td></td></tr>
-          <tr><td class="indent">Service Call</td><td class="count">11</td><td class="pct">52%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent">Toner Delivery</td><td class="count">8</td><td class="pct">38%</td><td><div class="bar-bg"><div class="bar-fill" style="width:73%"></div></div></td></tr>
-          <tr><td class="indent">Asset Maintenance Service</td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:9%"></div></div></td></tr>
-          <tr><td class="indent">Parts Fitting</td><td class="count">1</td><td class="pct">5%</td><td><div class="bar-bg"><div class="bar-fill" style="width:9%"></div></div></td></tr>
-
-          <tr class="tr-territory"><td>Samoa <span class="terr-count">14 total</span></td><td></td><td></td><td></td></tr>
-          <tr><td class="indent">Service Call</td><td class="count">5</td><td class="pct">36%</td><td><div class="bar-bg"><div class="bar-fill" style="width:100%"></div></div></td></tr>
-          <tr><td class="indent">Asset Decommission</td><td class="count">3</td><td class="pct">21%</td><td><div class="bar-bg"><div class="bar-fill" style="width:60%"></div></div></td></tr>
-          <tr><td class="indent">Toner Delivery</td><td class="count">2</td><td class="pct">14%</td><td><div class="bar-bg"><div class="bar-fill" style="width:40%"></div></div></td></tr>
-          <tr><td class="indent">Asset Maintenance Service</td><td class="count">2</td><td class="pct">14%</td><td><div class="bar-bg"><div class="bar-fill" style="width:40%"></div></div></td></tr>
-          <tr><td class="indent">Parts Robbing</td><td class="count">1</td><td class="pct">7%</td><td><div class="bar-bg"><div class="bar-fill" style="width:20%"></div></div></td></tr>
-          <tr><td class="indent">Asset Installation</td><td class="count">1</td><td class="pct">7%</td><td><div class="bar-bg"><div class="bar-fill" style="width:20%"></div></div></td></tr>
-
-          <tr class="tr-territory"><td style="font-style:italic;font-weight:400;color:var(--ricoh-muted)">No territory assigned <span class="terr-count">4 total</span></td><td></td><td></td><td></td></tr>
-          <tr><td class="indent" style="color:var(--ricoh-muted);font-style:italic;">No work type</td><td class="count" style="color:var(--ricoh-muted)">4</td><td class="pct">100%</td><td><div class="bar-bg"><div class="bar-fill muted" style="width:100%"></div></div></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- OVER 72H TAB -->
-    <div id="tab-overage" class="tab-panel">
-      <div class="overage-grid">
-        <div class="overage-cell">
-          <div class="overage-name">New Zealand</div>
-          <div class="overage-nums">
-            <span class="overage-big">36</span>
-            <span class="overage-of">/ 37</span>
-          </div>
-          <div class="overage-pct">97% of territory</div>
-          <div class="overage-bar-bg"><div class="overage-bar-fill" style="width:97%"></div></div>
-        </div>
-        <div class="overage-cell">
-          <div class="overage-name">Solomon Islands</div>
-          <div class="overage-nums">
-            <span class="overage-big">17</span>
-            <span class="overage-of">/ 22</span>
-          </div>
-          <div class="overage-pct">77% of territory</div>
-          <div class="overage-bar-bg"><div class="overage-bar-fill" style="width:77%"></div></div>
-        </div>
-        <div class="overage-cell">
-          <div class="overage-name">Tonga</div>
-          <div class="overage-nums">
-            <span class="overage-big">16</span>
-            <span class="overage-of">/ 21</span>
-          </div>
-          <div class="overage-pct">76% of territory</div>
-          <div class="overage-bar-bg"><div class="overage-bar-fill" style="width:76%"></div></div>
-        </div>
-        <div class="overage-cell">
-          <div class="overage-name">Samoa</div>
-          <div class="overage-nums">
-            <span class="overage-big">10</span>
-            <span class="overage-of">/ 14</span>
-          </div>
-          <div class="overage-pct">71% of territory</div>
-          <div class="overage-bar-bg"><div class="overage-bar-fill" style="width:71%"></div></div>
-        </div>
-        <div class="overage-cell">
-          <div class="overage-name">Vanuatu</div>
-          <div class="overage-nums">
-            <span class="overage-big">14</span>
-            <span class="overage-of">/ 23</span>
-          </div>
-          <div class="overage-pct">61% of territory</div>
-          <div class="overage-bar-bg"><div class="overage-bar-fill" style="width:61%"></div></div>
-        </div>
-        <div class="overage-cell">
-          <div class="overage-name" style="font-style:italic;color:var(--ricoh-muted)">No territory</div>
-          <div class="overage-nums">
-            <span class="overage-big">3</span>
-            <span class="overage-of">/ 4</span>
-          </div>
-          <div class="overage-pct">75% of territory</div>
-          <div class="overage-bar-bg"><div class="overage-bar-fill" style="width:75%"></div></div>
-        </div>
-      </div>
-      <div class="overage-total-row">
-        <span class="overage-total-label">Total open &gt;72 hours</span>
-        <span class="overage-total-val">96 of 121 &nbsp;·&nbsp; 79%</span>
-      </div>
-    </div>
-
-  </div><!-- end tab-container -->
-
+    <div id="tab-status" class="tab-panel active"></div>
+    <div id="tab-worktype" class="tab-panel"></div>
+    <div id="tab-overage" class="tab-panel"></div>
+  </div>
 </main>
 
-<footer>
-  Ricoh South Pacific &nbsp;·&nbsp; Data sourced from Salesforce &nbsp;·&nbsp; 16 Mar 2026
-</footer>
+<footer id="footer"></footer>
 
 <script>
-  function switchTab(name, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
-    btn.classList.add('active');
-  }
-</script>
+// ─────────────────────────────────────────────
+//  DATA — update this block on each refresh
+//  Last refreshed: 16 March 2026
+// ─────────────────────────────────────────────
+const DATA = {
+  asOf: "16 Mar 2026",
 
+  territories: {
+    "0Hh7F0000000O5fSAE": "New Zealand",
+    "0Hh7F0000000O5uSAE": "Vanuatu",
+    "0Hh7F0000000O5kSAE": "Solomon Islands",
+    "0Hh7F0000000O5pSAE": "Tonga",
+    "0Hh7F0000000O5bSAE": "Samoa",
+    "null": "No territory"
+  },
+
+  workTypes: {
+    "08q7F0000000RDlQAM": "Service Call",
+    "08q7F0000000RDjQAM": "Asset Decommission",
+    "08q7F0000004gQRQAY": "Toner Delivery",
+    "08q7F0000000RDiQAM": "Asset Maintenance Service",
+    "08q7F0000000RDnQAM": "Parts Robbing",
+    "08q7F0000000RDkQAM": "Asset Installation",
+    "08q7F0000004gT6QAI": "Parts Fitting",
+    "08q7F0000000RDsQAM": "Asset Run Up",
+    "08q7F000000Y4WiQAK": "IT & Network Support",
+    "08q7F000000Y4VfQAK": "Fusing Unit Rebuild",
+    "08q7F000000Y4VuQAK": "Relief Machine Run Up",
+    "08q7F0000000RDmQAM": "Asset Assessment",
+    "08qMp000000JMfxIAG": "Paper Delivery",
+    "null": "No work type"
+  },
+
+  // Open cases total per territory
+  openByTerritory: [
+    { id: "0Hh7F0000000O5fSAE", count: 37 },
+    { id: "0Hh7F0000000O5uSAE", count: 23 },
+    { id: "0Hh7F0000000O5kSAE", count: 22 },
+    { id: "0Hh7F0000000O5pSAE", count: 21 },
+    { id: "0Hh7F0000000O5bSAE", count: 14 },
+    { id: "null",               count: 4  }
+  ],
+
+  // Open >72h per territory
+  over72ByTerritory: [
+    { id: "0Hh7F0000000O5fSAE", count: 36 },
+    { id: "0Hh7F0000000O5kSAE", count: 17 },
+    { id: "0Hh7F0000000O5pSAE", count: 16 },
+    { id: "0Hh7F0000000O5uSAE", count: 14 },
+    { id: "0Hh7F0000000O5bSAE", count: 10 },
+    { id: "null",               count: 3  }
+  ],
+
+  // Status breakdown: [territoryId, status, count]
+  byStatus: [
+    ["null",               "New",                              4],
+    ["0Hh7F0000000O5bSAE","Processing Invoice",               3],
+    ["0Hh7F0000000O5bSAE","Waiting on Quotation Approval",    3],
+    ["0Hh7F0000000O5bSAE","Waiting on Parts Delivery",        3],
+    ["0Hh7F0000000O5bSAE","Work Order Issued",                3],
+    ["0Hh7F0000000O5bSAE","Waiting on Customer",              1],
+    ["0Hh7F0000000O5bSAE","Waiting on Parts Request Approval",1],
+    ["0Hh7F0000000O5fSAE","Processing Invoice",              15],
+    ["0Hh7F0000000O5fSAE","Work Order Issued",               14],
+    ["0Hh7F0000000O5fSAE","New",                              6],
+    ["0Hh7F0000000O5fSAE","Stop Credit",                      1],
+    ["0Hh7F0000000O5fSAE","Waiting on Quotation Approval",    1],
+    ["0Hh7F0000000O5kSAE","Work Order Issued",                9],
+    ["0Hh7F0000000O5kSAE","New",                              5],
+    ["0Hh7F0000000O5kSAE","Waiting on Parts Delivery",        2],
+    ["0Hh7F0000000O5kSAE","Processing Invoice",               2],
+    ["0Hh7F0000000O5kSAE","Waiting on Customer",              1],
+    ["0Hh7F0000000O5kSAE","Waiting on Quotation Approval",    1],
+    ["0Hh7F0000000O5kSAE","Waiting on Parts Request Approval",1],
+    ["0Hh7F0000000O5kSAE","Stop Credit",                      1],
+    ["0Hh7F0000000O5pSAE","Waiting on Quotation Approval",    9],
+    ["0Hh7F0000000O5pSAE","Work Order Issued",                4],
+    ["0Hh7F0000000O5pSAE","Processing Invoice",               3],
+    ["0Hh7F0000000O5pSAE","Waiting on Parts Request Approval",2],
+    ["0Hh7F0000000O5pSAE","Waiting on Customer",              1],
+    ["0Hh7F0000000O5pSAE","Escalated",                        1],
+    ["0Hh7F0000000O5pSAE","Waiting on Parts Delivery",        1],
+    ["0Hh7F0000000O5uSAE","Waiting on Quotation Approval",    6],
+    ["0Hh7F0000000O5uSAE","Waiting on Parts Delivery",        5],
+    ["0Hh7F0000000O5uSAE","Work Order Issued",                3],
+    ["0Hh7F0000000O5uSAE","Waiting on Customer",              3],
+    ["0Hh7F0000000O5uSAE","Processing Invoice",               2],
+    ["0Hh7F0000000O5uSAE","New",                              1]
+  ],
+
+  // Work type breakdown: [territoryId, workTypeId, count]
+  byWorkType: [
+    ["null",               "null",                  4],
+    ["0Hh7F0000000O5bSAE","08q7F0000000RDlQAM",    5],
+    ["0Hh7F0000000O5bSAE","08q7F0000000RDjQAM",    3],
+    ["0Hh7F0000000O5bSAE","08q7F0000004gQRQAY",    2],
+    ["0Hh7F0000000O5bSAE","08q7F0000000RDiQAM",    2],
+    ["0Hh7F0000000O5bSAE","08q7F0000000RDnQAM",    1],
+    ["0Hh7F0000000O5bSAE","08q7F0000000RDkQAM",    1],
+    ["0Hh7F0000000O5fSAE","08q7F0000000RDlQAM",    9],
+    ["0Hh7F0000000O5fSAE","08q7F0000004gT6QAI",    7],
+    ["0Hh7F0000000O5fSAE","08q7F0000004gQRQAY",    4],
+    ["0Hh7F0000000O5fSAE","null",                  4],
+    ["0Hh7F0000000O5fSAE","08q7F0000000RDiQAM",    4],
+    ["0Hh7F0000000O5fSAE","08q7F0000000RDkQAM",    4],
+    ["0Hh7F0000000O5fSAE","08q7F0000000RDsQAM",    2],
+    ["0Hh7F0000000O5fSAE","08q7F000000Y4WiQAK",    2],
+    ["0Hh7F0000000O5fSAE","08q7F000000Y4VfQAK",    1],
+    ["0Hh7F0000000O5kSAE","08q7F0000000RDlQAM",   14],
+    ["0Hh7F0000000O5kSAE","08q7F0000004gQRQAY",    4],
+    ["0Hh7F0000000O5kSAE","08q7F0000000RDnQAM",    1],
+    ["0Hh7F0000000O5kSAE","08q7F0000000RDsQAM",    1],
+    ["0Hh7F0000000O5kSAE","08q7F0000004gT6QAI",    1],
+    ["0Hh7F0000000O5kSAE","08q7F000000Y4VuQAK",    1],
+    ["0Hh7F0000000O5pSAE","08q7F0000000RDlQAM",   11],
+    ["0Hh7F0000000O5pSAE","08q7F0000004gQRQAY",    8],
+    ["0Hh7F0000000O5pSAE","08q7F0000000RDiQAM",    1],
+    ["0Hh7F0000000O5pSAE","08q7F0000004gT6QAI",    1],
+    ["0Hh7F0000000O5uSAE","08q7F0000004gQRQAY",    7],
+    ["0Hh7F0000000O5uSAE","08q7F0000000RDlQAM",    6],
+    ["0Hh7F0000000O5uSAE","08q7F0000000RDnQAM",    2],
+    ["0Hh7F0000000O5uSAE","08q7F0000004gT6QAI",    2],
+    ["0Hh7F0000000O5uSAE","08q7F0000000RDsQAM",    1],
+    ["0Hh7F0000000O5uSAE","08q7F0000000RDmQAM",    1],
+    ["0Hh7F0000000O5uSAE","08qMp000000JMfxIAG",    1]
+  ],
+
+  performance: {
+    mar: { count: 99,  avgDays: 6.40, ftf: 78  },
+    feb: { count: 241, avgDays: 8.28, ftf: 174 }
+  }
+};
+// ─────────────────────────────────────────────
+//  END DATA — do not edit below this line
+// ─────────────────────────────────────────────
+
+// ── HELPERS ──────────────────────────────────
+
+const terrName = id => DATA.territories[id] || id;
+const wtName   = id => DATA.workTypes[id]   || id;
+const isNull   = id => id === "null";
+const pct      = (n, d) => d ? Math.round(n / d * 100) + "%" : "—";
+const fmt1     = n => n.toFixed(1);
+
+const totalOpen    = DATA.openByTerritory.reduce((s,t) => s+t.count, 0);
+const totalOver72  = DATA.over72ByTerritory.reduce((s,t) => s+t.count, 0);
+const escalated    = DATA.byStatus.find(r => r[1] === "Escalated");
+const escalatedTerr = escalated ? terrName(escalated[0]) : "None";
+const escalatedN   = escalated ? escalated[2] : 0;
+
+// ── BADGE CLASS ──────────────────────────────
+function badgeClass(status) {
+  if (status === "New") return "b-New";
+  if (status === "Work Order Issued") return "b-WOI";
+  if (status === "Processing Invoice") return "b-Invoice";
+  if (status === "Escalated" || status === "Stop Credit") return "b-Escalated";
+  return "b-Waiting";
+}
+
+// ── KPI CARDS ────────────────────────────────
+function kpiCard(cls, label, value, valueCls, sub, trend, trendCls, bar) {
+  return `<div class="kpi-card ${cls}">
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-value ${valueCls}">${value}</div>
+    <div class="kpi-sub">${sub}</div>
+    ${trend ? `<div class="kpi-trend ${trendCls}">${trend}</div>` : ""}
+    ${bar !== undefined ? `<div class="progress-bar"><div class="progress-fill ${bar.cls}" style="width:${bar.w}%"></div></div>` : ""}
+  </div>`;
+}
+
+document.getElementById("kpiSnapshot").innerHTML = [
+  kpiCard("accent","Total open cases", totalOpen, "", "Across 5 territories", "", ""),
+  kpiCard("alert", "Open &gt;72 hours", totalOver72, "alert", `${Math.round(totalOver72/totalOpen*100)}% of all open cases`, "", ""),
+  kpiCard("",      "Highest load", "NZ", "muted", `37 open · 36 over 72h`, "", ""),
+  kpiCard("alert", "Escalated", escalatedN, escalatedN ? "alert" : "", escalatedTerr, "", "")
+].join("");
+
+const { mar, feb } = DATA.performance;
+const marFTFpct  = mar.ftf  / mar.count  * 100;
+const febFTFpct  = feb.ftf  / feb.count  * 100;
+const daysDelta  = (mar.avgDays - feb.avgDays).toFixed(1);
+const ftfDelta   = (marFTFpct - febFTFpct).toFixed(1);
+
+document.getElementById("kpiPerformance").innerHTML = [
+  kpiCard("good",  "Avg days to close — Mar MTD", fmt1(mar.avgDays), "good",  `${mar.count} closed service calls`, `▼ ${Math.abs(daysDelta)} days vs Feb`, "trend-good"),
+  kpiCard("",      "Avg days to close — Feb",      fmt1(feb.avgDays), "muted", `${feb.count} closed service calls`, "", ""),
+  kpiCard("good",  "First time fix — Mar MTD",     fmt1(marFTFpct)+"%", "good", `${mar.ftf} of ${mar.count} cases`, `▲ ${Math.abs(ftfDelta)}pp vs Feb`, "trend-good", {cls:"fill-green", w:marFTFpct}),
+  kpiCard("",      "First time fix — Feb",          fmt1(febFTFpct)+"%", "muted", `${feb.ftf} of ${feb.count} cases`, "", "", {cls:"fill-muted", w:febFTFpct})
+].join("");
+
+// ── TERRITORY TABLE (shared structure) ───────
+function buildTerritoryTable(headers, rowsFn) {
+  const terrOrder = DATA.openByTerritory.map(t => t.id);
+  let rows = "";
+  for (const tid of terrOrder) {
+    const total = DATA.openByTerritory.find(t => t.id === tid).count;
+    const name  = isNull(tid)
+      ? `<span style="font-style:italic;font-weight:400;color:var(--muted)">No territory assigned</span>`
+      : terrName(tid);
+    rows += `<tr class="tr-territory"><td>${name}<span class="terr-count">${total} total</span></td>${"<td></td>".repeat(headers.length - 1)}</tr>`;
+    rows += rowsFn(tid, total);
+  }
+  const ths = headers.map((h,i) => `<th${i>0?' class="right"':''}>${h}</th>`).join("");
+  return `<table><thead><tr>${ths}</tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// ── STATUS TAB ───────────────────────────────
+document.getElementById("tab-status").innerHTML = buildTerritoryTable(
+  ["Territory / Status", "Cases", "Share", ""],
+  (tid, total) => {
+    const rows = DATA.byStatus.filter(r => r[0] === tid);
+    const max  = Math.max(...rows.map(r => r[2]));
+    return rows.map(([,status,count]) => `
+      <tr>
+        <td class="indent"><span class="badge ${badgeClass(status)}">${status}</span></td>
+        <td class="count">${count}</td>
+        <td class="pct">${pct(count, total)}</td>
+        <td><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(count/max*100)}%"></div></div></td>
+      </tr>`).join("");
+  }
+);
+
+// ── WORK TYPE TAB ────────────────────────────
+document.getElementById("tab-worktype").innerHTML = buildTerritoryTable(
+  ["Territory / Work Type", "Cases", "Share", ""],
+  (tid, total) => {
+    const rows = DATA.byWorkType.filter(r => r[0] === tid);
+    const max  = Math.max(...rows.map(r => r[2]));
+    return rows.map(([,wtId,count]) => {
+      const isNullWt = wtId === "null";
+      const label = isNullWt
+        ? `<span style="color:var(--muted);font-style:italic">${wtName(wtId)}</span>`
+        : wtName(wtId);
+      return `
+        <tr>
+          <td class="indent">${label}</td>
+          <td class="count" ${isNullWt?'style="color:var(--muted)"':''}>${count}</td>
+          <td class="pct">${pct(count, total)}</td>
+          <td><div class="bar-bg"><div class="bar-fill${isNullWt?' muted':''}" style="width:${Math.round(count/max*100)}%"></div></div></td>
+        </tr>`;
+    }).join("");
+  }
+);
+
+// ── OVER 72H TAB ─────────────────────────────
+const terrOrder72 = [...DATA.over72ByTerritory].sort((a,b) => b.count - a.count);
+const cells = terrOrder72.map(({ id, count }) => {
+  const total = (DATA.openByTerritory.find(t => t.id === id) || {count:0}).count;
+  const p = total ? Math.round(count / total * 100) : 0;
+  const name = isNull(id)
+    ? `<span style="font-style:italic">${terrName(id)}</span>`
+    : terrName(id);
+  return `<div class="overage-cell">
+    <div class="overage-name">${name}</div>
+    <div class="overage-nums"><span class="overage-big">${count}</span><span class="overage-of">/ ${total}</span></div>
+    <div class="overage-pct">${p}% of territory</div>
+    <div class="overage-bar-bg"><div class="overage-bar-fill" style="width:${p}%"></div></div>
+  </div>`;
+}).join("");
+
+document.getElementById("tab-overage").innerHTML = `
+  <div class="overage-grid">${cells}</div>
+  <div class="overage-total-row">
+    <span class="overage-total-label">Total open &gt;72 hours</span>
+    <span class="overage-total-val">${totalOver72} of ${totalOpen} &nbsp;·&nbsp; ${pct(totalOver72, totalOpen)}</span>
+  </div>`;
+
+// ── FOOTER / DATE ─────────────────────────────
+document.getElementById("asOf").textContent = DATA.asOf;
+document.getElementById("footer").textContent =
+  `Ricoh South Pacific · Data from Salesforce · ${DATA.asOf}`;
+
+// ── TAB SWITCHER ──────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  btn.classList.add("active");
+}
+</script>
 </body>
 </html>
