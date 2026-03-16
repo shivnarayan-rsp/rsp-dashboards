@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP Level 10 Scorecards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #D7063B;
+    --red-dark: #a8002d;
+    --red-glow: rgba(215, 6, 59, 0.15);
+    --charcoal: #1a1a1a;
+    --dark: #111111;
+    --mid: #2e2e2e;
+    --muted: #666666;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(215, 6, 59, 0.4);
+    --text: #f0f0f0;
+    --text-dim: #888888;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 0 48px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 120px;
+    height: 2px;
+    background: var(--red);
+  }
+
+  .wordmark {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+  }
+
+  /* ── EYEBROW ── */
+  .eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.1s both;
+  }
+
+  /* ── HEADING ── */
+  h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-align: center;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.2s both;
+  }
+
+  h1 strong {
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-bottom: 64px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.3s both;
+  }
+
+  /* ── GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 860px;
+    opacity: 0;
+    animation: fadeUp 0.5s ease 0.4s both;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 36px 20px 32px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--mid);
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    overflow: hidden;
+    gap: 14px;
+    cursor: pointer;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, var(--red-glow), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .card:hover {
+    border-color: var(--border-hover);
+    background: #222;
+    transform: translateY(-3px);
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card.disabled {
+    cursor: default;
+    opacity: 0.45;
+  }
+
+  .card.disabled:hover {
+    border-color: var(--border);
+    background: var(--mid);
+    transform: none;
+  }
+
+  .card.disabled:hover::before {
+    opacity: 0;
+  }
+
+  /* Icon */
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover .card-icon {
+    border-color: rgba(215, 6, 59, 0.5);
+  }
+
+  .card-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--text-dim);
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.2s;
+  }
+
+  .card:hover .card-icon svg {
+    stroke: var(--red);
+  }
+
+  .card-label {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .card-coming {
+    font-size: 9px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Active card accent */
+  .card.active-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--red);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 20px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-copy {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4caf50;
+    animation: pulse 2s infinite;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.35; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .card-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    header, footer { padding: 0 20px; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+
+  @media (max-width: 380px) {
+    .card-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="wordmark">Ricoh</span>
+  <span class="header-right">South Pacific</span>
+</header>
+
+<main>
+  <div class="eyebrow">Operations</div>
+  <h1>Level 10 <strong>Scorecards</strong></h1>
+  <p class="subtitle">Real-time performance dashboards — Ricoh South Pacific</p>
+
+  <div class="card-grid">
+
+    <!-- SERVICE -->
+    <a href="public/index.html" class="card active-card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+      </div>
+      <span class="card-label">Service</span>
+    </a>
+
+    <!-- SALES -->
+    <div class="card disabled">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+          <polyline points="16 7 22 7 22 13"/>
+        </svg>
+      </div>
+      <span class="card-label">Sales</span>
+      <span class="card-coming">Coming soon</span>
+    </div>
+
+    <!-- FINANCE -->
+    <div class="card disabled">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </div>
+      <span class="card-label">Finance</span>
+      <span class="card-coming">Coming soon</span>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="card disabled">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+      </div>
+      <span class="card-label">Inventory</span>
+      <span class="card-coming">Coming soon</span>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <span class="footer-copy">Ricoh South Pacific · East Tamaki, Auckland</span>
+  <span class="live-badge">
+    <span class="live-dot"></span>
+    Connected to Salesforce
+  </span>
+</footer>
+
+</body>
+</html>
