@@ -22,18 +22,76 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-  /* HEADER */
-  header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-  .wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
-  .header-center{display:flex;align-items:center;gap:16px;}
-  .header-divider{width:1px;height:22px;background:#444;}
-  .header-title{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em;}
-  .header-right{display:flex;align-items:center;gap:16px;}
-  .live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:#aaa;font-family:'DM Mono',monospace;letter-spacing:.05em;}
-  .live-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite;}
-  .as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
-  .back-link{font-size:11px;color:#666;text-decoration:none;letter-spacing:.03em;transition:color .15s;}
-  .back-link:hover{color:#aaa;}
+  /* ── HEADER ── */
+  header {
+    background: var(--charcoal);
+    color: white;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header-brand {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: white;
+  }
+  .header-brand span { color: var(--red); }
+  .header-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,255,255,0.2);
+  }
+  .header-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 400;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.06em;
+  }
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4caf50;
+    animation: pulse 2s infinite;
+  }
+  .as-of {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    font-family: 'DM Mono', monospace;
+  }
+  .back-link {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: white; }
+
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 
   /* LAYOUT */
@@ -120,16 +178,16 @@
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 
   @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.overage-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-  @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-title{display:none;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-subtitle{display:none;}.kpi-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-center">
-    <span class="wordmark">Ricoh</span>
+  <div class="header-left">
+    <div class="header-brand">Ricoh South Pacific</div>
     <div class="header-divider"></div>
-    <span class="header-title">South Pacific — Service Dashboard</span>
+    <div class="header-subtitle">Service Dashboard</div>
   </div>
   <div class="header-right">
     <span class="live-badge"><span class="live-dot"></span>LIVE</span>
@@ -198,7 +256,6 @@ const DATA = {
     "null": "No work type"
   },
 
-  // Open cases total per territory
   openByTerritory: [
     { id: "0Hh7F0000000O5fSAE", count: 37 },
     { id: "0Hh7F0000000O5uSAE", count: 23 },
@@ -208,7 +265,6 @@ const DATA = {
     { id: "null",               count: 4  }
   ],
 
-  // Open >72h per territory
   over72ByTerritory: [
     { id: "0Hh7F0000000O5fSAE", count: 36 },
     { id: "0Hh7F0000000O5kSAE", count: 17 },
@@ -218,7 +274,6 @@ const DATA = {
     { id: "null",               count: 3  }
   ],
 
-  // Status breakdown: [territoryId, status, count]
   byStatus: [
     ["null",               "New",                              4],
     ["0Hh7F0000000O5bSAE","Processing Invoice",               3],
@@ -255,7 +310,6 @@ const DATA = {
     ["0Hh7F0000000O5uSAE","New",                              1]
   ],
 
-  // Work type breakdown: [territoryId, workTypeId, count]
   byWorkType: [
     ["null",               "null",                  4],
     ["0Hh7F0000000O5bSAE","08q7F0000000RDlQAM",    5],
@@ -297,11 +351,6 @@ const DATA = {
     feb: { count: 241, avgDays: 8.28, ftf: 174 }
   }
 };
-// ─────────────────────────────────────────────
-//  END DATA — do not edit below this line
-// ─────────────────────────────────────────────
-
-// ── HELPERS ──────────────────────────────────
 
 const terrName = id => DATA.territories[id] || id;
 const wtName   = id => DATA.workTypes[id]   || id;
@@ -315,7 +364,6 @@ const escalated    = DATA.byStatus.find(r => r[1] === "Escalated");
 const escalatedTerr = escalated ? terrName(escalated[0]) : "None";
 const escalatedN   = escalated ? escalated[2] : 0;
 
-// ── BADGE CLASS ──────────────────────────────
 function badgeClass(status) {
   if (status === "New") return "b-New";
   if (status === "Work Order Issued") return "b-WOI";
@@ -324,7 +372,6 @@ function badgeClass(status) {
   return "b-Waiting";
 }
 
-// ── KPI CARDS ────────────────────────────────
 function kpiCard(cls, label, value, valueCls, sub, trend, trendCls, bar) {
   return `<div class="kpi-card ${cls}">
     <div class="kpi-label">${label}</div>
@@ -355,7 +402,6 @@ document.getElementById("kpiPerformance").innerHTML = [
   kpiCard("",      "First time fix — Feb",          fmt1(febFTFpct)+"%", "muted", `${feb.ftf} of ${feb.count} cases`, "", "", {cls:"fill-muted", w:febFTFpct})
 ].join("");
 
-// ── TERRITORY TABLE (shared structure) ───────
 function buildTerritoryTable(headers, rowsFn) {
   const terrOrder = DATA.openByTerritory.map(t => t.id);
   let rows = "";
@@ -371,7 +417,6 @@ function buildTerritoryTable(headers, rowsFn) {
   return `<table><thead><tr>${ths}</tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-// ── STATUS TAB ───────────────────────────────
 document.getElementById("tab-status").innerHTML = buildTerritoryTable(
   ["Territory / Status", "Cases", "Share", ""],
   (tid, total) => {
@@ -387,7 +432,6 @@ document.getElementById("tab-status").innerHTML = buildTerritoryTable(
   }
 );
 
-// ── WORK TYPE TAB ────────────────────────────
 document.getElementById("tab-worktype").innerHTML = buildTerritoryTable(
   ["Territory / Work Type", "Cases", "Share", ""],
   (tid, total) => {
@@ -409,7 +453,6 @@ document.getElementById("tab-worktype").innerHTML = buildTerritoryTable(
   }
 );
 
-// ── OVER 72H TAB ─────────────────────────────
 const terrOrder72 = [...DATA.over72ByTerritory].sort((a,b) => b.count - a.count);
 const cells = terrOrder72.map(({ id, count }) => {
   const total = (DATA.openByTerritory.find(t => t.id === id) || {count:0}).count;
@@ -432,12 +475,10 @@ document.getElementById("tab-overage").innerHTML = `
     <span class="overage-total-val">${totalOver72} of ${totalOpen} &nbsp;·&nbsp; ${pct(totalOver72, totalOpen)}</span>
   </div>`;
 
-// ── FOOTER / DATE ─────────────────────────────
 document.getElementById("asOf").textContent = DATA.asOf;
 document.getElementById("footer").textContent =
   `Ricoh South Pacific · Data from Salesforce · ${DATA.asOf}`;
 
-// ── TAB SWITCHER ──────────────────────────────
 function switchTab(name, btn) {
   document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
   document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
