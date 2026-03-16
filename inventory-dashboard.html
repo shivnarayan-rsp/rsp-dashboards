@@ -43,49 +43,57 @@
     /* ── HEADER ─────────────────────────────────────────── */
     header {
       background: var(--charcoal);
+      color: white;
       padding: 0 32px;
-      height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      height: 64px;
       position: sticky;
       top: 0;
       z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
     .header-left {
       display: flex;
       align-items: center;
       gap: 16px;
     }
-    .header-back {
-      color: var(--text-light);
-      text-decoration: none;
+    .header-brand {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: white;
+    }
+    .header-brand span { color: var(--ricoh-red); }
+    .header-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255,255,255,0.2);
+    }
+    .header-subtitle {
       font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.6);
+      font-weight: 400;
+    }
+    .header-right {
       display: flex;
       align-items: center;
-      gap: 6px;
-      transition: color 0.15s;
+      gap: 20px;
     }
-    .header-back:hover { color: #fff; }
-    .header-divider {
-      width: 1px; height: 20px;
-      background: rgba(255,255,255,0.12);
-    }
-    .header-title {
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-    }
-    .header-title span { color: var(--ricoh-red); }
     .header-meta {
       font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--text-light);
+      color: rgba(255,255,255,0.4);
       letter-spacing: 0.04em;
     }
+    .back-link {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: white; }
 
     /* ── LAYOUT ─────────────────────────────────────────── */
     main { max-width: 1280px; margin: 0 auto; padding: 28px 24px 60px; }
@@ -300,7 +308,6 @@
 
     .flag-icon { font-size: 12px; }
 
-    /* pct cells */
     .pct-cell { color: var(--text-muted); font-size: 11.5px; }
     .pct-cell.warn { color: var(--amber); font-weight: 600; }
     .pct-cell.flag { color: var(--ricoh-red); font-weight: 600; }
@@ -352,19 +359,26 @@
       padding-top: 12px;
       border-top: 1px solid var(--border);
     }
+
+    @media (max-width: 600px) {
+      main { padding: 16px 12px 40px; }
+      header { padding: 0 16px; }
+      .header-subtitle { display: none; }
+    }
   </style>
 </head>
 <body>
 
 <header>
   <div class="header-left">
-    <a href="index.html" class="header-back">
-      ← Back
-    </a>
+    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
     <div class="header-divider"></div>
-    <div class="header-title">Ricoh | South Pacific &nbsp;<span>—</span>&nbsp; Inventory Dashboard</div>
+    <div class="header-subtitle">Inventory Dashboard</div>
   </div>
-  <div class="header-meta" id="asAtDate"></div>
+  <div class="header-right">
+    <span class="header-meta" id="asAtDate"></span>
+    <a href="index.html" class="back-link">← Scorecards</a>
+  </div>
 </header>
 
 <main>
@@ -441,38 +455,29 @@ const DATA = {
     "Vanuatu":          "VUV"
   },
 
-  // ── INVENTORY SNAPSHOT ────────────────────────────────
-  // All NZD. Point-in-time prior week not available in Synchub.
   inventorySnapshot: {
     "RSP": {
-      // raw 193,305.28 NZD × 1.0 = 193,305 NZD
       currentNZD:  193305.28,
       priorNZD:    null,
       lines:       498
     },
     "Samoa": {
-      // raw 334,084.57 WST × 0.6197 = 207,085.57 NZD
       currentNZD:  207085.57,
       priorNZD:    null,
       lines:       300
     },
     "Solomon Islands": {
-      // raw 2,825,261.15 SBD × 0.2095 = 591,892.21 NZD
       currentNZD:  591892.21,
       priorNZD:    null,
       lines:       356
     },
     "Vanuatu": {
-      // raw 29,976,235.61 VUV × 0.0138 = 413,672.05 NZD
       currentNZD:  413672.05,
       priorNZD:    null,
       lines:       333
     }
   },
 
-  // ── AGED STOCK ────────────────────────────────────────
-  // Bucketed using DaysSinceLastSale. NULL = treated as Fresh.
-  // All values NZD equivalent (FX applied to raw local currency totals).
   agedStock: {
     benchmarks: {
       fresh:       { label: "Target 75–85%", min: 0.75, max: 0.85, warnBelow: 0.70 },
@@ -482,7 +487,6 @@ const DATA = {
     },
     entities: {
       "RSP": {
-        // Raw NZD — no conversion needed
         fresh:       { costNZD: 139535.93,  lines: 134 },
         slowMoving:  { costNZD: 10971.15,   lines: 11  },
         atRisk:      { costNZD: 1082.58,    lines: 11  },
@@ -490,35 +494,29 @@ const DATA = {
         totalNZD:    193305.28
       },
       "Samoa": {
-        // raw WST: fresh 244,108.70 · slow 17,907.92 · atRisk 20,830.79 · slob 51,237.16
-        fresh:       { costNZD: 151312.44,  lines: 161 },  // 244,108.70 × 0.6197
-        slowMoving:  { costNZD: 11097.34,   lines: 23  },  // 17,907.92 × 0.6197
-        atRisk:      { costNZD: 12911.84,   lines: 17  },  // 20,830.79 × 0.6197
-        slob:        { costNZD: 31761.41,   lines: 99  },  // 51,237.16 × 0.6197
-        totalNZD:    207083.03  // minor rounding delta
+        fresh:       { costNZD: 151312.44,  lines: 161 },
+        slowMoving:  { costNZD: 11097.34,   lines: 23  },
+        atRisk:      { costNZD: 12911.84,   lines: 17  },
+        slob:        { costNZD: 31761.41,   lines: 99  },
+        totalNZD:    207083.03
       },
       "Solomon Islands": {
-        // raw SBD: fresh 1,781,920.54 · slow 59,116.75 · atRisk 96,134.20 · slob 888,089.67
-        fresh:       { costNZD: 373312.35,  lines: 232 },  // 1,781,920.54 × 0.2095
-        slowMoving:  { costNZD: 12386.96,   lines: 11  },  // 59,116.75 × 0.2095
-        atRisk:      { costNZD: 20140.11,   lines: 20  },  // 96,134.20 × 0.2095
-        slob:        { costNZD: 186054.78,  lines: 93  },  // 888,089.67 × 0.2095
-        totalNZD:    591894.20  // minor rounding delta
+        fresh:       { costNZD: 373312.35,  lines: 232 },
+        slowMoving:  { costNZD: 12386.96,   lines: 11  },
+        atRisk:      { costNZD: 20140.11,   lines: 20  },
+        slob:        { costNZD: 186054.78,  lines: 93  },
+        totalNZD:    591894.20
       },
       "Vanuatu": {
-        // raw VUV: fresh 23,727,582.83 · slow 1,599,001.39 · atRisk 380,121.65 · slob 4,269,529.74
-        fresh:       { costNZD: 327440.64,  lines: 211 },  // 23,727,582.83 × 0.0138
-        slowMoving:  { costNZD: 22066.22,   lines: 32  },  // 1,599,001.39 × 0.0138
-        atRisk:      { costNZD: 5245.68,    lines: 10  },  // 380,121.65 × 0.0138
-        slob:        { costNZD: 58919.51,   lines: 80  },  // 4,269,529.74 × 0.0138
+        fresh:       { costNZD: 327440.64,  lines: 211 },
+        slowMoving:  { costNZD: 22066.22,   lines: 32  },
+        atRisk:      { costNZD: 5245.68,    lines: 10  },
+        slob:        { costNZD: 58919.51,   lines: 80  },
         totalNZD:    413672.05
       }
     }
   },
 
-  // ── OPEN ORDERS ───────────────────────────────────────
-  // Synchub returned $0 open PO value across all entities.
-  // Validate directly in Unleashed if open POs are expected.
   openOrders: {
     "RSP":             { poNZD: 0, soNZD: 0, note: "No open orders on record" },
     "Samoa":           { poNZD: 0, soNZD: 0, note: "No open orders on record" },
@@ -559,11 +557,9 @@ function renderKPI() {
   const snap = DATA.inventorySnapshot;
   const entities = DATA.entities;
 
-  // Compute total
   const totalCurrent = entities.reduce((s, e) => s + snap[e].currentNZD, 0);
   const totalLines   = entities.reduce((s, e) => s + snap[e].lines, 0);
 
-  // Entity cards
   entities.forEach(entity => {
     const d = snap[entity];
     const card = document.createElement("div");
@@ -578,7 +574,6 @@ function renderKPI() {
     grid.appendChild(card);
   });
 
-  // Total card
   const totalCard = document.createElement("div");
   totalCard.className = "kpi-card total-card";
   totalCard.innerHTML = `
@@ -590,7 +585,6 @@ function renderKPI() {
   `;
   grid.appendChild(totalCard);
 
-  // Movement footnote
   const note = document.createElement("div");
   note.style.cssText = "grid-column:1/-1;font-size:11px;color:var(--text-light);padding:0 2px;";
   note.textContent = "⚠ Week-on-week movement unavailable: Synchub/Unleashed does not support point-in-time stock snapshots. Movement calculation requires a historical snapshot job or a dedicated inventory ledger.";
@@ -650,7 +644,6 @@ function renderAgedTable() {
   const bench = aged.benchmarks;
   const entities = DATA.entities;
 
-  // Compute totals across all entities for "Total" column
   const allTotals = {
     fresh:      { costNZD: 0, lines: 0 },
     slowMoving: { costNZD: 0, lines: 0 },
@@ -667,7 +660,6 @@ function renderAgedTable() {
     allTotals.totalNZD += d.totalNZD;
   });
 
-  // Header
   const thead = document.createElement("thead");
   thead.innerHTML = `<tr>
     <th>Bucket</th>
@@ -679,7 +671,6 @@ function renderAgedTable() {
 
   const tbody = document.createElement("tbody");
 
-  // Bucket config
   const buckets = [
     {
       key: "fresh",
@@ -695,7 +686,7 @@ function renderAgedTable() {
       sublabel: "6–9 months",
       color: "#d97706",
       bench: bench.slowMoving,
-      flagFn: (p) => p > bench.slowMoving.warnAbove ? "flag" : p > 0.08 ? "ok" : "ok"
+      flagFn: (p) => p > bench.slowMoving.warnAbove ? "flag" : "ok"
     },
     {
       key: "atRisk",
@@ -717,7 +708,6 @@ function renderAgedTable() {
 
   buckets.forEach(bucket => {
     const tr = document.createElement("tr");
-    const benchClass = "bench-info";
 
     let cells = `<td>
       <div class="row-label">
@@ -742,7 +732,6 @@ function renderAgedTable() {
       </td>`;
     });
 
-    // Total column
     const totVal = allTotals[bucket.key].costNZD;
     const totP   = pct(totVal, allTotals.totalNZD) / 100;
     const totFlag = bucket.flagFn(totP);
@@ -752,20 +741,18 @@ function renderAgedTable() {
       <div class="${totPClass}">${pctFmt(totVal, allTotals.totalNZD)}</div>
     </td>`;
 
-    // Benchmark
     cells += `<td><span class="benchmark-pill bench-info">${bucket.bench.label}</span></td>`;
 
     tr.innerHTML = cells;
     tbody.appendChild(tr);
   });
 
-  // Total row
   const totalTr = document.createElement("tr");
   totalTr.className = "total-row";
   let totalCells = `<td><div class="row-label"><strong>Total Inventory</strong></div></td>`;
   entities.forEach(entity => {
     const d = aged.entities[entity];
-    totalCells += `<td><div class="mono" style="font-weight:600">${fmt(d.totalNZD)}</div><div class="pct-cell">${d.lines ? allTotals.fresh.lines + allTotals.slowMoving.lines : ""}${""}</div></td>`;
+    totalCells += `<td><div class="mono" style="font-weight:600">${fmt(d.totalNZD)}</div></td>`;
   });
   totalCells += `<td><div class="mono" style="font-weight:700">${fmt(allTotals.totalNZD)}</div></td><td></td>`;
   totalTr.innerHTML = totalCells;
@@ -773,8 +760,6 @@ function renderAgedTable() {
 
   table.appendChild(tbody);
 }
-
-function var_color(c) { return c; } // passthrough helper
 renderAgedTable();
 
 // ═══════════════════════════════════════════════════════════
@@ -797,7 +782,6 @@ function renderBackorders() {
     grid.appendChild(card);
   });
 
-  // Note card
   const noteCard = document.createElement("div");
   noteCard.className = "bo-card";
   noteCard.style.cssText = "border-left:3px solid var(--text-light);background:#fafaf9;";
