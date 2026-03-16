@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP Group — Finance Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ricoh-red: #D7063B;
+    --ricoh-red-light: #f5c0cd;
+    --charcoal: #1e2124;
+    --charcoal-mid: #2c3036;
+    --body-bg: #f7f7f6;
+    --surface: #ffffff;
+    --border: #e4e4e2;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --amber: #d97706;
+    --amber-bg: #fef3c7;
+    --blue: #2563eb;
+    --blue-bg: #dbeafe;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--body-bg);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--charcoal);
+    color: white;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header-brand {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: white;
+  }
+
+  .header-brand span {
+    color: var(--ricoh-red);
+  }
+
+  .header-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,255,255,0.2);
+  }
+
+  .header-subtitle {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 400;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .week-badge {
+    background: rgba(215,6,59,0.15);
+    border: 1px solid rgba(215,6,59,0.3);
+    color: #ff7a97;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+  }
+
+  .back-link {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s;
+  }
+
+  .back-link:hover { color: white; }
+
+  /* MAIN */
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+
+  /* FX STRIP */
+  .fx-strip {
+    background: var(--charcoal-mid);
+    border-radius: 8px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .fx-strip-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.4);
+    font-weight: 600;
+  }
+
+  .fx-pair {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .fx-currency {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .fx-arrow {
+    color: rgba(255,255,255,0.25);
+    font-size: 11px;
+  }
+
+  .fx-rate {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #ff7a97;
+    font-weight: 500;
+  }
+
+  .fx-divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .fx-note {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    margin-left: auto;
+    font-style: italic;
+  }
+
+  /* DATA NOTE */
+  .data-note {
+    background: var(--amber-bg);
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #92400e;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 36px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+  }
+
+  .section-pill {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--charcoal);
+    color: rgba(255,255,255,0.7);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--surface);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: var(--charcoal);
+    color: rgba(255,255,255,0.85);
+    padding: 11px 16px;
+    text-align: right;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  thead th:first-child {
+    text-align: left;
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    width: 200px;
+    min-width: 170px;
+  }
+
+  thead th.total-col {
+    background: #161a1d;
+    color: rgba(255,255,255,0.9);
+    border-left: 1px solid rgba(255,255,255,0.08);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafafa; }
+
+  tbody tr.section-sub-header td {
+    background: #f2f2f0;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    padding: 7px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td {
+    padding: 10px 16px;
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  tbody td:first-child {
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  tbody td.total-col {
+    background: #fafaf9;
+    font-weight: 700;
+    border-left: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+
+  .val-red { color: var(--red) !important; }
+  .val-green { color: var(--green) !important; }
+  .val-amber { color: var(--amber) !important; }
+  .val-muted { color: var(--text-muted) !important; }
+  .val-na { color: var(--text-muted) !important; font-style: italic; font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; }
+
+  /* COMMENTARY */
+  .commentary-box {
+    background: #fffbf0;
+    border: 1px solid #fde68a;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 12px 18px;
+    font-size: 12.5px;
+    color: #78350f;
+    line-height: 1.6;
+  }
+
+  .commentary-box strong {
+    color: #92400e;
+  }
+
+  /* ALERT STRIP */
+  .alert-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+
+  .alert-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .alert-badge.red {
+    background: var(--red-bg);
+    color: var(--red);
+    border: 1px solid #fca5a5;
+  }
+
+  .alert-badge.amber {
+    background: var(--amber-bg);
+    color: var(--amber);
+    border: 1px solid #fcd34d;
+  }
+
+  .alert-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* DSO badges inline */
+  .dso-red { 
+    display: inline-block;
+    background: var(--red-bg);
+    color: var(--red);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .dso-amber {
+    display: inline-block;
+    background: var(--amber-bg);
+    color: var(--amber);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .dso-ok {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  /* FOOTER NOTE */
+  .footnotes {
+    margin-top: 40px;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+
+  .footnote {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .footnote-num {
+    font-weight: 700;
+    color: var(--text-secondary);
+    min-width: 16px;
+  }
+
+  @media (max-width: 900px) {
+    main { padding: 16px 12px 40px; }
+    thead th, tbody td { padding: 8px 10px; font-size: 11.5px; }
+    thead th:first-child { min-width: 130px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
+    <div class="header-divider"></div>
+    <div class="header-subtitle">Finance Dashboard</div>
+  </div>
+  <div class="header-right">
+    <div class="week-badge" id="weekBadge"></div>
+    <a href="index.html" class="back-link">← Back to dashboards</a>
+  </div>
+</header>
+
+<main>
+  <div class="fx-strip">
+    <div class="fx-strip-label">FX Rates Applied</div>
+    <div class="fx-pair">
+      <span class="fx-currency">WST</span>
+      <span class="fx-arrow">→</span>
+      <span class="fx-rate">0.6172 NZD</span>
+    </div>
+    <div class="fx-divider"></div>
+    <div class="fx-pair">
+      <span class="fx-currency">SBD</span>
+      <span class="fx-arrow">→</span>
+      <span class="fx-rate">0.2076 NZD</span>
+    </div>
+    <div class="fx-divider"></div>
+    <div class="fx-pair">
+      <span class="fx-currency">TOP</span>
+      <span class="fx-arrow">→</span>
+      <span class="fx-rate">0.6931 NZD</span>
+    </div>
+    <div class="fx-divider"></div>
+    <div class="fx-pair">
+      <span class="fx-currency">VUV</span>
+      <span class="fx-arrow">→</span>
+      <span class="fx-rate">0.0140 NZD</span>
+    </div>
+    <span class="fx-note">Rates as at end-Feb 2026 · RSP &amp; Alpine Print in NZD</span>
+  </div>
+
+  <div class="data-note">
+    <span>⚠</span>
+    <span><strong>Data notes:</strong> Opening/closing cash balances are not directly available from Xero via Synchub (no balance field on Account table). Weekly cash in/out is sourced from BankTransaction records for 7–13 Mar 2026. Alpine Print is not connected to Synchub — figures from the uploaded manual dashboard are used for Alpine. Inventory balance not available via Synchub API; sourced from uploaded dashboard. <sup>[1]</sup></span>
+  </div>
+
+  <div id="alertStrip" class="alert-strip"></div>
+  <div id="dashboardContent"></div>
+
+  <div class="footnotes" id="footnotes"></div>
+</main>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// DATA OBJECT — all values in NZD (FX already applied)
+// FX rates: WST×0.6172, SBD×0.2076, TOP×0.6931, VUV×0.0140
+// Sources: Synchub/Xero live queries (week ending 13 Mar 2026)
+//          + manual dashboard upload for Alpine Print
+// ─────────────────────────────────────────────────────────────
+const DATA = {
+  weekEnding: "13 March 2026",
+
+  fx: {
+    WST: 0.6172,
+    SBD: 0.2076,
+    TOP: 0.6931,
+    VUV: 0.0140,
+    NZD: 1.0000
+  },
+
+  entities: ["Alpine", "RSP", "Samoa", "Solomons", "Tonga", "Vanuatu"],
+
+  // ── SECTION 1: CASH & LIQUIDITY ──────────────────────────
+  // Opening/closing cash from uploaded manual dashboard (Synchub Account table has no balance field)
+  // Cash In/Out from BankTransaction for 7–13 Mar 2026 (Xero via Synchub) — Alpine from manual dashboard
+  // Overdraft limits: static management figures
+  cash: {
+    openingCash: {
+      Alpine:   -110707,
+      RSP:      -182061,
+      Samoa:     832913,   // WST 1349503 × 0.6172
+      Solomons:   53439,   // SBD 257411  × 0.2076
+      Tonga:     236742,   // TOP 341570  × 0.6931
+      Vanuatu:   315085,   // VUV 22506097× 0.0140
+    },
+    cashIn: {
+      Alpine:    33332,
+      RSP:         255,    // NZD — Xero live (low: may be timing/settlement)
+      Samoa:           0,  // WST 0 × 0.6172 — no RECEIVE transactions this week in Xero
+      Solomons:        0,  // SBD 0 — no RECEIVE transactions in Xero this week
+      Tonga:           0,  // TOP 0 — no RECEIVE transactions in Xero this week
+      Vanuatu:      4932,  // VUV 352280 × 0.0140
+    },
+    cashOut: {
+      Alpine:    37143,
+      RSP:       75985,    // NZD — Xero live
+      Samoa:     48913,    // WST 79287  × 0.6172
+      Solomons:  13178,    // SBD 63479  × 0.2076
+      Tonga:       454,    // TOP 655    × 0.6931
+      Vanuatu:    4932,    // VUV 352280 × 0.0140
+    },
+    closingCash: {
+      Alpine:   -114518,
+      RSP:       -80583,
+      Samoa:     797321,   // WST 1291835 × 0.6172
+      Solomons:   59661,   // SBD 287384  × 0.2076
+      Tonga:     181311,   // TOP 261595  × 0.6931
+      Vanuatu:   321515,   // VUV 22965347× 0.0140
+    },
+    overdraftFacility: {
+      Alpine:   250000,
+      RSP:      750000,
+      Samoa:     58634,    // from manual dashboard (NZD equiv)
+      Solomons:  64875,
+      Tonga:     56141,
+      Vanuatu:   56000,
+    },
+    commentary: "RSP closing cash remains negative at -$80,583 though improved from -$182k opening position. Alpine continues to rely on overdraft support at -$114,518. Pacific island entities hold strong positive cash positions — Samoa ($797k), Vanuatu ($321k), and Tonga ($181k) provide meaningful group liquidity. Note: Samoa, Solomons, and Tonga show zero Cash In for the week — this may reflect timing of Xero bank feed sync rather than no actual receipts. Verify with entity finance contacts.",
+  },
+
+  // ── SECTION 2: DEBTORS & COLLECTIONS ────────────────────
+  // All from Xero live via Synchub (Invoice table), FX applied
+  // Alpine figures from manual dashboard upload
+  ar: {
+    current: {
+      Alpine:   209307,
+      RSP:      257045,    // NZD live
+      Samoa:    100867,    // WST 163431 × 0.6172
+      Solomons:  52020,    // SBD 250578 × 0.2076
+      Tonga:     36444,    // TOP 52600  × 0.6931
+      Vanuatu:  111242,    // VUV 7945818× 0.0140
+    },
+    days3060: {
+      Alpine:     8613,
+      RSP:       95338,    // NZD live
+      Samoa:     27506,    // WST 44580  × 0.6172
+      Solomons:   9137,    // SBD 44014  × 0.2076
+      Tonga:      2969,    // TOP 4285   × 0.6931
+      Vanuatu:   13212,    // VUV 943693 × 0.0140
+    },
+    days6090: {
+      Alpine:    10238,
+      RSP:           0,    // NZD live
+      Samoa:     24583,    // WST 39830  × 0.6172
+      Solomons:      0,    // SBD 0
+      Tonga:      2002,    // TOP 2889   × 0.6931
+      Vanuatu:   18528,    // VUV 1323426× 0.0140
+    },
+    days90plus: {
+      Alpine:    72018,
+      RSP:      132361,    // NZD live
+      Samoa:     11596,    // WST 18791  × 0.6172
+      Solomons:   7359,    // SBD 35438  × 0.2076
+      Tonga:      2488,    // TOP 3590   × 0.6931
+      Vanuatu:   27562,    // VUV 1968715× 0.0140
+    },
+    revenue90day: {
+      Alpine:   359690,    // from manual dashboard
+      RSP:      924633,    // NZD live (SubTotal)
+      Samoa:    508266,    // WST 823403 × 0.6172
+      Solomons: 288971,    // SBD 1391866× 0.2076
+      Tonga:    209618,    // TOP 302466 × 0.6931
+      Vanuatu:  396946,    // VUV 28353260× 0.0140
+    },
+    commentary: "RSP DSO remains very elevated — driven by intercompany recovery from Pacific islands. Alpine DSO at 75 days continues to signal slow customer cash conversion. Samoa and Vanuatu require focused collection effort on 90+ day balances. Solomons shows clean ageing profile with no 60–90 day bucket. Note: RSP 90-day revenue from Xero ($924k) is higher than the manual dashboard figure ($466k) — this may include intercompany invoices; review with Minoo.",
+  },
+
+  // ── SECTION 3: PAYABLES & COMMITMENTS ───────────────────
+  // AP due dates from Xero live; payroll/other from manual dashboard
+  // Intercompany and NFT from manual dashboard
+  payables: {
+    due7days: {
+      Alpine:    66918,
+      RSP:      166645,    // NZD live
+      Samoa:      1239,    // WST 2008   × 0.6172
+      Solomons:  11007,    // SBD 53021  × 0.2076
+      Tonga:     26622,    // TOP 38406  × 0.6931
+      Vanuatu:     502,    // VUV 35826  × 0.0140
+    },
+    due830days: {
+      Alpine:        0,
+      RSP:        6737,    // NZD live
+      Samoa:      4967,    // WST 8050   × 0.6172
+      Solomons:   8018,    // SBD 38605  × 0.2076
+      Tonga:      1066,    // TOP 1538   × 0.6931
+      Vanuatu:    1493,    // VUV 106630 × 0.0140
+    },
+    payrollOther: {
+      Alpine:    23048,    // manual
+      RSP:      108704,    // manual
+      Samoa:     14859,    // manual (NZD equiv)
+      Solomons:  13909,    // manual
+      Tonga:      7099,    // manual
+      Vanuatu:   10360,    // manual
+    },
+    intercoRSP: {
+      Alpine:   196183,    // manual
+      RSP:           0,
+      Samoa:     80640,    // manual NZD equiv
+      Solomons: 607041,    // manual NZD equiv — very high
+      Tonga:    275493,    // manual NZD equiv
+      Vanuatu:   34377,    // manual NZD equiv
+    },
+    narayanFamilyTrust: {
+      Alpine:   104383,    // manual
+      RSP:       19700,    // manual
+      Samoa:         0,
+      Solomons:      0,
+      Tonga:         0,
+      Vanuatu:       0,
+    },
+  },
+
+  // ── SECTION 4: INVENTORY ────────────────────────────────
+  // Not available via Synchub API — sourced from manual dashboard upload
+  inventory: {
+    value: {
+      Alpine:    10027,
+      RSP:      280413,
+      Samoa:    237058,    // NZD equiv from manual
+      Solomons: 600171,    // NZD equiv from manual
+      Tonga:    271532,    // NZD equiv from manual
+      Vanuatu:  473070,    // NZD equiv from manual
+    },
+    commentary: "Group inventory remains elevated at $1.87m. Solomons ($600k) and Vanuatu ($473k) account for 57% of total group stock. Note: inventory values sourced from Xero Balance Sheet via manual dashboard — Synchub API does not currently expose balance sheet account balances directly.",
+  },
+
+  footnotes: [
+    "Opening and closing cash balances sourced from manual dashboard (week ending 6 March 2026 used as opening proxy). Synchub Xero API does not expose account balance fields directly.",
+    "Alpine Print figures (all sections) sourced from manually uploaded dashboard — Alpine Xero is not connected to Synchub.",
+    "RSP 90-day revenue from Xero live ($924k) is higher than manual dashboard ($466k) — possible intercompany invoices included. Validate with Finance.",
+    "Zero Cash In for Samoa, Solomons, and Tonga may reflect bank feed sync timing rather than actual nil receipts. Verify with entity contacts.",
+    "Inventory values sourced from manual dashboard upload — Synchub does not expose BalanceSheet account balances via current API.",
+  ]
+};
+
+// ─────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────
+function fmt(val, opts = {}) {
+  if (val === null || val === undefined) return '<span class="val-na">N/A</span>';
+  const abs = Math.abs(val);
+  const str = '$' + abs.toLocaleString('en-NZ', { maximumFractionDigits: 0 });
+  if (val < 0) return `(${str})`;
+  return str;
+}
+
+function fmtDays(val) {
+  if (val === null || val === undefined || isNaN(val) || !isFinite(val)) return '<span class="val-na">N/A</span>';
+  const v = Math.round(val);
+  if (v > 90) return `<span class="dso-red">${v}d</span>`;
+  if (v > 60) return `<span class="dso-amber">${v}d</span>`;
+  return `<span class="dso-ok">${v}d</span>`;
+}
+
+function cls(val, redIfNeg = true) {
+  if (val === null || val === undefined) return '';
+  if (val < 0) return redIfNeg ? ' val-red' : '';
+  if (val > 0) return ' val-green';
+  return '';
+}
+
+function sum(obj) {
+  return Object.values(obj).reduce((a, b) => a + (b || 0), 0);
+}
+
+function totalRow(obj) {
+  return DATA.entities.reduce((a, e) => a + (obj[e] || 0), 0);
+}
+
+// ─────────────────────────────────────────────────────────────
+// ALERTS
+// ─────────────────────────────────────────────────────────────
+function buildAlerts() {
+  const alerts = [];
+  const { cash, ar } = DATA;
+
+  DATA.entities.forEach(e => {
+    const closing = cash.closingCash[e];
+    if (closing !== null && closing < 0) {
+      alerts.push({ level: 'amber', msg: `${e}: Negative closing cash (${fmt(closing)})` });
+    }
+
+    const totalAR = (ar.current[e]||0) + (ar.days3060[e]||0) + (ar.days6090[e]||0) + (ar.days90plus[e]||0);
+    const rev90 = ar.revenue90day[e];
+    if (totalAR > 0 && rev90 > 0) {
+      const dso = (totalAR / rev90) * 90;
+      if (dso > 90) alerts.push({ level: 'red', msg: `${e}: DSO ${Math.round(dso)} days (>90)` });
+    }
+
+    const over90pct = totalAR > 0 ? (ar.days90plus[e]||0) / totalAR : 0;
+    if (over90pct > 0.20) alerts.push({ level: 'red', msg: `${e}: 90+ day AR is ${Math.round(over90pct*100)}% of total AR` });
+  });
+
+  const strip = document.getElementById('alertStrip');
+  if (alerts.length === 0) {
+    strip.innerHTML = '';
+    return;
+  }
+  strip.innerHTML = alerts.map(a =>
+    `<div class="alert-badge ${a.level}"><div class="alert-dot"></div>${a.msg}</div>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const el = document.getElementById('dashboardContent');
+  const E = DATA.entities;
+
+  document.getElementById('weekBadge').textContent = 'Week ending ' + DATA.weekEnding;
+
+  // ── SECTION 1: CASH ──────────────────────────────────────
+  const cashRows = [
+    { label: 'Opening Cash', key: 'openingCash', note: '[1]', colourFn: v => v < 0 ? ' val-red' : '' },
+    { label: 'Cash In', key: 'cashIn', note: '', colourFn: v => '' },
+    { label: 'Cash Out', key: 'cashOut', note: '', colourFn: v => '' },
+    { label: 'Closing Cash', key: 'closingCash', note: '[1]', colourFn: v => v < 0 ? ' val-red' : ' val-green' },
+    { label: 'Net Movement', key: null, colourFn: v => v < 0 ? ' val-red' : ' val-green' },
+    { label: 'Overdraft Facility', key: 'overdraftFacility', note: '', colourFn: v => '' },
+    { label: 'Available Cash', key: null, colourFn: v => v < 0 ? ' val-red' : '' },
+  ];
+
+  let cashHtml = `
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Cash &amp; Liquidity</span>
+        <span class="section-pill">Section 1</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Metric</th>
+            ${E.map(e => `<th>${e}</th>`).join('')}
+            <th class="total-col">Total</th>
+          </tr></thead>
+          <tbody>`;
+
+  cashRows.forEach(row => {
+    let vals = {};
+    if (row.key) {
+      E.forEach(e => vals[e] = DATA.cash[row.key][e]);
+    } else if (row.label === 'Net Movement') {
+      E.forEach(e => vals[e] = (DATA.cash.closingCash[e]||0) - (DATA.cash.openingCash[e]||0));
+    } else if (row.label === 'Available Cash') {
+      E.forEach(e => vals[e] = (DATA.cash.closingCash[e]||0) + (DATA.cash.overdraftFacility[e]||0));
+    }
+    const tot = E.reduce((a, e) => a + (vals[e]||0), 0);
+    const totColour = row.colourFn(tot);
+    cashHtml += `<tr>
+      <td>${row.label}${row.note ? ` <sup>${row.note}</sup>` : ''}</td>
+      ${E.map(e => `<td class="${row.colourFn(vals[e])}">${fmt(vals[e])}</td>`).join('')}
+      <td class="total-col${totColour}">${fmt(tot)}</td>
+    </tr>`;
+  });
+
+  cashHtml += `</tbody></table>
+      <div class="commentary-box">${DATA.cash.commentary}</div>
+    </div></div>`;
+
+  // ── SECTION 2: DEBTORS ───────────────────────────────────
+  const arRows = [
+    { label: 'Current', key: 'current', colourFn: v => '' },
+    { label: '30–60 Days', key: 'days3060', colourFn: v => v > 0 ? ' val-amber' : '' },
+    { label: '60–90 Days', key: 'days6090', colourFn: v => v > 0 ? ' val-amber' : '' },
+    { label: '90+ Days', key: 'days90plus', colourFn: v => '' },
+    { label: 'Total AR', key: null, isTotal: true },
+    { label: '90-Day Revenue', key: 'revenue90day', colourFn: v => '' },
+    { label: 'DSO (days)', key: null, isDSO: true },
+  ];
+
+  let arHtml = `
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Debtors &amp; Collections</span>
+        <span class="section-pill">Section 2</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Metric</th>
+            ${E.map(e => `<th>${e}</th>`).join('')}
+            <th class="total-col">Total</th>
+          </tr></thead>
+          <tbody>`;
+
+  arRows.forEach(row => {
+    if (row.isDSO) {
+      arHtml += `<tr><td>DSO (days)</td>`;
+      let totalARall = 0, totalRev = 0;
+      E.forEach(e => {
+        const totalAR = (DATA.ar.current[e]||0) + (DATA.ar.days3060[e]||0) + (DATA.ar.days6090[e]||0) + (DATA.ar.days90plus[e]||0);
+        const rev = DATA.ar.revenue90day[e] || 0;
+        const dso = rev > 0 ? (totalAR / rev) * 90 : null;
+        totalARall += totalAR;
+        totalRev += rev;
+        arHtml += `<td>${fmtDays(dso)}</td>`;
+      });
+      const groupDSO = totalRev > 0 ? (totalARall / totalRev) * 90 : null;
+      arHtml += `<td class="total-col">${fmtDays(groupDSO)}</td></tr>`;
+      return;
+    }
+    if (row.isTotal) {
+      arHtml += `<tr style="font-weight:700;background:#fafaf9"><td>Total AR</td>`;
+      let grandTotal = 0;
+      E.forEach(e => {
+        const t = (DATA.ar.current[e]||0) + (DATA.ar.days3060[e]||0) + (DATA.ar.days6090[e]||0) + (DATA.ar.days90plus[e]||0);
+        grandTotal += t;
+        arHtml += `<td style="font-weight:700">${fmt(t)}</td>`;
+      });
+      arHtml += `<td class="total-col" style="font-weight:700">${fmt(grandTotal)}</td></tr>`;
+      return;
+    }
+    // 90+ day highlight if >20% total
+    if (row.key === 'days90plus') {
+      arHtml += `<tr><td>${row.label}</td>`;
+      let tot = 0;
+      E.forEach(e => {
+        const v = DATA.ar[row.key][e] || 0;
+        const totalAR = (DATA.ar.current[e]||0) + (DATA.ar.days3060[e]||0) + (DATA.ar.days6090[e]||0) + v;
+        const pct = totalAR > 0 ? v / totalAR : 0;
+        const colour = pct > 0.20 ? ' val-red' : '';
+        tot += v;
+        arHtml += `<td class="${colour}">${fmt(v)}</td>`;
+      });
+      const grandT = E.reduce((a,e) => a + (DATA.ar.current[e]||0) + (DATA.ar.days3060[e]||0) + (DATA.ar.days6090[e]||0) + (DATA.ar.days90plus[e]||0), 0);
+      const totPct = grandT > 0 ? tot / grandT : 0;
+      arHtml += `<td class="total-col${totPct > 0.20 ? ' val-red' : ''}">${fmt(tot)}</td></tr>`;
+      return;
+    }
+    const vals = {};
+    E.forEach(e => vals[e] = DATA.ar[row.key][e]);
+    const tot = E.reduce((a, e) => a + (vals[e]||0), 0);
+    arHtml += `<tr>
+      <td>${row.label}</td>
+      ${E.map(e => `<td class="${row.colourFn ? row.colourFn(vals[e]) : ''}">${fmt(vals[e])}</td>`).join('')}
+      <td class="total-col">${fmt(tot)}</td>
+    </tr>`;
+  });
+
+  arHtml += `</tbody></table>
+      <div class="commentary-box">${DATA.ar.commentary}</div>
+    </div></div>`;
+
+  // ── SECTION 3: PAYABLES ──────────────────────────────────
+  const apRows = [
+    { label: 'AP Due Next 7 Days', key: 'due7days' },
+    { label: 'AP Due 8–30 Days', key: 'due830days' },
+    { label: 'Payroll &amp; Other', key: 'payrollOther', note: '[2]' },
+    { label: 'Total Outflow Forecast', key: null, isTotal: true },
+    { label: 'Intercompany owed to RSP', key: 'intercoRSP', note: '' },
+    { label: 'Narayan Family Trust', key: 'narayanFamilyTrust', note: '' },
+  ];
+
+  let apHtml = `
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Payables &amp; Commitments</span>
+        <span class="section-pill">Section 3</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Metric</th>
+            ${E.map(e => `<th>${e}</th>`).join('')}
+          </tr></thead>
+          <tbody>`;
+
+  apRows.forEach(row => {
+    if (row.isTotal) {
+      apHtml += `<tr style="font-weight:700;background:#fafaf9"><td>Total Outflow Forecast</td>`;
+      E.forEach(e => {
+        const t = (DATA.payables.due7days[e]||0) + (DATA.payables.due830days[e]||0) + (DATA.payables.payrollOther[e]||0);
+        apHtml += `<td style="font-weight:700">${fmt(t)}</td>`;
+      });
+      apHtml += `</tr>`;
+      return;
+    }
+    const vals = {};
+    E.forEach(e => vals[e] = DATA.payables[row.key][e]);
+    apHtml += `<tr>
+      <td>${row.label}${row.note ? ` <sup>${row.note}</sup>` : ''}</td>
+      ${E.map(e => {
+        const v = vals[e];
+        return `<td class="${v === 0 ? ' val-muted' : ''}">${v === 0 ? '—' : fmt(v)}</td>`;
+      }).join('')}
+    </tr>`;
+  });
+
+  apHtml += `</tbody></table></div></div>`;
+
+  // ── SECTION 4: INVENTORY ─────────────────────────────────
+  let invHtml = `
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">Inventory at Cost</span>
+        <span class="section-pill">Section 4</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Metric</th>
+            ${E.map(e => `<th>${e}</th>`).join('')}
+            <th class="total-col">Total</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>Inventory Value <sup>[3]</sup></td>
+              ${E.map(e => `<td>${fmt(DATA.inventory.value[e])}</td>`).join('')}
+              <td class="total-col" style="font-weight:700">${fmt(E.reduce((a,e) => a + (DATA.inventory.value[e]||0), 0))}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="commentary-box">${DATA.inventory.commentary}</div>
+      </div>
+    </div>`;
+
+  el.innerHTML = cashHtml + arHtml + apHtml + invHtml;
+
+  // Footnotes
+  const fnEl = document.getElementById('footnotes');
+  fnEl.innerHTML = DATA.footnotes.map((f, i) =>
+    `<div class="footnote"><span class="footnote-num">[${i+1}]</span><span>${f}</span></div>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────
+renderDashboard();
+buildAlerts();
+</script>
+</body>
+</html>
