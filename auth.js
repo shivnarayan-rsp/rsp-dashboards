@@ -6,7 +6,7 @@
 // Current password hash corresponds to: change this password before deploying
 // Replace PASSWORD_HASH with your own hash.
 
-const PASSWORD_HASH = 'REPLACE_WITH_YOUR_SHA256_HASH';
+const PASSWORD_HASH = '850abe090d258c3cc63a7ea7e945c95e849108279ff0d60a0d0e8bd79a8aa29e';
 const SESSION_KEY   = 'rsp_auth';
 
 (function () {
