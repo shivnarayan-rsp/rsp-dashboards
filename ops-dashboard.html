@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP Group — Finance Operations Dashboard</title>
+<style>
+  :root {
+    --green: #3B6D11; --green-bg: #EAF3DE; --green-text: #27500A;
+    --amber: #BA7517; --amber-bg: #FAEEDA; --amber-text: #854F0B;
+    --red: #A32D2D; --red-bg: #FCEBEB; --red-text: #791F1F;
+    --gray-bg: #F1EFE8; --gray-text: #444441;
+    --blue-bg: #E6F1FB; --blue-text: #0C447C;
+    --surface: #ffffff; --page-bg: #F7F6F2;
+    --text-primary: #2C2C2A; --text-secondary: #888780;
+    --border: #D3D1C7; --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--page-bg); color: var(--text-primary); font-size: 14px; line-height: 1.5; }
+
+  .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .topbar-left { display: flex; align-items: center; gap: 14px; }
+  .logo-mark { width: 32px; height: 32px; background: #2C2C2A; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+  .logo-mark span { color: #fff; font-size: 11px; font-weight: 700; letter-spacing: -0.5px; }
+  .topbar-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+  .topbar-sub { font-size: 12px; color: var(--text-secondary); }
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+  .last-updated { font-size: 12px; color: var(--text-secondary); }
+  .refresh-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; }
+  .refresh-btn:hover { background: var(--gray-bg); }
+  .refresh-btn svg { width: 14px; height: 14px; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 28px; }
+
+  .entity-tabs { display: flex; gap: 4px; margin-bottom: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px; width: fit-content; flex-wrap: wrap; }
+  .tab { padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-secondary); transition: all 0.15s; border: none; background: transparent; }
+  .tab.active { background: #2C2C2A; color: #fff; }
+  .tab:hover:not(.active) { background: var(--gray-bg); color: var(--text-primary); }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+  .kpi-label { font-size: 11px; color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .kpi-value { font-size: 28px; font-weight: 700; line-height: 1; }
+  .kpi-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+  .kpi-card.rag-green { border-left: 3px solid var(--green); }
+  .kpi-card.rag-amber { border-left: 3px solid var(--amber); }
+  .kpi-card.rag-red { border-left: 3px solid var(--red); }
+  .kpi-card.rag-green .kpi-value { color: var(--green); }
+  .kpi-card.rag-amber .kpi-value { color: var(--amber); }
+  .kpi-card.rag-red .kpi-value { color: var(--red); }
+
+  .tables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  @media (max-width: 900px) { .tables-grid { grid-template-columns: 1fr; } }
+
+  .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .table-card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .table-card-title { font-size: 13px; font-weight: 600; }
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-red { background: var(--red-bg); color: var(--red-text); }
+  .badge-amber { background: var(--amber-bg); color: var(--amber-text); }
+  .badge-green { background: var(--green-bg); color: var(--green-text); }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); padding: 10px 18px; text-align: left; background: var(--page-bg); border-bottom: 1px solid var(--border); }
+  td { padding: 10px 18px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--gray-bg); }
+
+  .status-pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .status-draft { background: var(--amber-bg); color: var(--amber-text); }
+  .status-submitted { background: var(--red-bg); color: var(--red-text); }
+  .status-voided { background: var(--gray-bg); color: var(--gray-text); }
+
+  .row-submitted td:first-child { border-left: 3px solid var(--red); }
+  .row-draft td:first-child { border-left: 3px solid var(--amber); }
+  .row-voided td:first-child { border-left: 3px solid var(--border); }
+
+  .aging-cell { font-weight: 600; }
+  .aging-green { color: var(--green); }
+  .aging-amber { color: var(--amber); }
+  .aging-red { color: var(--red); }
+
+  .aging-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 24px; }
+  .aging-title { font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+  .aging-strips { display: flex; flex-direction: column; gap: 10px; }
+  .aging-row { display: flex; align-items: center; gap: 12px; }
+  .aging-entity-label { font-size: 12px; color: var(--text-secondary); width: 160px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .aging-track { flex: 1; background: var(--border); border-radius: 4px; height: 10px; display: flex; overflow: hidden; }
+  .aging-segment { height: 100%; }
+  .seg-green { background: var(--green); }
+  .seg-amber { background: var(--amber); }
+  .seg-red { background: var(--red); }
+  .aging-legend { display: flex; gap: 16px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .aging-legend span { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--text-primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .count-bold { font-size: 15px; font-weight: 700; }
+  .c-red { color: var(--red); }
+  .c-amber { color: var(--amber); }
+  .c-green { color: var(--green); }
+  .c-muted { color: var(--text-secondary); }
+
+  .footer { text-align: center; padding: 24px; font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--border); margin-top: 12px; }
+  .env-badge { display: inline-block; background: var(--blue-bg); color: var(--blue-text); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 6px; }
+  .files-note { display: inline-block; background: var(--amber-bg); color: var(--amber-text); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo-mark"><span>RSP</span></div>
+    <div>
+      <div class="topbar-title">RSP Group Finance Operations</div>
+      <div class="topbar-sub">Daily back-office review — Pacific Island entities</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="last-updated" id="last-updated-label">Refreshed: loading...</span>
+    <button class="refresh-btn" onclick="loadData()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 2.5A6.5 6.5 0 1 1 7.5 1"/><path d="M13.5 2.5V6.5H9.5"/></svg>
+      Refresh
+    </button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="entity-tabs">
+    <button class="tab active" onclick="switchTab('all', this)">All Entities</button>
+    <button class="tab" onclick="switchTab('samoa', this)">Samoa</button>
+    <button class="tab" onclick="switchTab('vanuatu', this)">Vanuatu</button>
+    <button class="tab" onclick="switchTab('tonga', this)">Tonga</button>
+    <button class="tab" onclick="switchTab('solomons', this)">Solomon Islands</button>
+    <button class="tab" onclick="switchTab('rsp', this)">RSP (NZ)</button>
+  </div>
+  <div id="dashboard-content">
+    <div style="text-align:center;padding:60px 0;color:var(--text-secondary);">
+      <div class="spinner" style="width:24px;height:24px;margin:0 auto 12px;"></div>
+      <div>Loading financial data...</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Data source: SyncHub &rarr; Xero (live mirror)
+  <span class="env-badge">PRODUCTION</span>
+  <span class="files-note">Files Inbox: direct Xero API required &mdash; see README</span>
+  &nbsp;&middot;&nbsp; Auto-refreshes at 6:00 AM NZST daily
+</div>
+
+<script>
+const ENTITIES = [
+  { key: 'samoa',    label: 'Ricoh Samoa',              shortLabel: 'Samoa'    },
+  { key: 'vanuatu',  label: 'Ricoh Vanuatu',            shortLabel: 'Vanuatu'  },
+  { key: 'tonga',    label: 'Ricoh Tonga',              shortLabel: 'Tonga'    },
+  { key: 'solomons', label: 'Ricoh Solomon Islands',    shortLabel: 'Solomons' },
+  { key: 'rsp',      label: 'Ricoh South Pacific (NZ)', shortLabel: 'RSP NZ'   },
+];
+
+const RAW_DATA = {
+  samoa: {
+    invoices: [
+      { status: 'DRAFT',     count: 2,  oldestDays: 11 },
+      { status: 'SUBMITTED', count: 41, oldestDays: 15 },
+    ],
+    bills: [
+      { status: 'DRAFT',     count: 17, oldestDays: 61 },
+      { status: 'SUBMITTED', count: 23, oldestDays: 15 },
+    ],
+    pos: [
+      { status: 'DRAFT', count: 1, oldestDays: 741 },
+    ],
+  },
+  vanuatu: {
+    invoices: [
+      { status: 'SUBMITTED', count: 40, oldestDays: 15 },
+    ],
+    bills: [
+      { status: 'DRAFT',     count: 20, oldestDays: 75  },
+      { status: 'SUBMITTED', count: 35, oldestDays: 15  },
+      { status: 'VOIDED',    count: 3,  oldestDays: 3931 },
+    ],
+    pos: [],
+  },
+  tonga: {
+    invoices: [
+      { status: 'DRAFT',     count: 3,  oldestDays: 14 },
+      { status: 'SUBMITTED', count: 10, oldestDays: 14 },
+    ],
+    bills: [
+      { status: 'DRAFT',     count: 5,  oldestDays: 75 },
+      { status: 'SUBMITTED', count: 21, oldestDays: 15 },
+    ],
+    pos: [],
+  },
+  solomons: {
+    invoices: [
+      { status: 'DRAFT',     count: 2,  oldestDays: 11 },
+      { status: 'SUBMITTED', count: 42, oldestDays: 14 },
+    ],
+    bills: [
+      { status: 'DRAFT',     count: 19, oldestDays: 16 },
+      { status: 'SUBMITTED', count: 31, oldestDays: 18 },
+    ],
+    pos: [],
+  },
+  rsp: {
+    invoices: [
+      { status: 'DRAFT',     count: 6, oldestDays: 28 },
+      { status: 'SUBMITTED', count: 1, oldestDays: 4  },
+    ],
+    bills: [
+      { status: 'DRAFT',     count: 10, oldestDays: 21 },
+      { status: 'SUBMITTED', count: 26, oldestDays: 21 },
+    ],
+    pos: [],
+  },
+};
+
+function agingLabel(days) {
+  if (!days) return '<span class="c-muted">—</span>';
+  const cls = days <= 3 ? 'aging-green' : days <= 7 ? 'aging-amber' : 'aging-red';
+  return `<span class="aging-cell ${cls}">${days}d</span>`;
+}
+
+function statusPill(s) {
+  const map = { DRAFT: 'status-draft', SUBMITTED: 'status-submitted', VOIDED: 'status-voided' };
+  return `<span class="status-pill ${map[s] || 'status-draft'}">${s}</span>`;
+}
+
+function rowCls(s) {
+  return s === 'SUBMITTED' ? 'row-submitted' : s === 'DRAFT' ? 'row-draft' : 'row-voided';
+}
+
+function countSpan(count, status) {
+  if (count === 0) return `<span class="c-muted">0</span>`;
+  const cls = status === 'SUBMITTED' ? (count > 20 ? 'c-red' : 'c-amber') :
+              status === 'DRAFT'     ? 'c-amber' : 'c-muted';
+  return `<span class="count-bold ${cls}">${count}</span>`;
+}
+
+function buildTable(rows, title) {
+  const visible = rows.filter(r => r.count > 0);
+  const total = visible.reduce((a, r) => a + r.count, 0);
+  const submittedTotal = visible.filter(r => r.status === 'SUBMITTED').reduce((a, r) => a + r.count, 0);
+  const badgeCls = submittedTotal > 20 ? 'badge-red' : total > 0 ? 'badge-amber' : 'badge-green';
+
+  if (!visible.length) return `
+    <div class="table-card">
+      <div class="table-card-header"><span class="table-card-title">${title}</span><span class="badge badge-green">All clear</span></div>
+      <div style="padding:20px 18px;color:var(--text-secondary);font-size:13px;">No pending items.</div>
+    </div>`;
+
+  return `
+    <div class="table-card">
+      <div class="table-card-header">
+        <span class="table-card-title">${title}</span>
+        <span class="badge ${badgeCls}">${total} pending</span>
+      </div>
+      <table>
+        <thead><tr><th>Status</th><th style="text-align:right">Count</th><th style="text-align:right">Oldest (days)</th></tr></thead>
+        <tbody>
+          ${visible.map(r => `
+            <tr class="${rowCls(r.status)}">
+              <td>${statusPill(r.status)}</td>
+              <td style="text-align:right">${countSpan(r.count, r.status)}</td>
+              <td style="text-align:right">${agingLabel(r.oldestDays)}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function getKPIs(data) {
+  const all = [...data.invoices, ...data.bills, ...data.pos].filter(r => r.count > 0 && r.status !== 'VOIDED');
+  return {
+    total:    all.reduce((a, r) => a + r.count, 0),
+    invTotal: data.invoices.filter(r => r.count > 0 && r.status !== 'VOIDED').reduce((a, r) => a + r.count, 0),
+    billTotal:data.bills.filter(r => r.count > 0 && r.status !== 'VOIDED').reduce((a, r) => a + r.count, 0),
+    oldest:   all.length ? Math.max(...all.map(r => r.oldestDays)) : 0,
+  };
+}
+
+function ragKPI(v, warn, alert) { return v === 0 ? 'rag-green' : v <= warn ? 'rag-amber' : 'rag-red'; }
+function agingRAG(d) { return d <= 3 ? 'rag-green' : d <= 7 ? 'rag-amber' : 'rag-red'; }
+
+function buildAgingStrip(rows, label) {
+  const action = rows.filter(r => r.count > 0 && r.status !== 'VOIDED');
+  const total = action.reduce((a, r) => a + r.count, 0) || 1;
+  const g  = action.filter(r => r.oldestDays <= 3).reduce((a, r) => a + r.count, 0);
+  const am = action.filter(r => r.oldestDays > 3 && r.oldestDays <= 7).reduce((a, r) => a + r.count, 0);
+  const gP = Math.round(g / total * 100);
+  const aP = Math.round(am / total * 100);
+  const rP = 100 - gP - aP;
+  return `
+    <div class="aging-row">
+      <div class="aging-entity-label">${label}</div>
+      <div class="aging-track">
+        <div class="aging-segment seg-green" style="width:${gP}%"></div>
+        <div class="aging-segment seg-amber" style="width:${aP}%"></div>
+        <div class="aging-segment seg-red"   style="width:${rP}%"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);width:60px;text-align:right">${total} items</div>
+    </div>`;
+}
+
+const agingLegendHTML = `
+  <div class="aging-legend">
+    <span><span class="legend-dot" style="background:var(--green)"></span>On track (&le; 3 days)</span>
+    <span><span class="legend-dot" style="background:var(--amber)"></span>Watch (4–7 days)</span>
+    <span><span class="legend-dot" style="background:var(--red)"></span>Overdue (&gt; 7 days)</span>
+  </div>`;
+
+function buildEntityView(key) {
+  const data = RAW_DATA[key];
+  const entity = ENTITIES.find(e => e.key === key);
+  const k = getKPIs(data);
+  const allRows = [...data.invoices, ...data.bills, ...data.pos];
+  const hasPOs = data.pos.filter(r => r.count > 0).length > 0;
+
+  return `
+    <div class="kpi-grid">
+      <div class="kpi-card ${ragKPI(k.total, 10, 30)}">
+        <div class="kpi-label">Total Pending</div>
+        <div class="kpi-value">${k.total}</div>
+        <div class="kpi-sub">draft + submitted</div>
+      </div>
+      <div class="kpi-card ${ragKPI(k.invTotal, 5, 15)}">
+        <div class="kpi-label">Invoices</div>
+        <div class="kpi-value">${k.invTotal}</div>
+        <div class="kpi-sub">pending approval</div>
+      </div>
+      <div class="kpi-card ${ragKPI(k.billTotal, 5, 20)}">
+        <div class="kpi-label">Bills</div>
+        <div class="kpi-value">${k.billTotal}</div>
+        <div class="kpi-sub">pending approval</div>
+      </div>
+      <div class="kpi-card ${agingRAG(k.oldest)}">
+        <div class="kpi-label">Oldest Pending</div>
+        <div class="kpi-value">${k.oldest}d</div>
+        <div class="kpi-sub">days since created</div>
+      </div>
+    </div>
+
+    <div class="tables-grid">
+      ${buildTable(data.invoices, 'Sales Invoices')}
+      ${buildTable(data.bills, 'Bills')}
+    </div>
+
+    ${hasPOs ? `<div style="margin-bottom:24px;max-width:50%">${buildTable(data.pos, 'Purchase Orders')}</div>` : ''}
+
+    <div class="aging-wrap">
+      <div class="aging-title">Aging profile — pending items</div>
+      <div class="aging-strips">${buildAgingStrip(allRows, entity.label)}</div>
+      ${agingLegendHTML}
+    </div>`;
+}
+
+function buildAllView() {
+  const grand = ENTITIES.reduce((acc, e) => {
+    const k = getKPIs(RAW_DATA[e.key]);
+    acc.total += k.total; acc.inv += k.invTotal; acc.bill += k.billTotal;
+    acc.oldest = Math.max(acc.oldest, k.oldest);
+    return acc;
+  }, { total: 0, inv: 0, bill: 0, oldest: 0 });
+
+  const rows = ENTITIES.map(e => {
+    const k = getKPIs(RAW_DATA[e.key]);
+    const tCls = k.total === 0 ? 'c-green' : k.total > 30 ? 'c-red' : 'c-amber';
+    const iCls = k.invTotal === 0 ? 'c-green' : k.invTotal > 15 ? 'c-red' : 'c-amber';
+    const bCls = k.billTotal === 0 ? 'c-green' : k.billTotal > 20 ? 'c-red' : 'c-amber';
+    const oCol = k.oldest <= 3 ? 'var(--green)' : k.oldest <= 7 ? 'var(--amber)' : 'var(--red)';
+    return `
+      <tr>
+        <td style="font-weight:600">${e.label}</td>
+        <td style="text-align:right"><span class="count-bold ${tCls}">${k.total}</span></td>
+        <td style="text-align:right"><span class="count-bold ${iCls}">${k.invTotal}</span></td>
+        <td style="text-align:right"><span class="count-bold ${bCls}">${k.billTotal}</span></td>
+        <td style="text-align:right"><span style="font-weight:600;color:${oCol}">${k.oldest}d</span></td>
+      </tr>`;
+  }).join('');
+
+  const strips = ENTITIES.map(e => {
+    const all = [...RAW_DATA[e.key].invoices, ...RAW_DATA[e.key].bills, ...RAW_DATA[e.key].pos];
+    return buildAgingStrip(all, e.shortLabel);
+  }).join('');
+
+  const grandBadgeCls = grand.total > 80 ? 'badge-red' : grand.total > 30 ? 'badge-amber' : 'badge-green';
+
+  return `
+    <div class="kpi-grid">
+      <div class="kpi-card ${ragKPI(grand.total, 30, 80)}">
+        <div class="kpi-label">Group Total Pending</div>
+        <div class="kpi-value">${grand.total}</div>
+        <div class="kpi-sub">across all 5 entities</div>
+      </div>
+      <div class="kpi-card ${ragKPI(grand.inv, 15, 40)}">
+        <div class="kpi-label">Invoices Pending</div>
+        <div class="kpi-value">${grand.inv}</div>
+        <div class="kpi-sub">group-wide</div>
+      </div>
+      <div class="kpi-card ${ragKPI(grand.bill, 20, 60)}">
+        <div class="kpi-label">Bills Pending</div>
+        <div class="kpi-value">${grand.bill}</div>
+        <div class="kpi-sub">group-wide</div>
+      </div>
+      <div class="kpi-card ${agingRAG(grand.oldest)}">
+        <div class="kpi-label">Oldest Pending</div>
+        <div class="kpi-value">${grand.oldest}d</div>
+        <div class="kpi-sub">worst case across entities</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+      <div class="table-card-header">
+        <span class="table-card-title">Entity summary — draft &amp; submitted items</span>
+        <span class="badge ${grandBadgeCls}">${grand.total} total</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Entity</th>
+            <th style="text-align:right">Total</th>
+            <th style="text-align:right">Invoices</th>
+            <th style="text-align:right">Bills</th>
+            <th style="text-align:right">Oldest</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+
+    <div class="aging-wrap">
+      <div class="aging-title">Aging profile — pending items by entity</div>
+      <div class="aging-strips">${strips}</div>
+      ${agingLegendHTML}
+    </div>`;
+}
+
+let currentTab = 'all';
+
+function switchTab(key, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentTab = key;
+  renderDashboard();
+}
+
+function renderDashboard() {
+  document.getElementById('dashboard-content').innerHTML =
+    currentTab === 'all' ? buildAllView() : buildEntityView(currentTab);
+}
+
+function loadData() {
+  const btn = document.querySelector('.refresh-btn');
+  btn.innerHTML = '<span class="spinner"></span> Refreshing...';
+  btn.disabled = true;
+  setTimeout(() => {
+    renderDashboard();
+    const now = new Date();
+    document.getElementById('last-updated-label').textContent =
+      'Refreshed: ' + now.toLocaleString('en-NZ', { timeZone: 'Pacific/Auckland', hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' });
+    btn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 2.5A6.5 6.5 0 1 1 7.5 1"/><path d="M13.5 2.5V6.5H9.5"/></svg> Refresh';
+    btn.disabled = false;
+  }, 400);
+}
+
+function scheduleDailyRefresh() {
+  const now = new Date();
+  const nzNow = new Date(now.toLocaleString('en-US', { timeZone: 'Pacific/Auckland' }));
+  const next6am = new Date(nzNow);
+  next6am.setHours(6, 0, 0, 0);
+  if (nzNow >= next6am) next6am.setDate(next6am.getDate() + 1);
+  setTimeout(() => { loadData(); setInterval(loadData, 86400000); }, next6am - nzNow);
+}
+
+loadData();
+scheduleDailyRefresh();
+</script>
+</body>
+</html>
