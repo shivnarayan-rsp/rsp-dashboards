@@ -6,28 +6,26 @@
 <title>RSP Operations Dashboard</title>
 <style>
   :root {
-    --bg: #f8f7f4; --surface: #ffffff; --surface-2: #f1efe8;
-    --border: rgba(0,0,0,0.1); --border-strong: rgba(0,0,0,0.2);
-    --text: #2c2c2a; --text-muted: #888780; --text-hint: #b4b2a9;
-    --accent: #1d9e75; --accent-bg: #e1f5ee; --accent-text: #085041;
-    --warn-bg: #faeeda; --warn-text: #633806;
-    --danger: #a32d2d; --danger-bg: #fcebeb; --danger-text: #501313;
-    --info-bg: #e6f1fb; --info-text: #042c53;
-    --placed-bg: #eeedfe; --placed-text: #26215c;
-    --r: 8px; --rl: 12px;
+    --bg:#f8f7f4;--surface:#ffffff;--surface-2:#f1efe8;
+    --border:rgba(0,0,0,0.1);--border-strong:rgba(0,0,0,0.2);
+    --text:#2c2c2a;--text-muted:#888780;--text-hint:#b4b2a9;
+    --accent:#1d9e75;--accent-bg:#e1f5ee;--accent-text:#085041;
+    --warn-bg:#faeeda;--warn-text:#633806;
+    --danger:#a32d2d;--danger-bg:#fcebeb;--danger-text:#501313;
+    --info-bg:#e6f1fb;--info-text:#042c53;
+    --placed-bg:#eeedfe;--placed-text:#26215c;
+    --r:8px;--rl:12px;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg:#1a1a18; --surface:#252522; --surface-2:#2c2c2a;
-      --border:rgba(255,255,255,0.1); --border-strong:rgba(255,255,255,0.2);
-      --text:#f1efe8; --text-muted:#888780; --text-hint:#5f5e5a;
-      --accent:#5dcaa5; --accent-bg:#04342c; --accent-text:#9fe1cb;
-      --warn-bg:#412402; --warn-text:#fac775;
-      --danger:#f09595; --danger-bg:#501313; --danger-text:#f7c1c1;
-      --info-bg:#042c53; --info-text:#b5d4f4;
-      --placed-bg:#26215c; --placed-text:#cecbf6;
-    }
-  }
+  @media(prefers-color-scheme:dark){:root{
+    --bg:#1a1a18;--surface:#252522;--surface-2:#2c2c2a;
+    --border:rgba(255,255,255,0.1);--border-strong:rgba(255,255,255,0.2);
+    --text:#f1efe8;--text-muted:#888780;--text-hint:#5f5e5a;
+    --accent:#5dcaa5;--accent-bg:#04342c;--accent-text:#9fe1cb;
+    --warn-bg:#412402;--warn-text:#fac775;
+    --danger:#f09595;--danger-bg:#501313;--danger-text:#f7c1c1;
+    --info-bg:#042c53;--info-text:#b5d4f4;
+    --placed-bg:#26215c;--placed-text:#cecbf6;
+  }}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;}
   .hdr{background:var(--surface);border-bottom:.5px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100;}
@@ -85,7 +83,7 @@
   .fxlbl{font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;font-size:10px;}
   .fxrate{display:inline-flex;align-items:center;gap:5px;}
   .ccy-pill{background:var(--surface);border:.5px solid var(--border-strong);border-radius:4px;padding:1px 5px;font-size:10px;font-weight:500;color:var(--text-muted);}
-  .co{width:13%;} .ce{width:10%;} .cc{width:24%;} .cd{width:9%;} .crq{width:9%;} .ca{width:8%;} .cv{width:15%;} .cs{width:12%;}
+  .co{width:13%;}.ce{width:10%;}.cc{width:24%;}.cd{width:9%;}.crq{width:9%;}.ca{width:8%;}.cv{width:15%;}.cs{width:12%;}
   @media(max-width:768px){.hdr,.ctrl{padding:12px 16px;}.main{padding:14px;}.cd,.crq{display:none;}}
 </style>
 </head>
@@ -107,7 +105,7 @@
     </div>
   </div>
   <div class="hr2">
-    <span class="ts">Data as of 17 Mar 2026, 09:14 NZT</span>
+    <span class="ts">Data as of 18 Mar 2026, 09:14 NZT</span>
     <a class="btnr" href="javascript:location.reload()">
       <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M14 8A6 6 0 1 1 8 2" stroke-linecap="round"/>
@@ -161,18 +159,17 @@
   <span class="fxrate"><span class="ccy-pill">WST</span> 1 WST = NZD 0.6197</span>
   <span class="fxrate"><span class="ccy-pill">SBD</span> 1 SBD = NZD 0.2119</span>
   <span class="fxrate"><span class="ccy-pill">VUV</span> 1 VUV = NZD 0.01370</span>
+  <span class="fxrate"><span class="ccy-pill">TOP</span> 1 TOP = NZD 0.6904</span>
   <span class="fxrate"><span class="ccy-pill">NZD</span> RSP native</span>
-  <span style="color:var(--text-hint);">· XE mid-market rates, 17 Mar 2026 · Indicative only</span>
+  <span style="color:var(--text-hint);">· XE mid-market rates, 18 Mar 2026 · Indicative only</span>
 </div>
 
 <script>
-// FX rates to NZD
-const FX = { RSP:1, Samoa:0.6197, Solomons:0.2119, Vanuatu:0.01370 };
-const CCY = { RSP:'NZD', Samoa:'WST', Solomons:'SBD', Vanuatu:'VUV' };
+const FX={RSP:1,Samoa:0.6197,Solomons:0.2119,Vanuatu:0.01370,Tonga:0.6904};
+const CCY={RSP:'NZD',Samoa:'WST',Solomons:'SBD',Vanuatu:'VUV',Tonga:'TOP'};
 
-// Raw data — values in LOCAL currency of each entity
 const D=[
-  // RSP (NZD — no conversion needed)
+  // RSP (NZD)
   {o:"RSPSO-00126534",e:"RSP",c:"Ricoh Samoa Limited",od:"2025-12-04",rd:"2025-12-04",s:"Parked",lv:582.71,a:103},
   {o:"RSPSO-00126475",e:"RSP",c:"Cook Islands Printing Services",od:"2025-12-16",rd:"2025-12-16",s:"Parked",lv:26094.34,a:91},
   {o:"RSPSO-00126607",e:"RSP",c:"Cook Islands Printing Services",od:"2026-01-16",rd:"2026-01-16",s:"Parked",lv:10625.78,a:60},
@@ -209,7 +206,7 @@ const D=[
   {o:"RSPSO-00126767",e:"RSP",c:"WinMac Computer Solutions",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:111.32,a:0},
   {o:"RSPSO-00126766",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:48598.20,a:0},
   {o:"RSPSO-00126763",e:"RSP",c:"WinMac Computer Solutions",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:128.57,a:0},
-  // Samoa (WST → NZD ×0.6197)
+  // Samoa (WST)
   {o:"RSSO-00030811",e:"Samoa",c:"Ministry of Sports and Recreation",od:"2026-01-09",rd:"2026-04-30",s:"Backordered",lv:17801.94,a:67},
   {o:"RSSO-00032723",e:"Samoa",c:"Samoa Land Transport Authority",od:"2026-02-18",rd:"2026-03-31",s:"Backordered",lv:10527.07,a:27},
   {o:"RSSO-00032743",e:"Samoa",c:"Ministry of Works Transport & Infrastructure",od:"2026-02-19",rd:"2026-03-31",s:"Backordered",lv:25300.00,a:26},
@@ -228,7 +225,7 @@ const D=[
   {o:"RSSO-00032947",e:"Samoa",c:"M. Lemisio Law Firm",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:0},
   {o:"RSSO-00032964",e:"Samoa",c:"Arista Finance",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:0},
   {o:"RSSO-00032963",e:"Samoa",c:"The Produce Company",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:0},
-  // Solomons (SBD → NZD ×0.2119)
+  // Solomons (SBD)
   {o:"RSISO-00019799",e:"Solomons",c:"Bank South Pacific (SI)",od:"2025-12-12",rd:"2025-12-12",s:"Parked",lv:273.88,a:95},
   {o:"RSISO-00019786",e:"Solomons",c:"Asian Development Bank (SI)",od:"2025-12-15",rd:"2025-12-15",s:"Parked",lv:123500.00,a:92},
   {o:"RSISO-00020062",e:"Solomons",c:"Asian Development Bank (SI)",od:"2026-02-19",rd:"2026-02-19",s:"Parked",lv:26000.00,a:26},
@@ -245,7 +242,7 @@ const D=[
   {o:"RSISO-00020153",e:"Solomons",c:"RSE Limited",od:"2026-03-16",rd:"2026-03-16",s:"Backordered",lv:0,a:1},
   {o:"RSISO-00020133",e:"Solomons",c:"CBIT Project - Climate Change Division",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:143569.40,a:1},
   {o:"RSISO-00020154",e:"Solomons",c:"Bank South Pacific (SI)",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:0,a:1},
-  // Vanuatu (VUV → NZD ×0.01370)
+  // Vanuatu (VUV)
   {o:"RVSO-00031797",e:"Vanuatu",c:"World Bank (Vanuatu)",od:"2025-01-16",rd:"2025-01-16",s:"Parked",lv:1557993.00,a:425},
   {o:"RVSO-00032353",e:"Vanuatu",c:"Vanuatu Financial Services Commission",od:"2025-04-10",rd:"2025-04-10",s:"Parked",lv:578496.00,a:341},
   {o:"RVSO-00033242",e:"Vanuatu",c:"Customary Land Management Office",od:"2025-10-28",rd:"2025-10-28",s:"Placed",lv:980836.00,a:140},
@@ -288,27 +285,49 @@ const D=[
   {o:"RVSO-00034628",e:"Vanuatu",c:"Vanpawa",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:0,a:1},
   {o:"RVSO-00034624",e:"Vanuatu",c:"Life Changer Christian College",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:0,a:1},
   {o:"RVSO-00034626",e:"Vanuatu",c:"Life Changer Christian College",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:0,a:1},
+  // Tonga (TOP) — NEW
+  {o:"RTSO-00026057",e:"Tonga",c:"Free Wesleyan Church of Tonga",od:"2025-12-19",rd:"2025-12-19",s:"Parked",lv:5978.85,a:89},
+  {o:"RTSO-00026247",e:"Tonga",c:"MEIDECC",od:"2026-02-12",rd:"2026-02-12",s:"Backordered",lv:34497.70,a:34},
+  {o:"RTSO-00026306",e:"Tonga",c:"Statistics Department - Tonga",od:"2026-02-20",rd:"2026-02-20",s:"Parked",lv:40248.87,a:26},
+  {o:"RTSO-00026282",e:"Tonga",c:"MEIDECC",od:"2026-03-04",rd:"2026-03-04",s:"Parked",lv:3612.80,a:14},
+  {o:"RTSO-00026337",e:"Tonga",c:"Ministry of Education - CDU (Tonga)",od:"2026-03-04",rd:"2026-03-04",s:"Backordered",lv:10614.93,a:14},
+  {o:"RTSO-00026350",e:"Tonga",c:"Pacific Australia Skills",od:"2026-03-09",rd:"2026-03-09",s:"Parked",lv:48456.40,a:9},
+  {o:"RTSO-00026358",e:"Tonga",c:"Bank South Pacific (Tonga)",od:"2026-03-11",rd:"2026-03-11",s:"Parked",lv:23000.03,a:7},
+  {o:"RTSO-00026355",e:"Tonga",c:"Prime Minister's Office (Tonga)",od:"2026-03-11",rd:"2026-03-11",s:"Backordered",lv:3528.00,a:7},
+  {o:"RTSO-00026366",e:"Tonga",c:"Pacific Australia Skills",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:1},
 ];
 
-// Pre-compute NZD value for each row
-D.forEach(d => { d.v = d.lv * FX[d.e]; });
+// Pre-compute NZD value
+D.forEach(d=>{d.v=d.lv*FX[d.e];});
 
 const ENT=[...new Set(D.map(d=>d.e))];
 const STS=['Backordered','Parked','Placed'];
-let AE=new Set(), AS=new Set(), SF='age', SD='desc';
+let AE=new Set(),AS=new Set(),SF='age',SD='desc';
 
 function buildFilters(){
-  const ef=document.getElementById('ef'), sf=document.getElementById('sf');
+  const ef=document.getElementById('ef'),sf=document.getElementById('sf');
   const ae=mkChip('All',()=>{AE.clear();syncE();render();},true);
-  ae.classList.add('active','ea'); ef.appendChild(ae);
+  ae.classList.add('active','ea');ef.appendChild(ae);
   ENT.forEach(e=>{
-    const c=mkChip(e+'  '+CCY[e],()=>{document.querySelector('.ea').classList.remove('active');AE.has(e)?AE.delete(e):AE.add(e);c.classList.toggle('active');if(!AE.size)document.querySelector('.ea').classList.add('active');render();});
+    const c=mkChip(e+'  '+CCY[e],()=>{
+      document.querySelector('.ea').classList.remove('active');
+      AE.has(e)?AE.delete(e):AE.add(e);
+      c.classList.toggle('active');
+      if(!AE.size)document.querySelector('.ea').classList.add('active');
+      render();
+    });
     ef.appendChild(c);
   });
   const as=mkChip('All',()=>{AS.clear();syncS();render();},true);
-  as.classList.add('active','sa2'); sf.appendChild(as);
+  as.classList.add('active','sa2');sf.appendChild(as);
   STS.forEach(s=>{
-    const c=mkChip(s,()=>{document.querySelector('.sa2').classList.remove('active');AS.has(s)?AS.delete(s):AS.add(s);c.classList.toggle('active');if(!AS.size)document.querySelector('.sa2').classList.add('active');render();});
+    const c=mkChip(s,()=>{
+      document.querySelector('.sa2').classList.remove('active');
+      AS.has(s)?AS.delete(s):AS.add(s);
+      c.classList.toggle('active');
+      if(!AS.size)document.querySelector('.sa2').classList.add('active');
+      render();
+    });
     sf.appendChild(c);
   });
 }
@@ -321,7 +340,14 @@ function fil(){return D.filter(d=>(!AE.size||AE.has(d.e))&&(!AS.size||AS.has(d.s
 
 function srt(data){return[...data].sort((a,b)=>{
   let va,vb;
-  if(SF==='order'){va=a.o;vb=b.o;}else if(SF==='entity'){va=a.e;vb=b.e;}else if(SF==='customer'){va=a.c;vb=b.c;}else if(SF==='date'){va=a.od;vb=b.od;}else if(SF==='req'){va=a.rd;vb=b.rd;}else if(SF==='age'){va=a.a;vb=b.a;}else if(SF==='val'){va=a.v;vb=b.v;}else if(SF==='status'){va=a.s;vb=b.s;}
+  if(SF==='order'){va=a.o;vb=b.o;}
+  else if(SF==='entity'){va=a.e;vb=b.e;}
+  else if(SF==='customer'){va=a.c;vb=b.c;}
+  else if(SF==='date'){va=a.od;vb=b.od;}
+  else if(SF==='req'){va=a.rd;vb=b.rd;}
+  else if(SF==='age'){va=a.a;vb=b.a;}
+  else if(SF==='val'){va=a.v;vb=b.v;}
+  else if(SF==='status'){va=a.s;vb=b.s;}
   if(typeof va==='string')return SD==='asc'?va.localeCompare(vb):vb.localeCompare(va);
   return SD==='asc'?va-vb:vb-va;
 });}
@@ -330,26 +356,13 @@ function sb2(f){if(SF===f)SD=SD==='asc'?'desc':'asc';else{SF=f;SD=(f==='age'||f=
 
 function fd(s){if(!s)return'—';const d=new Date(s);return d.toLocaleDateString('en-NZ',{day:'2-digit',month:'short'});}
 
-function fv(nzd, localV, entity){
-  if(!localV && localV!==0) return '<span style="color:var(--text-hint)">—</span>';
-  if(localV===0) return '<span style="color:var(--text-hint)">—</span>';
+function fv(nzd,localV,entity){
+  if(!localV)return'<span style="color:var(--text-hint)">—</span>';
   const ccy=CCY[entity];
-  const nzdFmt = nzd>=1000000 ? 'NZ$'+(nzd/1000000).toFixed(2)+'M'
-               : nzd>=1000    ? 'NZ$'+(nzd/1000).toFixed(1)+'K'
-               :                'NZ$'+Math.round(nzd).toLocaleString('en-NZ');
-  if(ccy==='NZD') return nzdFmt;
-  const localFmt = localV>=1000000 ? (localV/1000000).toFixed(1)+'M'
-                 : localV>=1000    ? (localV/1000).toFixed(0)+'K'
-                 :                   Math.round(localV).toLocaleString();
-  return nzdFmt+'<span class="lccy">'+ccy+' '+localFmt+'</span>';
-}
-
-function abadge(d){
-  if(d===0)return'<span class="ab an">Today</span>';
-  if(d>=60) return`<span class="ab ac">${d}d</span>`;
-  if(d>=30) return`<span class="ab aw">${d}d</span>`;
-  if(d>=7)  return`<span class="ab ao">${d}d</span>`;
-  return`<span class="ab an">${d}d</span>`;
+  const nf=nzd>=1000000?'NZ$'+(nzd/1000000).toFixed(2)+'M':nzd>=1000?'NZ$'+(nzd/1000).toFixed(1)+'K':'NZ$'+Math.round(nzd).toLocaleString('en-NZ');
+  if(ccy==='NZD')return nf;
+  const lf=localV>=1000000?(localV/1000000).toFixed(1)+'M':localV>=1000?(localV/1000).toFixed(0)+'K':Math.round(localV).toLocaleString();
+  return nf+'<span class="lccy">'+ccy+' '+lf+'</span>';
 }
 
 function fvSimple(nzd){
@@ -357,6 +370,14 @@ function fvSimple(nzd){
   if(nzd>=1000000)return'NZ$'+(nzd/1000000).toFixed(2)+'M';
   if(nzd>=1000)return'NZ$'+(nzd/1000).toFixed(1)+'K';
   return'NZ$'+Math.round(nzd).toLocaleString('en-NZ');
+}
+
+function abadge(d){
+  if(d===0)return'<span class="ab an">Today</span>';
+  if(d>=60)return`<span class="ab ac">${d}d</span>`;
+  if(d>=30)return`<span class="ab aw">${d}d</span>`;
+  if(d>=7) return`<span class="ab ao">${d}d</span>`;
+  return`<span class="ab an">${d}d</span>`;
 }
 
 function render(){
@@ -394,7 +415,7 @@ function render(){
     sa.textContent=flds[i]===SF?(SD==='asc'?'↑':'↓'):'↕';
   });
 
-  const emp=document.getElementById('emp'), tb=document.getElementById('tb');
+  const emp=document.getElementById('emp'),tb=document.getElementById('tb');
   if(!rows.length){tb.innerHTML='';emp.style.display='block';return;}
   emp.style.display='none';
   tb.innerHTML=rows.map(d=>`
