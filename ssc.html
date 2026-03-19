@@ -6,65 +6,28 @@
 <title>Ricoh Samoa — Ricoh IM C4510 with finisher | Samoa Shipping Corporation</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  /*
+   * GITHUB IMAGE BASE — replace shivnarayan-rsp/rsp-dashboards/main with your actual repo path
+   * e.g. ricoh-south-pacific/proposals/main
+   * Images expected: ricoh-logo-white-on-transparent.png, ronaldo-mercado.jpg
+   */
   :root {
-    --ricoh-red: #cc0000;
-    --ricoh-dark: #1a1a1a;
-    --ricoh-charcoal: #2d2d2d;
-    --ricoh-mid: #4a4a4a;
-    --ricoh-warm: #f5f0eb;
-    --ricoh-gold: #c8993a;
-    --ricoh-pale: #faf8f5;
-    --ricoh-rule: #e0d8d0;
-    --accent-teal: #0e7c7b;
-    --white: #ffffff;
+    --ricoh-red: #cc0000; --ricoh-dark: #1a1a1a; --ricoh-charcoal: #2d2d2d;
+    --ricoh-mid: #4a4a4a; --ricoh-warm: #f5f0eb; --ricoh-gold: #c8993a;
+    --ricoh-pale: #faf8f5; --ricoh-rule: #e0d8d0; --accent-teal: #0e7c7b;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--ricoh-pale);
-    color: var(--ricoh-dark);
-    font-size: 15px;
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
-  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--ricoh-pale); color: var(--ricoh-dark); font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
   a { color: inherit; text-decoration: none; }
-
-  /* COVER */
-  .cover {
-    min-height: 100vh;
-    background: var(--ricoh-dark);
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    page-break-after: always;
-  }
-  .cover-texture {
-    position: absolute; inset: 0;
-    background-image:
-      radial-gradient(ellipse 80% 60% at 70% 20%, rgba(204,0,0,0.18) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 10% 80%, rgba(200,153,58,0.10) 0%, transparent 55%);
-    pointer-events: none;
-  }
-  .cover-grid {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events: none;
-  }
+  .cover { min-height: 100vh; background: var(--ricoh-dark); position: relative; display: flex; flex-direction: column; overflow: hidden; page-break-after: always; }
+  .cover-texture { position: absolute; inset: 0; background-image: radial-gradient(ellipse 80% 60% at 70% 20%, rgba(204,0,0,0.18) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 10% 80%, rgba(200,153,58,0.10) 0%, transparent 55%); pointer-events: none; }
+  .cover-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; }
   .cover-accent-bar { width: 100%; height: 6px; background: linear-gradient(90deg, var(--ricoh-red), var(--ricoh-gold)); }
-  .cover-inner {
-    flex: 1; display: flex; flex-direction: column;
-    justify-content: space-between;
-    padding: 56px 64px 64px;
-    position: relative; z-index: 2;
-  }
+  .cover-inner { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 56px 64px 64px; position: relative; z-index: 2; }
   .cover-logo-area { display: flex; align-items: center; gap: 16px; justify-content: flex-end; }
   .logo-text { display: flex; flex-direction: column; gap: 1px; }
-  .logo-text .brand { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 18px; color: white; letter-spacing: 0.5px; text-transform: uppercase; }
+  .logo-text .brand { font-weight: 600; font-size: 18px; color: white; letter-spacing: 0.5px; text-transform: uppercase; }
   .logo-text .sub { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; font-weight: 400; }
   .cover-center { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 80px 0 40px; }
   .cover-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--ricoh-gold); font-weight: 500; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
@@ -73,31 +36,18 @@
   .cover-title em { font-style: normal; color: var(--ricoh-red); }
   .cover-subtitle { font-size: 17px; color: rgba(255,255,255,0.55); font-weight: 300; max-width: 520px; line-height: 1.6; margin-bottom: 48px; }
   .cover-divider { width: 80px; height: 2px; background: rgba(255,255,255,0.15); margin-bottom: 40px; }
-  .cover-meta { display: grid; grid-template-columns: repeat(3, auto); gap: 48px; align-items: start; }
+  .cover-meta { display: grid; grid-template-columns: repeat(3, auto); gap: 48px; }
   .meta-item .label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 6px; font-weight: 500; }
   .meta-item .value { font-size: 14px; color: rgba(255,255,255,0.85); font-weight: 500; }
   .cover-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
   .cover-ref { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.25); letter-spacing: 1px; }
-  .cover-page-num { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.25); }
-
-  /* DOCUMENT */
   .document { max-width: 900px; margin: 0 auto; padding: 0 0 80px; }
-
-  /* FULL-BLEED */
-  .exec-summary, .price-section, .outcomes-section, .signoff, .doc-footer {
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    box-sizing: border-box;
-  }
-
-  /* SECTIONS */
-  .section { padding: 64px 64px; border-bottom: 1px solid var(--ricoh-rule); position: relative; animation: fadeUp 0.5s ease both; }
+  .exec-summary, .price-section, .signoff, .doc-footer { width: 100vw; margin-left: calc(-50vw + 50%); box-sizing: border-box; }
+  .section { padding: 64px; border-bottom: 1px solid var(--ricoh-rule); animation: fadeUp 0.5s ease both; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px; }
   .section-number { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ricoh-red); font-weight: 500; letter-spacing: 1px; flex-shrink: 0; padding-top: 4px; }
   .section-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 26px; color: var(--ricoh-dark); line-height: 1.2; }
-
-  /* EXEC SUMMARY */
   .exec-summary { background: var(--ricoh-dark); color: white; padding: 56px 64px; }
   .exec-summary .section-title { color: white; }
   .exec-summary .section-number { color: var(--ricoh-gold); }
@@ -109,23 +59,15 @@
   .exec-pillar:nth-child(2) { border-color: var(--ricoh-gold); }
   .exec-pillar:last-child { border-color: var(--accent-teal); }
   .pillar-icon { margin-bottom: 12px; }
-  .pillar-title { font-weight: 600; font-size: 14px; color: white; margin-bottom: 8px; letter-spacing: 0.3px; }
+  .pillar-title { font-weight: 600; font-size: 14px; color: white; margin-bottom: 8px; }
   .pillar-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
-
-  /* COMPLIANCE TABLE */
-  .compliance-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-  .compliance-table thead tr { border-bottom: 2px solid var(--ricoh-dark); }
-  .compliance-table th { text-align: left; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ricoh-mid); font-weight: 600; padding: 0 0 12px; }
-  .compliance-table th:last-child { text-align: right; }
-  .compliance-table td { padding: 16px 0; border-bottom: 1px solid var(--ricoh-rule); font-size: 14px; vertical-align: top; }
-  .compliance-table td:first-child { font-weight: 500; color: var(--ricoh-dark); padding-right: 24px; width: 55%; }
-  .compliance-table td:last-child { text-align: right; }
-  .badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; padding: 4px 12px; border-radius: 2px; }
-  .badge-green { background: #e8f5e9; color: #2e7d32; }
-
-  /* SOLUTION */
+  /* PRODUCT BAND */
+  .product-band { background: white; padding: 48px 64px; border-bottom: 1px solid var(--ricoh-rule); display: flex; align-items: center; gap: 56px; }
+  .product-band img.product-img { width: 320px; max-width: 42%; height: auto; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.10)); }
+  .product-band-text h3 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ricoh-dark); margin-bottom: 12px; }
+  .product-band-text p { font-size: 14px; color: var(--ricoh-mid); line-height: 1.7; }
   .solution-card { border: 1px solid var(--ricoh-red); padding: 32px; background: white; position: relative; margin-top: 8px; }
-  .solution-card::before { content: 'PROPOSED SOLUTION'; position: absolute; top: -1px; left: -1px; right: -1px; background: var(--ricoh-red); color: white; font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-align: center; padding: 6px; font-family: 'DM Sans', sans-serif; }
+  .solution-card::before { content: 'PROPOSED SOLUTION'; position: absolute; top: -1px; left: -1px; right: -1px; background: var(--ricoh-red); color: white; font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-align: center; padding: 6px; }
   .card-inner { padding-top: 24px; }
   .card-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ricoh-mid); font-weight: 500; margin-bottom: 6px; }
   .card-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ricoh-dark); margin-bottom: 4px; line-height: 1.2; }
@@ -136,320 +78,187 @@
   .card-items li:last-child { border-bottom: none; }
   .card-price { background: var(--ricoh-warm); padding: 16px 20px; display: flex; align-items: baseline; justify-content: space-between; }
   .card-price .currency { font-size: 12px; font-weight: 600; color: var(--ricoh-mid); letter-spacing: 1px; margin-right: 4px; }
-  .card-price .amount { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 500; color: var(--ricoh-dark); letter-spacing: -0.5px; }
+  .card-price .amount { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 500; color: var(--ricoh-dark); }
   .card-price .unit { font-size: 11px; color: var(--ricoh-mid); }
-
-  /* PRICING */
   .price-section { background: var(--ricoh-warm); padding: 56px 64px; border-bottom: 1px solid var(--ricoh-rule); }
   .price-section .section-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 26px; color: var(--ricoh-dark); margin-bottom: 8px; }
   .price-table-wrap h3 { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--ricoh-dark); color: var(--ricoh-dark); margin-top: 32px; }
   .price-line { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid rgba(0,0,0,0.08); font-size: 13.5px; }
-  .price-line .item-name { color: var(--ricoh-charcoal); font-weight: 400; max-width: 480px; line-height: 1.3; }
+  .price-line .item-name { color: var(--ricoh-charcoal); max-width: 480px; line-height: 1.3; }
   .price-line .item-name small { display: block; font-size: 11px; color: var(--ricoh-mid); margin-top: 2px; }
   .price-line .item-price { font-family: 'DM Mono', monospace; font-size: 14px; color: var(--ricoh-dark); font-weight: 500; white-space: nowrap; }
   .price-total { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; margin-top: 4px; border-top: 2px solid var(--ricoh-dark); }
   .price-total .total-label { font-weight: 700; font-size: 14px; color: var(--ricoh-dark); text-transform: uppercase; letter-spacing: 0.5px; }
   .price-total .total-amount { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; color: var(--ricoh-red); }
-
-  /* DELIVERY */
   .delivery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 16px; }
   .delivery-block h3 { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--ricoh-mid); font-weight: 600; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--ricoh-rule); }
   .delivery-block p, .delivery-block li { font-size: 14px; color: var(--ricoh-charcoal); line-height: 1.65; }
   .delivery-block ul { list-style: none; padding: 0; }
   .delivery-block ul li { padding: 6px 0; display: flex; align-items: flex-start; gap: 10px; }
-  .delivery-block ul li::before { content: '✓'; color: var(--accent-teal); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .delivery-block ul li::before { content: '✓'; color: var(--accent-teal); font-weight: 700; flex-shrink: 0; }
   .timeline-bar { margin-top: 20px; background: var(--ricoh-rule); height: 4px; border-radius: 2px; position: relative; overflow: hidden; }
   .timeline-fill { position: absolute; left: 0; top: 0; height: 100%; background: linear-gradient(90deg, var(--ricoh-red), var(--ricoh-gold)); width: 60%; border-radius: 2px; }
   .timeline-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: var(--ricoh-mid); }
-
-  /* NEXT STEPS */
   .steps-list { margin-top: 8px; }
   .step-item { display: flex; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--ricoh-rule); align-items: flex-start; }
   .step-item:last-child { border-bottom: none; }
-  .step-num { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--ricoh-red); flex-shrink: 0; width: 28px; padding-top: 1px; }
+  .step-num { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--ricoh-red); flex-shrink: 0; width: 28px; }
   .step-content h4 { font-weight: 600; font-size: 15px; margin-bottom: 4px; color: var(--ricoh-dark); }
   .step-content p { font-size: 13.5px; color: var(--ricoh-mid); line-height: 1.55; }
-
-  /* SIGN-OFF */
   .signoff { background: var(--ricoh-dark); color: white; }
   .signoff-inner { max-width: 900px; margin: 0 auto; padding: 56px 64px; display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: start; }
   .signoff-text h2 { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: white; }
   .signoff-text p { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 480px; }
   .signoff-contact { background: rgba(255,255,255,0.06); padding: 28px; flex-shrink: 0; min-width: 240px; }
-  .signoff-contact .contact-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ricoh-gold); font-weight: 600; margin-bottom: 16px; }
+  .signoff-contact .contact-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ricoh-gold); font-weight: 600; margin-bottom: 14px; }
+  /* CIRCLE PHOTO */
+  .contact-photo { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.18); margin-bottom: 14px; display: block; }
   .signoff-contact .contact-name { font-weight: 700; font-size: 16px; color: white; margin-bottom: 4px; }
   .signoff-contact .contact-role { font-size: 12px; color: rgba(255,255,255,0.45); margin-bottom: 20px; }
   .signoff-contact .contact-detail { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 6px; display: flex; gap: 8px; }
   .signoff-contact .contact-detail span:first-child { color: rgba(255,255,255,0.3); flex-shrink: 0; width: 16px; }
-  .signoff-contact a { color: rgba(255,255,255,0.6); text-decoration: none; }
-
-  /* FOOTER */
+  .signoff-contact a { color: rgba(255,255,255,0.6); }
   .doc-footer { background: var(--ricoh-dark); border-top: 1px solid rgba(255,255,255,0.08); }
   .doc-footer-inner { max-width: 900px; margin: 0 auto; padding: 20px 64px; display: flex; justify-content: space-between; align-items: center; }
   .doc-footer .footer-brand { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: 1px; text-transform: uppercase; }
   .doc-footer .footer-conf { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.2); }
-
-  /* FLOATING BUTTONS */
   .float-group { position: fixed; bottom: 32px; right: 32px; display: flex; align-items: center; gap: 8px; z-index: 100; opacity: 0; transform: translateY(10px); transition: opacity 0.25s, transform 0.25s; pointer-events: none; }
   .float-group.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
-  .float-group .back-to-top, .float-group .print-btn, .float-group .email-btn { position: static; opacity: 1; transform: none; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
-  .back-to-top { width: 44px; height: 44px; background: var(--ricoh-dark); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; }
+  .back-to-top { width: 44px; height: 44px; background: var(--ricoh-dark); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
   .back-to-top:hover { background: var(--ricoh-red); }
-  .print-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ricoh-dark); color: white; border: none; padding: 0 18px; height: 44px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
+  .print-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ricoh-dark); color: white; border: none; padding: 0 18px; height: 44px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; transition: background 0.2s; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
   .print-btn:hover { background: var(--ricoh-red); }
-  .email-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ricoh-red); color: white; text-decoration: none; padding: 0 18px; height: 44px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
+  .email-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ricoh-red); color: white; text-decoration: none; padding: 0 18px; height: 44px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
   .email-btn:hover { background: #a80000; }
-
-  /* PRINT */
   @media print {
     @page { size: A4; margin: 0; }
     html, body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .back-to-top, .print-btn, .email-btn { display: none !important; }
+    .float-group { display: none !important; }
     .cover { page-break-after: always; min-height: 100vh; height: 297mm; overflow: hidden; }
-    .section, .price-section, .outcomes-section, .signoff { page-break-inside: avoid; }
-    .section-header, h2, h3, h4 { page-break-after: avoid; }
-    .exec-summary, .price-section, .signoff, .doc-footer { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    .exec-summary, .price-section, .outcomes-section, .signoff, .doc-footer { width: 100% !important; margin-left: 0 !important; }
+    .exec-summary, .price-section, .signoff, .doc-footer { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; width: 100% !important; margin-left: 0 !important; }
     * { animation: none !important; transition: none !important; }
   }
-
   @media (max-width: 700px) {
     .cover-inner, .section, .price-section, .signoff-inner, .doc-footer-inner { padding-left: 24px; padding-right: 24px; }
     .exec-pillars, .delivery-grid { grid-template-columns: 1fr; }
-    .cover-meta { grid-template-columns: 1fr; gap: 20px; }
-    .signoff-inner { grid-template-columns: 1fr; }
+    .cover-meta, .signoff-inner { grid-template-columns: 1fr; }
     .cover-title { font-size: 36px; }
+    .product-band { flex-direction: column; }
+    .product-band img.product-img { width: 100%; max-width: 100%; }
   }
 </style>
 </head>
 <body>
-
-<!-- COVER -->
 <div class="cover">
-  <div class="cover-texture"></div>
-  <div class="cover-grid"></div>
+  <div class="cover-texture"></div><div class="cover-grid"></div>
   <div class="cover-accent-bar"></div>
   <div class="cover-inner">
-
     <div class="cover-logo-area">
-      <div style="background:transparent; height:44px; padding:0;">
-        <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh Samoa"
-             style="height:44px; width:auto; display:block;"
-             onerror="this.style.display='none'">
-      </div>
+      <img src="https://raw.githubusercontent.com/shivnarayan-rsp/rsp-dashboards/main/ricoh-logo-white-on-transparent.png"
+           alt="Ricoh Samoa" style="height:44px; width:auto;" onerror="this.style.display='none'">
       <div class="logo-text">
         <span class="brand">Ricoh Samoa</span>
         <span class="sub">Business Technology Specialists</span>
       </div>
     </div>
-
     <div class="cover-center">
       <div class="cover-eyebrow">Formal Proposal · 20 March 2026</div>
-      <h1 class="cover-title">
-        Multifunction<br><em>Print &amp; Finishing</em><br>Proposal
-      </h1>
-      <p class="cover-subtitle">
-        Submitted to Samoa Shipping Corporation. This proposal presents our recommended solution in response to your requirements.
-      </p>
+      <h1 class="cover-title">Multifunction<br><em>Print &amp; Finishing</em><br>Proposal</h1>
+      <p class="cover-subtitle">Submitted to Samoa Shipping Corporation. This proposal presents our recommended solution in response to your requirements.</p>
       <div class="cover-divider"></div>
       <div class="cover-meta">
-        <div class="meta-item">
-          <div class="label">Submitted to</div>
-          <div class="value">Samoa Shipping Corporation</div>
-        </div>
-        <div class="meta-item">
-          <div class="label">Submission Date</div>
-          <div class="value">20 March 2026</div>
-        </div>
-        <div class="meta-item">
-          <div class="label">Quote Reference</div>
-          <div class="value">Q-05111</div>
-        </div>
+        <div class="meta-item"><div class="label">Submitted to</div><div class="value">Samoa Shipping Corporation</div></div>
+        <div class="meta-item"><div class="label">Submission Date</div><div class="value">20 March 2026</div></div>
+        <div class="meta-item"><div class="label">Quote Reference</div><div class="value">Q-05111</div></div>
       </div>
     </div>
-
-    <div style="margin-top:40px; padding-top:32px; border-top:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; gap:16px; margin-bottom:16px;">
-      <span style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); font-weight:500; white-space:nowrap;">Submitted to</span>
-      <img src="samoa-shipping-corporation.png" alt="Samoa Shipping Corporation"
-           style="height:32px; width:auto; opacity:0.85;"
-           onerror="this.style.display='none'">
+    <div style="margin-top:40px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+      <span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);font-weight:500;white-space:nowrap;">Submitted to</span>
+      <img src="samoa-shipping-corporation.png" alt="Samoa Shipping Corporation" style="height:32px;width:auto;opacity:0.85;" onerror="this.style.display='none'">
     </div>
-
     <div class="cover-bottom">
       <div class="cover-ref">CONFIDENTIAL &nbsp;·&nbsp; NOT FOR DISTRIBUTION</div>
-      <div class="cover-page-num">01</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);">01</div>
     </div>
   </div>
 </div>
 
-<!-- DOCUMENT BODY -->
 <div class="document">
-
-  <!-- 01 EXECUTIVE SUMMARY -->
   <div class="section exec-summary">
-    <div class="section-header">
-      <span class="section-number">01</span>
-      <h2 class="section-title">Executive Summary</h2>
-    </div>
-    <p class="exec-lead">
-      Samoa Shipping Corporation deserves technology that performs. Ricoh Samoa has been delivering and
-      supporting technology across the Pacific since 2009, and <strong>we are the partner best
-      placed to make this installation succeed</strong> — not just on day one, but for years to come.
-    </p>
-    <p class="exec-lead" style="font-size:16px; margin-bottom:0;">
-      This proposal presents our recommended solution for the Ricoh IM C4510 with finisher, including supply,
-      delivery, professional installation, configuration, and user training.
-    </p>
+    <div class="section-header"><span class="section-number">01</span><h2 class="section-title">Executive Summary</h2></div>
+    <p class="exec-lead">Samoa Shipping Corporation deserves technology that performs. Ricoh Samoa has been delivering and supporting technology across the Pacific since 2009, and <strong>we are the partner best placed to make this installation succeed</strong> — not just on day one, but for years to come.</p>
+    <p class="exec-lead" style="font-size:16px;margin-bottom:0;">This proposal presents our recommended solution for the Ricoh IM C4510 with finisher, including supply, delivery, professional installation, configuration, and user training.</p>
     <div class="exec-pillars">
-      <div class="exec-pillar">
-        <div class="pillar-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="9" stroke="#888" stroke-width="1.5"/>
-            <path d="M9 12l2 2 4-4" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="pillar-title">Right Specification</div>
-        <div class="pillar-desc">Every product in this proposal is selected to meet your requirements precisely — no upselling, no gaps.</div>
-      </div>
-      <div class="exec-pillar">
-        <div class="pillar-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="12" cy="9" r="2.5" stroke="#888" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <div class="pillar-title">Local Delivery &amp; Install</div>
-        <div class="pillar-desc">Our in-country team handles end-to-end delivery and installation — no freight-and-hope approach.</div>
-      </div>
-      <div class="exec-pillar">
-        <div class="pillar-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12 3l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4l2-4z" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M5 13v6a1 1 0 001 1h12a1 1 0 001-1v-6" stroke="#888" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div class="pillar-title">Long-Term Support</div>
-        <div class="pillar-desc">Backed by Ricoh South Pacific across the Pacific region. Warranty, on-site response, and escalation pathways in place.</div>
-      </div>
+      <div class="exec-pillar"><div class="pillar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#888" stroke-width="1.5"/><path d="M9 12l2 2 4-4" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="pillar-title">Right Specification</div><div class="pillar-desc">Every product in this proposal is selected to meet your requirements precisely — no upselling, no gaps.</div></div>
+      <div class="exec-pillar"><div class="pillar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#888" stroke-width="1.5"/><circle cx="12" cy="9" r="2.5" stroke="#888" stroke-width="1.5"/></svg></div><div class="pillar-title">Local Delivery &amp; Install</div><div class="pillar-desc">Our in-country team handles end-to-end delivery and installation — no freight-and-hope approach.</div></div>
+      <div class="exec-pillar"><div class="pillar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4l2-4z" stroke="#888" stroke-width="1.5"/><path d="M5 13v6a1 1 0 001 1h12a1 1 0 001-1v-6" stroke="#888" stroke-width="1.5"/></svg></div><div class="pillar-title">Long-Term Support</div><div class="pillar-desc">Backed by Ricoh South Pacific across the Pacific region. Warranty, on-site response, and escalation pathways in place.</div></div>
     </div>
   </div>
 
-  <!-- 02 PROPOSED SOLUTION -->
-  <div class="section" style="background:var(--ricoh-pale);">
-    <div class="section-header">
-      <span class="section-number">02</span>
-      <h2 class="section-title">Proposed Solution</h2>
+  <!-- PRODUCT IMAGE BAND -->
+  <div class="product-band">
+    <img class="product-img"
+         src="https://ricohconfigurator.com/_models/mfp-color/IM_C4510_C6010/brand/ricoh/main.jpg"
+         alt="Ricoh IM C4510" onerror="this.style.display='none'">
+    <div class="product-band-text">
+      <h3>Ricoh IM C4510</h3>
+      <p>Engineered for demanding office environments, the IM C4510 delivers superior A3 colour output with a 10.1" Smart Operation Panel and high-speed Single Pass Document Feeder. Configured here with a Booklet Finisher SR3330, Bridge Unit BU3100, and extended paper capacity for high-volume environments — delivering everything from everyday colour prints to professionally finished saddle-stitched booklets.</p>
     </div>
-    <p style="font-size:14px; color:var(--ricoh-mid); margin-bottom:32px; max-width:560px; line-height:1.6;">
-      The following solution has been configured to meet your requirements.
-    </p>
+  </div>
+
+  <div class="section" style="background:var(--ricoh-pale);">
+    <div class="section-header"><span class="section-number">02</span><h2 class="section-title">Proposed Solution</h2></div>
+    <p style="font-size:14px;color:var(--ricoh-mid);margin-bottom:32px;max-width:560px;line-height:1.6;">The following solution has been configured to meet your requirements.</p>
     <div class="solution-card">
       <div class="card-inner">
         <div class="card-label">Quote Q-05111</div>
         <div class="card-name">Ricoh IM C4510 with finisher</div>
         <div class="card-tagline">Recommended solution for Samoa Shipping Corporation</div>
         <ul class="card-items">
-          <li>Ricoh IM C4510 — A3 colour multifunction, 10.1" Smart Operation Panel, high-speed single pass duplex scanning, advanced connectivity</li>
-          <li>Paper Feed Unit PB3320 — Optional 2-tray unit adding 1,100 sheets (2 × 550) of additional paper capacity</li>
-          <li>Ricoh Booklet Finisher SR3330 (1,000 Sheet) — Paginated, saddle-stitched booklet finishing with three output destinations and optional hole punching</li>
-          <li>Bridge Unit BU3100 — Required connector transporting pages from exit area to the external finisher for inline finishing</li>
+          <li>Ricoh IM C4510 — A3 colour multifunction, 10.1" Smart Operation Panel, high-speed single pass duplex scanning</li>
+          <li>Paper Feed Unit PB3320 — 2-tray, 1,100 sheet additional paper capacity</li>
+          <li>Ricoh Booklet Finisher SR3330 (1,000 Sheet) — Saddle-stitched booklet finishing with three output destinations</li>
+          <li>Bridge Unit BU3100 — Required for inline finisher connection</li>
           <li>Ricoh Toner Yellow IM C6010 — 28,000-page yield at 5% coverage</li>
           <li>Ricoh Toner Magenta IM C6010 — 28,000-page yield at 5% coverage</li>
           <li>Ricoh Toner Cyan IM C6010 — 28,000-page yield at 5% coverage</li>
           <li>Ricoh Toner Black IM C6010 — 42,000-page yield at 5% coverage</li>
-          <li>HPM 10A Surge Protected Double Adapter — 175 Joule surge protection, 2,400W rating for equipment protection</li>
+          <li>HPM 10A Surge Protected Double Adapter — 175J surge protection, 2,400W rated</li>
           <li>Dynamix 1.8M Power Cord (3-Pin to IEC C13) — SAA approved, 1.0mm copper core</li>
         </ul>
         <div class="card-price">
-          <div>
-            <span class="currency">WST</span>
-            <span class="amount">37,950.00</span>
-          </div>
+          <div><span class="currency">WST</span><span class="amount">37,950.00</span></div>
           <span class="unit">inclusive of CT (15%)</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 03 INVESTMENT SUMMARY -->
   <div class="price-section">
-    <div class="section-header">
-      <span class="section-number">03</span>
-      <h2 class="section-title">Investment Summary</h2>
-    </div>
-    <p style="font-size:14px; color:var(--ricoh-mid); max-width:560px; line-height:1.6;">
-      All prices are quoted in WST, inclusive of CT (15%). Delivery, installation, and basic user training are included.
-    </p>
+    <div class="section-header"><span class="section-number">03</span><h2 class="section-title">Investment Summary</h2></div>
+    <p style="font-size:14px;color:var(--ricoh-mid);max-width:560px;line-height:1.6;">All prices quoted in WST, inclusive of CT (15%). Delivery, installation, and basic user training are included.</p>
     <div class="price-table-wrap">
-
       <h3>Ricoh Copier Equipment</h3>
-      <div class="price-line">
-        <div class="item-name">Ricoh IM C4510<small>A3 colour multifunction — print, copy, scan, fax</small></div>
-        <div class="item-price">19,981.11</div>
-      </div>
-      <div class="price-line">
-        <div class="item-name">Paper Feed Unit PB3320<small>2-tray, 1,100 sheet additional capacity</small></div>
-        <div class="item-price">2,091.85</div>
-      </div>
-      <div class="price-line">
-        <div class="item-name">Ricoh Booklet Finisher SR3330 (1,000 Sheet)<small>Saddle-stitch booklet finishing with three output destinations</small></div>
-        <div class="item-price">6,395.74</div>
-      </div>
-      <div class="price-line">
-        <div class="item-name">Bridge Unit BU3100<small>Required for inline finisher connection</small></div>
-        <div class="item-price">822.46</div>
-      </div>
-
+      <div class="price-line"><div class="item-name">Ricoh IM C4510<small>A3 colour multifunction — print, copy, scan, fax</small></div><div class="item-price">19,981.11</div></div>
+      <div class="price-line"><div class="item-name">Paper Feed Unit PB3320<small>2-tray, 1,100 sheet additional capacity</small></div><div class="item-price">2,091.85</div></div>
+      <div class="price-line"><div class="item-name">Ricoh Booklet Finisher SR3330 (1,000 Sheet)<small>Saddle-stitch booklet finishing with three output destinations</small></div><div class="item-price">6,395.74</div></div>
+      <div class="price-line"><div class="item-name">Bridge Unit BU3100<small>Required for inline finisher connection</small></div><div class="item-price">822.46</div></div>
       <h3>Ricoh Copier Toners</h3>
-      <div class="price-line">
-        <div class="item-name">Ricoh Toner Yellow IM C6010<small>28,000-page yield at 5% coverage</small></div>
-        <div class="item-price">1,098.03</div>
-      </div>
-      <div class="price-line">
-        <div class="item-name">Ricoh Toner Magenta IM C6010<small>28,000-page yield at 5% coverage</small></div>
-        <div class="item-price">1,098.03</div>
-      </div>
-      <div class="price-line">
-        <div class="item-name">Ricoh Toner Cyan IM C6010<small>28,000-page yield at 5% coverage</small></div>
-        <div class="item-price">1,098.03</div>
-      </div>
-      <div class="price-line">
-        <div class="item-name">Ricoh Toner Black IM C6010<small>42,000-page yield at 5% coverage</small></div>
-        <div class="item-price">378.52</div>
-      </div>
-
+      <div class="price-line"><div class="item-name">Ricoh Toner Yellow IM C6010<small>28,000-page yield at 5% coverage</small></div><div class="item-price">1,098.03</div></div>
+      <div class="price-line"><div class="item-name">Ricoh Toner Magenta IM C6010<small>28,000-page yield at 5% coverage</small></div><div class="item-price">1,098.03</div></div>
+      <div class="price-line"><div class="item-name">Ricoh Toner Cyan IM C6010<small>28,000-page yield at 5% coverage</small></div><div class="item-price">1,098.03</div></div>
+      <div class="price-line"><div class="item-name">Ricoh Toner Black IM C6010<small>42,000-page yield at 5% coverage</small></div><div class="item-price">378.52</div></div>
       <h3>Accessories &amp; Parts</h3>
-      <div class="price-line">
-        <div class="item-name">HPM 10A Surge Protected Double Adapter<small>175J surge protection, 2,400W rated</small></div>
-        <div class="item-price">21.75</div>
-      </div>
-      <div class="price-line">
-        <div class="item-name">Dynamix 1.8M Power Cord (3-Pin to IEC C13)<small>SAA approved, 1.0mm copper core</small></div>
-        <div class="item-price">14.48</div>
-      </div>
-
-      <div style="margin-top:24px; padding: 12px 0; border-top: 1px solid rgba(0,0,0,0.08); display:flex; justify-content:space-between; font-size:13px; color:var(--ricoh-mid);">
-        <span>Sub-total (excl. CT)</span>
-        <span style="font-family:'DM Mono',monospace;">WST 33,000.00</span>
-      </div>
-      <div style="padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.08); display:flex; justify-content:space-between; font-size:13px; color:var(--ricoh-mid);">
-        <span>CT (15%)</span>
-        <span style="font-family:'DM Mono',monospace;">WST 4,950.00</span>
-      </div>
-
-      <div class="price-total">
-        <div class="total-label">Total Investment (incl. CT)</div>
-        <div class="total-amount">WST 37,950.00</div>
-      </div>
+      <div class="price-line"><div class="item-name">HPM 10A Surge Protected Double Adapter<small>175J surge protection, 2,400W rated</small></div><div class="item-price">21.75</div></div>
+      <div class="price-line"><div class="item-name">Dynamix 1.8M Power Cord (3-Pin to IEC C13)<small>SAA approved, 1.0mm copper core</small></div><div class="item-price">14.48</div></div>
+      <div style="margin-top:24px;padding:12px 0;border-top:1px solid rgba(0,0,0,0.08);display:flex;justify-content:space-between;font-size:13px;color:var(--ricoh-mid);"><span>Sub-total (excl. CT)</span><span style="font-family:'DM Mono',monospace;">WST 33,000.00</span></div>
+      <div style="padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.08);display:flex;justify-content:space-between;font-size:13px;color:var(--ricoh-mid);"><span>CT (15%)</span><span style="font-family:'DM Mono',monospace;">WST 4,950.00</span></div>
+      <div class="price-total"><div class="total-label">Total Investment (incl. CT)</div><div class="total-amount">WST 37,950.00</div></div>
     </div>
   </div>
 
-  <!-- 04 DELIVERY & SUPPORT -->
   <div class="section" style="background:white;">
-    <div class="section-header">
-      <span class="section-number">04</span>
-      <h2 class="section-title">Delivery, Installation &amp; Support</h2>
-    </div>
+    <div class="section-header"><span class="section-number">04</span><h2 class="section-title">Delivery, Installation &amp; Support</h2></div>
     <div class="delivery-grid">
       <div class="delivery-block">
         <h3>Delivery Location</h3>
@@ -465,99 +274,54 @@
       </div>
       <div class="delivery-block">
         <h3>Delivery Timeline</h3>
-        <div style="margin-bottom:20px; font-size:14px;">
-          Stock subject to confirmation at time of order.
-        </div>
+        <div style="margin-bottom:20px;font-size:14px;">Stock subject to confirmation at time of order.</div>
         <div>
-          <div style="font-size:12px; font-weight:600; color:var(--ricoh-mid); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Order to Delivery</div>
-          <div style="font-size:22px; font-weight:700; color:var(--ricoh-dark);">3 – 5 weeks</div>
+          <div style="font-size:12px;font-weight:600;color:var(--ricoh-mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Order to Delivery</div>
+          <div style="font-size:22px;font-weight:700;color:var(--ricoh-dark);">3 – 5 weeks</div>
           <div class="timeline-bar"><div class="timeline-fill"></div></div>
           <div class="timeline-labels"><span>Purchase Order</span><span>Equipment on-site</span></div>
         </div>
         <div style="margin-top:20px;">
-          <div style="font-size:12px; font-weight:600; color:var(--ricoh-mid); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Installation Lead Time</div>
-          <div style="font-size:22px; font-weight:700; color:var(--ricoh-dark);">2 – 3 days</div>
-          <div style="font-size:13px; color:var(--ricoh-mid);">After equipment arrives on-site</div>
+          <div style="font-size:12px;font-weight:600;color:var(--ricoh-mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Installation Lead Time</div>
+          <div style="font-size:22px;font-weight:700;color:var(--ricoh-dark);">2 – 3 days</div>
+          <div style="font-size:13px;color:var(--ricoh-mid);">After equipment arrives on-site</div>
         </div>
         <h3 style="margin-top:28px;">Warranty</h3>
-        <ul>
-          <li>Manufacturer warranty applies to all products</li>
-          <li>On-site support escalation via Ricoh South Pacific</li>
-        </ul>
+        <ul><li>Manufacturer warranty applies to all products</li><li>On-site support escalation via Ricoh South Pacific</li></ul>
       </div>
     </div>
   </div>
 
-  <!-- 05 NEXT STEPS -->
   <div class="section" style="background:white;">
-    <div class="section-header">
-      <span class="section-number">05</span>
-      <h2 class="section-title">Next Steps</h2>
-    </div>
-    <p style="font-size:14px; color:var(--ricoh-mid); margin-bottom:28px; max-width:560px; line-height:1.6;">
-      Four steps from here to a working system.
-    </p>
+    <div class="section-header"><span class="section-number">05</span><h2 class="section-title">Next Steps</h2></div>
+    <p style="font-size:14px;color:var(--ricoh-mid);margin-bottom:28px;max-width:560px;line-height:1.6;">Four steps from here to a working system.</p>
     <div class="steps-list">
-      <div class="step-item">
-        <div class="step-num">01</div>
-        <div class="step-content">
-          <h4>Confirm acceptance of this proposal</h4>
-          <p>Let Ronaldo Mercado know you'd like to proceed. We're ready to move immediately.</p>
-        </div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">02</div>
-        <div class="step-content">
-          <h4>Purchase order issued</h4>
-          <p>Raise a PO to Ricoh Samoa. We'll have equipment on order and confirm stock availability in writing.</p>
-        </div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">03</div>
-        <div class="step-content">
-          <h4>Delivery to Matautu tai, Apia, Samoa</h4>
-          <p>Equipment delivered typically 3–5 weeks from purchase order. We'll confirm the exact date once stock is secured.</p>
-        </div>
-      </div>
-      <div class="step-item">
-        <div class="step-num">04</div>
-        <div class="step-content">
-          <h4>Installation, testing and handover</h4>
-          <p>Our team installs, configures, and tests on-site. Staff receive practical training before sign-off.</p>
-        </div>
-      </div>
+      <div class="step-item"><div class="step-num">01</div><div class="step-content"><h4>Confirm acceptance of this proposal</h4><p>Let Ronaldo Mercado know you'd like to proceed. We're ready to move immediately.</p></div></div>
+      <div class="step-item"><div class="step-num">02</div><div class="step-content"><h4>Purchase order issued</h4><p>Raise a PO to Ricoh Samoa. We'll confirm stock availability in writing.</p></div></div>
+      <div class="step-item"><div class="step-num">03</div><div class="step-content"><h4>Delivery to Matautu tai, Apia, Samoa</h4><p>Equipment delivered typically 3–5 weeks from purchase order.</p></div></div>
+      <div class="step-item"><div class="step-num">04</div><div class="step-content"><h4>Installation, testing and handover</h4><p>Our team installs, configures, and tests on-site. Staff receive practical training before sign-off.</p></div></div>
     </div>
   </div>
 
-  <!-- SIGN-OFF -->
   <div class="signoff">
     <div class="signoff-inner">
       <div class="signoff-text">
         <h2>Ready when you are.</h2>
-        <p>
-          Ricoh Samoa has been a trusted technology partner since 2009. A wholly-owned subsidiary
-          of Ricoh South Pacific in New Zealand, we understand the logistics, we understand the
-          environment, and we understand what's at stake.
-        </p>
-        <p style="margin-top:16px;">
-          We appreciate the opportunity to submit this proposal and look forward to supporting
-          Samoa Shipping Corporation with a solution that genuinely works — today and for years to come.
-        </p>
-        <p style="margin-top:16px;">
-          If you have any questions or require further information, please do not hesitate to contact
-          us. Our specialists are here to help you.
-        </p>
-        <p style="margin-top:24px; font-size:13px; color:rgba(255,255,255,0.35);">
-          Quote valid until: 25 February 2026. Please contact us to confirm current validity.
-        </p>
+        <p>Ricoh Samoa has been a trusted technology partner since 2009. A wholly-owned subsidiary of Ricoh South Pacific in New Zealand, we understand the logistics, we understand the environment, and we understand what's at stake.</p>
+        <p style="margin-top:16px;">We appreciate the opportunity to submit this proposal and look forward to supporting Samoa Shipping Corporation with a solution that genuinely works — today and for years to come.</p>
+        <p style="margin-top:16px;">If you have any questions or require further information, please do not hesitate to contact us.</p>
+        <p style="margin-top:24px;font-size:13px;color:rgba(255,255,255,0.35);">Quote valid until: 25 February 2026. Please contact us to confirm current validity.</p>
       </div>
       <div class="signoff-contact">
         <div class="contact-label">Your contact</div>
+        <img class="contact-photo"
+             src="https://raw.githubusercontent.com/shivnarayan-rsp/rsp-dashboards/main/ronaldo-mercado.jpg"
+             alt="Ronaldo Mercado" onerror="this.style.display='none'">
         <div class="contact-name">Ronaldo Mercado</div>
         <div class="contact-role">Sales Executive, Ricoh Samoa</div>
         <div class="contact-detail"><span>&#9993;</span><span><a href="mailto:ronaldo@ricohsamoa.com">ronaldo@ricohsamoa.com</a></span></div>
         <div class="contact-detail"><span>&#9742;</span><span>+685 7712757</span></div>
-        <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);">
           <div class="contact-label">Regional support</div>
           <div class="contact-name" style="font-size:14px;">Avi Sharma</div>
           <div class="contact-role">Regional Sales Manager, Pacific Islands</div>
@@ -568,54 +332,31 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
   <div class="doc-footer">
     <div class="doc-footer-inner">
-      <div class="footer-brand">
-        <a href="https://www.ricohsamoa.com" target="_blank" style="color:rgba(255,255,255,0.25); text-decoration:none;">Ricoh Samoa</a>
-        &nbsp;·&nbsp;
-        <a href="https://www.ricohsouthpacific.com" target="_blank" style="color:rgba(255,255,255,0.25); text-decoration:none;">Ricoh South Pacific</a>
-      </div>
+      <div class="footer-brand"><a href="https://www.ricohsamoa.com" target="_blank" style="color:rgba(255,255,255,0.25);">Ricoh Samoa</a> &nbsp;·&nbsp; <a href="https://www.ricohsouthpacific.com" target="_blank" style="color:rgba(255,255,255,0.25);">Ricoh South Pacific</a></div>
       <div class="footer-conf">Confidential · 20 March 2026 · Q-05111</div>
     </div>
   </div>
-
-</div><!-- /document -->
-
-<!-- FLOATING BUTTONS -->
-<div class="float-group" id="floatGroup">
-  <a class="email-btn" href="mailto:ronaldo@ricohsamoa.com,avi@ricohsouthpacific.com?subject=Proposal%20Response%20—%20Q-05111">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-      <polyline points="22,6 12,13 2,6"></polyline>
-    </svg>
-    Email Ricoh Samoa
-  </a>
-  <button class="print-btn" onclick="window.print()" title="Save / Print to PDF">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="6 9 6 2 18 2 18 9"></polyline>
-      <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"></path>
-      <rect x="6" y="14" width="12" height="8"></rect>
-    </svg>
-    Save / Print to PDF
-  </button>
-  <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="18 15 12 9 6 15"></polyline>
-    </svg>
-  </button>
 </div>
 
+<div class="float-group" id="floatGroup">
+  <a class="email-btn" href="mailto:ronaldo@ricohsamoa.com,avi@ricohsouthpacific.com?subject=Proposal%20Response%20—%20Q-05111">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    Email Ricoh Samoa
+  </a>
+  <button class="print-btn" onclick="window.print()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+    Save / Print to PDF
+  </button>
+  <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+  </button>
+</div>
 <script>
-  const group = document.getElementById('floatGroup');
-  const cover = document.querySelector('.cover');
-  function onScroll() {
-    const coverBottom = cover ? cover.getBoundingClientRect().bottom : 0;
-    group.classList.toggle('visible', coverBottom < 0);
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  const g=document.getElementById('floatGroup'),c=document.querySelector('.cover');
+  function s(){g.classList.toggle('visible',c.getBoundingClientRect().bottom<0);}
+  window.addEventListener('scroll',s,{passive:true});s();
 </script>
-
 </body>
 </html>
