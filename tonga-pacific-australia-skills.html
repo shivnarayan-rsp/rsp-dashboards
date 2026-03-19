@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ricoh Tonga — Interactive Display Proposal | Pacific Australia Skills</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ricoh-red: #cc0000;
+    --ricoh-dark: #1a1a1a;
+    --ricoh-charcoal: #2d2d2d;
+    --ricoh-mid: #4a4a4a;
+    --ricoh-warm: #f5f0eb;
+    --ricoh-gold: #c8993a;
+    --ricoh-pale: #faf8f5;
+    --ricoh-rule: #e0d8d0;
+    --accent-teal: #0e7c7b;
+    --white: #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ricoh-pale);
+    color: var(--ricoh-dark);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── COVER PAGE ── */
+  .cover {
+    min-height: 100vh;
+    background: var(--ricoh-dark);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    page-break-after: always;
+  }
+
+  .cover-texture {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 70% 20%, rgba(204,0,0,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% 80%, rgba(200,153,58,0.10) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .cover-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .cover-accent-bar {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, var(--ricoh-red), var(--ricoh-gold));
+  }
+
+  .cover-inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 56px 64px 64px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .cover-logo-area {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    justify-content: flex-end;
+  }
+
+  .logo-mark {
+    width: 52px;
+    height: 52px;
+    background: var(--ricoh-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 22px;
+    color: white;
+    letter-spacing: -1px;
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .logo-text .brand {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: white;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .logo-text .sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .cover-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 0 40px;
+  }
+
+  .cover-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ricoh-gold);
+    font-weight: 500;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cover-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: var(--ricoh-gold);
+  }
+
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(42px, 5.5vw, 72px);
+    line-height: 1.05;
+    color: white;
+    margin-bottom: 20px;
+    max-width: 700px;
+  }
+
+  .cover-title em {
+    font-style: normal;
+    color: var(--ricoh-red);
+  }
+
+  .cover-subtitle {
+    font-size: 17px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    max-width: 520px;
+    line-height: 1.6;
+    margin-bottom: 48px;
+  }
+
+  .cover-divider {
+    width: 80px;
+    height: 2px;
+    background: rgba(255,255,255,0.15);
+    margin-bottom: 40px;
+  }
+
+  .cover-meta {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 48px;
+    align-items: start;
+  }
+
+  .meta-item .label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .meta-item .value {
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+  }
+
+  .cover-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .cover-ref {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 1px;
+  }
+
+  .cover-page-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+  }
+
+  /* ── DOCUMENT BODY ── */
+  .document {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 0 80px;
+  }
+
+  /* Full-bleed: break out of the 900px document wrapper on wide screens */
+  .exec-summary,
+  .price-section,
+  .outcomes-section,
+  .signoff,
+  .doc-footer {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    box-sizing: border-box;
+  }
+
+  /* Re-constrain the inner content of full-bleed sections */
+  .exec-summary > *,
+  .price-section > *,
+  .outcomes-section > *,
+  .signoff > * {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Signoff uses grid so needs different treatment */
+  .signoff {
+    display: block;
+  }
+
+  .signoff-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 64px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .doc-footer-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* ── SECTION STYLES ── */
+  .section {
+    padding: 64px 64px;
+    border-bottom: 1px solid var(--ricoh-rule);
+    position: relative;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section:nth-child(2) { animation-delay: 0.05s; }
+  .section:nth-child(3) { animation-delay: 0.1s; }
+  .section:nth-child(4) { animation-delay: 0.15s; }
+  .section:nth-child(5) { animation-delay: 0.2s; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .section-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--ricoh-red);
+    font-weight: 500;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--ricoh-dark);
+    line-height: 1.2;
+  }
+
+  /* ── EXECUTIVE SUMMARY ── */
+  .exec-summary {
+    background: var(--ricoh-dark);
+    color: white;
+    padding: 56px 64px;
+  }
+
+  .exec-summary .section-title {
+    color: white;
+  }
+
+  .exec-summary .section-number {
+    color: var(--ricoh-gold);
+  }
+
+  .exec-lead {
+    font-size: 19px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.85);
+    font-weight: 300;
+    margin-bottom: 36px;
+    max-width: 680px;
+  }
+
+  .exec-lead strong {
+    color: white;
+    font-weight: 600;
+  }
+
+  .exec-pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 40px;
+  }
+
+  .exec-pillar {
+    background: rgba(255,255,255,0.05);
+    padding: 28px 24px;
+    border-top: 3px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .exec-pillar:first-child { border-color: var(--ricoh-red); }
+  .exec-pillar:nth-child(2) { border-color: var(--ricoh-gold); }
+  .exec-pillar:last-child { border-color: var(--accent-teal); }
+
+  .pillar-icon {
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+
+  .pillar-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .pillar-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+  }
+
+  /* ── COMPLIANCE TABLE ── */
+  .compliance-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  .compliance-table thead tr {
+    border-bottom: 2px solid var(--ricoh-dark);
+  }
+
+  .compliance-table th {
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ricoh-mid);
+    font-weight: 600;
+    padding: 0 0 12px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .compliance-table th:last-child { text-align: right; }
+
+  .compliance-table td {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--ricoh-rule);
+    font-size: 14px;
+    vertical-align: top;
+  }
+
+  .compliance-table td:first-child {
+    font-weight: 500;
+    color: var(--ricoh-dark);
+    padding-right: 24px;
+    width: 55%;
+  }
+
+  .compliance-table td:last-child {
+    text-align: right;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 4px 12px;
+    border-radius: 2px;
+  }
+
+  .badge-green {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  .badge-gold {
+    background: #fff8e1;
+    color: #f57f17;
+  }
+
+  /* ── SOLUTION CARDS ── */
+  .solutions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 8px;
+  }
+
+  .solution-card {
+    border: 1px solid var(--ricoh-rule);
+    padding: 32px;
+    position: relative;
+    background: white;
+  }
+
+  .solution-card.featured {
+    border-color: var(--ricoh-red);
+    background: white;
+  }
+
+  .solution-card.featured::before {
+    content: 'FULLY COMPLIANT';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    background: var(--ricoh-red);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-align: center;
+    padding: 6px;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .solution-card.featured .card-inner {
+    padding-top: 24px;
+  }
+
+  .card-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ricoh-mid);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ricoh-dark);
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .card-tagline {
+    font-size: 13px;
+    color: var(--ricoh-mid);
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+
+  .card-items {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+
+  .card-items li {
+    font-size: 13.5px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--ricoh-rule);
+    color: var(--ricoh-charcoal);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.4;
+  }
+
+  .card-items li::before {
+    content: '→';
+    color: var(--ricoh-red);
+    flex-shrink: 0;
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .card-items li:last-child { border-bottom: none; }
+
+  .card-price {
+    background: var(--ricoh-warm);
+    padding: 16px 20px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-top: 4px;
+  }
+
+  .card-price .currency {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ricoh-mid);
+    letter-spacing: 1px;
+    margin-right: 4px;
+  }
+
+  .card-price .amount {
+    font-family: 'DM Mono', monospace;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--ricoh-dark);
+    letter-spacing: -0.5px;
+  }
+
+  .card-price .unit {
+    font-size: 11px;
+    color: var(--ricoh-mid);
+  }
+
+  .saving-note {
+    font-size: 12px;
+    color: var(--accent-teal);
+    font-weight: 600;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ── PRICING BREAKDOWN ── */
+  .price-section {
+    background: var(--ricoh-warm);
+    padding: 56px 64px;
+    border-bottom: 1px solid var(--ricoh-rule);
+  }
+
+  .price-tables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 32px;
+  }
+
+  .price-table-wrap h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ricoh-dark);
+    color: var(--ricoh-dark);
+  }
+
+  .price-table-wrap.alt h3 {
+    border-color: var(--ricoh-mid);
+  }
+
+  .price-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    font-size: 13.5px;
+  }
+
+  .price-line .item-name {
+    color: var(--ricoh-charcoal);
+    font-weight: 400;
+    max-width: 200px;
+    line-height: 1.3;
+  }
+
+  .price-line .item-name small {
+    display: block;
+    font-size: 11px;
+    color: var(--ricoh-mid);
+    margin-top: 2px;
+  }
+
+  .price-line .item-price {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--ricoh-dark);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .price-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    margin-top: 4px;
+  }
+
+  .price-total .total-label {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ricoh-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .price-total .total-amount {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ricoh-red);
+  }
+
+  /* ── DELIVERY & SUPPORT ── */
+  .delivery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 16px;
+  }
+
+  .delivery-block h3 {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ricoh-mid);
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ricoh-rule);
+  }
+
+  .delivery-block p, .delivery-block li {
+    font-size: 14px;
+    color: var(--ricoh-charcoal);
+    line-height: 1.65;
+  }
+
+  .delivery-block ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .delivery-block ul li {
+    padding: 6px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .delivery-block ul li::before {
+    content: '✓';
+    color: var(--accent-teal);
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .timeline-bar {
+    margin-top: 20px;
+    background: var(--ricoh-rule);
+    height: 4px;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timeline-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--ricoh-red), var(--ricoh-gold));
+    width: 60%;
+    border-radius: 2px;
+  }
+
+  .timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--ricoh-mid);
+  }
+
+  /* ── OUTCOMES ── */
+  .outcomes-section {
+    background: linear-gradient(135deg, #0d2137 0%, #1a3a5c 100%);
+    padding: 56px 64px;
+    color: white;
+    border-bottom: none;
+  }
+
+  .outcomes-section .section-title {
+    color: white;
+  }
+
+  .outcomes-section .section-number {
+    color: var(--ricoh-gold);
+  }
+
+  .outcomes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 36px;
+  }
+
+  .outcome-item {
+    background: rgba(255,255,255,0.07);
+    padding: 28px 24px;
+    border-bottom: 3px solid rgba(255,255,255,0.1);
+    transition: background 0.2s;
+  }
+
+  .outcome-item:hover {
+    background: rgba(255,255,255,0.11);
+  }
+
+  .outcome-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .outcome-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  .outcome-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+  }
+
+  /* ── NEXT STEPS ── */
+  .steps-list {
+    margin-top: 8px;
+    counter-reset: steps;
+  }
+
+  .step-item {
+    display: flex;
+    gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--ricoh-rule);
+    align-items: flex-start;
+  }
+
+  .step-item:last-child { border-bottom: none; }
+
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ricoh-red);
+    flex-shrink: 0;
+    width: 28px;
+    padding-top: 1px;
+  }
+
+  .step-content h4 {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: var(--ricoh-dark);
+  }
+
+  .step-content p {
+    font-size: 13.5px;
+    color: var(--ricoh-mid);
+    line-height: 1.55;
+  }
+
+  /* ── SIGN-OFF ── */
+  .signoff {
+    background: var(--ricoh-dark);
+    color: white;
+  }
+
+  .signoff-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    color: white;
+  }
+
+  .signoff-text p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.7;
+    max-width: 480px;
+  }
+
+  .signoff-contact {
+    background: rgba(255,255,255,0.06);
+    padding: 28px 28px;
+    flex-shrink: 0;
+    min-width: 240px;
+  }
+
+  .signoff-contact .contact-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ricoh-gold);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .signoff-contact .contact-name {
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+    margin-bottom: 4px;
+  }
+
+  .signoff-contact .contact-role {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 20px;
+  }
+
+  .signoff-contact .contact-detail {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 6px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .signoff-contact .contact-detail span:first-child {
+    color: rgba(255,255,255,0.3);
+    flex-shrink: 0;
+    width: 16px;
+  }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    background: var(--ricoh-dark);
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .doc-footer .footer-brand {
+    font-size: 12px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .doc-footer .footer-conf {
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── LOGO ── */
+  .logo-mark {
+    width: 52px;
+    height: 52px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logo-img {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* ── LINKS — no blue, always white or dark depending on context ── */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .signoff-contact .contact-detail span:last-child,
+  .signoff-contact a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+  }
+
+  /* ── FLOATING BUTTON GROUP ── */
+  .float-group {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 100;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+  }
+
+  .float-group.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  /* Shared base for all floating buttons */
+  .float-group .back-to-top,
+  .float-group .print-btn,
+  .float-group .email-btn {
+    position: static;
+    opacity: 1;
+    transform: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+
+  /* Back to top — square icon button */
+  .back-to-top {
+    width: 44px;
+    height: 44px;
+    background: var(--ricoh-dark);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .back-to-top:hover { background: var(--ricoh-red); }
+
+  /* Print button */
+  .print-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ricoh-dark);
+    color: white;
+    border: none;
+    padding: 0 18px;
+    height: 44px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .print-btn:hover { background: var(--ricoh-red); }
+
+  /* Email button */
+  .email-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ricoh-red);
+    color: white;
+    text-decoration: none;
+    padding: 0 18px;
+    height: 44px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .email-btn:hover { background: #a80000; }
+
+  /* ══════════════════════════════════════
+     PRINT / PDF STYLES
+  ══════════════════════════════════════ */
+  @media print {
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    html, body {
+      background: white !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* Hide interactive UI elements */
+    .float-group {
+      display: none !important;
+    }
+
+    /* Cover: full page */
+    .cover {
+      page-break-after: always;
+      min-height: 100vh;
+      height: 297mm;
+      overflow: hidden;
+    }
+
+    /* Keep sections together where possible */
+    .section,
+    .price-section,
+    .outcomes-section,
+    .signoff {
+      page-break-inside: avoid;
+    }
+
+    /* Avoid orphaned headers */
+    .section-header,
+    h2, h3, h4 {
+      page-break-after: avoid;
+    }
+
+    /* Keep solution cards together */
+    .solutions-grid,
+    .price-tables,
+    .delivery-grid,
+    .outcomes-grid,
+    .exec-pillars {
+      page-break-inside: avoid;
+    }
+
+    /* Keep step items together */
+    .step-item {
+      page-break-inside: avoid;
+    }
+
+    /* Ensure backgrounds print */
+    .exec-summary,
+    .outcomes-section,
+    .signoff,
+    .doc-footer,
+    .cover {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    /* Tighten spacing for print */
+    .section { padding: 40px 56px; }
+    .price-section { padding: 40px 56px; }
+    .outcomes-section { padding: 40px 56px; }
+    .signoff { padding: 40px 56px; }
+
+    /* Remove animations */
+    * { animation: none !important; transition: none !important; }
+
+    /* Footer always at bottom */
+    .doc-footer { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 700px) {
+    .cover-inner, .section, .price-section, .outcomes-section, .signoff, .doc-footer { padding-left: 24px; padding-right: 24px; }
+    .exec-pillars, .solutions-grid, .delivery-grid, .outcomes-grid, .price-tables { grid-template-columns: 1fr; }
+    .cover-meta { grid-template-columns: 1fr; gap: 20px; }
+    .signoff-inner { grid-template-columns: 1fr; padding: 40px 56px; }
+    /* Reset full-bleed on print */
+    .exec-summary,
+    .price-section,
+    .outcomes-section,
+    .signoff,
+    .doc-footer {
+      width: 100% !important;
+      margin-left: 0 !important;
+    }
+    .cover-title { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     COVER PAGE
+══════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-texture"></div>
+  <div class="cover-grid"></div>
+  <div class="cover-accent-bar"></div>
+
+  <div class="cover-inner">
+    <!-- Logo -->
+    <div class="cover-logo-area">
+      <div class="logo-mark" style="background:transparent; width:auto; height:44px; padding:0;">
+        <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh Tonga" style="height:44px; width:auto; display:block;" onerror="this.outerHTML='<div style=\'width:52px;height:52px;background:var(--ricoh-red);display:flex;align-items:center;justify-content:center;font-family:Playfair Display,serif;font-weight:900;font-size:22px;color:white;\'>R</div>'">
+      </div>
+      <div class="logo-text">
+        <span class="brand">Ricoh Tonga</span>
+        <span class="sub">Business Technology Specialists</span>
+      </div>
+    </div>
+
+    <!-- Hero text -->
+    <div class="cover-center">
+      <div class="cover-eyebrow">Formal Proposal · March 2026</div>
+      <h1 class="cover-title">
+        Interactive Display &amp;<br><em>Collaboration</em><br>Solution
+      </h1>
+      <p class="cover-subtitle">
+        Submitted to Pacific Australia Skills — Ministry of Education and Training, Tongatapu. This proposal responds to your RFQ with a fully compliant CommBox solution and a value-led Maxhub alternative.
+      </p>
+      <div class="cover-divider"></div>
+      <div class="cover-meta">
+        <div class="meta-item">
+          <div class="label">Submitted to</div>
+          <div class="value">PAS ICT Team</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Submission Date</div>
+          <div class="value">18 March 2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">RFQ Reference</div>
+          <div class="value">Interactive CommBox — Tonga</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:40px; padding-top:32px; border-top:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+      <span style="font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); font-weight:500; white-space:nowrap;">Submitted to</span>
+      <div style="background:white; padding:8px 16px; display:inline-flex; align-items:center;">
+        <img src="Pacific-Australia-Skills-regional-logo-colour-1024x249.png" alt="Pacific Australia Skills" style="height:28px; width:auto; display:block;" onerror="this.parentElement.style.display='none'">
+      </div>
+    </div>
+    <div class="cover-bottom">
+      <div class="cover-ref">CONFIDENTIAL &nbsp;·&nbsp; NOT FOR DISTRIBUTION</div>
+      <div class="cover-page-num">01</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     DOCUMENT BODY
+══════════════════════════════════════ -->
+<div class="document">
+
+  <!-- 1. EXECUTIVE SUMMARY -->
+  <div class="section exec-summary">
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <h2 class="section-title">Executive Summary</h2>
+    </div>
+    <p class="exec-lead">
+      Pacific Australia Skills is investing in people — and that investment deserves technology that performs. Ricoh Tonga has been delivering and supporting technology across Tongatapu for years, and <strong>we are the partner best placed to make this installation succeed</strong> — not just on day one, but for the next five years and beyond.
+    </p>
+    <p class="exec-lead" style="font-size:16px; margin-bottom:0;">
+      This proposal presents two options: a <strong>fully compliant CommBox solution</strong> built precisely to your specification, and a <strong>Maxhub alternative</strong> that delivers the same core capability at a TOP 4,513 saving. Both include supply, delivery to Tongatapu, professional installation, configuration, and user training.
+    </p>
+
+    <div class="exec-pillars">
+      <div class="exec-pillar">
+        <div class="pillar-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 12l2 2 4-4" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 3l1.5 3 3.5.5-2.5 2.5.5 3.5L12 11l-3 1.5.5-3.5L7 6.5l3.5-.5L12 3z" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="12" cy="12" r="9" stroke="#888" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="pillar-title">Specification Compliant</div>
+        <div class="pillar-desc">Option 1 matches every item in the RFQ exactly — CommBox Classic 65 (S5), OPS PC i5 Win11 Pro, Logitech Meetup 2, Digitus motorised stand, 5-year warranty.</div>
+      </div>
+      <div class="exec-pillar">
+        <div class="pillar-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="9" r="2.5" stroke="#888" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="pillar-title">Local Delivery &amp; Install</div>
+        <div class="pillar-desc">Our Tonga-based team handles end-to-end installation at the Ministry of Education and Training — no freight-and-hope approach.</div>
+      </div>
+      <div class="exec-pillar">
+        <div class="pillar-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4l2-4z" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 13v6a1 1 0 001 1h12a1 1 0 001-1v-6" stroke="#888" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="pillar-title">Long-Term Support</div>
+        <div class="pillar-desc">Backed by Ricoh South Pacific across the Pacific region. Warranty coverage, on-site response, and escalation pathways already in place.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. COMPLIANCE -->
+  <div class="section" style="background:white;">
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <h2 class="section-title">Compliance with RFQ Requirements</h2>
+    </div>
+    <p style="font-size:14px; color:var(--ricoh-mid); margin-bottom:28px; max-width:560px; line-height:1.6;">
+      Ricoh Tonga confirms full compliance with all mandatory requirements as outlined in the RFQ issued by Pacific Australia Skills ICT, dated 13 March 2026.
+    </p>
+    <table class="compliance-table">
+      <thead>
+        <tr>
+          <th>Requirement</th>
+          <th>Detail</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CommBox Interactive Classic 65 (S5)</td>
+          <td style="color:var(--ricoh-mid); font-size:13px;">With CommBox Classic OPS PC — Intel i5, Windows 11 Pro</td>
+          <td><span class="badge badge-green">✓ Compliant</span></td>
+        </tr>
+        <tr>
+          <td>Logitech Meetup 2 Conference Camera</td>
+          <td style="color:var(--ricoh-mid); font-size:13px;">4K Ultra HD, Bluetooth, on-screen mount</td>
+          <td><span class="badge badge-green">✓ Compliant</span></td>
+        </tr>
+        <tr>
+          <td>Digitus Motorised Single Column Display Stand</td>
+          <td style="color:var(--ricoh-mid); font-size:13px;">Motorised height adjustment for flexible deployment</td>
+          <td><span class="badge badge-green">✓ Compliant</span></td>
+        </tr>
+        <tr>
+          <td>Minimum 5-Year Manufacturer Warranty</td>
+          <td style="color:var(--ricoh-mid); font-size:13px;">CommBox standard warranty applies</td>
+          <td><span class="badge badge-green">✓ Compliant</span></td>
+        </tr>
+        <tr>
+          <td>Delivery to Tongatapu</td>
+          <td style="color:var(--ricoh-mid); font-size:13px;">Ministry of Education & Training, 'Api Mataka, Haveluloto</td>
+          <td><span class="badge badge-green">✓ Included</span></td>
+        </tr>
+        <tr>
+          <td>Installation at specified location</td>
+          <td style="color:var(--ricoh-mid); font-size:13px;">Professional setup and configuration by Ricoh Tonga team</td>
+          <td><span class="badge badge-green">✓ Included</span></td>
+        </tr>
+        <tr>
+          <td>Stock confirmation & delivery timeline</td>
+          <td style="color:var(--ricoh-mid); font-size:13px;">See Section 04</td>
+          <td><span class="badge badge-green">✓ Confirmed</span></td>
+        </tr>
+        <tr>
+          <td>Pricing inclusive of CT</td>
+          <td style="color:var(--ricoh-mid); font-size:13px;">All prices stated in Tongan Paʻanga (TOP), inclusive of Consumption Tax (CT)</td>
+          <td><span class="badge badge-gold">✓ Confirmed</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. PROPOSED SOLUTIONS -->
+  <div class="section" style="background:var(--ricoh-pale);">
+    <div class="section-header">
+      <span class="section-number">03</span>
+      <h2 class="section-title">Proposed Solutions</h2>
+    </div>
+    <p style="font-size:14px; color:var(--ricoh-mid); margin-bottom:32px; max-width:560px; line-height:1.6;">
+      We've structured two options so you can choose with confidence — whether your priority is exact specification compliance or maximising value within budget.
+    </p>
+
+    <div class="solutions-grid">
+      <!-- Option 1 -->
+      <div class="solution-card featured">
+        <div class="card-inner">
+          <div class="card-label">Option 1</div>
+          <div class="card-name">CommBox Solution</div>
+          <div class="card-tagline">Exact specification match · Premium performance</div>
+          <ul class="card-items">
+            <li>CommBox Interactive Classic 65 (S5) — 65" 4K UHD interactive display</li>
+            <li>CommBox Classic OPS PC — Intel i5, Windows 11 Pro</li>
+            <li>Logitech Meetup 2 — 4K Ultra HD Conference Camera with Bluetooth &amp; on-screen mount</li>
+            <li>Digitus Motorised Single Column Display Stand — motorised height adjustment</li>
+            <li>5-Year CommBox Manufacturer Warranty</li>
+            <li>Professional delivery, installation, configuration &amp; training</li>
+          </ul>
+          <div class="card-price">
+            <div>
+              <span class="currency">TOP</span>
+              <span class="amount">22,285</span>
+            </div>
+            <span class="unit">inclusive of CT</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Option 2 -->
+      <div class="solution-card" style="border-color: var(--accent-teal); position:relative;">
+        <div style="position:absolute; top:-1px; left:-1px; right:-1px; background:var(--accent-teal); color:white; font-size:10px; font-weight:700; letter-spacing:2.5px; text-align:center; padding:6px; font-family:'DM Sans',sans-serif;">BEST VALUE · SAVE TOP 4,513</div>
+        <div style="padding-top:24px;">
+          <div class="card-label">Option 2</div>
+          <div class="card-name">Maxhub Solution</div>
+          <div class="card-tagline">Value alternative · All-in-one simplicity</div>
+          <ul class="card-items">
+            <li>MAXHUB XBoard V7 Series 65" — interactive flat panel display</li>
+            <li>PC Module i5 for V7 Series — integrated compute for full PC functionality</li>
+            <li>Trolley for MAXHUB screens — mobile, room-to-room deployment</li>
+            <li>Wireless Screen Sharing Dongle — cable-free content sharing</li>
+            <li>Professional delivery, installation, configuration &amp; training</li>
+          </ul>
+          <div class="card-price">
+            <div>
+              <span class="currency">TOP</span>
+              <span class="amount">17,772</span>
+            </div>
+            <span class="unit">inclusive of CT</span>
+          </div>
+          <div class="saving-note">Save TOP 4,513 (~20%) vs Option 1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. INVESTMENT / PRICING -->
+  <div class="price-section">
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <h2 class="section-title">Investment Summary</h2>
+    </div>
+    <p style="font-size:14px; color:var(--ricoh-mid); max-width:560px; line-height:1.6;">
+      All prices are quoted in Tongan Paʻanga (TOP), inclusive of CT. Delivery, installation, and basic user training are included in both options.
+    </p>
+
+    <div class="price-tables">
+      <!-- Option 1 -->
+      <div class="price-table-wrap">
+        <h3>Option 1 — CommBox</h3>
+        <div class="price-line">
+          <div class="item-name">CommBox Interactive Classic 65 (S5)<small>65" 4K UHD Interactive Display</small></div>
+          <div class="item-price">10,583</div>
+        </div>
+        <div class="price-line">
+          <div class="item-name">Logitech Meetup 2<small>4K Ultra HD Conference Camera</small></div>
+          <div class="item-price">3,499</div>
+        </div>
+        <div class="price-line">
+          <div class="item-name">CommBox Classic OPS PC — i5<small>Windows 11 Pro</small></div>
+          <div class="item-price">5,870</div>
+        </div>
+        <div class="price-line">
+          <div class="item-name">Digitus Motorised Single Column Stand<small>Motorised height adjustment</small></div>
+          <div class="item-price">2,333</div>
+        </div>
+        <div class="price-total" style="border-top: 2px solid var(--ricoh-dark);">
+          <div class="total-label">Total Investment</div>
+          <div class="total-amount">TOP 22,285</div>
+        </div>
+      </div>
+
+      <!-- Option 2 -->
+      <div class="price-table-wrap alt">
+        <h3>Option 2 — Maxhub</h3>
+        <div class="price-line">
+          <div class="item-name">MAXHUB XBoard V7 Series 65"<small>Interactive flat panel display</small></div>
+          <div class="item-price">12,027</div>
+        </div>
+        <div class="price-line">
+          <div class="item-name">PC Module i5 for V7 Series<small>Integrated compute module</small></div>
+          <div class="item-price">3,873</div>
+        </div>
+        <div class="price-line">
+          <div class="item-name">Trolley for MAXHUB Screens<small>Mobile deployment stand</small></div>
+          <div class="item-price">1,238</div>
+        </div>
+        <div class="price-line">
+          <div class="item-name">Wireless Screen Sharing Dongle<small>Cable-free content sharing</small></div>
+          <div class="item-price">634</div>
+        </div>
+        <div class="price-total" style="border-top: 2px solid var(--ricoh-mid);">
+          <div class="total-label">Total Investment</div>
+          <div class="total-amount" style="color: var(--accent-teal);">TOP 17,772</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. DELIVERY & SUPPORT -->
+  <div class="section" style="background:white;">
+    <div class="section-header">
+      <span class="section-number">05</span>
+      <h2 class="section-title">Delivery, Installation &amp; Support</h2>
+    </div>
+
+    <div class="delivery-grid">
+      <div class="delivery-block">
+        <h3>Delivery Location</h3>
+        <p style="margin-bottom:16px;">
+          Pacific Australia Skills Office<br>
+          Ministry of Education and Training<br>
+          'Api Mataka, Haveluloto<br>
+          Tongatapu, Tonga
+        </p>
+        <h3 style="margin-top:28px;">Scope of Services</h3>
+        <ul>
+          <li>Supply and delivery of all equipment to site</li>
+          <li>Professional installation and physical setup</li>
+          <li>System configuration and integration testing</li>
+          <li>Basic user training session for PAS staff</li>
+          <li>Handover documentation and warranty registration</li>
+        </ul>
+      </div>
+
+      <div class="delivery-block">
+        <h3>Stock &amp; Delivery Timeline</h3>
+        <p style="margin-bottom:20px; font-size:14px;">
+          Stock is available subject to confirmation at time of order. We recommend prompt purchase order issuance to secure allocation ahead of the 20 March submission deadline.
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <div style="font-size:12px; font-weight:600; color:var(--ricoh-mid); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Order to Delivery</div>
+            <div style="font-size:22px; font-weight:700; color:var(--ricoh-dark);">3 – 5 weeks</div>
+            <div class="timeline-bar"><div class="timeline-fill"></div></div>
+            <div class="timeline-labels"><span>Purchase Order</span><span>Equipment on-site</span></div>
+          </div>
+          <div style="margin-top:8px;">
+            <div style="font-size:12px; font-weight:600; color:var(--ricoh-mid); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Installation Lead Time</div>
+            <div style="font-size:22px; font-weight:700; color:var(--ricoh-dark);">2 – 3 days</div>
+            <div style="font-size:13px; color:var(--ricoh-mid);">After equipment arrives at Ministry of Education and Training</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:28px;">Warranty</h3>
+        <ul>
+          <li>CommBox: 5-Year manufacturer warranty (Option 1)</li>
+          <li>Logitech Meetup 2: Standard manufacturer warranty</li>
+          <li>On-site support escalation via Ricoh South Pacific</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. OUTCOMES -->
+  <div class="section outcomes-section">
+    <div class="section-header">
+      <span class="section-number">06</span>
+      <h2 class="section-title">Why This Works for a Pacific Skills Programme</h2>
+    </div>
+    <p style="font-size:15px; color:rgba(255,255,255,0.6); max-width:620px; line-height:1.6; margin-bottom:0;">
+      PAS delivers Australian Government-funded skills training in an environment where logistics, connectivity, and long-term reliability aren't assumptions — they're constraints. This solution is built with that in mind.
+    </p>
+
+    <div class="outcomes-grid">
+      <div class="outcome-item">
+        <div class="outcome-num" style="font-size:28px; letter-spacing:-0.5px;">Local<br>install</div>
+        <div class="outcome-label">No freight-and-hope</div>
+        <div class="outcome-desc">Ricoh Tonga installs and configures on-site at the Ministry. If something isn't right, we fix it before we leave — not via a support ticket from overseas.</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num" style="font-size:28px;">AUS↔TON</div>
+        <div class="outcome-label">Connects Tonga to the programme</div>
+        <div class="outcome-desc">The Logitech Meetup 2 is designed for exactly this: high-quality video calls with remote trainers, DT Global programme staff, and Australian counterparts — even on Pacific bandwidth.</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num">5yr</div>
+        <div class="outcome-label">Accountable to funders</div>
+        <div class="outcome-desc">Australian Government-funded assets need to last. A five-year manufacturer warranty means this equipment performs across the programme lifecycle — not just the first year.</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num" style="font-size:28px;">Multi-<br>room</div>
+        <div class="outcome-label">One unit, broader reach</div>
+        <div class="outcome-desc">The mobile stand means PAS isn't locked to one room. Training cohorts, workshops, and partner meetings can all use the same system — maximising utilisation of a single asset.</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num" style="font-size:28px;">Day 1<br>ready</div>
+        <div class="outcome-label">Staff trained at handover</div>
+        <div class="outcome-desc">We don't hand over a box of manuals. Installation includes a practical training session so PAS staff can operate the system independently from the moment we leave.</div>
+      </div>
+      <div class="outcome-item">
+        <div class="outcome-num" style="font-size:28px;">RSP<br>network</div>
+        <div class="outcome-label">Backed across the Pacific</div>
+        <div class="outcome-desc">Ricoh Tonga sits within the Ricoh South Pacific network. Escalation pathways, warranty claims, and regional support are already in place — not something we'll figure out when needed.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. NEXT STEPS -->
+  <div class="section" style="background:white;">
+    <div class="section-header">
+      <span class="section-number">07</span>
+      <h2 class="section-title">Next Steps</h2>
+    </div>
+    <p style="font-size:14px; color:var(--ricoh-mid); margin-bottom:28px; max-width:560px; line-height:1.6;">
+      We've kept this process as simple as possible. Five steps from here to a working system at the Ministry of Education and Training.
+    </p>
+
+    <div class="steps-list">
+      <div class="step-item">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h4>Confirm your preferred option</h4>
+          <p>Let Aisea or Avi know whether you're proceeding with the CommBox solution (fully RFQ-compliant) or the Maxhub alternative (best value). Either way, we're ready to move.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h4>Stock allocation confirmed</h4>
+          <p>On receipt of your preferred option, we'll confirm stock availability in writing and provide a firm delivery date to Tongatapu.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h4>Purchase order issued</h4>
+          <p>Raise a PO to Ricoh Tonga. We'll have equipment on order immediately and keep you updated on progress.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h4>Delivery to Ministry of Education and Training</h4>
+          <p>Equipment delivered to 'Api Mataka, Haveluloto, Tongatapu — typically 3–5 weeks from purchase order. We'll confirm the exact date once stock is secured.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <h4>Installation, testing and handover</h4>
+          <p>Our team installs, configures, and tests the full system on-site. PAS staff receive practical training before we sign off. You're live within 2–3 working days of delivery.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIGN-OFF -->
+  <div class="signoff">
+    <div class="signoff-inner">
+    <div class="signoff-text">
+      <h2>Ready when you are.</h2>
+      <p>
+        Ricoh Tonga has been a trusted technology partner since 2009. A wholly-owned subsidiary of Ricoh South Pacific in New Zealand, we understand the logistics, we understand the environment, and we understand what's at stake when technology is being deployed to support skills development in Tonga.
+      </p>
+      <p style="margin-top:16px;">
+        We appreciate the opportunity to submit this proposal and look forward to supporting Pacific Australia Skills with a solution that genuinely works — today and for years to come.
+      </p>
+      <p style="margin-top:16px;">
+        If you have any questions or require further information, please do not hesitate to contact us. Our specialists are here to help you.
+      </p>
+      <p style="margin-top:24px; font-size:13px; color:rgba(255,255,255,0.35);">
+        Submission deadline: Friday, 20 March 2026.
+      </p>
+    </div>
+
+    <div class="signoff-contact">
+      <div class="contact-label">Your contact</div>
+      <div class="contact-name">Aisea Fakaosi</div>
+      <div class="contact-role">Account Executive, Ricoh Tonga</div>
+      <div class="contact-detail"><span>&#9993;</span><span><a href="mailto:aisea@ricohtonga.com">aisea@ricohtonga.com</a></span></div>
+      <div class="contact-detail"><span>&#9742;</span><span>+676 7755901</span></div>
+      <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+        <div class="contact-label">Regional support</div>
+        <div class="contact-name" style="font-size:14px;">Avi Sharma</div>
+        <div class="contact-role">Regional Sales Manager, Pacific Islands</div>
+        <div class="contact-detail"><span>&#9993;</span><span><a href="mailto:aisea@ricohtonga.com">aisea@ricohtonga.com</a></span></div>
+        <div class="contact-detail"><span>&#9742;</span><span>+64 212365031</span></div>
+      </div>
+    </div>
+    </div><!-- /signoff-inner -->
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <div class="doc-footer-inner">
+    <div class="footer-brand"><a href="https://www.ricohtonga.com" target="_blank" style="color:rgba(255,255,255,0.25); text-decoration:none;">Ricoh Tonga</a> &nbsp;·&nbsp; <a href="https://www.ricohsouthpacific.com" target="_blank" style="color:rgba(255,255,255,0.25); text-decoration:none;">Ricoh South Pacific</a></div>
+    <div class="footer-conf">Confidential · March 2026 · RFQ — Interactive CommBox Solution</div>
+    </div><!-- /doc-footer-inner -->
+  </div>
+
+</div><!-- /document -->
+
+<!-- FLOATING BUTTON GROUP -->
+<div class="float-group" id="floatGroup">
+
+  <a class="email-btn" href="mailto:aisea@ricohtonga.com,avi@ricohsouthpacific.com?subject=RFQ%20Response%20%E2%80%94%20Interactive%20CommBox%20Solution%2C%20Tonga">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+      <polyline points="22,6 12,13 2,6"></polyline>
+    </svg>
+    Email Ricoh
+  </a>
+
+  <button class="print-btn" onclick="window.print()" title="Save / Print to PDF">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 6 2 18 2 18 9"></polyline>
+      <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"></path>
+      <rect x="6" y="14" width="12" height="8"></rect>
+    </svg>
+    Save / Print to PDF
+  </button>
+
+  <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+</div>
+
+<script>
+  const group = document.getElementById('floatGroup');
+  const cover = document.querySelector('.cover');
+
+  function onScroll() {
+    const coverBottom = cover ? cover.getBoundingClientRect().bottom : 0;
+    group.classList.toggle('visible', coverBottom < 0);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>
+
+</body>
+</html>
