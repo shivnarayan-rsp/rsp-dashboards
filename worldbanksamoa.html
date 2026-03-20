@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ricoh Samoa — IM C4510 Contract Renewal & Upgrade | World Bank (Samoa)</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* GitHub assets: https://raw.githubusercontent.com/shivnarayan-rsp/rsp-dashboards/main/ */
+  :root {
+    --ricoh-red: #cc0000; --ricoh-dark: #1a1a1a; --ricoh-charcoal: #2d2d2d;
+    --ricoh-mid: #4a4a4a; --ricoh-warm: #f5f0eb; --ricoh-gold: #c8993a;
+    --ricoh-pale: #faf8f5; --ricoh-rule: #e0d8d0; --accent-teal: #0e7c7b;
+    --accent-green: #1a7a4a;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--ricoh-pale); color: var(--ricoh-dark); font-size: 15px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── COVER ── */
+  .cover { min-height: 100vh; background: var(--ricoh-dark); position: relative; display: flex; flex-direction: column; overflow: hidden; page-break-after: always; }
+  .cover-texture { position: absolute; inset: 0; background-image: radial-gradient(ellipse 80% 60% at 70% 20%, rgba(204,0,0,0.18) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 10% 80%, rgba(200,153,58,0.10) 0%, transparent 55%); pointer-events: none; }
+  .cover-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; }
+  .cover-accent-bar { width: 100%; height: 6px; background: linear-gradient(90deg, var(--ricoh-red), var(--ricoh-gold)); }
+  .cover-inner { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 56px 64px 64px; position: relative; z-index: 2; }
+  .cover-logo-area { display: flex; align-items: center; gap: 16px; justify-content: flex-end; }
+  .logo-text .brand { font-weight: 600; font-size: 18px; color: white; letter-spacing: 0.5px; text-transform: uppercase; display: block; }
+  .logo-text .sub { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; font-weight: 400; display: block; }
+  .cover-center { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 80px 0 40px; }
+  .cover-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--ricoh-gold); font-weight: 500; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .cover-eyebrow::before { content: ''; display: block; width: 40px; height: 2px; background: var(--ricoh-gold); }
+  .cover-title { font-family: 'Playfair Display', serif; font-weight: 900; font-size: clamp(38px, 5vw, 66px); line-height: 1.05; color: white; margin-bottom: 20px; max-width: 700px; }
+  .cover-title em { font-style: normal; color: var(--ricoh-red); }
+  .cover-subtitle { font-size: 17px; color: rgba(255,255,255,0.55); font-weight: 300; max-width: 520px; line-height: 1.6; margin-bottom: 48px; }
+  .cover-divider { width: 80px; height: 2px; background: rgba(255,255,255,0.15); margin-bottom: 40px; }
+  .cover-meta { display: grid; grid-template-columns: repeat(3, auto); gap: 48px; }
+  .meta-item .label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 6px; font-weight: 500; }
+  .meta-item .value { font-size: 14px; color: rgba(255,255,255,0.85); font-weight: 500; }
+  .cover-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+  .cover-ref { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.25); letter-spacing: 1px; }
+
+  /* ── URGENCY BANNER ── */
+  .urgency-banner { background: linear-gradient(90deg, #a80000, var(--ricoh-red)); color: white; padding: 14px 64px; display: flex; align-items: center; gap: 14px; font-size: 13px; font-weight: 600; }
+  .urgency-banner .ub-note { font-weight: 400; opacity: 0.85; margin-left: 2px; }
+
+  /* ── DOCUMENT ── */
+  .document { max-width: 900px; margin: 0 auto; padding: 0 0 80px; }
+  .exec-summary, .price-section, .cpc-section, .risk-section, .signoff, .doc-footer { width: 100vw; margin-left: calc(-50vw + 50%); box-sizing: border-box; }
+
+  .section { padding: 64px; border-bottom: 1px solid var(--ricoh-rule); animation: fadeUp 0.5s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px; }
+  .section-number { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ricoh-red); font-weight: 500; letter-spacing: 1px; flex-shrink: 0; padding-top: 4px; }
+  .section-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 26px; color: var(--ricoh-dark); line-height: 1.2; }
+
+  /* ── EXEC SUMMARY ── */
+  .exec-summary { background: var(--ricoh-dark); color: white; padding: 56px 64px; }
+  .exec-summary .section-title { color: white; }
+  .exec-summary .section-number { color: var(--ricoh-gold); }
+  .exec-lead { font-size: 19px; line-height: 1.65; color: rgba(255,255,255,0.85); font-weight: 300; margin-bottom: 28px; max-width: 680px; }
+  .exec-lead strong { color: white; font-weight: 600; }
+  .exec-outcome { background: rgba(255,255,255,0.06); border-left: 4px solid var(--ricoh-gold); padding: 20px 24px; margin-bottom: 36px; max-width: 640px; }
+  .exec-outcome p { font-size: 15px; color: rgba(255,255,255,0.75); line-height: 1.6; font-style: italic; }
+  .exec-outcome p strong { color: white; font-style: normal; }
+  .exec-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 40px; }
+  .exec-pillar { background: rgba(255,255,255,0.05); padding: 28px 24px; border-top: 3px solid transparent; }
+  .exec-pillar:nth-child(1) { border-color: var(--ricoh-red); }
+  .exec-pillar:nth-child(2) { border-color: var(--ricoh-gold); }
+  .exec-pillar:nth-child(3) { border-color: var(--accent-teal); }
+  .pillar-icon { margin-bottom: 12px; }
+  .pillar-title { font-weight: 600; font-size: 14px; color: white; margin-bottom: 8px; }
+  .pillar-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+  /* ── SOCIAL PROOF ── */
+  .social-proof { background: white; padding: 36px 64px; border-bottom: 1px solid var(--ricoh-rule); }
+  .proof-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ricoh-mid); font-weight: 600; margin-bottom: 20px; }
+  .proof-items { display: flex; gap: 32px; flex-wrap: wrap; align-items: center; }
+  .proof-item { display: flex; align-items: center; gap: 10px; }
+  .proof-check { width: 28px; height: 28px; background: #e8f5ef; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .proof-text { font-size: 13px; color: var(--ricoh-charcoal); line-height: 1.4; font-weight: 500; }
+
+  /* ── PRODUCT BAND ── */
+  .product-band { background: white; padding: 48px 64px 32px; border-bottom: 1px solid var(--ricoh-rule); display: flex; align-items: flex-start; gap: 56px; }
+  .product-band-img-wrap { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .product-band img.product-img { width: 300px; max-width: 42%; height: auto; object-fit: contain; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.10)); }
+  .product-img-caption { font-size: 11px; color: var(--ricoh-mid); text-align: center; max-width: 280px; line-height: 1.5; font-style: italic; }
+  .product-band-text h3 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ricoh-dark); margin-bottom: 12px; margin-top: 0; }
+  .product-band-text p { font-size: 14px; color: var(--ricoh-mid); line-height: 1.7; }
+
+  /* ── SOLUTION CARD ── */
+  .solution-card { border: 1px solid var(--ricoh-red); background: white; position: relative; margin-top: 8px; }
+  .solution-card::before { content: 'COMPLETE SOLUTION PACKAGE'; position: absolute; top: -1px; left: -1px; right: -1px; background: var(--ricoh-red); color: white; font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-align: center; padding: 6px; }
+  .card-inner { padding: 36px 32px 28px; }
+  .card-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ricoh-mid); font-weight: 500; margin-bottom: 6px; }
+  .card-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--ricoh-dark); margin-bottom: 4px; line-height: 1.2; }
+  .card-tagline { font-size: 13px; color: var(--ricoh-mid); margin-bottom: 24px; }
+  .card-includes-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; color: var(--ricoh-mid); margin-bottom: 12px; }
+  .card-items { list-style: none; margin-bottom: 0; }
+  .card-items li { font-size: 13.5px; padding: 7px 0; border-bottom: 1px solid var(--ricoh-rule); color: var(--ricoh-charcoal); display: flex; align-items: flex-start; gap: 10px; line-height: 1.4; }
+  .card-items li::before { content: '→'; color: var(--ricoh-red); flex-shrink: 0; font-size: 12px; margin-top: 2px; }
+  .card-items li:last-child { border-bottom: none; }
+  .sla-tag { display: inline-flex; align-items: center; gap: 5px; background: #e8f5ef; color: var(--accent-green); font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; margin-left: 8px; vertical-align: middle; flex-shrink: 0; }
+
+  /* ── PRICING ── */
+  .price-section { background: var(--ricoh-warm); padding: 56px 64px; border-bottom: 1px solid var(--ricoh-rule); }
+  .price-section .section-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 26px; color: var(--ricoh-dark); margin-bottom: 8px; }
+  .price-toggle { display: flex; gap: 4px; margin-bottom: 32px; background: rgba(0,0,0,0.07); padding: 4px; border-radius: 3px; width: fit-content; }
+  .toggle-btn { padding: 8px 22px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; border: none; background: transparent; color: var(--ricoh-mid); cursor: pointer; border-radius: 2px; transition: all 0.18s; letter-spacing: 0.3px; }
+  .toggle-btn.active { background: var(--ricoh-dark); color: white; }
+  .price-view { display: none; }
+  .price-view.active { display: block; }
+
+  /* Lease card */
+  .lease-card { background: white; padding: 32px; margin-bottom: 16px; }
+  .lease-card .pkg-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ricoh-mid); font-weight: 600; margin-bottom: 16px; }
+  .lease-hero { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 6px; }
+  .lease-currency { font-size: 16px; font-weight: 600; color: var(--ricoh-mid); margin-right: 2px; }
+  .lease-amount { font-family: 'DM Mono', monospace; font-size: 48px; font-weight: 500; color: var(--ricoh-dark); line-height: 1; letter-spacing: -1px; }
+  .lease-period { font-size: 16px; color: var(--ricoh-mid); padding-bottom: 8px; }
+  .lease-note { font-size: 13px; color: var(--ricoh-mid); margin-bottom: 20px; }
+  .lease-details { display: flex; gap: 32px; padding-top: 20px; border-top: 1px solid var(--ricoh-rule); flex-wrap: wrap; }
+  .lease-detail-item .ld-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ricoh-mid); font-weight: 500; margin-bottom: 4px; }
+  .lease-detail-item .ld-value { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--ricoh-dark); font-weight: 500; }
+  .lease-benefit { background: #e8f5ef; border-left: 4px solid var(--accent-green); padding: 16px 20px; margin-top: 16px; }
+  .lease-benefit p { font-size: 13px; color: var(--accent-green); font-weight: 600; line-height: 1.55; }
+  .lease-benefit p span { font-weight: 400; color: #2d6b47; }
+
+  /* Outright card */
+  .package-price-card { background: white; padding: 32px; margin-bottom: 16px; }
+  .pkg-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ricoh-mid); font-weight: 600; margin-bottom: 16px; }
+  .pkg-amount { font-family: 'DM Mono', monospace; font-size: 48px; font-weight: 500; color: var(--ricoh-dark); line-height: 1; letter-spacing: -1px; margin-bottom: 6px; }
+  .pkg-currency { font-size: 16px; font-weight: 600; color: var(--ricoh-mid); margin-right: 3px; }
+  .pkg-note { font-size: 13px; color: var(--ricoh-mid); margin-bottom: 20px; }
+  .pkg-breakdown { display: flex; gap: 32px; padding-top: 20px; border-top: 1px solid var(--ricoh-rule); flex-wrap: wrap; }
+  .pkg-breakdown-item .b-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ricoh-mid); font-weight: 500; margin-bottom: 4px; }
+  .pkg-breakdown-item .b-value { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--ricoh-dark); font-weight: 500; }
+
+  /* ── CTA BAND ── */
+  .cta-band { background: var(--ricoh-red); padding: 28px 64px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .cta-band-text h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: white; margin-bottom: 4px; }
+  .cta-band-text p { font-size: 13px; color: rgba(255,255,255,0.75); }
+  .cta-btn { display: inline-flex; align-items: center; gap: 10px; background: white; color: var(--ricoh-red); padding: 13px 26px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; white-space: nowrap; flex-shrink: 0; text-decoration: none; transition: background 0.2s, color 0.2s; }
+  .cta-btn:hover { background: var(--ricoh-dark); color: white; }
+
+  /* ── CPC SLA SECTION ── */
+  .cpc-section { background: var(--ricoh-dark); padding: 56px 64px; }
+  .cpc-section .section-title { color: white; }
+  .cpc-section .section-number { color: var(--ricoh-gold); }
+  .cpc-lead { font-size: 16px; color: rgba(255,255,255,0.7); line-height: 1.7; max-width: 640px; margin-bottom: 40px; }
+  .cpc-lead strong { color: white; }
+  .cpc-benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-bottom: 32px; }
+  .cpc-benefit { background: rgba(255,255,255,0.05); padding: 28px 24px; border-top: 3px solid var(--accent-teal); }
+  .cpc-benefit-icon { margin-bottom: 12px; }
+  .cpc-benefit-title { font-weight: 600; font-size: 14px; color: white; margin-bottom: 8px; }
+  .cpc-benefit-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+  /* CPC rate table */
+  .cpc-rates { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 28px; margin-bottom: 20px; }
+  .cpc-rates-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ricoh-gold); font-weight: 600; margin-bottom: 20px; }
+  .cpc-rate-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .cpc-rate-row:last-child { border-bottom: none; }
+  .cpc-rate-name { font-size: 14px; color: rgba(255,255,255,0.8); font-weight: 500; display: flex; align-items: center; gap: 10px; }
+  .cpc-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .cpc-dot-black { background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.3); }
+  .cpc-dot-colour { background: linear-gradient(135deg, #cc0000 33%, #1a7a4a 33% 66%, #c8993a 66%); }
+  .cpc-rate-value { font-family: 'DM Mono', monospace; font-size: 18px; color: white; font-weight: 500; }
+  .cpc-rate-sub { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px; text-align: right; }
+
+  .cpc-included { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 20px 24px; display: flex; align-items: flex-start; gap: 18px; }
+  .cpc-included-badge { background: var(--accent-teal); color: white; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; white-space: nowrap; flex-shrink: 0; margin-top: 3px; }
+  .cpc-included-text h4 { font-weight: 600; font-size: 14px; color: white; margin-bottom: 5px; }
+  .cpc-included-text p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+  /* ── RISK REVERSALS ── */
+  .risk-section { background: var(--ricoh-warm); padding: 56px 64px; border-bottom: 1px solid var(--ricoh-rule); }
+  .risk-section .section-title { color: var(--ricoh-dark); }
+  .risk-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 8px; }
+  .risk-card { background: white; padding: 24px 28px; display: flex; align-items: flex-start; gap: 18px; }
+  .risk-icon { width: 40px; height: 40px; background: #e8f5ef; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .risk-content h4 { font-weight: 600; font-size: 15px; color: var(--ricoh-dark); margin-bottom: 6px; }
+  .risk-content p { font-size: 13px; color: var(--ricoh-mid); line-height: 1.6; }
+  .risk-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; margin-bottom: 8px; }
+  .risk-tag-green { background: #e8f5ef; color: var(--accent-green); }
+  .risk-tag-blue { background: #e8f0fa; color: #1a4a8a; }
+
+  /* ── DELIVERY ── */
+  .delivery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 16px; }
+  .delivery-block h3 { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--ricoh-mid); font-weight: 600; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--ricoh-rule); }
+  .delivery-block p, .delivery-block li { font-size: 14px; color: var(--ricoh-charcoal); line-height: 1.65; }
+  .delivery-block ul { list-style: none; padding: 0; }
+  .delivery-block ul li { padding: 6px 0; display: flex; align-items: flex-start; gap: 10px; }
+  .delivery-block ul li::before { content: '✓'; color: var(--accent-teal); font-weight: 700; flex-shrink: 0; }
+  .timeline-bar { margin-top: 20px; background: var(--ricoh-rule); height: 4px; border-radius: 2px; position: relative; overflow: hidden; }
+  .timeline-fill { position: absolute; left: 0; top: 0; height: 100%; background: linear-gradient(90deg, var(--ricoh-red), var(--ricoh-gold)); width: 60%; border-radius: 2px; }
+  .timeline-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: var(--ricoh-mid); }
+
+  /* ── NEXT STEPS ── */
+  .steps-list { margin-top: 8px; }
+  .step-item { display: flex; gap: 24px; padding: 20px 0; border-bottom: 1px solid var(--ricoh-rule); align-items: flex-start; }
+  .step-item:last-child { border-bottom: none; }
+  .step-num { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--ricoh-red); flex-shrink: 0; width: 28px; }
+  .step-content h4 { font-weight: 600; font-size: 15px; margin-bottom: 4px; color: var(--ricoh-dark); }
+  .step-content p { font-size: 13.5px; color: var(--ricoh-mid); line-height: 1.55; }
+
+  /* ── SIGN-OFF ── */
+  .signoff { background: var(--ricoh-dark); color: white; }
+  .signoff-inner { max-width: 900px; margin: 0 auto; padding: 56px 64px; display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: start; }
+  .signoff-text h2 { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; color: white; }
+  .signoff-text p { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.7; max-width: 480px; }
+  .signoff-contact { background: rgba(255,255,255,0.06); padding: 28px; flex-shrink: 0; min-width: 240px; }
+  .signoff-contact .contact-label { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ricoh-gold); font-weight: 600; margin-bottom: 14px; }
+  .contact-photo { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.18); margin-bottom: 14px; display: block; }
+  .signoff-contact .contact-name { font-weight: 700; font-size: 16px; color: white; margin-bottom: 4px; }
+  .signoff-contact .contact-role { font-size: 12px; color: rgba(255,255,255,0.45); margin-bottom: 20px; }
+  .signoff-contact .contact-detail { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 6px; display: flex; gap: 8px; }
+  .signoff-contact .contact-detail span:first-child { color: rgba(255,255,255,0.3); flex-shrink: 0; width: 16px; }
+  .signoff-contact a { color: rgba(255,255,255,0.6); }
+
+  /* ── FOOTER ── */
+  .doc-footer { background: var(--ricoh-dark); border-top: 1px solid rgba(255,255,255,0.08); }
+  .doc-footer-inner { max-width: 900px; margin: 0 auto; padding: 20px 64px; display: flex; justify-content: space-between; align-items: center; }
+  .doc-footer .footer-brand { font-size: 12px; color: rgba(255,255,255,0.25); letter-spacing: 1px; text-transform: uppercase; }
+  .doc-footer .footer-conf { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.2); }
+
+  /* ── FLOATING ── */
+  .float-group { position: fixed; bottom: 32px; right: 32px; display: flex; align-items: center; gap: 8px; z-index: 100; opacity: 0; transform: translateY(10px); transition: opacity 0.25s, transform 0.25s; pointer-events: none; }
+  .float-group.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+  .back-to-top { width: 44px; height: 44px; background: var(--ricoh-dark); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+  .back-to-top:hover { background: var(--ricoh-red); }
+  .print-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ricoh-dark); color: white; border: none; padding: 0 18px; height: 44px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+  .print-btn:hover { background: var(--ricoh-red); }
+  .email-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ricoh-red); color: white; text-decoration: none; padding: 0 18px; height: 44px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.2s; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+  .email-btn:hover { background: #a80000; }
+
+  @media print {
+    @page { size: A4; margin: 0; }
+    html, body { background: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .float-group, .price-toggle { display: none !important; }
+    .price-view { display: block !important; }
+    .cover { page-break-after: always; min-height: 100vh; height: 297mm; overflow: hidden; }
+    .exec-summary, .price-section, .cpc-section, .risk-section, .signoff, .doc-footer { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; width: 100% !important; margin-left: 0 !important; }
+    * { animation: none !important; transition: none !important; }
+  }
+  @media (max-width: 700px) {
+    .cover-inner, .section, .price-section, .cpc-section, .risk-section, .signoff-inner, .doc-footer-inner, .urgency-banner, .cta-band, .social-proof, .product-band { padding-left: 24px; padding-right: 24px; }
+    .exec-pillars, .cpc-benefits, .delivery-grid, .risk-grid { grid-template-columns: 1fr; }
+    .cover-meta, .signoff-inner { grid-template-columns: 1fr; }
+    .cover-title { font-size: 36px; }
+    .product-band { flex-direction: column; }
+    .product-band img.product-img { width: 100%; max-width: 100%; }
+    .cta-band { flex-direction: column; }
+    .lease-details, .pkg-breakdown { flex-direction: column; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-texture"></div><div class="cover-grid"></div>
+  <div class="cover-accent-bar"></div>
+  <div class="cover-inner">
+    <div class="cover-logo-area">
+      <img src="https://raw.githubusercontent.com/shivnarayan-rsp/rsp-dashboards/main/ricoh-logo-white-on-transparent.png"
+           alt="Ricoh Samoa" style="height:44px;width:auto;" onerror="this.style.display='none'">
+      <div class="logo-text">
+        <span class="brand">Ricoh Samoa</span>
+        <span class="sub">Business Technology Specialists</span>
+      </div>
+    </div>
+    <div class="cover-center">
+      <div class="cover-eyebrow">Formal Proposal · 20 March 2026</div>
+      <h1 class="cover-title">Contract<br><em>Renewal &amp;</em><br>Upgrade</h1>
+      <p class="cover-subtitle">Prepared exclusively for World Bank (Samoa). Your renewal solution with upgraded hardware, flexible financing, and fully inclusive service cover.</p>
+      <div class="cover-divider"></div>
+      <div class="cover-meta">
+        <div class="meta-item"><div class="label">Prepared for</div><div class="value">World Bank (Samoa)</div></div>
+        <div class="meta-item"><div class="label">Submission Date</div><div class="value">20 March 2026</div></div>
+        <div class="meta-item"><div class="label">Quote Reference</div><div class="value">Q-05194</div></div>
+      </div>
+    </div>
+    <div style="margin-top:40px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+      <span style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);font-weight:500;white-space:nowrap;">Prepared for</span>
+      <img src="world-bank-samoa.png" alt="World Bank" style="height:32px;width:auto;opacity:0.85;" onerror="this.style.display='none'">
+    </div>
+    <div class="cover-bottom">
+      <div class="cover-ref">CONFIDENTIAL &nbsp;·&nbsp; NOT FOR DISTRIBUTION</div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:rgba(255,255,255,0.25);">01</div>
+    </div>
+  </div>
+</div>
+
+<!-- URGENCY BANNER -->
+<div class="urgency-banner">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+  Quote valid until 30 March 2026 — 10 days remaining.
+  <span class="ub-note">Contact Ronaldo now to lock in this pricing before it expires.</span>
+</div>
+
+<div class="document">
+
+  <!-- 01 EXECUTIVE SUMMARY -->
+  <div class="section exec-summary">
+    <div class="section-header"><span class="section-number">01</span><h2 class="section-title">Why This Renewal Makes Sense Now</h2></div>
+    <p class="exec-lead">Your current device has done its job — but World Bank (Samoa) deserves hardware that keeps pace with your workload. <strong>The IM C4510 is a meaningful upgrade</strong>, and with a 60-month lease option, the step up costs less than you might think.</p>
+    <div class="exec-outcome">
+      <p>A fully configured A3 colour multifunction with booklet finishing, on-site service cover, and cost-per-copy print plans — <strong>for WST 582.71 per month over 5 years.</strong> Fixed. Predictable. Everything included.</p>
+    </div>
+    <p class="exec-lead" style="font-size:16px;margin-bottom:0;">Ricoh Samoa has supported organisations across Samoa since 2009. We know how these devices perform in your environment, and we stand behind every installation with local, on-site support backed by Ricoh South Pacific in Auckland.</p>
+    <div class="exec-pillars">
+      <div class="exec-pillar">
+        <div class="pillar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="7" width="20" height="14" rx="2" stroke="#888" stroke-width="1.5"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="pillar-title">Upgraded Hardware</div>
+        <div class="pillar-desc">Faster speeds, better colour, advanced finishing. A genuine step up from your current device — from day one.</div>
+      </div>
+      <div class="exec-pillar">
+        <div class="pillar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><line x1="12" y1="1" x2="12" y2="23" stroke="#888" stroke-width="1.5" stroke-linecap="round"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="pillar-title">Predictable Monthly Cost</div>
+        <div class="pillar-desc">One fixed payment covers hardware, service, and toner. No surprise bills. No capital outlay. Budget-friendly from month one.</div>
+      </div>
+      <div class="exec-pillar">
+        <div class="pillar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="pillar-title">Fully Covered</div>
+        <div class="pillar-desc">CPC SLA, loan machine cover, manufacturer warranty, and Ricoh South Pacific escalation — risk managed at every level.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOCIAL PROOF -->
+  <div class="social-proof">
+    <div class="proof-label">Trusted across the Pacific</div>
+    <div class="proof-items">
+      <div class="proof-item"><div class="proof-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1a7a4a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="proof-text">Serving Pacific organisations since 2009</div></div>
+      <div class="proof-item"><div class="proof-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1a7a4a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="proof-text">Government, banking &amp; NGO experience</div></div>
+      <div class="proof-item"><div class="proof-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1a7a4a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="proof-text">Stock held in Samoa &amp; Auckland for the Pacific</div></div>
+      <div class="proof-item"><div class="proof-check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1a7a4a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="proof-text">On-site service escalation in Samoa</div></div>
+    </div>
+  </div>
+
+  <!-- PRODUCT IMAGE BAND -->
+  <div class="product-band">
+    <div class="product-band-img-wrap">
+      <img class="product-img"
+           src="https://ricohconfigurator.com/_models/mfp-color/IM_C4510_C6010/brand/ricoh/main.jpg"
+           alt="Ricoh IM C4510" onerror="this.style.display='none'">
+      <p class="product-img-caption">Image is illustrative only. Final product configuration may differ from that shown.</p>
+    </div>
+    <div class="product-band-text">
+      <h3>Ricoh IM C4510</h3>
+      <p>The IM C4510 delivers a meaningful step up for a busy document environment like World Bank (Samoa). Superior A3 colour output, a 10.1" Smart Operation Panel, 220-sheet Single Pass Document Feeder for rapid duplex scanning, and full mobile device integration. Configured with a Booklet Finisher SR3330 and extended paper capacity — handling everything from everyday prints to professionally finished documents in-house.</p>
+    </div>
+  </div>
+
+  <!-- 02 YOUR COMPLETE SOLUTION -->
+  <div class="section" style="background:var(--ricoh-pale);">
+    <div class="section-header"><span class="section-number">02</span><h2 class="section-title">Your Complete Solution</h2></div>
+    <p style="font-size:14px;color:var(--ricoh-mid);margin-bottom:32px;max-width:580px;line-height:1.6;">Everything configured, delivered, installed, and covered — as a single complete package.</p>
+    <div class="solution-card">
+      <div class="card-inner">
+        <div class="card-label">Quote Q-05194</div>
+        <div class="card-name">IM C4510 Contract Renewal &amp; Upgrade</div>
+        <div class="card-tagline">Complete solution for World Bank (Samoa)</div>
+        <div class="card-includes-label" style="margin-top:8px;">Package includes</div>
+        <ul class="card-items">
+          <li>Ricoh IM C4510 — A3 colour multifunction, 10.1" Smart Operation Panel, high-speed single pass duplex scanning</li>
+          <li>PB3320 Paper Feed Unit — Extended 2-tray paper capacity</li>
+          <li>Ricoh Booklet Finisher SR3330 (1,000 Sheet) — Saddle-stitched booklet finishing with three output destinations</li>
+          <li>Bridge Unit BU3100 — Inline finisher connection</li>
+          <li>Starter toner supply — Black, Cyan, Magenta &amp; Yellow included</li>
+          <li>Installation kit — Surge protection &amp; power cable</li>
+          <li>Professional installation, configuration &amp; user training</li>
+          <li>Cost Per Copy SLA — Black &amp; Colour Meter Plans <span class="sla-tag">Included</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 INVESTMENT -->
+  <div class="price-section">
+    <div class="section-header"><span class="section-number">03</span><h2 class="section-title">Your Investment</h2></div>
+    <p style="font-size:14px;color:var(--ricoh-mid);max-width:560px;line-height:1.6;margin-bottom:28px;">Choose the payment option that suits World Bank (Samoa)'s budget and procurement requirements.</p>
+
+    <div class="price-toggle">
+      <button class="toggle-btn active" onclick="showView('lease', this)">60-Month Lease</button>
+      <button class="toggle-btn" onclick="showView('outright', this)">Outright Purchase</button>
+    </div>
+
+    <div class="price-view active" id="view-lease">
+      <div class="lease-card">
+        <div class="pkg-label">Monthly Lease Payment</div>
+        <div class="lease-hero">
+          <div><span class="lease-currency">WST</span><span class="lease-amount">582.71</span></div>
+          <div class="lease-period">/ month</div>
+        </div>
+        <div class="lease-note">Fixed monthly payment · complete solution included · CT additional</div>
+        <div class="lease-details">
+          <div class="lease-detail-item"><div class="ld-label">Lease Term</div><div class="ld-value">60 months</div></div>
+          <div class="lease-detail-item"><div class="ld-label">Finance Type</div><div class="ld-value">Leasing</div></div>
+          <div class="lease-detail-item"><div class="ld-label">Total Over Term</div><div class="ld-value">WST 34,962.60</div></div>
+          <div class="lease-detail-item"><div class="ld-label">Currency</div><div class="ld-value">WST</div></div>
+        </div>
+      </div>
+      <div class="lease-benefit">
+        <p>Leasing preserves capital for your core mission.
+          <span> Instead of a lump-sum outlay, World Bank (Samoa) operates on fully current hardware from day one — with a fixed, predictable monthly cost that's straightforward to budget and approve. The monthly rate is locked for the full 60-month term.</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="price-view" id="view-outright">
+      <div class="package-price-card">
+        <div class="pkg-label">Total Package Investment</div>
+        <div class="pkg-amount"><span class="pkg-currency">WST</span>45,724.21</div>
+        <div class="pkg-note">Single payment · complete solution · inclusive of CT (15%)</div>
+        <div class="pkg-breakdown">
+          <div class="pkg-breakdown-item"><div class="b-label">Package price (excl. CT)</div><div class="b-value">WST 39,760.18</div></div>
+          <div class="pkg-breakdown-item"><div class="b-label">CT (15%)</div><div class="b-value">WST 5,964.03</div></div>
+          <div class="pkg-breakdown-item"><div class="b-label">Total (incl. CT)</div><div class="b-value">WST 45,724.21</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA BAND -->
+  <div class="cta-band">
+    <div class="cta-band-text">
+      <h3>Ready to confirm your order?</h3>
+      <p>Pricing expires 30 March 2026. Contact Ronaldo today to secure this quote.</p>
+    </div>
+    <a class="cta-btn" href="mailto:ronaldo@ricohsamoa.com?subject=Q-05194%20World%20Bank%20Samoa%20—%20Ready%20to%20Proceed">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Confirm This Proposal
+    </a>
+  </div>
+
+  <!-- 04 CPC SLA -->
+  <div class="cpc-section">
+    <div class="section-header"><span class="section-number">04</span><h2 class="section-title">Cost Per Copy SLA — What It Means for You</h2></div>
+    <p class="cpc-lead">Your solution includes a <strong>Cost Per Copy Service Level Agreement</strong> covering both black and colour prints. This is more than a service contract — it's a fundamentally simpler way to manage your print environment.</p>
+
+    <div class="cpc-benefits">
+      <div class="cpc-benefit">
+        <div class="cpc-benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="#888" stroke-width="1.5"/><line x1="8" y1="21" x2="16" y2="21" stroke="#888" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="cpc-benefit-title">No Surprise Toner Bills</div>
+        <div class="cpc-benefit-desc">Toner, parts, and labour are all covered. You pay per page — nothing more. No call-outs, no consumable invoices.</div>
+      </div>
+      <div class="cpc-benefit">
+        <div class="cpc-benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="cpc-benefit-title">Priority On-Site Response</div>
+        <div class="cpc-benefit-desc">SLA customers receive priority service. When your device needs attention, our technician comes to you.</div>
+      </div>
+      <div class="cpc-benefit">
+        <div class="cpc-benefit-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><line x1="12" y1="1" x2="12" y2="23" stroke="#888" stroke-width="1.5" stroke-linecap="round"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="cpc-benefit-title">Fully Predictable Costs</div>
+        <div class="cpc-benefit-desc">A fixed cost per page makes budget forecasting straightforward. Finance teams can plan accurately — no variables.</div>
+      </div>
+    </div>
+
+    <!-- Real CPC rates from Consumption Schedule -->
+    <div class="cpc-rates">
+      <div class="cpc-rates-label">Your rates — Q-05194</div>
+      <div class="cpc-rate-row">
+        <div class="cpc-rate-name"><span class="cpc-dot cpc-dot-black"></span>Black prints</div>
+        <div>
+          <div class="cpc-rate-value">WST 0.040 <span style="font-size:13px;font-weight:400;color:rgba(255,255,255,0.4)">per page</span></div>
+          <div class="cpc-rate-sub">A4 at ≤10% coverage · A3 charged at 2× A4 rate</div>
+        </div>
+      </div>
+      <div class="cpc-rate-row">
+        <div class="cpc-rate-name"><span class="cpc-dot cpc-dot-colour"></span>Colour prints</div>
+        <div>
+          <div class="cpc-rate-value">WST 0.400 <span style="font-size:13px;font-weight:400;color:rgba(255,255,255,0.4)">per page</span></div>
+          <div class="cpc-rate-sub">A4 at ≤10% coverage · A3 charged at 2× A4 rate</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cpc-included">
+      <div class="cpc-included-badge">How billing works</div>
+      <div class="cpc-included-text">
+        <h4>Usage-based, billed annually</h4>
+        <p>Meters are read at the end of each 12-month billing period. You're invoiced based on actual pages printed — black and colour tracked separately. A4 prints at up to 10% average coverage count as one page. A3 prints are charged at twice the A4 rate. That's it — no other charges.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 WHY RICOH SAMOA — RISK REVERSALS -->
+  <div class="risk-section">
+    <div class="section-header"><span class="section-number">05</span><h2 class="section-title">Why the Risk Is on Us, Not You</h2></div>
+    <p style="font-size:14px;color:var(--ricoh-mid);max-width:580px;line-height:1.6;margin-bottom:28px;">Every concern a procurement team might raise — we've addressed it before you need to ask.</p>
+    <div class="risk-grid">
+
+      <div class="risk-card">
+        <div class="risk-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a7a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
+        <div class="risk-content">
+          <div class="risk-tag risk-tag-green">Continuity</div>
+          <h4>Loan machine if yours goes down</h4>
+          <p>If your device requires extended repair, we provide a loan machine so your team stays operational. No waiting. No disruption to your work. Available to all CPC SLA customers.</p>
+        </div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a7a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div class="risk-content">
+          <div class="risk-tag risk-tag-green">Local Stock</div>
+          <h4>Parts &amp; stock held in Samoa and Auckland</h4>
+          <p>We carry stock locally in Samoa, with a dedicated Pacific Islands inventory at Ricoh South Pacific in Auckland. No waiting on international freight for common parts and consumables.</p>
+        </div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a7a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="risk-content">
+          <div class="risk-tag risk-tag-green">Warranty</div>
+          <h4>12-month manufacturer warranty, on-site</h4>
+          <p>Full manufacturer warranty on all hardware from day one. On-site labour included — not a ship-it-back arrangement. Escalation through Ricoh South Pacific and Ricoh Asia Pacific if needed.</p>
+        </div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a4a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <div class="risk-content">
+          <div class="risk-tag risk-tag-blue">Fixed Pricing</div>
+          <h4>Monthly lease rate locked for 60 months</h4>
+          <p>Your WST 582.71/month payment is fixed for the full lease term. No price increases. No renegotiations. Finance and procurement teams can plan with certainty.</p>
+        </div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a7a4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="risk-content">
+          <div class="risk-tag risk-tag-green">Service Cover</div>
+          <h4>Toner managed and supplied automatically</h4>
+          <p>Under the CPC SLA, consumables are managed as part of your plan. You'll never be caught without toner — Ricoh Samoa monitors usage and ensures supply is maintained.</p>
+        </div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a4a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg></div>
+        <div class="risk-content">
+          <div class="risk-tag risk-tag-blue">Escalation Chain</div>
+          <h4>Ricoh South Pacific &amp; Asia Pacific behind us</h4>
+          <p>Ricoh Samoa is backed by Ricoh South Pacific (Auckland) and Ricoh's Asia Pacific network. If a resolution requires escalation beyond our local team, the full group is behind it.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 06 DELIVERY -->
+  <div class="section" style="background:white;">
+    <div class="section-header"><span class="section-number">06</span><h2 class="section-title">Delivery, Installation &amp; Support</h2></div>
+    <div class="delivery-grid">
+      <div class="delivery-block">
+        <h3>Delivery Location</h3>
+        <p style="margin-bottom:16px;">Eleelefou, Apia, Samoa</p>
+        <h3 style="margin-top:28px;">Scope of Services</h3>
+        <ul>
+          <li>Supply and delivery of all equipment to site</li>
+          <li>Professional installation and physical setup</li>
+          <li>System configuration and network integration</li>
+          <li>User training session for your team</li>
+          <li>Handover documentation and warranty registration</li>
+          <li>CPC SLA activation and meter registration</li>
+        </ul>
+      </div>
+      <div class="delivery-block">
+        <h3>Delivery Timeline</h3>
+        <div style="margin-bottom:20px;font-size:14px;">Stock subject to confirmation at time of order.</div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--ricoh-mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Order to Delivery</div>
+          <div style="font-size:22px;font-weight:700;color:var(--ricoh-dark);">3 – 5 weeks</div>
+          <div class="timeline-bar"><div class="timeline-fill"></div></div>
+          <div class="timeline-labels"><span>Purchase Order / Lease Signed</span><span>Equipment on-site</span></div>
+        </div>
+        <div style="margin-top:20px;">
+          <div style="font-size:12px;font-weight:600;color:var(--ricoh-mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Installation Lead Time</div>
+          <div style="font-size:22px;font-weight:700;color:var(--ricoh-dark);">1 – 2 days</div>
+          <div style="font-size:13px;color:var(--ricoh-mid);">After equipment arrives on-site</div>
+        </div>
+        <h3 style="margin-top:28px;">Ongoing Cover</h3>
+        <ul>
+          <li>12-month manufacturer warranty from install date</li>
+          <li>CPC SLA active from day one — parts, labour &amp; toner included</li>
+          <li>Loan machine available if extended repair required</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 NEXT STEPS -->
+  <div class="section" style="background:white;">
+    <div class="section-header"><span class="section-number">07</span><h2 class="section-title">Next Steps</h2></div>
+    <p style="font-size:14px;color:var(--ricoh-mid);margin-bottom:28px;max-width:560px;line-height:1.6;">Four steps from confirmation to a fully operational system — with service active from day one.</p>
+    <div class="steps-list">
+      <div class="step-item"><div class="step-num">01</div><div class="step-content"><h4>Confirm acceptance — before 30 March</h4><p>Contact Ronaldo Mercado to proceed. Pricing is locked until 30 March 2026 — acting now secures this quote and this rate.</p></div></div>
+      <div class="step-item"><div class="step-num">02</div><div class="step-content"><h4>Purchase order or lease agreement signed</h4><p>Raise a PO to Ricoh Samoa, or sign the 60-month lease agreement. We confirm equipment availability in writing immediately.</p></div></div>
+      <div class="step-item"><div class="step-num">03</div><div class="step-content"><h4>Delivery to Eleelefou, Apia</h4><p>Equipment ships typically 3–5 weeks from order. We confirm the exact date once stock is allocated to your order.</p></div></div>
+      <div class="step-item"><div class="step-num">04</div><div class="step-content"><h4>Installation, CPC activation &amp; handover</h4><p>We install, configure, register the CPC meters, and train your team. The device is operational and covered before we leave.</p></div></div>
+    </div>
+  </div>
+
+  <!-- SIGN-OFF -->
+  <div class="signoff">
+    <div class="signoff-inner">
+      <div class="signoff-text">
+        <h2>Ready when you are.</h2>
+        <p>Ricoh Samoa has been a trusted technology partner since 2009. A wholly-owned subsidiary of Ricoh South Pacific in New Zealand, we understand Pacific Island operating environments — the logistics, the infrastructure, and the expectations of organisations like World Bank (Samoa).</p>
+        <p style="margin-top:16px;">We appreciate the opportunity to support your renewal and look forward to delivering a solution that performs reliably for the next five years and beyond.</p>
+        <p style="margin-top:16px;">Questions or ready to proceed? Ronaldo is your first call.</p>
+        <p style="margin-top:24px;font-size:13px;color:rgba(255,255,255,0.35);">Quote valid until: 30 March 2026.</p>
+      </div>
+      <div class="signoff-contact">
+        <div class="contact-label">Your contact</div>
+        <img class="contact-photo"
+             src="https://raw.githubusercontent.com/shivnarayan-rsp/rsp-dashboards/main/ronaldo-mercado.jpg"
+             alt="Ronaldo Mercado" onerror="this.style.display='none'">
+        <div class="contact-name">Ronaldo Mercado</div>
+        <div class="contact-role">Sales Executive, Ricoh Samoa</div>
+        <div class="contact-detail"><span>&#9993;</span><span><a href="mailto:ronaldo@ricohsamoa.com">ronaldo@ricohsamoa.com</a></span></div>
+        <div class="contact-detail"><span>&#9742;</span><span>+685 7712757</span></div>
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);">
+          <div class="contact-label">Regional support</div>
+          <div class="contact-name" style="font-size:14px;">Avi Sharma</div>
+          <div class="contact-role">Regional Sales Manager, Pacific Islands</div>
+          <div class="contact-detail"><span>&#9993;</span><span><a href="mailto:avi@ricohsouthpacific.com">avi@ricohsouthpacific.com</a></span></div>
+          <div class="contact-detail"><span>&#9742;</span><span>+64 212365031</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div class="doc-footer-inner">
+      <div class="footer-brand"><a href="https://www.ricohsamoa.com" target="_blank" style="color:rgba(255,255,255,0.25);">Ricoh Samoa</a> &nbsp;·&nbsp; <a href="https://www.ricohsouthpacific.com" target="_blank" style="color:rgba(255,255,255,0.25);">Ricoh South Pacific</a></div>
+      <div class="footer-conf">Confidential · 20 March 2026 · Q-05194</div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING -->
+<div class="float-group" id="floatGroup">
+  <a class="email-btn" href="mailto:ronaldo@ricohsamoa.com,avi@ricohsouthpacific.com?subject=Q-05194%20World%20Bank%20Samoa%20—%20Ready%20to%20Proceed">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    Confirm This Proposal
+  </a>
+  <button class="print-btn" onclick="window.print()">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+    Save / Print to PDF
+  </button>
+  <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+  </button>
+</div>
+
+<script>
+  function showView(id, btn) {
+    document.querySelectorAll('.price-view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('view-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+  const g = document.getElementById('floatGroup'), c = document.querySelector('.cover');
+  function s() { g.classList.toggle('visible', c.getBoundingClientRect().bottom < 0); }
+  window.addEventListener('scroll', s, { passive: true }); s();
+</script>
+</body>
+</html>
