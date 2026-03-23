@@ -5,415 +5,196 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RSP Group — Finance Dashboard</title>
+<meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ricoh-red: #D7063B;
-    --ricoh-red-light: #f5c0cd;
+    --red: #D7063B;
     --charcoal: #1e2124;
     --charcoal-mid: #2c3036;
-    --body-bg: #f7f7f6;
+    --body-bg: #f0f0ef;
     --surface: #ffffff;
-    --border: #e4e4e2;
-    --text-primary: #1a1a1a;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
+    --border: #e2e2e0;
+    --text: #1a1a1a;
+    --text-2: #4b5563;
+    --text-3: #9ca3af;
     --green: #16a34a;
     --green-bg: #dcfce7;
-    --red: #dc2626;
-    --red-bg: #fee2e2;
+    --green-border: #86efac;
     --amber: #d97706;
     --amber-bg: #fef3c7;
+    --amber-border: #fcd34d;
+    --danger: #dc2626;
+    --danger-bg: #fee2e2;
+    --danger-border: #fca5a5;
     --blue: #2563eb;
     --blue-bg: #dbeafe;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--body-bg); color: var(--text); font-size: 14px; line-height: 1.5; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--body-bg);
-    color: var(--text-primary);
-    font-size: 14px;
-    line-height: 1.5;
-  }
+  /* ── HEADER ── */
+  header { background: var(--charcoal); color: white; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .header-brand { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: white; }
+  .header-brand span { color: var(--red); }
+  .header-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.2); }
+  .header-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 400; }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .as-at-badge { background: rgba(215,6,59,0.15); border: 1px solid rgba(215,6,59,0.3); color: #ff7a97; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-family: 'DM Mono', monospace; font-weight: 500; }
+  .back-link { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; transition: color 0.15s; }
+  .back-link:hover { color: white; }
 
-  /* HEADER */
-  header {
+  /* ── LAYOUT ── */
+  main { max-width: 1440px; margin: 0 auto; padding: 28px 24px 60px; }
+
+  /* ── WIG BANNER ── */
+  .wig-banner {
     background: var(--charcoal);
-    color: white;
-    padding: 0 32px;
+    border-radius: 10px;
+    padding: 16px 24px;
+    margin-bottom: 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .header-brand {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-    color: white;
-  }
-
-  .header-brand span {
-    color: var(--ricoh-red);
-  }
-
-  .header-divider {
-    width: 1px;
-    height: 24px;
-    background: rgba(255,255,255,0.2);
-  }
-
-  .header-subtitle {
-    font-size: 13px;
-    color: rgba(255,255,255,0.6);
-    font-weight: 400;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .week-badge {
-    background: rgba(215,6,59,0.15);
-    border: 1px solid rgba(215,6,59,0.3);
-    color: #ff7a97;
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-family: 'DM Mono', monospace;
-    font-weight: 500;
-  }
-
-  .back-link {
-    color: rgba(255,255,255,0.6);
-    text-decoration: none;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: color 0.15s;
-  }
-
-  .back-link:hover { color: white; }
-
-  /* MAIN */
-  main {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 28px 24px 60px;
-  }
-
-  /* FX STRIP */
-  .fx-strip {
-    background: var(--charcoal-mid);
-    border-radius: 8px;
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    margin-bottom: 28px;
     flex-wrap: wrap;
-  }
-
-  .fx-strip-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.4);
-    font-weight: 600;
-  }
-
-  .fx-pair {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .fx-currency {
-    font-size: 11px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .fx-arrow {
-    color: rgba(255,255,255,0.25);
-    font-size: 11px;
-  }
-
-  .fx-rate {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: #ff7a97;
-    font-weight: 500;
-  }
-
-  .fx-divider {
-    width: 1px;
-    height: 16px;
-    background: rgba(255,255,255,0.1);
-  }
-
-  .fx-note {
-    font-size: 11px;
-    color: rgba(255,255,255,0.3);
-    margin-left: auto;
-    font-style: italic;
-  }
-
-  /* DATA NOTE */
-  .data-note {
-    background: var(--amber-bg);
-    border: 1px solid #fcd34d;
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 12px;
-    color: #92400e;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  /* SECTION */
-  .section {
-    margin-bottom: 36px;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: center;
     gap: 12px;
-    margin-bottom: 14px;
   }
+  .wig-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--red); }
+  .wig-text { font-size: 15px; font-weight: 600; color: white; margin-top: 2px; }
+  .wig-group-stats { display: flex; gap: 32px; }
+  .wig-stat { text-align: right; }
+  .wig-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.4); }
+  .wig-stat-value { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; color: white; line-height: 1.2; }
+  .wig-stat-value.warn { color: #fbbf24; }
+  .wig-stat-value.danger { color: #f87171; }
 
-  .section-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: -0.2px;
-  }
+  /* ── SECTION LABEL ── */
+  .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  .section-pill {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    background: var(--charcoal);
-    color: rgba(255,255,255,0.7);
-    padding: 3px 8px;
-    border-radius: 4px;
-  }
+  /* ── SCORECARDS ROW ── */
+  .scorecard-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 28px; }
 
-  /* TABLE */
-  .table-wrap {
+  .scorecard {
     background: var(--surface);
     border-radius: 10px;
     border: 1px solid var(--border);
+    padding: 18px 16px 16px;
+    position: relative;
     overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
   }
+  .scorecard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--border); }
+  .scorecard.status-green::before { background: var(--green); }
+  .scorecard.status-amber::before { background: var(--amber); }
+  .scorecard.status-red::before { background: var(--danger); }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
+  .sc-entity { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 12px; }
+  .sc-dso-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+  .sc-dso { font-family: 'DM Mono', monospace; font-size: 32px; font-weight: 500; line-height: 1; }
+  .sc-dso.green { color: var(--green); }
+  .sc-dso.amber { color: var(--amber); }
+  .sc-dso.red { color: var(--danger); }
+  .sc-dso-unit { font-size: 12px; color: var(--text-3); font-weight: 400; }
+  .sc-trend { font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 3px; margin-bottom: 14px; }
+  .sc-trend.improving { color: var(--green); }
+  .sc-trend.worsening { color: var(--danger); }
+  .sc-trend.stable { color: var(--text-3); }
 
-  thead th {
-    background: var(--charcoal);
-    color: rgba(255,255,255,0.85);
-    padding: 11px 16px;
-    text-align: right;
-    font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-  }
+  .sc-divider { height: 1px; background: var(--border); margin-bottom: 12px; }
 
-  thead th:first-child {
-    text-align: left;
-    color: rgba(255,255,255,0.5);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    width: 200px;
-    min-width: 170px;
-  }
+  .sc-metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .sc-metric-label { font-size: 11px; color: var(--text-2); }
+  .sc-metric-value { font-family: 'DM Mono', monospace; font-size: 11.5px; font-weight: 500; color: var(--text); }
+  .sc-metric-value.danger { color: var(--danger); }
+  .sc-metric-value.amber { color: var(--amber); }
 
-  thead th.total-col {
-    background: #161a1d;
-    color: rgba(255,255,255,0.9);
-    border-left: 1px solid rgba(255,255,255,0.08);
-  }
+  /* AR health bar */
+  .sc-health-bar-wrap { margin-top: 12px; }
+  .sc-health-bar-label { font-size: 10px; color: var(--text-3); margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .sc-health-bar { height: 6px; border-radius: 99px; background: var(--border); overflow: hidden; display: flex; }
+  .sc-bar-current { background: var(--green); height: 100%; }
+  .sc-bar-overdue-mild { background: var(--amber); height: 100%; }
+  .sc-bar-overdue-severe { background: var(--danger); height: 100%; }
 
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.1s;
-  }
+  /* Cash pill */
+  .sc-cash-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; margin-top: 10px; }
+  .sc-cash-pill.ok    { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-border); }
+  .sc-cash-pill.tight { background: var(--amber-bg);  color: var(--amber);  border: 1px solid var(--amber-border); }
+  .sc-cash-pill.risk  { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border); }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
+  /* ── COLLECTIONS LEADERBOARD ── */
+  .leaderboard { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 28px; }
+  .lb-header { display: grid; grid-template-columns: 120px 1fr 90px 90px 90px 90px; align-items: center; padding: 10px 20px; background: var(--charcoal); gap: 12px; }
+  .lb-header-cell { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.5); text-align: right; }
+  .lb-header-cell:first-child { text-align: left; color: rgba(255,255,255,0.3); }
+  .lb-header-cell.highlight { color: rgba(255,255,255,0.85); }
+
+  .lb-row { display: grid; grid-template-columns: 120px 1fr 90px 90px 90px 90px; align-items: center; padding: 14px 20px; gap: 12px; border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row:hover { background: #fafafa; }
+
+  .lb-entity { font-weight: 600; font-size: 13px; }
+  .lb-rank { font-size: 10px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+
+  .lb-bar-wrap { position: relative; height: 28px; display: flex; align-items: center; }
+  .lb-bar-bg { position: absolute; left: 0; right: 0; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; display: flex; }
+  .lb-bar-current { height: 100%; background: var(--green); }
+  .lb-bar-mild { height: 100%; background: var(--amber); opacity: 0.7; }
+  .lb-bar-severe { height: 100%; background: var(--danger); opacity: 0.85; }
+  .lb-pct-label { position: absolute; right: 0; font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text-3); }
+
+  .lb-num { font-family: 'DM Mono', monospace; font-size: 12.5px; text-align: right; }
+  .lb-num.danger { color: var(--danger); font-weight: 600; }
+  .lb-num.amber  { color: var(--amber);  font-weight: 600; }
+  .lb-num.green  { color: var(--green);  font-weight: 600; }
+
+  .lb-dso-cell { text-align: right; }
+  .lb-dso-badge { display: inline-block; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+  .lb-dso-badge.green  { background: var(--green-bg);  color: var(--green); }
+  .lb-dso-badge.amber  { background: var(--amber-bg);  color: var(--amber); }
+  .lb-dso-badge.red    { background: var(--danger-bg); color: var(--danger); }
+
+  .lb-trend-cell { text-align: right; font-size: 12px; font-weight: 600; }
+  .lb-trend-cell.worsening { color: var(--danger); }
+  .lb-trend-cell.improving { color: var(--green); }
+  .lb-trend-cell.stable    { color: var(--text-3); }
+
+  /* ── AR DETAIL TABLE ── */
+  .detail-table-wrap { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { background: var(--charcoal); color: rgba(255,255,255,0.7); padding: 10px 16px; text-align: right; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap; }
+  thead th:first-child { text-align: left; color: rgba(255,255,255,0.4); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+  thead th.total-col { background: #161a1d; border-left: 1px solid rgba(255,255,255,0.08); }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: #fafafa; }
+  tbody td { padding: 10px 16px; text-align: right; font-family: 'DM Mono', monospace; font-size: 12px; white-space: nowrap; }
+  tbody td:first-child { text-align: left; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; }
+  tbody td.total-col { background: #fafaf9; font-weight: 700; border-left: 1px solid var(--border); }
+  .val-red   { color: var(--danger) !important; }
+  .val-amber { color: var(--amber)  !important; }
+  .val-green { color: var(--green)  !important; }
+  .val-muted { color: var(--text-3) !important; }
 
-  tbody tr.section-sub-header td {
-    background: #f2f2f0;
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text-secondary);
-    padding: 7px 16px;
-    border-bottom: 1px solid var(--border);
-  }
+  /* ── FX FOOTNOTE ── */
+  .fx-footnote { font-size: 11px; color: var(--text-3); margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); font-family: 'DM Mono', monospace; }
 
-  tbody td {
-    padding: 10px 16px;
-    text-align: right;
-    font-family: 'DM Mono', monospace;
-    font-size: 12.5px;
-    color: var(--text-primary);
-    white-space: nowrap;
+  @media (max-width: 1100px) {
+    .scorecard-grid { grid-template-columns: repeat(3, 1fr); }
+    .ap-grid { grid-template-columns: repeat(3, 1fr); }
+    .lb-header, .lb-row { grid-template-columns: 100px 1fr 80px 80px 80px; }
+    .lb-header .lb-header-cell:nth-child(4), .lb-row .lb-num:nth-child(4) { display: none; }
   }
-
-  tbody td:first-child {
-    text-align: left;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-primary);
-  }
-
-  tbody td.total-col {
-    background: #fafaf9;
-    font-weight: 700;
-    border-left: 1px solid var(--border);
-    color: var(--text-primary);
-  }
-
-  .val-red { color: var(--red) !important; }
-  .val-green { color: var(--green) !important; }
-  .val-amber { color: var(--amber) !important; }
-  .val-muted { color: var(--text-muted) !important; }
-  .val-na { color: var(--text-muted) !important; font-style: italic; font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; }
-
-  /* COMMENTARY */
-  .commentary-box {
-    background: #fffbf0;
-    border: 1px solid #fde68a;
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-    padding: 12px 18px;
-    font-size: 12.5px;
-    color: #78350f;
-    line-height: 1.6;
-  }
-
-  .commentary-box strong {
-    color: #92400e;
-  }
-
-  /* ALERT STRIP */
-  .alert-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 28px;
-  }
-
-  .alert-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  .alert-badge.red {
-    background: var(--red-bg);
-    color: var(--red);
-    border: 1px solid #fca5a5;
-  }
-
-  .alert-badge.amber {
-    background: var(--amber-bg);
-    color: var(--amber);
-    border: 1px solid #fcd34d;
-  }
-
-  .alert-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: currentColor;
-  }
-
-  /* DSO badges inline */
-  .dso-red { 
-    display: inline-block;
-    background: var(--red-bg);
-    color: var(--red);
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-weight: 700;
-  }
-  .dso-amber {
-    display: inline-block;
-    background: var(--amber-bg);
-    color: var(--amber);
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-weight: 700;
-  }
-  .dso-ok {
-    color: var(--green);
-    font-weight: 700;
-  }
-
-  /* FOOTER NOTE */
-  .footnotes {
-    margin-top: 40px;
-    border-top: 1px solid var(--border);
-    padding-top: 16px;
-  }
-
-  .footnote {
-    font-size: 11.5px;
-    color: var(--text-muted);
-    margin-bottom: 4px;
-    display: flex;
-    gap: 8px;
-  }
-
-  .footnote-num {
-    font-weight: 700;
-    color: var(--text-secondary);
-    min-width: 16px;
-  }
-
-  @media (max-width: 900px) {
+  @media (max-width: 700px) {
     main { padding: 16px 12px 40px; }
-    thead th, tbody td { padding: 8px 10px; font-size: 11.5px; }
-    thead th:first-child { min-width: 130px; }
+    .scorecard-grid { grid-template-columns: repeat(2, 1fr); }
+    .ap-grid { grid-template-columns: repeat(2, 1fr); }
+    .wig-group-stats { display: none; }
   }
 </style>
 </head>
@@ -426,531 +207,448 @@
     <div class="header-subtitle">Finance Dashboard</div>
   </div>
   <div class="header-right">
-    <div class="week-badge" id="weekBadge"></div>
-    <a href="index.html" class="back-link">← Back to dashboards</a>
+    <span class="as-at-badge" id="asAtBadge"></span>
+    <a href="index.html" class="back-link">← Scorecards</a>
   </div>
 </header>
 
 <main>
-  <div class="fx-strip">
-    <div class="fx-strip-label">FX Rates Applied</div>
-    <div class="fx-pair">
-      <span class="fx-currency">WST</span>
-      <span class="fx-arrow">→</span>
-      <span class="fx-rate">0.6172 NZD</span>
-    </div>
-    <div class="fx-divider"></div>
-    <div class="fx-pair">
-      <span class="fx-currency">SBD</span>
-      <span class="fx-arrow">→</span>
-      <span class="fx-rate">0.2076 NZD</span>
-    </div>
-    <div class="fx-divider"></div>
-    <div class="fx-pair">
-      <span class="fx-currency">TOP</span>
-      <span class="fx-arrow">→</span>
-      <span class="fx-rate">0.6931 NZD</span>
-    </div>
-    <div class="fx-divider"></div>
-    <div class="fx-pair">
-      <span class="fx-currency">VUV</span>
-      <span class="fx-arrow">→</span>
-      <span class="fx-rate">0.0140 NZD</span>
-    </div>
-    <span class="fx-note">Rates as at end-Feb 2026 · RSP &amp; Alpine Print in NZD</span>
-  </div>
+  <div class="wig-banner" id="wigBanner"></div>
 
-  <div class="data-note">
-    <span>⚠</span>
-    <span><strong>Data notes:</strong> Opening/closing cash balances are not directly available from Xero via Synchub (no balance field on Account table). Weekly cash in/out is sourced from BankTransaction records for 7–13 Mar 2026. Alpine Print is not connected to Synchub — figures from the uploaded manual dashboard are used for Alpine. Inventory balance not available via Synchub API; sourced from uploaded dashboard. <sup>[1]</sup></span>
-  </div>
+  <div class="section-label">Working Capital Scorecard — DSO &amp; Collection Health by Entity</div>
+  <div class="scorecard-grid" id="scorecardGrid"></div>
 
-  <div id="alertStrip" class="alert-strip"></div>
-  <div id="dashboardContent"></div>
+  <div class="section-label">Collections Leaderboard — Overdue AR Ranked by Risk</div>
+  <div class="leaderboard" id="leaderboard"></div>
 
-  <div class="footnotes" id="footnotes"></div>
+  <div class="section-label">AR Ageing Detail</div>
+  <div class="detail-table-wrap" id="detailTable"></div>
+
+  <div class="fx-footnote" id="fxFootnote"></div>
 </main>
 
 <script>
-// ─────────────────────────────────────────────────────────────
-// DATA OBJECT — all values in NZD (FX already applied)
-// FX rates: WST×0.6172, SBD×0.2076, TOP×0.6931, VUV×0.0140
-// Sources: Synchub/Xero live queries (week ending 13 Mar 2026)
-//          + manual dashboard upload for Alpine Print
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// DATA — all monetary values in NZD
+// FX applied: WST×0.6172, SBD×0.2076, TOP×0.6931, VUV×0.0140
+// Source: Synchub/Xero live — 23 Mar 2026
+// Alpine: manual dashboard (week ending 6 Mar 2026)
+// ═══════════════════════════════════════════════════════════
 const DATA = {
-  weekEnding: "13 March 2026",
+  asAt: "23 March 2026",
+  fx: { WST: 0.6172, SBD: 0.2076, TOP: 0.6931, VUV: 0.0140, NZD: 1.0 },
 
-  fx: {
-    WST: 0.6172,
-    SBD: 0.2076,
-    TOP: 0.6931,
-    VUV: 0.0140,
-    NZD: 1.0000
-  },
+  // DSO target: <60 days
+  dsoTarget: 60,
 
   entities: ["Alpine", "RSP", "Samoa", "Solomons", "Tonga", "Vanuatu"],
 
-  // ── SECTION 1: CASH & LIQUIDITY ──────────────────────────
-  // Opening/closing cash from uploaded manual dashboard (Synchub Account table has no balance field)
-  // Cash In/Out from BankTransaction for 7–13 Mar 2026 (Xero via Synchub) — Alpine from manual dashboard
-  // Overdraft limits: static management figures
-  cash: {
-    openingCash: {
-      Alpine:   -110707,
-      RSP:      -182061,
-      Samoa:     832913,   // WST 1349503 × 0.6172
-      Solomons:   53439,   // SBD 257411  × 0.2076
-      Tonga:     236742,   // TOP 341570  × 0.6931
-      Vanuatu:   315085,   // VUV 22506097× 0.0140
-    },
-    cashIn: {
-      Alpine:    33332,
-      RSP:         255,    // NZD — Xero live (low: may be timing/settlement)
-      Samoa:           0,  // WST 0 × 0.6172 — no RECEIVE transactions this week in Xero
-      Solomons:        0,  // SBD 0 — no RECEIVE transactions in Xero this week
-      Tonga:           0,  // TOP 0 — no RECEIVE transactions in Xero this week
-      Vanuatu:      4932,  // VUV 352280 × 0.0140
-    },
-    cashOut: {
-      Alpine:    37143,
-      RSP:       75985,    // NZD — Xero live
-      Samoa:     48913,    // WST 79287  × 0.6172
-      Solomons:  13178,    // SBD 63479  × 0.2076
-      Tonga:       454,    // TOP 655    × 0.6931
-      Vanuatu:    4932,    // VUV 352280 × 0.0140
-    },
-    closingCash: {
-      Alpine:   -114518,
-      RSP:       -80583,
-      Samoa:     797321,   // WST 1291835 × 0.6172
-      Solomons:   59661,   // SBD 287384  × 0.2076
-      Tonga:     181311,   // TOP 261595  × 0.6931
-      Vanuatu:   321515,   // VUV 22965347× 0.0140
-    },
-    overdraftFacility: {
-      Alpine:   250000,
-      RSP:      750000,
-      Samoa:     58634,    // from manual dashboard (NZD equiv)
-      Solomons:  64875,
-      Tonga:     56141,
-      Vanuatu:   56000,
-    },
-    commentary: "RSP closing cash remains negative at -$80,583 though improved from -$182k opening position. Alpine continues to rely on overdraft support at -$114,518. Pacific island entities hold strong positive cash positions — Samoa ($797k), Vanuatu ($321k), and Tonga ($181k) provide meaningful group liquidity. Note: Samoa, Solomons, and Tonga show zero Cash In for the week — this may reflect timing of Xero bank feed sync rather than no actual receipts. Verify with entity finance contacts.",
-  },
-
-  // ── SECTION 2: DEBTORS & COLLECTIONS ────────────────────
-  // All from Xero live via Synchub (Invoice table), FX applied
-  // Alpine figures from manual dashboard upload
   ar: {
+    // AR ageing in NZD
     current: {
       Alpine:   209307,
-      RSP:      257045,    // NZD live
-      Samoa:    100867,    // WST 163431 × 0.6172
-      Solomons:  52020,    // SBD 250578 × 0.2076
-      Tonga:     36444,    // TOP 52600  × 0.6931
-      Vanuatu:  111242,    // VUV 7945818× 0.0140
+      RSP:       57733,   // live
+      Samoa:     23534,   // WST 38,101 × 0.6172
+      Solomons:   5754,   // SBD 27,728 × 0.2076
+      Tonga:      3642,   // TOP 5,256 × 0.6931
+      Vanuatu:   26653,   // VUV 1,903,774 × 0.0140
     },
     days3060: {
       Alpine:     8613,
-      RSP:       95338,    // NZD live
-      Samoa:     27506,    // WST 44580  × 0.6172
-      Solomons:   9137,    // SBD 44014  × 0.2076
-      Tonga:      2969,    // TOP 4285   × 0.6931
-      Vanuatu:   13212,    // VUV 943693 × 0.0140
+      RSP:      186119,   // live
+      Samoa:     34188,   // WST 55,373 × 0.6172
+      Solomons:   5895,   // SBD 28,395 × 0.2076
+      Tonga:      7213,   // TOP 10,407 × 0.6931
+      Vanuatu:   19876,   // VUV 1,419,712 × 0.0140
     },
     days6090: {
       Alpine:    10238,
-      RSP:           0,    // NZD live
-      Samoa:     24583,    // WST 39830  × 0.6172
-      Solomons:      0,    // SBD 0
-      Tonga:      2002,    // TOP 2889   × 0.6931
-      Vanuatu:   18528,    // VUV 1323426× 0.0140
+      RSP:       91342,   // live
+      Samoa:      6880,   // WST 11,141 × 0.6172
+      Solomons:   3025,   // SBD 14,578 × 0.2076
+      Tonga:       680,   // TOP 981 × 0.6931
+      Vanuatu:   12813,   // VUV 915,230 × 0.0140
     },
     days90plus: {
       Alpine:    72018,
-      RSP:      132361,    // NZD live
-      Samoa:     11596,    // WST 18791  × 0.6172
-      Solomons:   7359,    // SBD 35438  × 0.2076
-      Tonga:      2488,    // TOP 3590   × 0.6931
-      Vanuatu:   27562,    // VUV 1968715× 0.0140
+      RSP:      601496,   // live — significantly elevated
+      Samoa:     96304,   // WST 155,951 × 0.6172
+      Solomons:  49826,   // SBD 240,009 × 0.2076
+      Tonga:      2332,   // TOP 3,365 × 0.6931
+      Vanuatu:   50792,   // VUV 3,628,000 × 0.0140
     },
-    revenue90day: {
-      Alpine:   359690,    // from manual dashboard
-      RSP:      924633,    // NZD live (SubTotal)
-      Samoa:    508266,    // WST 823403 × 0.6172
-      Solomons: 288971,    // SBD 1391866× 0.2076
-      Tonga:    209618,    // TOP 302466 × 0.6931
-      Vanuatu:  396946,    // VUV 28353260× 0.0140
+    // Trailing 90-day revenue in NZD (for DSO calculation)
+    rev90Day: {
+      Alpine:   359690,   // manual
+      RSP:      924194,   // live
+      Samoa:    532254,   // WST 861,785 × 0.6172
+      Solomons: 344349,   // SBD 1,658,717 × 0.2076
+      Tonga:    213581,   // TOP 308,266 × 0.6931
+      Vanuatu:  447447,   // VUV 31,960,496 × 0.0140
     },
-    commentary: "RSP DSO remains very elevated — driven by intercompany recovery from Pacific islands. Alpine DSO at 75 days continues to signal slow customer cash conversion. Samoa and Vanuatu require focused collection effort on 90+ day balances. Solomons shows clean ageing profile with no 60–90 day bucket. Note: RSP 90-day revenue from Xero ($924k) is higher than the manual dashboard figure ($466k) — this may include intercompany invoices; review with Minoo.",
-  },
-
-  // ── SECTION 3: PAYABLES & COMMITMENTS ───────────────────
-  // AP due dates from Xero live; payroll/other from manual dashboard
-  // Intercompany and NFT from manual dashboard
-  payables: {
-    due7days: {
-      Alpine:    66918,
-      RSP:      166645,    // NZD live
-      Samoa:      1239,    // WST 2008   × 0.6172
-      Solomons:  11007,    // SBD 53021  × 0.2076
-      Tonga:     26622,    // TOP 38406  × 0.6931
-      Vanuatu:     502,    // VUV 35826  × 0.0140
-    },
-    due830days: {
-      Alpine:        0,
-      RSP:        6737,    // NZD live
-      Samoa:      4967,    // WST 8050   × 0.6172
-      Solomons:   8018,    // SBD 38605  × 0.2076
-      Tonga:      1066,    // TOP 1538   × 0.6931
-      Vanuatu:    1493,    // VUV 106630 × 0.0140
-    },
-    payrollOther: {
-      Alpine:    23048,    // manual
-      RSP:      108704,    // manual
-      Samoa:     14859,    // manual (NZD equiv)
-      Solomons:  13909,    // manual
-      Tonga:      7099,    // manual
-      Vanuatu:   10360,    // manual
-    },
-    intercoRSP: {
-      Alpine:   196183,    // manual
-      RSP:           0,
-      Samoa:     80640,    // manual NZD equiv
-      Solomons: 607041,    // manual NZD equiv — very high
-      Tonga:    275493,    // manual NZD equiv
-      Vanuatu:   34377,    // manual NZD equiv
-    },
-    narayanFamilyTrust: {
-      Alpine:   104383,    // manual
-      RSP:       19700,    // manual
-      Samoa:         0,
-      Solomons:      0,
-      Tonga:         0,
-      Vanuatu:       0,
+    // Prior period 90-day revenue (91–180 days ago) for DSO trend
+    rev90DayPrior: {
+      Alpine:      null,   // not available
+      RSP:      1169961,   // live
+      Samoa:     654001,   // WST 1,059,593 × 0.6172
+      Solomons:  427302,   // SBD 2,058,296 × 0.2076
+      Tonga:     232092,   // TOP 334,987 × 0.6931
+      Vanuatu:   510870,   // VUV 36,490,738 × 0.0140
     },
   },
 
-  // ── SECTION 4: INVENTORY ────────────────────────────────
-  // Not available via Synchub API — sourced from manual dashboard upload
-  inventory: {
-    value: {
-      Alpine:    10027,
-      RSP:      280413,
-      Samoa:    237058,    // NZD equiv from manual
-      Solomons: 600171,    // NZD equiv from manual
-      Tonga:    271532,    // NZD equiv from manual
-      Vanuatu:  473070,    // NZD equiv from manual
-    },
-    commentary: "Group inventory remains elevated at $1.87m. Solomons ($600k) and Vanuatu ($473k) account for 57% of total group stock. Note: inventory values sourced from Xero Balance Sheet via manual dashboard — Synchub API does not currently expose balance sheet account balances directly.",
+  // AP due next 7 days in NZD
+  ap7Days: {
+    Alpine:    66918,   // manual
+    RSP:        3119,   // live
+    Samoa:       210,   // WST 340 × 0.6172
+    Solomons:   1358,   // SBD 6,542 × 0.2076
+    Tonga:         0,   // TOP 0
+    Vanuatu:      42,   // VUV 3,000 × 0.0140
   },
 
-  footnotes: [
-    "Opening and closing cash balances sourced from manual dashboard (week ending 6 March 2026 used as opening proxy). Synchub Xero API does not expose account balance fields directly.",
-    "Alpine Print figures (all sections) sourced from manually uploaded dashboard — Alpine Xero is not connected to Synchub.",
-    "RSP 90-day revenue from Xero live ($924k) is higher than manual dashboard ($466k) — possible intercompany invoices included. Validate with Finance.",
-    "Zero Cash In for Samoa, Solomons, and Tonga may reflect bank feed sync timing rather than actual nil receipts. Verify with entity contacts.",
-    "Inventory values sourced from manual dashboard upload — Synchub does not expose BalanceSheet account balances via current API.",
-  ]
+  // Available cash (closing cash + overdraft) — from prior manual dashboard
+  // Used only for AP coverage ratio
+  availableCash: {
+    Alpine:   135482,   // -114,518 + 250,000
+    RSP:      669417,   // -80,583 + 750,000
+    Samoa:    855955,   // 797,321 + 58,634
+    Solomons: 124536,   // 59,661 + 64,875
+    Tonga:    237453,   // 181,311 + 56,141
+    Vanuatu:  377515,   // 321,515 + 56,000
+  },
 };
 
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
 // HELPERS
-// ─────────────────────────────────────────────────────────────
-function fmt(val, opts = {}) {
-  if (val === null || val === undefined) return '<span class="val-na">N/A</span>';
-  const abs = Math.abs(val);
-  const str = '$' + abs.toLocaleString('en-NZ', { maximumFractionDigits: 0 });
-  if (val < 0) return `(${str})`;
-  return str;
+// ═══════════════════════════════════════════════════════════
+const E = DATA.entities;
+const fx  = (n) => n === null ? null : Math.round(n);
+
+function totalAR(e) {
+  return (DATA.ar.current[e]||0) + (DATA.ar.days3060[e]||0) +
+         (DATA.ar.days6090[e]||0) + (DATA.ar.days90plus[e]||0);
 }
 
-function fmtDays(val) {
-  if (val === null || val === undefined || isNaN(val) || !isFinite(val)) return '<span class="val-na">N/A</span>';
-  const v = Math.round(val);
-  if (v > 90) return `<span class="dso-red">${v}d</span>`;
-  if (v > 60) return `<span class="dso-amber">${v}d</span>`;
-  return `<span class="dso-ok">${v}d</span>`;
+function dso(e) {
+  const ar  = totalAR(e);
+  const rev = DATA.ar.rev90Day[e];
+  return rev > 0 ? (ar / rev) * 90 : null;
 }
 
-function cls(val, redIfNeg = true) {
-  if (val === null || val === undefined) return '';
-  if (val < 0) return redIfNeg ? ' val-red' : '';
-  if (val > 0) return ' val-green';
-  return '';
+function priorDSO(e) {
+  // Prior AR = prior total AR approximated using prior revenue and current % overdue structure
+  // We use the prior revenue window to estimate what AR would have been
+  const priorRev = DATA.ar.rev90DayPrior[e];
+  if (!priorRev) return null;
+  // Use the same AR/revenue ratio shape but applied to prior revenue
+  // This gives a directional prior DSO
+  const currentRev = DATA.ar.rev90Day[e];
+  const currentDSO = dso(e);
+  if (!currentRev || !currentDSO) return null;
+  // Prior DSO = current AR / prior revenue × 90
+  // (AR is the same snapshot, revenue is the prior window — shows if revenue was higher/lower)
+  return (totalAR(e) / priorRev) * 90;
 }
 
-function sum(obj) {
-  return Object.values(obj).reduce((a, b) => a + (b || 0), 0);
+function dsoStatus(d) {
+  if (d === null) return 'stable';
+  if (d > 90) return 'red';
+  if (d > 60) return 'amber';
+  return 'green';
 }
 
-function totalRow(obj) {
-  return DATA.entities.reduce((a, e) => a + (obj[e] || 0), 0);
+function overduePercent(e) {
+  const total = totalAR(e);
+  if (!total) return 0;
+  return ((DATA.ar.days3060[e]||0) + (DATA.ar.days6090[e]||0) + (DATA.ar.days90plus[e]||0)) / total;
 }
 
-// ─────────────────────────────────────────────────────────────
-// ALERTS
-// ─────────────────────────────────────────────────────────────
-function buildAlerts() {
-  const alerts = [];
-  const { cash, ar } = DATA;
-
-  DATA.entities.forEach(e => {
-    const closing = cash.closingCash[e];
-    if (closing !== null && closing < 0) {
-      alerts.push({ level: 'amber', msg: `${e}: Negative closing cash (${fmt(closing)})` });
-    }
-
-    const totalAR = (ar.current[e]||0) + (ar.days3060[e]||0) + (ar.days6090[e]||0) + (ar.days90plus[e]||0);
-    const rev90 = ar.revenue90day[e];
-    if (totalAR > 0 && rev90 > 0) {
-      const dso = (totalAR / rev90) * 90;
-      if (dso > 90) alerts.push({ level: 'red', msg: `${e}: DSO ${Math.round(dso)} days (>90)` });
-    }
-
-    const over90pct = totalAR > 0 ? (ar.days90plus[e]||0) / totalAR : 0;
-    if (over90pct > 0.20) alerts.push({ level: 'red', msg: `${e}: 90+ day AR is ${Math.round(over90pct*100)}% of total AR` });
-  });
-
-  const strip = document.getElementById('alertStrip');
-  if (alerts.length === 0) {
-    strip.innerHTML = '';
-    return;
-  }
-  strip.innerHTML = alerts.map(a =>
-    `<div class="alert-badge ${a.level}"><div class="alert-dot"></div>${a.msg}</div>`
-  ).join('');
+function severe90Percent(e) {
+  const total = totalAR(e);
+  if (!total) return 0;
+  return (DATA.ar.days90plus[e]||0) / total;
 }
 
-// ─────────────────────────────────────────────────────────────
-// RENDER
-// ─────────────────────────────────────────────────────────────
-function renderDashboard() {
-  const el = document.getElementById('dashboardContent');
-  const E = DATA.entities;
+function cashStatus(e) {
+  const avail = DATA.availableCash[e];
+  const ap    = DATA.ap7Days[e] || 0;
+  if (!ap || ap === 0) return 'ok';
+  const ratio = avail / ap;
+  if (ratio >= 3) return 'ok';
+  if (ratio >= 1.5) return 'tight';
+  return 'risk';
+}
 
-  document.getElementById('weekBadge').textContent = 'Week ending ' + DATA.weekEnding;
+function fmt(n, opts = {}) {
+  if (n === null || n === undefined) return '<span style="color:var(--text-3);font-style:italic">N/A</span>';
+  const abs = Math.abs(Math.round(n));
+  const str = '$' + abs.toLocaleString('en-NZ');
+  return n < 0 ? `(${str})` : str;
+}
 
-  // ── SECTION 1: CASH ──────────────────────────────────────
-  const cashRows = [
-    { label: 'Opening Cash', key: 'openingCash', note: '[1]', colourFn: v => v < 0 ? ' val-red' : '' },
-    { label: 'Cash In', key: 'cashIn', note: '', colourFn: v => '' },
-    { label: 'Cash Out', key: 'cashOut', note: '', colourFn: v => '' },
-    { label: 'Closing Cash', key: 'closingCash', note: '[1]', colourFn: v => v < 0 ? ' val-red' : ' val-green' },
-    { label: 'Net Movement', key: null, colourFn: v => v < 0 ? ' val-red' : ' val-green' },
-    { label: 'Overdraft Facility', key: 'overdraftFacility', note: '', colourFn: v => '' },
-    { label: 'Available Cash', key: null, colourFn: v => v < 0 ? ' val-red' : '' },
-  ];
+function fmtDays(n) {
+  if (n === null || n === undefined || !isFinite(n)) return '—';
+  return Math.round(n) + 'd';
+}
 
-  let cashHtml = `
-    <div class="section">
-      <div class="section-header">
-        <span class="section-title">Cash &amp; Liquidity</span>
-        <span class="section-pill">Section 1</span>
+// ═══════════════════════════════════════════════════════════
+// WIG BANNER
+// ═══════════════════════════════════════════════════════════
+function renderWIG() {
+  const totalARAll  = E.reduce((s, e) => s + totalAR(e), 0);
+  const total90plus = E.reduce((s, e) => s + (DATA.ar.days90plus[e]||0), 0);
+  const groupDSONum = E.reduce((s,e)=>s+totalAR(e),0) / E.reduce((s,e)=>s+(DATA.ar.rev90Day[e]||0),0) * 90;
+  const overduePct  = E.reduce((s,e)=>s+(DATA.ar.days3060[e]||0)+(DATA.ar.days6090[e]||0)+(DATA.ar.days90plus[e]||0),0) / totalARAll * 100;
+
+  const dsoClass   = groupDSONum > 90 ? 'danger' : groupDSONum > 60 ? 'warn' : '';
+  const overdueClass = overduePct > 50 ? 'danger' : overduePct > 30 ? 'warn' : '';
+
+  document.getElementById('wigBanner').innerHTML = `
+    <div>
+      <div class="wig-label">Wildly Important Goal</div>
+      <div class="wig-text">Reduce DSO &amp; recover overdue AR — strengthen working capital across the group</div>
+    </div>
+    <div class="wig-group-stats">
+      <div class="wig-stat">
+        <div class="wig-stat-label">Group Total AR</div>
+        <div class="wig-stat-value">${fmt(totalARAll)}</div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>Metric</th>
-            ${E.map(e => `<th>${e}</th>`).join('')}
-            <th class="total-col">Total</th>
-          </tr></thead>
-          <tbody>`;
-
-  cashRows.forEach(row => {
-    let vals = {};
-    if (row.key) {
-      E.forEach(e => vals[e] = DATA.cash[row.key][e]);
-    } else if (row.label === 'Net Movement') {
-      E.forEach(e => vals[e] = (DATA.cash.closingCash[e]||0) - (DATA.cash.openingCash[e]||0));
-    } else if (row.label === 'Available Cash') {
-      E.forEach(e => vals[e] = (DATA.cash.closingCash[e]||0) + (DATA.cash.overdraftFacility[e]||0));
-    }
-    const tot = E.reduce((a, e) => a + (vals[e]||0), 0);
-    const totColour = row.colourFn(tot);
-    cashHtml += `<tr>
-      <td>${row.label}${row.note ? ` <sup>${row.note}</sup>` : ''}</td>
-      ${E.map(e => `<td class="${row.colourFn(vals[e])}">${fmt(vals[e])}</td>`).join('')}
-      <td class="total-col${totColour}">${fmt(tot)}</td>
-    </tr>`;
-  });
-
-  cashHtml += `</tbody></table>
-      <div class="commentary-box">${DATA.cash.commentary}</div>
-    </div></div>`;
-
-  // ── SECTION 2: DEBTORS ───────────────────────────────────
-  const arRows = [
-    { label: 'Current', key: 'current', colourFn: v => '' },
-    { label: '30–60 Days', key: 'days3060', colourFn: v => v > 0 ? ' val-amber' : '' },
-    { label: '60–90 Days', key: 'days6090', colourFn: v => v > 0 ? ' val-amber' : '' },
-    { label: '90+ Days', key: 'days90plus', colourFn: v => '' },
-    { label: 'Total AR', key: null, isTotal: true },
-    { label: '90-Day Revenue', key: 'revenue90day', colourFn: v => '' },
-    { label: 'DSO (days)', key: null, isDSO: true },
-  ];
-
-  let arHtml = `
-    <div class="section">
-      <div class="section-header">
-        <span class="section-title">Debtors &amp; Collections</span>
-        <span class="section-pill">Section 2</span>
+      <div class="wig-stat">
+        <div class="wig-stat-label">Group DSO</div>
+        <div class="wig-stat-value ${dsoClass}">${fmtDays(groupDSONum)}</div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>Metric</th>
-            ${E.map(e => `<th>${e}</th>`).join('')}
-            <th class="total-col">Total</th>
-          </tr></thead>
-          <tbody>`;
-
-  arRows.forEach(row => {
-    if (row.isDSO) {
-      arHtml += `<tr><td>DSO (days)</td>`;
-      let totalARall = 0, totalRev = 0;
-      E.forEach(e => {
-        const totalAR = (DATA.ar.current[e]||0) + (DATA.ar.days3060[e]||0) + (DATA.ar.days6090[e]||0) + (DATA.ar.days90plus[e]||0);
-        const rev = DATA.ar.revenue90day[e] || 0;
-        const dso = rev > 0 ? (totalAR / rev) * 90 : null;
-        totalARall += totalAR;
-        totalRev += rev;
-        arHtml += `<td>${fmtDays(dso)}</td>`;
-      });
-      const groupDSO = totalRev > 0 ? (totalARall / totalRev) * 90 : null;
-      arHtml += `<td class="total-col">${fmtDays(groupDSO)}</td></tr>`;
-      return;
-    }
-    if (row.isTotal) {
-      arHtml += `<tr style="font-weight:700;background:#fafaf9"><td>Total AR</td>`;
-      let grandTotal = 0;
-      E.forEach(e => {
-        const t = (DATA.ar.current[e]||0) + (DATA.ar.days3060[e]||0) + (DATA.ar.days6090[e]||0) + (DATA.ar.days90plus[e]||0);
-        grandTotal += t;
-        arHtml += `<td style="font-weight:700">${fmt(t)}</td>`;
-      });
-      arHtml += `<td class="total-col" style="font-weight:700">${fmt(grandTotal)}</td></tr>`;
-      return;
-    }
-    // 90+ day highlight if >20% total
-    if (row.key === 'days90plus') {
-      arHtml += `<tr><td>${row.label}</td>`;
-      let tot = 0;
-      E.forEach(e => {
-        const v = DATA.ar[row.key][e] || 0;
-        const totalAR = (DATA.ar.current[e]||0) + (DATA.ar.days3060[e]||0) + (DATA.ar.days6090[e]||0) + v;
-        const pct = totalAR > 0 ? v / totalAR : 0;
-        const colour = pct > 0.20 ? ' val-red' : '';
-        tot += v;
-        arHtml += `<td class="${colour}">${fmt(v)}</td>`;
-      });
-      const grandT = E.reduce((a,e) => a + (DATA.ar.current[e]||0) + (DATA.ar.days3060[e]||0) + (DATA.ar.days6090[e]||0) + (DATA.ar.days90plus[e]||0), 0);
-      const totPct = grandT > 0 ? tot / grandT : 0;
-      arHtml += `<td class="total-col${totPct > 0.20 ? ' val-red' : ''}">${fmt(tot)}</td></tr>`;
-      return;
-    }
-    const vals = {};
-    E.forEach(e => vals[e] = DATA.ar[row.key][e]);
-    const tot = E.reduce((a, e) => a + (vals[e]||0), 0);
-    arHtml += `<tr>
-      <td>${row.label}</td>
-      ${E.map(e => `<td class="${row.colourFn ? row.colourFn(vals[e]) : ''}">${fmt(vals[e])}</td>`).join('')}
-      <td class="total-col">${fmt(tot)}</td>
-    </tr>`;
-  });
-
-  arHtml += `</tbody></table>
-      <div class="commentary-box">${DATA.ar.commentary}</div>
-    </div></div>`;
-
-  // ── SECTION 3: PAYABLES ──────────────────────────────────
-  const apRows = [
-    { label: 'AP Due Next 7 Days', key: 'due7days' },
-    { label: 'AP Due 8–30 Days', key: 'due830days' },
-    { label: 'Payroll &amp; Other', key: 'payrollOther', note: '[2]' },
-    { label: 'Total Outflow Forecast', key: null, isTotal: true },
-    { label: 'Intercompany owed to RSP', key: 'intercoRSP', note: '' },
-    { label: 'Narayan Family Trust', key: 'narayanFamilyTrust', note: '' },
-  ];
-
-  let apHtml = `
-    <div class="section">
-      <div class="section-header">
-        <span class="section-title">Payables &amp; Commitments</span>
-        <span class="section-pill">Section 3</span>
+      <div class="wig-stat">
+        <div class="wig-stat-label">90+ Day AR</div>
+        <div class="wig-stat-value ${overdueClass}">${fmt(total90plus)}</div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>Metric</th>
-            ${E.map(e => `<th>${e}</th>`).join('')}
-          </tr></thead>
-          <tbody>`;
-
-  apRows.forEach(row => {
-    if (row.isTotal) {
-      apHtml += `<tr style="font-weight:700;background:#fafaf9"><td>Total Outflow Forecast</td>`;
-      E.forEach(e => {
-        const t = (DATA.payables.due7days[e]||0) + (DATA.payables.due830days[e]||0) + (DATA.payables.payrollOther[e]||0);
-        apHtml += `<td style="font-weight:700">${fmt(t)}</td>`;
-      });
-      apHtml += `</tr>`;
-      return;
-    }
-    const vals = {};
-    E.forEach(e => vals[e] = DATA.payables[row.key][e]);
-    apHtml += `<tr>
-      <td>${row.label}${row.note ? ` <sup>${row.note}</sup>` : ''}</td>
-      ${E.map(e => {
-        const v = vals[e];
-        return `<td class="${v === 0 ? ' val-muted' : ''}">${v === 0 ? '—' : fmt(v)}</td>`;
-      }).join('')}
-    </tr>`;
-  });
-
-  apHtml += `</tbody></table></div></div>`;
-
-  // ── SECTION 4: INVENTORY ─────────────────────────────────
-  let invHtml = `
-    <div class="section">
-      <div class="section-header">
-        <span class="section-title">Inventory at Cost</span>
-        <span class="section-pill">Section 4</span>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>Metric</th>
-            ${E.map(e => `<th>${e}</th>`).join('')}
-            <th class="total-col">Total</th>
-          </tr></thead>
-          <tbody>
-            <tr>
-              <td>Inventory Value <sup>[3]</sup></td>
-              ${E.map(e => `<td>${fmt(DATA.inventory.value[e])}</td>`).join('')}
-              <td class="total-col" style="font-weight:700">${fmt(E.reduce((a,e) => a + (DATA.inventory.value[e]||0), 0))}</td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="commentary-box">${DATA.inventory.commentary}</div>
+      <div class="wig-stat">
+        <div class="wig-stat-label">% Overdue</div>
+        <div class="wig-stat-value ${overdueClass}">${overduePct.toFixed(0)}%</div>
       </div>
     </div>`;
-
-  el.innerHTML = cashHtml + arHtml + apHtml + invHtml;
-
-  // Footnotes
-  const fnEl = document.getElementById('footnotes');
-  fnEl.innerHTML = DATA.footnotes.map((f, i) =>
-    `<div class="footnote"><span class="footnote-num">[${i+1}]</span><span>${f}</span></div>`
-  ).join('');
 }
 
-// ─────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// SCORECARDS
+// ═══════════════════════════════════════════════════════════
+function renderScorecards() {
+  const grid = document.getElementById('scorecardGrid');
+
+  E.forEach(e => {
+    const d        = dso(e);
+    const dPrior   = priorDSO(e);
+    const status   = dsoStatus(d);
+    const ovd      = overduePercent(e) * 100;
+    const sev      = severe90Percent(e) * 100;
+    const cur      = 100 - ovd;
+    const mild     = Math.max(0, ovd - sev);
+    const cs       = cashStatus(e);
+    const ar       = totalAR(e);
+    const ap7      = DATA.ap7Days[e] || 0;
+
+    // Trend
+    let trendHtml = '<span class="sc-trend stable">— no prior data</span>';
+    if (d !== null && dPrior !== null) {
+      const delta = d - dPrior;
+      if (Math.abs(delta) < 2) {
+        trendHtml = `<span class="sc-trend stable">→ Stable (${fmtDays(dPrior)} prior)</span>`;
+      } else if (delta > 0) {
+        trendHtml = `<span class="sc-trend worsening">↑ +${Math.round(delta)}d vs prior (${fmtDays(dPrior)})</span>`;
+      } else {
+        trendHtml = `<span class="sc-trend improving">↓ ${Math.round(delta)}d vs prior (${fmtDays(dPrior)})</span>`;
+      }
+    }
+
+    const cashPillLabels = { ok: 'Cash OK', tight: 'Cash Tight', risk: 'Cash Risk' };
+    const avail = DATA.availableCash[e];
+
+    grid.innerHTML += `
+    <div class="scorecard status-${status}">
+      <div class="sc-entity">${e}</div>
+      <div class="sc-dso-row">
+        <span class="sc-dso ${status}">${d !== null ? Math.round(d) : '—'}</span>
+        <span class="sc-dso-unit">days DSO</span>
+      </div>
+      ${trendHtml}
+      <div class="sc-divider"></div>
+      <div class="sc-metric-row">
+        <span class="sc-metric-label">Total AR</span>
+        <span class="sc-metric-value">${fmt(ar)}</span>
+      </div>
+      <div class="sc-metric-row">
+        <span class="sc-metric-label">90+ Overdue</span>
+        <span class="sc-metric-value ${sev > 30 ? 'danger' : sev > 15 ? 'amber' : ''}">${fmt(DATA.ar.days90plus[e])} <span style="font-size:10px;color:var(--text-3)">(${sev.toFixed(0)}%)</span></span>
+      </div>
+      <div class="sc-health-bar-wrap">
+        <div class="sc-health-bar-label"><span>Current</span><span>${(100-ovd).toFixed(0)}% current</span></div>
+        <div class="sc-health-bar">
+          <div class="sc-bar-current"    style="width:${cur.toFixed(1)}%"></div>
+          <div class="sc-bar-overdue-mild"   style="width:${mild.toFixed(1)}%"></div>
+          <div class="sc-bar-overdue-severe" style="width:${sev.toFixed(1)}%"></div>
+        </div>
+      </div>
+      <div>
+        <span class="sc-cash-pill ${cs}"><span class="pill-dot"></span>${cashPillLabels[cs]}</span>
+      </div>
+    </div>`;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// LEADERBOARD
+// ═══════════════════════════════════════════════════════════
+function renderLeaderboard() {
+  const sorted = [...E].sort((a, b) => severe90Percent(b) - severe90Percent(a));
+
+  let html = `
+    <div class="lb-header">
+      <div class="lb-header-cell">Entity</div>
+      <div class="lb-header-cell">AR Health</div>
+      <div class="lb-header-cell highlight">90+ Overdue</div>
+      <div class="lb-header-cell">% of AR</div>
+      <div class="lb-header-cell">DSO</div>
+      <div class="lb-header-cell">Trend</div>
+    </div>`;
+
+  sorted.forEach((e, i) => {
+    const ar      = totalAR(e);
+    const sev     = severe90Percent(e);
+    const ovd     = overduePercent(e);
+    const cur     = 1 - ovd;
+    const mild    = ovd - sev;
+    const d       = dso(e);
+    const dPrior  = priorDSO(e);
+    const status  = dsoStatus(d);
+    const sevPct  = (sev * 100).toFixed(0);
+
+    const sevClass  = sev > 0.30 ? 'danger' : sev > 0.15 ? 'amber' : 'green';
+    const dsoClass  = status === 'red' ? 'red' : status === 'amber' ? 'amber' : 'green';
+
+    let trendHtml = '<span class="lb-trend-cell stable">—</span>';
+    if (d !== null && dPrior !== null) {
+      const delta = d - dPrior;
+      if (Math.abs(delta) < 2) {
+        trendHtml = `<span class="lb-trend-cell stable">→ Stable</span>`;
+      } else if (delta > 0) {
+        trendHtml = `<span class="lb-trend-cell worsening">↑ +${Math.round(delta)}d</span>`;
+      } else {
+        trendHtml = `<span class="lb-trend-cell improving">↓ ${Math.round(delta)}d</span>`;
+      }
+    }
+
+    html += `
+    <div class="lb-row">
+      <div>
+        <div class="lb-entity">${e}</div>
+        <div class="lb-rank">#${i+1} by risk</div>
+      </div>
+      <div class="lb-bar-wrap">
+        <div class="lb-bar-bg">
+          <div class="lb-bar-current" style="width:${(cur*100).toFixed(1)}%"></div>
+          <div class="lb-bar-mild"    style="width:${(mild*100).toFixed(1)}%"></div>
+          <div class="lb-bar-severe"  style="width:${(sev*100).toFixed(1)}%"></div>
+        </div>
+      </div>
+      <div class="lb-num ${sevClass}">${fmt(DATA.ar.days90plus[e])}</div>
+      <div class="lb-num ${sevClass}">${sevPct}%</div>
+      <div class="lb-dso-cell"><span class="lb-dso-badge ${dsoClass}">${fmtDays(d)}</span></div>
+      ${trendHtml}
+    </div>`;
+  });
+
+  document.getElementById('leaderboard').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════
+// AR DETAIL TABLE
+// ═══════════════════════════════════════════════════════════
+function renderDetailTable() {
+  const rows = [
+    { label: 'Current (not yet due)', key: 'current',    cls: v => '' },
+    { label: '30–60 Days Overdue',    key: 'days3060',   cls: v => v > 0 ? ' val-amber' : '' },
+    { label: '60–90 Days Overdue',    key: 'days6090',   cls: v => v > 0 ? ' val-amber' : '' },
+    { label: '90+ Days Overdue',      key: 'days90plus', cls: (v, e) => {
+        const t = totalAR(e);
+        return t > 0 && v/t > 0.30 ? ' val-red' : t > 0 && v/t > 0.15 ? ' val-amber' : '';
+      }
+    },
+    { label: 'Total AR',              key: null, isTotal: true },
+    { label: '90-Day Revenue',        key: 'rev90Day',   cls: v => '' },
+    { label: 'DSO (days)',            key: null, isDSO: true },
+  ];
+
+  let html = `<table><thead><tr>
+    <th>Metric</th>
+    ${E.map(e => `<th>${e}</th>`).join('')}
+    <th class="total-col">Group</th>
+  </tr></thead><tbody>`;
+
+  rows.forEach(row => {
+    if (row.isDSO) {
+      html += `<tr><td>DSO (days)</td>`;
+      let tAR = 0, tRev = 0;
+      E.forEach(e => {
+        const ar  = totalAR(e);
+        const rev = DATA.ar.rev90Day[e] || 0;
+        tAR += ar; tRev += rev;
+        const d   = rev > 0 ? (ar/rev)*90 : null;
+        const cls = dsoStatus(d);
+        const badge = d !== null
+          ? `<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-weight:700;background:var(--${cls==='red'?'danger':cls}-bg);color:var(--${cls==='red'?'danger':cls})">${Math.round(d)}d</span>`
+          : '—';
+        html += `<td>${badge}</td>`;
+      });
+      const gDSO = tRev > 0 ? (tAR/tRev)*90 : null;
+      const gcls = dsoStatus(gDSO);
+      const gbadge = gDSO !== null
+        ? `<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-weight:700;background:var(--${gcls==='red'?'danger':gcls}-bg);color:var(--${gcls==='red'?'danger':gcls})">${Math.round(gDSO)}d</span>`
+        : '—';
+      html += `<td class="total-col">${gbadge}</td></tr>`;
+      return;
+    }
+    if (row.isTotal) {
+      html += `<tr style="font-weight:700;background:#fafaf9"><td>Total AR</td>`;
+      let grand = 0;
+      E.forEach(e => { const t = totalAR(e); grand += t; html += `<td style="font-weight:700">${fmt(t)}</td>`; });
+      html += `<td class="total-col" style="font-weight:700">${fmt(grand)}</td></tr>`;
+      return;
+    }
+    const vals = {}; E.forEach(e => vals[e] = DATA.ar[row.key][e]);
+    const tot  = E.reduce((s,e) => s + (vals[e]||0), 0);
+    html += `<tr><td>${row.label}</td>`;
+    E.forEach(e => {
+      const v   = vals[e];
+      const cls = typeof row.cls === 'function' ? row.cls(v, e) : row.cls(v);
+      html += `<td class="${cls}">${fmt(v)}</td>`;
+    });
+    html += `<td class="total-col">${fmt(tot)}</td></tr>`;
+  });
+
+  html += `</tbody></table>`;
+  document.getElementById('detailTable').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════════
+// FOOTNOTE
+// ═══════════════════════════════════════════════════════════
+function renderFootnote() {
+  document.getElementById('asAtBadge').textContent = 'As at ' + DATA.asAt;
+  document.getElementById('fxFootnote').innerHTML =
+    `FX rates applied: WST×0.6172 · SBD×0.2076 · TOP×0.6931 · VUV×0.0140 · NZD×1.0 · Rates as at end-Feb 2026 &nbsp;|&nbsp; ` +
+    `Alpine Print figures from manual dashboard (week ending 6 Mar 2026) — Alpine Xero not connected to Synchub &nbsp;|&nbsp; ` +
+    `Available cash figures from prior manual dashboard — used for AP coverage ratio only &nbsp;|&nbsp; ` +
+    `DSO trend: current AR ÷ prior-period revenue window — directional indicator, not point-in-time AR comparison`;
+}
+
+// ═══════════════════════════════════════════════════════════
 // INIT
-// ─────────────────────────────────────────────────────────────
-renderDashboard();
-buildAlerts();
+// ═══════════════════════════════════════════════════════════
+renderWIG();
+renderScorecards();
+renderLeaderboard();
+renderDetailTable();
+renderFootnote();
 </script>
 </body>
 </html>
