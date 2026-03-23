@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP — YTD Orders 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--red:#D7063B;--red-bg:#fff1f3;--charcoal:#1e2022;--body:#f7f7f6;--surface:#fff;--border:#e4e4e2;--t1:#1e2022;--t2:#6b7280;--t3:#9ca3af;--green:#16a34a;--green-bg:#f0fdf4;--amber:#d97706;--amber-bg:#fffbeb;--mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--body);color:var(--t1);font-size:14px}
+header{background:var(--charcoal);color:#fff;padding:0 32px;height:56px;display:flex;align-items:center;gap:12px}
+.brand{font-size:15px;font-weight:600}.brand span{color:var(--red)}
+.hdiv{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.hsub{font-size:13px;color:rgba(255,255,255,.5)}
+.hbadge{font-size:11px;color:rgba(255,255,255,.35);font-family:var(--mono);margin-left:auto}
+main{padding:24px 32px 48px;max-width:1200px;margin:0 auto}
+
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.card.total{background:var(--body);border-color:rgba(30,32,34,.12)}
+.card-label{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t2);margin-bottom:6px}
+.card-val{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--t1)}
+.card-sub{font-size:11px;color:var(--t3);margin-top:4px}
+
+.notice{background:var(--amber-bg);border:1px solid rgba(217,119,6,.2);border-radius:8px;padding:11px 16px;font-size:12.5px;color:#92400e;margin-bottom:20px}
+
+.fbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.flabel{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3)}
+.fsel{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--t1);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 28px 5px 10px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;cursor:pointer}
+.fsel:focus{outline:none;border-color:var(--red)}
+.fsep{width:1px;height:18px;background:var(--border)}
+#rowCount{font-size:12px;color:var(--t3);margin-left:auto}
+
+.dt{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.dt table{width:100%;border-collapse:collapse}
+.dt thead th{background:var(--body);font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
+.dt thead th:hover{color:var(--t1)}
+.dt thead th.r{text-align:right}
+.dt thead th.sort-asc::after{content:' ↑'}
+.dt thead th.sort-desc::after{content:' ↓'}
+.dt tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+.dt tbody tr:last-child{border-bottom:none}
+.dt tbody tr:hover{background:var(--body)}
+.dt tbody td{padding:10px 14px;font-size:13px;color:var(--t1);vertical-align:middle}
+.dt tbody td.r{text-align:right;font-family:var(--mono);font-size:12px}
+
+.link{color:var(--t1);text-decoration:none;font-family:var(--mono);font-size:12px;font-weight:500}
+.link:hover{color:var(--red);text-decoration:underline}
+.terr-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.t-samoa{background:#f0fdf4;color:#15803d}
+.t-si{background:#faf5ff;color:#7e22ce}
+.t-tonga{background:#fff7ed;color:#c2410c}
+.t-vanuatu{background:#fefce8;color:#854d0e}
+.mtd-flag{display:inline-block;font-size:9px;font-weight:700;color:#16a34a;background:#f0fdf4;border:1px solid rgba(22,163,74,.2);border-radius:3px;padding:1px 5px;margin-left:4px}
+.owner-queue{color:var(--t3);font-style:italic;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Ricoh <span>|</span> South Pacific</div>
+  <div class="hdiv"></div>
+  <div class="hsub">YTD Orders 2026</div>
+  <span class="hbadge">Type=New · Activated · TotalAmount &gt; 0 · excl. Auckland Order Queue · 24 Mar 2026</span>
+</header>
+<main>
+
+<div class="notice">
+  <strong>NZ note:</strong> The only NZ order with a non-zero TotalAmount (Order 00036170, NZ$1,999) was owned by Auckland Order Queue and has been excluded. All 42 remaining orders are Pacific Island territories.
+</div>
+
+<div class="cards" id="summaryCards"></div>
+
+<div class="fbar">
+  <span class="flabel">Territory</span>
+  <select class="fsel" id="fTerritory">
+    <option value="all">All Territories</option>
+    <option value="Samoa">Samoa</option>
+    <option value="Solomon Islands">Solomon Islands</option>
+    <option value="Tonga">Tonga</option>
+    <option value="Vanuatu">Vanuatu</option>
+  </select>
+  <div class="fsep"></div>
+  <span class="flabel">Period</span>
+  <select class="fsel" id="fPeriod">
+    <option value="all">Full YTD</option>
+    <option value="mtd">Mar MTD only</option>
+  </select>
+  <span id="rowCount"></span>
+</div>
+
+<div class="dt">
+  <table>
+    <thead>
+      <tr>
+        <th data-col="num">Order #</th>
+        <th data-col="date" class="sort-desc">Date</th>
+        <th data-col="territory">Territory</th>
+        <th data-col="cur">Currency</th>
+        <th data-col="local" class="r">Local Amount</th>
+        <th data-col="nzd" class="r">NZD</th>
+        <th data-col="owner">Order Owner</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+</main>
+
+<script>
+const BASE='https://clearedgepacific.my.salesforce.com';
+const FX={NZD:1,WST:1.86,SBD:5.64,TOP:1.61,VUV:79.11};
+const PB={
+  '01s7F00000IZVgzQAH':'New Zealand',
+  '01s7F00000IZVhOQAX':'Samoa',
+  '01s7F00000IZVhTQAX':'Solomon Islands',
+  '01s7F00000IZVhJQAX':'Tonga',
+  '01s7F00000IZVh4QAH':'Vanuatu',
+};
+const TC={'Samoa':'t-samoa','Solomon Islands':'t-si','Tonga':'t-tonga','Vanuatu':'t-vanuatu'};
+
+const RAW=[
+  ['801Mp00000psIyhIAE','00036334','2026-03-20','WST',15119.31,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000ps3tCIAQ','00036327','2026-03-20','WST',500,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000pjlAUIAY','00036257','2026-03-18','SBD',4500,'01s7F00000IZVhTQAX','Priscilla Aulanga'],
+  ['801Mp00000pgnLWIAY','00036241','2026-03-17','SBD',4500,'01s7F00000IZVhTQAX','Avi Sharma'],
+  ['801Mp00000pUDwzIAG','00036165','2026-03-13','WST',2500,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000p5R7CIAU','00035998','2026-03-05','TOP',8999,'01s7F00000IZVhJQAX','Tonga Order Queue'],
+  ['801Mp00000p1k0HIAQ','00035964','2026-03-04','VUV',956521,'01s7F00000IZVh4QAH','Vanuatu Order Queue'],
+  ['801Mp00000ouOe8IAE','00035927','2026-03-02','TOP',7739.13,'01s7F00000IZVhJQAX','Tonga Order Queue'],
+  ['801Mp00000ouA6VIAU','00035926','2026-03-02','TOP',3599,'01s7F00000IZVhJQAX','Tonga Order Queue'],
+  ['801Mp00000ocuAuIAI','00035811','2026-02-27','VUV',265000,'01s7F00000IZVh4QAH','Vanuatu Order Queue'],
+  ['801Mp00000oimMhIAI','00035859','2026-02-26','WST',16000,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000oihULIAY','00035852','2026-02-26','WST',6500,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000oGtIgIAK','00035644','2026-02-18','WST',4900,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000oEDTkIAO','00035640','2026-02-17','WST',17800,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000oDYQTIA4','00035624','2026-02-17','WST',2500,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000oD7ZzIAK','00035615','2026-02-17','TOP',1652.17,'01s7F00000IZVhJQAX','Tonga Order Queue'],
+  ['801Mp00000nmmSpIAI','00035406','2026-02-10','WST',2600,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000nYX5UIAW','00035334','2026-02-05','TOP',17382.6,'01s7F00000IZVhJQAX','Tonga Order Queue'],
+  ['801Mp00000nO0UHIA0','00035250','2026-02-03','TOP',12500,'01s7F00000IZVhJQAX','Tonga Order Queue'],
+  ['801Mp00000nJzLgIAK','00035229','2026-02-02','SBD',17000,'01s7F00000IZVhTQAX','Samson Ragaruma'],
+  ['801Mp00000nByztIAC','00035211','2026-01-30','VUV',8500,'01s7F00000IZVh4QAH','Vanuatu Order Queue'],
+  ['801Mp00000mkmKYIAY','00035058','2026-01-30','SBD',115000,'01s7F00000IZVhTQAX','Victor Geonzon'],
+  ['801Mp00000mZ5cKIAS','00034958','2026-01-30','SBD',25000,'01s7F00000IZVhTQAX','Samson Ragaruma'],
+  ['801Mp00000mMmyQIAS','00034915','2026-01-30','TOP',7739.13,'01s7F00000IZVhJQAX','Tonga Order Queue'],
+  ['801Mp00000l67WqIAI','00034709','2026-01-30','VUV',232000,'01s7F00000IZVh4QAH','Vanuatu Order Queue'],
+  ['801Mp00000n7tziIAA','00035185','2026-01-29','TOP',12900,'01s7F00000IZVhJQAX','Tonga Order Queue'],
+  ['801Mp00000n5hMmIAI','00035170','2026-01-28','SBD',4500,'01s7F00000IZVhTQAX','Priscilla Aulanga'],
+  ['801Mp00000n5AH8IAM','00035164','2026-01-28','TOP',2147,'01s7F00000IZVhJQAX','Tonga Order Queue'],
+  ['801Mp00000n3SRmIAM','00035147','2026-01-28','WST',2549,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000n0SJrIAM','00035140','2026-01-27','WST',8,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000n0INUIA2','00035142','2026-01-27','WST',8,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000mpS3YIAU','00035077','2026-01-23','WST',8,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000mpMUNIA2','00035075','2026-01-23','WST',8,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000moQcFIAU','00035068','2026-01-23','WST',8,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000mklLHIAY','00035057','2026-01-22','WST',8,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000mkjjHIAQ','00035060','2026-01-22','WST',8,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000mkdilIAA','00035056','2026-01-22','WST',8,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000mkKPtIAM','00035051','2026-01-22','WST',8,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000mjyniIAA','00035049','2026-01-22','WST',163,'01s7F00000IZVhOQAX','Samoa Order Queue'],
+  ['801Mp00000mbMiqIAE','00034968','2026-01-20','SBD',3100,'01s7F00000IZVhTQAX','Victor Geonzon'],
+  ['801Mp00000mEfPRIA0','00034870','2026-01-13','SBD',70000,'01s7F00000IZVhTQAX','Avi Sharma'],
+  ['801Mp00000lsz0QIAQ','00034796','2026-01-07','TOP',6900,'01s7F00000IZVhJQAX','Tonga Order Queue'],
+];
+
+const ORDERS=RAW.map(([id,num,date,cur,local,pb,owner])=>({
+  id,num,date,cur,local,pb,owner,
+  territory:PB[pb]||'Unknown',
+  nzd:local/(FX[cur]||1),
+  isMtd:date.startsWith('2026-03'),
+  isQueue:owner.includes('Queue')
+}));
+
+let sortCol='date',sortDir=-1;
+
+const fmt=n=>'NZ$'+Math.round(n).toLocaleString('en-NZ');
+const fmtL=(n,c)=>n.toLocaleString('en-NZ',{minimumFractionDigits:2,maximumFractionDigits:2})+' '+c;
+
+function renderCards(all){
+  const terrs=['Samoa','Solomon Islands','Tonga','Vanuatu'];
+  document.getElementById('summaryCards').innerHTML=terrs.map(t=>{
+    const tr=all.filter(r=>r.territory===t);
+    const nzd=tr.reduce((s,r)=>s+r.nzd,0);
+    const mtd=tr.filter(r=>r.isMtd).reduce((s,r)=>s+r.nzd,0);
+    return `<div class="card"><div class="card-label">${t}</div><div class="card-val">${fmt(nzd)}</div><div class="card-sub">${tr.length} orders · MTD ${fmt(mtd)}</div></div>`;
+  }).join('')+`<div class="card total"><div class="card-label">Total YTD</div><div class="card-val">${fmt(all.reduce((s,r)=>s+r.nzd,0))}</div><div class="card-sub">${all.length} orders · MTD ${fmt(all.filter(r=>r.isMtd).reduce((s,r)=>s+r.nzd,0))}</div></div>`;
+}
+
+function getFiltered(){
+  const t=document.getElementById('fTerritory').value;
+  const p=document.getElementById('fPeriod').value;
+  return ORDERS.filter(r=>{
+    if(t!=='all'&&r.territory!==t) return false;
+    if(p==='mtd'&&!r.isMtd) return false;
+    return true;
+  });
+}
+
+function render(){
+  let rows=getFiltered();
+  rows.sort((a,b)=>{
+    let av=a[sortCol],bv=b[sortCol];
+    return typeof av==='string'?sortDir*av.localeCompare(bv):sortDir*(av-bv);
+  });
+  renderCards(ORDERS);
+  document.getElementById('tbody').innerHTML=rows.map(r=>`
+    <tr>
+      <td><a class="link" href="${BASE}/${r.id}" target="_blank">${r.num}</a>${r.isMtd?'<span class="mtd-flag">MTD</span>':''}</td>
+      <td>${r.date}</td>
+      <td><span class="terr-badge ${TC[r.territory]||''}">${r.territory}</span></td>
+      <td style="font-family:var(--mono);font-size:12px">${r.cur}</td>
+      <td class="r">${fmtL(r.local,r.cur)}</td>
+      <td class="r">${fmt(r.nzd)}</td>
+      <td class="${r.isQueue?'owner-queue':''}">${r.owner}</td>
+    </tr>`).join('');
+  document.getElementById('rowCount').textContent=`${rows.length} of ${ORDERS.length} orders`;
+  document.querySelectorAll('thead th').forEach(th=>{
+    th.classList.remove('sort-asc','sort-desc');
+    if(th.dataset.col===sortCol) th.classList.add(sortDir===1?'sort-asc':'sort-desc');
+  });
+}
+
+document.querySelectorAll('thead th[data-col]').forEach(th=>{
+  th.addEventListener('click',()=>{
+    if(sortCol===th.dataset.col)sortDir*=-1;
+    else{sortCol=th.dataset.col;sortDir=th.dataset.col==='date'?-1:1;}
+    render();
+  });
+});
+['fTerritory','fPeriod'].forEach(id=>document.getElementById(id).addEventListener('change',render));
+render();
+</script>
+</body>
+</html>
