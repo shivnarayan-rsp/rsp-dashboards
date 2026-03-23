@@ -159,7 +159,7 @@ main{padding:24px 32px 48px;max-width:1400px;margin:0 auto}
 
 <header>
   <div class="hb">
-    <div class="brand">Ricoh <span>|</span> South Pacific</div>
+    <div class="brand">Ricoh South Pacific</div>
     <div class="hdiv"></div>
     <div class="hsub">Sales Dashboard</div>
   </div>
@@ -191,7 +191,7 @@ const toNZD = (v,c) => (!v||isNaN(v)) ? 0 : v/(FX[c]||1);
 
 // ─── DATA ───
 const DATA = {
-  asOf: '16 March 2026',
+  asOf: '24 March 2026',
   pricebookMap: {
     '01s7F00000IZVgzQAH':'New Zealand','01s7F00000IZVh4QAH':'Vanuatu',
     '01s7F00000IZVhJQAX':'Tonga','01s7F00000IZVhOQAX':'Samoa',
@@ -216,6 +216,7 @@ const DATA = {
   },
 
   // ── QUOTA (ForecastingQuota, StartDate = 2026-03-01, local currency) ──
+  // Unchanged — quota records not affected by Order filter changes
   quotaMar: [
     {owner:'0057F000004tzjEQAQ', name:'Ronaldo Mercado',   currency:'WST', localQuota:78540},
     {owner:'0057F000003GciYQAS', name:'Pradeep Narayan',   currency:'NZD', localQuota:400000},
@@ -228,40 +229,43 @@ const DATA = {
     {owner:'0057F000004tzziQAA', name:'Victor Geonzon',      currency:'SBD', localQuota:132600},
   ],
 
-  // ── ORDERS (Type=New, Activated) — local currency ──
+  // ── ORDERS: Type=New, Activated, TotalAmount > 0, excl. Auckland Order Queue ──
+  // WTD = 16–24 Mar 2026 (live from Salesforce 24 Mar 2026)
   salesWtd:[
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:1,localValue:1344.09},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:1,localValue:0}
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:2,localValue:8397.48},
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:2,localValue:1595.74}
   ],
+  // MTD = 1–24 Mar 2026
   salesMtd:[
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:1,localValue:1344.09},
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:3,localValue:9741.56},
     {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:3,localValue:12631.76},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:2,localValue:12091.03}
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:1,localValue:12091.03},
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:2,localValue:1595.74}
   ],
+  // Prior month = Feb 2026
   salesPrior:[
     {pb:'01s7F00000IZVhOQAX',currency:'WST',count:6,localValue:27043.01},
     {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:3,localValue:19586.81},
     {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:1,localValue:3349.77},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:1,localValue:3014.18},
-    {pb:'01s7F00000IZVgzQAH',currency:'NZD',count:2,localValue:0}
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:1,localValue:3014.18}
   ],
+  // YTD = Jan–Mar 2026
   salesYtd:[
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:18,localValue:29883.87},
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:20,localValue:38281.35},
     {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:10,localValue:50657.16},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:5, localValue:18480.86},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:13,localValue:41595.74},
-    {pb:'01s7F00000IZVgzQAH',currency:'NZD',count:7, localValue:0}
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:4, localValue:18480.86},
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:8, localValue:43191.49}
   ],
 
   // ── OPEN PIPELINE (IsClosed=false AND StageName != 'Closed') ──
   pipeline:[
     {pb:'01s7F00000IZVgzQAH',currency:'NZD',count:25, localValue:116433.02},
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:96, localValue:1250771.29},
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:97, localValue:1258835.81},
     {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:203,localValue:1863370.60},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:53, localValue:526956.30},
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:53, localValue:520168.28},
     {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:254,localValue:3706817.21},
     {pb:null,currency:'NZD',count:28, localValue:384200.00},
-    {pb:null,currency:'WST',count:26, localValue:220995.97},
+    {pb:null,currency:'WST',count:25, localValue:214006.72},
     {pb:null,currency:'TOP',count:21, localValue:134501.75},
     {pb:null,currency:'VUV',count:13, localValue:293262.55},
     {pb:null,currency:'SBD',count:31, localValue:207405.27},
@@ -272,21 +276,21 @@ const DATA = {
     {pb:'01s7F00000IZVgzQAH',currency:'NZD',stage:'Proposal',     count:21, localValue:89159.88},
     {pb:'01s7F00000IZVgzQAH',currency:'NZD',stage:'Qualification',count:1,  localValue:3000.00},
     {pb:'01s7F00000IZVgzQAH',currency:'NZD',stage:'Negotiation',  count:3,  localValue:24273.14},
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',stage:'Proposal',     count:97, localValue:1246785.27},
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',stage:'Proposal',     count:96, localValue:1247970.90},
     {pb:'01s7F00000IZVhOQAX',currency:'WST',stage:'Negotiation',  count:1,  localValue:10864.90},
-    {pb:'01s7F00000IZVhJQAX',currency:'TOP',stage:'Proposal',     count:191,localValue:1734174.30},
+    {pb:'01s7F00000IZVhJQAX',currency:'TOP',stage:'Proposal',     count:190,localValue:1758398.90},
     {pb:'01s7F00000IZVhJQAX',currency:'TOP',stage:'Negotiation',  count:13, localValue:104971.70},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',stage:'Proposal',     count:73, localValue:662389.68},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',stage:'Negotiation',  count:3,  localValue:42241.25},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',stage:'Proposal',     count:240,localValue:3589001.96},
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',stage:'Proposal',     count:52, localValue:507662.25},
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',stage:'Negotiation',  count:1,  localValue:12506.03},
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',stage:'Proposal',     count:243,localValue:3608682.81},
     {pb:'01s7F00000IZVhTQAX',currency:'SBD',stage:'Negotiation',  count:10, localValue:78563.48},
     {pb:'01s7F00000IZVhTQAX',currency:'SBD',stage:'Qualification',count:1,  localValue:19570.92}
   ],
 
   pipelineByRep:[
-    {owner:'005Mp00000BGnuTIAT',pb:null,                 currency:'VUV',count:11, localValue:127670.33},
+    {owner:'005Mp00000BGnuTIAT',pb:null,                 currency:'VUV',count:12, localValue:128934.40},
     {owner:'0057F000004tzm2QAA',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:92, localValue:760604.63},
-    {owner:'0057F000004tzpXQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:14, localValue:152447.26},
+    {owner:'0057F000004tzpXQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:14, localValue:153493.91},
     {owner:'0057F000004u88WQAQ',pb:null,                 currency:'WST',count:3,  localValue:33870.97},
     {owner:'0057F000004u88WQAQ',pb:null,                 currency:'NZD',count:1,  localValue:60000.00},
     {owner:'0057F000004u88WQAQ',pb:null,                 currency:'TOP',count:1,  localValue:0},
@@ -294,7 +298,7 @@ const DATA = {
     {owner:'0057F000004tzm2QAA',pb:null,                 currency:'TOP',count:16, localValue:124347.83},
     {owner:'0057F000003GciYQAS',pb:null,                 currency:'NZD',count:3,  localValue:205000.00},
     {owner:'0057F000004tzpSQAQ',pb:null,                 currency:'VUV',count:1,  localValue:164328.15},
-    {owner:'0057F000004tzjEQAQ',pb:'01s7F00000IZVhOQAX', currency:'WST',count:69, localValue:1018955.51},
+    {owner:'0057F000004tzjEQAQ',pb:'01s7F00000IZVhOQAX', currency:'WST',count:67, localValue:1019764.80},
     {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:6,  localValue:95652.55},
     {owner:'0057F000004u88WQAQ',pb:'01s7F00000BU3IfQAL', currency:'NZD',count:1,  localValue:36889.89},
     {owner:'0057F000004tzhSQAQ',pb:null,                 currency:'WST',count:7,  localValue:48860.22},
@@ -306,23 +310,23 @@ const DATA = {
     {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhOQAX', currency:'WST',count:3,  localValue:21619.55},
     {owner:'0057F000005AuKzQAK',pb:null,                 currency:'SBD',count:12, localValue:94857.62},
     {owner:'005Mp00000BUnxpIAD',pb:null,                 currency:'NZD',count:23, localValue:117000.00},
-    {owner:'005Mp00000BGnuTIAT',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:41, localValue:327487.36},
+    {owner:'005Mp00000BGnuTIAT',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:18, localValue:147122.80},
     {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:9,  localValue:166951.30},
     {owner:'0057F000008O6vVQAS',pb:null,                 currency:'SBD',count:1,  localValue:10000.00},
     {owner:'0057F000004tzm0QAA',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:17, localValue:167789.09},
     {owner:'0057F000006JcvKQAS',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:2,  localValue:32591.22},
     {owner:'0057F000004tzziQAA',pb:null,                 currency:'SBD',count:7,  localValue:54964.54},
     {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:2,  localValue:21383.17},
-    {owner:'0057F000004tzziQAA',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:43, localValue:777922.64},
-    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:13, localValue:127147.26},
+    {owner:'0057F000004tzziQAA',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:44, localValue:791397.82},
+    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:13, localValue:122002.53},
     {owner:'0057F000005B9L9QAK',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:2,  localValue:17552.93},
     {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVhOQAX', currency:'WST',count:5,  localValue:27585.05},
     {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:10, localValue:801719.87},
     {owner:'0057F000004tzpUQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:1,  localValue:12506.03},
-    {owner:'0057F000004tzzkQAA',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:60, localValue:684824.69},
+    {owner:'0057F000004tzzkQAA',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:62, localValue:691030.36},
     {owner:'0057F000004tzm1QAA',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:39, localValue:325784.20},
-    {owner:'0057F000008XjrTQAS',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:45, localValue:396633.61},
-    {owner:'0057F000004tzjEQAQ',pb:null,                 currency:'WST',count:16, localValue:171329.30},
+    {owner:'0057F000008XjrTQAS',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:44, localValue:420858.20},
+    {owner:'0057F000004tzjEQAQ',pb:null,                 currency:'WST',count:15, localValue:131275.54},
     {owner:'0057F000008XjrTQAS',pb:null,                 currency:'TOP',count:3,  localValue:0},
     {owner:'0057F000005AuKzQAK',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:132,localValue:1327016.62},
     {owner:'005Mp00000BUnxpIAD',pb:'01s7F00000IZVgzQAH', currency:'NZD',count:17, localValue:68059.87},
@@ -331,50 +335,53 @@ const DATA = {
   ],
 
   closedWonMtdByRep:[
-    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVgzQAH',currency:'NZD',count:1,localValue:1999.00},
-    {owner:'0057F000004tzjEQAQ',pb:'01s7F00000IZVhOQAX',currency:'WST',count:3,localValue:23279.57},
-    {owner:'005Mp00000BGnuTIAT',pb:'01s7F00000IZVh4QAH',currency:'VUV',count:2,localValue:19675.40},
-    {owner:'005Mp00000BGnuTIAT',pb:null,                currency:'VUV',count:1,localValue:507.76},
-    {owner:'0057F000008XjrTQAS',pb:'01s7F00000IZVhJQAX',currency:'TOP',count:3,localValue:20247.20}
+    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVgzQAH',currency:'NZD',count:1, localValue:1999.00},
+    {owner:'0057F000004tzjEQAQ',pb:'01s7F00000IZVhOQAX',currency:'WST',count:4, localValue:23548.39},
+    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhOQAX',currency:'WST',count:1, localValue:21376.44},
+    {owner:'005Mp00000BGnuTIAT',pb:'01s7F00000IZVh4QAH',currency:'VUV',count:2, localValue:19675.40},
+    {owner:'005Mp00000BGnuTIAT',pb:null,                currency:'VUV',count:1, localValue:507.76},
+    {owner:'0057F000005AuKzQAK',pb:'01s7F00000IZVhTQAX',currency:'SBD',count:2, localValue:1595.74},
+    {owner:'0057F000008XjrTQAS',pb:'01s7F00000IZVhJQAX',currency:'TOP',count:3, localValue:20247.20}
   ],
 
   closedWonTrend:[
-    {year:2025,month:10,currency:'SBD',count:4, localValue:18931.68},
-    {year:2025,month:10,currency:'WST',count:9, localValue:80215.05},
-    {year:2025,month:10,currency:'TOP',count:3, localValue:31677.02},
-    {year:2025,month:10,currency:'VUV',count:9, localValue:37669.07},
-    {year:2025,month:11,currency:'SBD',count:1, localValue:4432.62},
-    {year:2025,month:11,currency:'WST',count:3, localValue:13494.62},
-    {year:2025,month:11,currency:'TOP',count:5, localValue:34753.32},
-    {year:2025,month:11,currency:'VUV',count:6, localValue:66435.98},
-    {year:2025,month:11,currency:'NZD',count:1, localValue:175.00},
-    {year:2025,month:12,currency:'VUV',count:4, localValue:14769.06},
-    {year:2025,month:12,currency:'WST',count:6, localValue:40133.33},
-    {year:2025,month:12,currency:'TOP',count:1, localValue:1333.54},
-    {year:2025,month:12,currency:'SBD',count:3, localValue:25628.40},
-    {year:2026,month:1, currency:'SBD',count:5, localValue:29184.40},
-    {year:2026,month:1, currency:'TOP',count:5, localValue:23245.50},
-    {year:2026,month:1, currency:'WST',count:2, localValue:2445.70},
-    {year:2026,month:1, currency:'VUV',count:2, localValue:5309.06},
-    {year:2026,month:2, currency:'NZD',count:1, localValue:5000.00},
-    {year:2026,month:2, currency:'VUV',count:3, localValue:4140.64},
-    {year:2026,month:2, currency:'TOP',count:6, localValue:60454.55},
-    {year:2026,month:2, currency:'WST',count:9, localValue:74569.89},
-    {year:2026,month:2, currency:'SBD',count:1, localValue:15070.92},
-    {year:2026,month:3, currency:'TOP',count:3, localValue:20247.20},
-    {year:2026,month:3, currency:'WST',count:3, localValue:23279.57},
-    {year:2026,month:3, currency:'NZD',count:1, localValue:1999.00},
-    {year:2026,month:3, currency:'VUV',count:3, localValue:20183.16}
+    {year:2025,month:10,currency:'SBD',count:4,  localValue:18931.68},
+    {year:2025,month:10,currency:'WST',count:9,  localValue:80215.05},
+    {year:2025,month:10,currency:'TOP',count:3,  localValue:31677.02},
+    {year:2025,month:10,currency:'VUV',count:9,  localValue:37669.07},
+    {year:2025,month:11,currency:'SBD',count:1,  localValue:4432.62},
+    {year:2025,month:11,currency:'WST',count:3,  localValue:13494.62},
+    {year:2025,month:11,currency:'TOP',count:5,  localValue:34753.32},
+    {year:2025,month:11,currency:'VUV',count:6,  localValue:66435.98},
+    {year:2025,month:11,currency:'NZD',count:1,  localValue:175.00},
+    {year:2025,month:12,currency:'VUV',count:4,  localValue:14769.06},
+    {year:2025,month:12,currency:'WST',count:6,  localValue:40133.33},
+    {year:2025,month:12,currency:'TOP',count:1,  localValue:1333.54},
+    {year:2025,month:12,currency:'SBD',count:3,  localValue:25628.40},
+    {year:2026,month:1, currency:'SBD',count:5,  localValue:29184.40},
+    {year:2026,month:1, currency:'TOP',count:5,  localValue:23245.50},
+    {year:2026,month:1, currency:'WST',count:2,  localValue:2445.70},
+    {year:2026,month:1, currency:'VUV',count:2,  localValue:5309.06},
+    {year:2026,month:2, currency:'NZD',count:1,  localValue:5000.00},
+    {year:2026,month:2, currency:'VUV',count:3,  localValue:4140.64},
+    {year:2026,month:2, currency:'TOP',count:5,  localValue:41822.25},
+    {year:2026,month:2, currency:'WST',count:10, localValue:82698.55},
+    {year:2026,month:2, currency:'SBD',count:1,  localValue:15070.92},
+    {year:2026,month:3, currency:'TOP',count:3,  localValue:20247.20},
+    {year:2026,month:3, currency:'WST',count:5,  localValue:44924.83},
+    {year:2026,month:3, currency:'NZD',count:1,  localValue:1999.00},
+    {year:2026,month:3, currency:'VUV',count:3,  localValue:20183.16},
+    {year:2026,month:3, currency:'SBD',count:2,  localValue:1595.74}
   ],
 
-  winRate:{mar:{total:12,won:10},feb:{total:36,won:20}},
+  winRate:{mar:{total:23,won:14},feb:{total:39,won:20}},
 
   overdueByTerritory:[
-    {pb:null,                 count:103},
+    {pb:null,                 count:100},
     {pb:'01s7F00000IZVhTQAX', count:239},
     {pb:'01s7F00000IZVhJQAX', count:190},
-    {pb:'01s7F00000IZVhOQAX', count:77},
-    {pb:'01s7F00000IZVh4QAH', count:66},
+    {pb:'01s7F00000IZVhOQAX', count:62},
+    {pb:'01s7F00000IZVh4QAH', count:35},
     {pb:'01s7F00000IZVgzQAH', count:25},
     {pb:'01s7F00000BU3IfQAL', count:1}
   ],
@@ -478,7 +485,7 @@ function renderKPIs(t){
   const covLabel = !t.coverageRatio ? 'No quota set' : t.coverageRatio>=3?'On track':'Below 3× target';
   const nsBg = t.nsPct<30 ? 'var(--red)' : 'var(--amber)';
   return `
-  <div class="sh"><span class="sh-title">Sales Actuals — Orders (New, Activated) · NZD</span><div class="sh-line"></div></div>
+  <div class="sh"><span class="sh-title">Sales Actuals — Orders (New, Activated) · NZD</span><div class="sh-line"></div><a href="orders-ytd-2026.html" style="font-size:11px;font-weight:500;color:var(--t3);text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:4px;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--t3)'">View all orders ↗</a></div>
   <div class="kg kg4">
     <div class="kc ar">
       <div class="kl"><span class="dot dr"></span>Sales This Week</div>
