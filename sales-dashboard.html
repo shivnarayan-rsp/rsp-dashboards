@@ -1,161 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="auth.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RSP — Sales Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ricoh-red: #D7063B;
-    --ricoh-red-mid: rgba(215,6,59,0.15);
-    --charcoal: #1e2022;
-    --body-bg: #f7f7f6;
-    --surface: #ffffff;
-    --border: #e4e4e2;
-    --text-primary: #1e2022;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
-    --success: #16a34a;
-    --warning: #d97706;
-    --danger: #D7063B;
-    --danger-bg: #fff1f3;
-    --mono: 'DM Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--sans); background: var(--body-bg); color: var(--text-primary); font-size: 14px; line-height: 1.5; min-height: 100vh; }
+:root {
+  --red: #D7063B; --red-bg: #fff1f3; --red-border: rgba(215,6,59,0.22);
+  --charcoal: #1e2022; --body: #f7f7f6; --surface: #ffffff;
+  --border: #e4e4e2; --border2: #d1d5db;
+  --t1: #1e2022; --t2: #6b7280; --t3: #9ca3af;
+  --green: #16a34a; --green-bg: #f0fdf4; --green-border: rgba(22,163,74,0.2);
+  --amber: #d97706; --amber-bg: #fffbeb; --amber-border: rgba(217,119,6,0.2);
+  --blue: #2563eb; --blue-bg: #eff6ff;
+  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--body);color:var(--t1);font-size:14px;line-height:1.5}
 
-  /* ── HEADER ── */
-  header { background: var(--charcoal); color: #fff; padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 0 rgba(255,255,255,0.05); }
-  .header-left { display: flex; align-items: center; gap: 12px; }
-  .header-brand { font-size: 15px; font-weight: 600; color: #fff; }
-  .header-brand span { color: var(--ricoh-red); }
-  .header-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.15); }
-  .header-subtitle { font-size: 13px; color: rgba(255,255,255,0.5); }
-  .header-back { font-size: 12px; color: rgba(255,255,255,0.45); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.15s; }
-  .header-back:hover { color: rgba(255,255,255,0.8); }
-  .header-back::before { content: '←'; }
+/* HEADER */
+header{background:var(--charcoal);color:#fff;padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 1px 0 rgba(255,255,255,.05)}
+.hb{display:flex;align-items:center;gap:12px}
+.brand{font-size:15px;font-weight:600;color:#fff}.brand span{color:var(--red)}
+.hdiv{width:1px;height:20px;background:rgba(255,255,255,.15)}
+.hsub{font-size:13px;color:rgba(255,255,255,.5)}
+.hback{font-size:12px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .15s}
+.hback:hover{color:rgba(255,255,255,.8)}.hback::before{content:'←'}
 
-  /* ── FILTER BAR ── */
-  .filter-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 10px 32px; display: flex; align-items: center; gap: 12px; position: sticky; top: 56px; z-index: 90; flex-wrap: wrap; }
-  .filter-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); white-space: nowrap; }
-  .filter-select { font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--text-primary); background: var(--body-bg); border: 1px solid var(--border); border-radius: 6px; padding: 5px 28px 5px 10px; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 9px center; cursor: pointer; min-width: 160px; }
-  .filter-select:focus { outline: none; border-color: var(--ricoh-red); }
-  .filter-sep { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
-  .fx-note { margin-left: auto; font-size: 10.5px; color: var(--text-muted); font-family: var(--mono); }
+/* FILTER BAR */
+.fbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:10px;position:sticky;top:56px;z-index:190;flex-wrap:wrap}
+.flabel{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);white-space:nowrap}
+.fsel{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--t1);background:var(--body);border:1px solid var(--border);border-radius:6px;padding:5px 28px 5px 10px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;cursor:pointer;min-width:160px}
+.fsel:focus{outline:none;border-color:var(--red)}
+.fsep{width:1px;height:18px;background:var(--border);margin:0 2px}
+.fxnote{margin-left:auto;font-size:10.5px;color:var(--t3);font-family:var(--mono)}
 
-  /* ── MAIN ── */
-  main { padding: 24px 32px 48px; max-width: 1400px; margin: 0 auto; }
+/* MAIN */
+main{padding:24px 32px 48px;max-width:1400px;margin:0 auto}
 
-  /* ── SECTION HEADER ── */
-  .section-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; margin-top: 28px; }
-  .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); white-space: nowrap; }
-  .section-line { flex: 1; height: 1px; background: var(--border); }
+/* SECTION HEADER */
+.sh{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;margin-top:28px}
+.sh-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);white-space:nowrap}
+.sh-line{flex:1;height:1px;background:var(--border)}
 
-  /* ── KPI CARDS ── */
-  .kpi-grid { display: grid; gap: 12px; }
-  .kpi-grid-4 { grid-template-columns: repeat(4, 1fr); }
+/* KPI GRID */
+.kg{display:grid;gap:12px}
+.kg4{grid-template-columns:repeat(4,1fr)}
+.kg3{grid-template-columns:repeat(3,1fr)}
 
-  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; position: relative; overflow: hidden; transition: box-shadow 0.15s; }
-  .kpi-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-  .kpi-card.alert { border-color: rgba(215,6,59,0.25); background: var(--danger-bg); }
-  .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; border-radius: 10px 0 0 10px; }
-  .kpi-card.accent-red::before    { background: var(--ricoh-red); }
-  .kpi-card.accent-green::before  { background: var(--success); }
-  .kpi-card.accent-amber::before  { background: var(--warning); }
-  .kpi-card.accent-muted::before  { background: var(--text-muted); }
+.kc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;position:relative;overflow:hidden;transition:box-shadow .15s}
+.kc:hover{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.kc.alert{border-color:var(--red-border);background:var(--red-bg)}
+.kc.warn{border-color:var(--amber-border);background:var(--amber-bg)}
+.kc.good{border-color:var(--green-border);background:var(--green-bg)}
+.kc::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:10px 0 0 10px}
+.kc.ar::before{background:var(--red)}.kc.ag::before{background:var(--green)}
+.kc.aa::before{background:var(--amber)}.kc.am::before{background:var(--t3)}
+.kc.ab::before{background:var(--blue)}
 
-  .kpi-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
-  .dot-red   { background: var(--ricoh-red); }
-  .dot-green { background: var(--success); }
-  .dot-amber { background: var(--warning); }
-  .dot-grey  { background: var(--text-muted); }
+.kl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.dr{background:var(--red)}.dg{background:var(--green)}.da{background:var(--amber)}.dm{background:var(--t3)}.db{background:var(--blue)}
 
-  .kpi-value { font-family: var(--mono); font-size: 26px; font-weight: 500; color: var(--text-primary); letter-spacing: -0.02em; line-height: 1.1; }
-  .kpi-value.alert-value { color: var(--ricoh-red); }
-  .kpi-value.tbc { color: var(--text-muted); font-size: 16px; font-weight: 400; }
-  .kpi-sub { font-size: 12px; color: var(--text-secondary); margin-top: 6px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .trend-up   { color: var(--success); font-weight: 600; }
-  .trend-down { color: var(--ricoh-red); font-weight: 600; }
+.kv{font-family:var(--mono);font-size:26px;font-weight:500;color:var(--t1);letter-spacing:-.02em;line-height:1.1}
+.kv.rv{color:var(--red)}.kv.tbc{color:var(--t3);font-size:16px;font-weight:400}
+.ks{font-size:12px;color:var(--t2);margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tu{color:var(--green);font-weight:600}.td{color:var(--red);font-weight:600}
 
-  .progress-bar-wrap { margin-top: 10px; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
-  .progress-bar-fill { height: 100%; border-radius: 99px; background: var(--ricoh-red); transition: width 0.5s ease; }
-  .progress-bar-fill.green { background: var(--success); }
-  .progress-bar-fill.grey  { background: var(--text-muted); }
+.pb{margin-top:10px;height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+.pbf{height:100%;border-radius:99px;background:var(--red);transition:width .5s}
+.pbf.g{background:var(--green)}.pbf.a{background:var(--amber)}.pbf.m{background:var(--t3)}
 
-  /* ── TABS ── */
-  .tab-nav { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
-  .tab-btn { font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--text-secondary); background: none; border: none; padding: 10px 18px; cursor: pointer; position: relative; transition: color 0.15s; white-space: nowrap; }
-  .tab-btn::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: var(--ricoh-red); opacity: 0; transition: opacity 0.15s; }
-  .tab-btn.active { color: var(--ricoh-red); }
-  .tab-btn.active::after { opacity: 1; }
-  .tab-btn:hover:not(.active) { color: var(--text-primary); }
+/* TABS */
+.tnav{display:flex;border-bottom:2px solid var(--border);margin-bottom:20px;gap:0}
+.tbtn{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--t2);background:none;border:none;padding:10px 18px;cursor:pointer;position:relative;transition:color .15s;white-space:nowrap}
+.tbtn::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--red);opacity:0;transition:opacity .15s}
+.tbtn.active{color:var(--red)}.tbtn.active::after{opacity:1}
+.tbtn:hover:not(.active){color:var(--t1)}
 
-  /* ── TABLE ── */
-  .data-table { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; width: 100%; }
-  .data-table table { width: 100%; border-collapse: collapse; }
-  .data-table thead th { background: var(--body-bg); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
-  .data-table thead th.right { text-align: right; }
-  .data-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-  .data-table tbody tr:last-child { border-bottom: none; }
-  .data-table tbody tr:hover { background: var(--body-bg); }
-  .data-table tbody td { padding: 12px 16px; font-size: 13px; color: var(--text-primary); vertical-align: middle; }
-  .data-table tbody td.right { text-align: right; font-family: var(--mono); font-size: 12.5px; }
-  .entity-name { font-weight: 600; }
-  .entity-sub  { font-size: 11px; color: var(--text-secondary); margin-top: 1px; }
+/* TABLE */
+.dt{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;width:100%}
+.dt table{width:100%;border-collapse:collapse}
+.dt thead th{background:var(--body);font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.dt thead th.r{text-align:right}
+.dt tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+.dt tbody tr:last-child{border-bottom:none}
+.dt tbody tr:hover{background:var(--body)}
+.dt tbody td{padding:12px 16px;font-size:13px;color:var(--t1);vertical-align:middle}
+.dt tbody td.r{text-align:right;font-family:var(--mono);font-size:12.5px}
+.en{font-weight:600}.es{font-size:11px;color:var(--t2);margin-top:1px}
 
-  /* stage pills */
-  .stage-pill { display: inline-block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 7px; border-radius: 4px; margin-right: 3px; margin-bottom: 2px; }
-  .stage-Proposal      { background: #eff6ff; color: #1d4ed8; }
-  .stage-Negotiation   { background: #fff7ed; color: #c2410c; }
-  .stage-Qualification { background: #f0fdf4; color: #15803d; }
-  .stage-NeedsAnalysis { background: #faf5ff; color: #7e22ce; }
+.spill{display:inline-block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:4px;margin-right:3px;margin-bottom:2px}
+.sProposal{background:#eff6ff;color:#1d4ed8}.sNegotiation{background:#fff7ed;color:#c2410c}
+.sQualification{background:#f0fdf4;color:#15803d}.sNeedsAnalysis{background:#faf5ff;color:#7e22ce}
 
-  /* share bar */
-  .share-bar-wrap { display: flex; height: 5px; border-radius: 99px; overflow: hidden; background: var(--border); min-width: 80px; max-width: 120px; }
-  .share-bar-seg  { height: 100%; }
+.sbar{display:flex;height:5px;border-radius:99px;overflow:hidden;background:var(--border);min-width:80px;max-width:120px}
+.sbseg{height:100%}
 
-  /* ── TERRITORY TILES ── */
-  .territory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
-  .territory-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; transition: box-shadow 0.15s; }
-  .territory-tile:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-  .territory-tile-name  { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-  .territory-tile-value { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--text-primary); letter-spacing: -0.02em; }
-  .territory-tile-meta  { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-  .territory-tile-row   { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
-  .territory-tile-row-label { font-size: 11px; color: var(--text-secondary); }
-  .territory-tile-row-val   { font-family: var(--mono); font-size: 11px; color: var(--text-primary); font-weight: 500; }
+/* TERRITORY TILES */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.ttile{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;transition:box-shadow .15s}
+.ttile:hover{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.tname{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.tval{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--t1);letter-spacing:-.02em}
+.tmeta{font-size:11px;color:var(--t3);margin-top:4px}
+.trow{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.trl{font-size:11px;color:var(--t2)}.trv{font-family:var(--mono);font-size:11px;color:var(--t1);font-weight:500}
 
-  /* fx badge */
-  .fx-badge { font-size: 9px; color: var(--text-muted); background: var(--body-bg); border: 1px solid var(--border); border-radius: 3px; padding: 1px 4px; font-family: var(--mono); }
+/* COVERAGE GAUGE */
+.gauge-wrap{display:flex;align-items:center;gap:10px;margin-top:8px}
+.gauge-track{flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden;position:relative}
+.gauge-fill{height:100%;border-radius:99px;transition:width .5s}
+.gauge-markers{position:relative;height:12px;margin-top:2px}
+.gauge-marker{position:absolute;font-size:9px;color:var(--t3);transform:translateX(-50%)}
 
-  .empty-state { text-align: center; padding: 40px; color: var(--text-muted); font-size: 13px; }
+/* QUOTA TABLE */
+.quota-badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px}
+.qb-over{background:#f0fdf4;color:#16a34a}
+.qb-warn{background:#fffbeb;color:#d97706}
+.qb-under{background:#fff1f3;color:#D7063B}
+.qb-none{background:#f1f5f9;color:#64748b}
+.attain-bar{height:4px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:4px;min-width:60px}
+.attain-fill{height:100%;border-radius:99px;transition:width .4s}
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 1100px) { .kpi-grid-4 { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 700px)  { main { padding: 16px; } header, .filter-bar { padding-left: 16px; padding-right: 16px; } .kpi-grid-4 { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 480px)  { .kpi-grid-4 { grid-template-columns: 1fr; } }
+/* FX BADGE */
+.fxb{font-size:9px;color:var(--t3);background:var(--body);border:1px solid var(--border);border-radius:3px;padding:1px 4px;font-family:var(--mono)}
+
+/* DATA DICTIONARY PANEL */
+.dict-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:0}
+.dict-header{background:var(--charcoal);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:10px}
+.dict-header-title{font-size:13px;font-weight:600}
+.dict-header-sub{font-size:11px;color:rgba(255,255,255,.45);font-family:var(--mono)}
+.dict-row{border-bottom:1px solid var(--border);padding:16px 20px;display:grid;grid-template-columns:220px 1fr;gap:20px}
+.dict-row:last-child{border-bottom:none}
+.dict-row:hover{background:var(--body)}
+.dict-kpi-name{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:4px}
+.dict-kpi-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 6px;border-radius:3px;display:inline-block;margin-bottom:6px}
+.tag-lead{background:#eff6ff;color:#2563eb}
+.tag-lag{background:#f1f5f9;color:#475569}
+.tag-hygiene{background:#faf5ff;color:#7e22ce}
+.dict-content{display:flex;flex-direction:column;gap:8px}
+.dict-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.dict-text{font-size:13px;color:var(--t2);line-height:1.5}
+.dict-soql{font-family:var(--mono);font-size:11px;background:#1e2022;color:#a8d8a8;border-radius:6px;padding:10px 14px;line-height:1.7;overflow-x:auto;white-space:pre}
+.dict-formula{font-family:var(--mono);font-size:11px;color:var(--t2);background:var(--body);border:1px solid var(--border);border-radius:6px;padding:8px 12px}
+
+.empty{text-align:center;padding:40px;color:var(--t3);font-size:13px}
+
+@media(max-width:1100px){.kg4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){main{padding:16px}header,.fbar{padding-left:16px;padding-right:16px}.kg4,.kg3{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.kg4,.kg3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-left">
-    <div class="header-brand">Ricoh South Pacific</div>
-    <div class="header-divider"></div>
-    <div class="header-subtitle">Sales Dashboard</div>
+  <div class="hb">
+    <div class="brand">Ricoh <span>|</span> South Pacific</div>
+    <div class="hdiv"></div>
+    <div class="hsub">Sales Dashboard</div>
   </div>
-  <a href="index.html" class="header-back">Overview</a>
+  <a href="index.html" class="hback">Overview</a>
 </header>
 
-<div class="filter-bar">
-  <span class="filter-label">Territory</span>
-  <select class="filter-select" id="filterTerritory">
+<div class="fbar">
+  <span class="flabel">Territory</span>
+  <select class="fsel" id="fTerritory">
     <option value="all">All Territories</option>
     <option value="01s7F00000IZVgzQAH">New Zealand</option>
     <option value="01s7F00000IZVhOQAX">Samoa</option>
@@ -163,680 +176,676 @@
     <option value="01s7F00000IZVhJQAX">Tonga</option>
     <option value="01s7F00000IZVh4QAH">Vanuatu</option>
   </select>
-  <div class="filter-sep"></div>
-  <span class="filter-label">Sales Rep</span>
-  <select class="filter-select" id="filterRep"><option value="all">All Reps</option></select>
-  <span class="fx-note" id="fxNote"></span>
+  <div class="fsep"></div>
+  <span class="flabel">Sales Rep</span>
+  <select class="fsel" id="fRep"><option value="all">All Reps</option></select>
+  <span class="fxnote" id="fxNote"></span>
 </div>
 
 <main id="app"></main>
 
 <script>
-// ─────────────────────────────────────────────
-// FX RATES — from Salesforce CurrencyType
-// Corporate = NZD (rate 1.0)
-// ConversionRate = units of local per 1 NZD
-// To convert local → NZD: divide by rate
-// ─────────────────────────────────────────────
-const FX = { NZD: 1, WST: 1.86, SBD: 5.64, TOP: 1.61, VUV: 79.11, FJD: 1.48, USD: 0.72 };
+// ─── FX RATES (Salesforce CurrencyType — units of local per 1 NZD) ───
+const FX = {NZD:1,WST:1.86,SBD:5.64,TOP:1.61,VUV:79.11,FJD:1.48,USD:0.72};
+const toNZD = (v,c) => (!v||isNaN(v)) ? 0 : v/(FX[c]||1);
 
-function toNZD(localAmount, isoCode) {
-  if (!localAmount || isNaN(localAmount)) return 0;
-  return localAmount / (FX[isoCode] || 1);
-}
-
-// ─────────────────────────────────────────────
-// DATA — all Salesforce values in LOCAL currency
-// currency field drives conversion at render time
-// ─────────────────────────────────────────────
+// ─── DATA ───
 const DATA = {
   asOf: '16 March 2026',
-
   pricebookMap: {
-    '01s7F00000IZVgzQAH': 'New Zealand',
-    '01s7F00000IZVh4QAH': 'Vanuatu',
-    '01s7F00000IZVhJQAX': 'Tonga',
-    '01s7F00000IZVhOQAX': 'Samoa',
-    '01s7F00000IZVhTQAX': 'Solomon Islands'
+    '01s7F00000IZVgzQAH':'New Zealand','01s7F00000IZVh4QAH':'Vanuatu',
+    '01s7F00000IZVhJQAX':'Tonga','01s7F00000IZVhOQAX':'Samoa',
+    '01s7F00000IZVhTQAX':'Solomon Islands'
   },
-
-  // Local currency per territory pricebook
   pbCurrency: {
-    '01s7F00000IZVgzQAH': 'NZD',
-    '01s7F00000IZVhOQAX': 'WST',
-    '01s7F00000IZVhJQAX': 'TOP',
-    '01s7F00000IZVh4QAH': 'VUV',
-    '01s7F00000IZVhTQAX': 'SBD'
+    '01s7F00000IZVgzQAH':'NZD','01s7F00000IZVhOQAX':'WST',
+    '01s7F00000IZVhJQAX':'TOP','01s7F00000IZVh4QAH':'VUV',
+    '01s7F00000IZVhTQAX':'SBD'
   },
-
   userMap: {
-    '0057F000004tzhSQAQ': 'Sekone Tyrell',
-    '0057F000004tzjEQAQ': 'Ronaldo Mercado',
-    '0057F000004tzm0QAA': 'Lavilaiti Lasitani',
-    '0057F000004tzm1QAA': 'Julia Sifa',
-    '0057F000004tzm2QAA': 'Tui Amone',
-    '0057F000004tzpSQAQ': 'Gideon Malto',
-    '0057F000004tzpUQAQ': 'Phelisa Daniel Molisa',
-    '0057F000004tzpXQAQ': 'Junriel Andoy',
-    '0057F000004tzziQAA': 'Victor Geonzon',
-    '0057F000004tzzkQAA': 'Samson Ragaruma',
-    '0057F000004u88WQAQ': 'Avi Sharma',
-    '0057F000005AuKzQAK': 'Priscilla Aulanga',
-    '0057F000005B9L9QAK': 'Brenda Peter',
-    '0057F000006JcvKQAS': 'Shikha Sohal',
-    '0057F000008O6vVQAS': 'Via Reyna',
-    '0057F000008XjrTQAS': 'Aisea Fakaosi',
-    '005Mp00000BGnuTIAT': 'Jester Bernardino',
-    '005Mp00000BUnxpIAD': 'Max Lyness',
-    '0057F000003GciYQAS': 'Other/Admin'
+    '0057F000004tzhSQAQ':'Sekone Tyrell','0057F000004tzjEQAQ':'Ronaldo Mercado',
+    '0057F000004tzm0QAA':'Lavilaiti Lasitani','0057F000004tzm1QAA':'Julia Sifa',
+    '0057F000004tzm2QAA':'Tui Amone','0057F000004tzpSQAQ':'Gideon Malto',
+    '0057F000004tzpUQAQ':'Phelisa Daniel Molisa','0057F000004tzpXQAQ':'Junriel Andoy',
+    '0057F000004tzziQAA':'Victor Geonzon','0057F000004tzzkQAA':'Samson Ragaruma',
+    '0057F000004u88WQAQ':'Avi Sharma','0057F000005AuKzQAK':'Priscilla Aulanga',
+    '0057F000005B9L9QAK':'Brenda Peter','0057F000006JcvKQAS':'Shikha Sohal',
+    '0057F000008O6vVQAS':'Via Reyna','0057F000008XjrTQAS':'Aisea Fakaosi',
+    '005Mp00000BGnuTIAT':'Jester Bernardino','005Mp00000BUnxpIAD':'Max Lyness',
+    '0057F000003GciYQAS':'Pradeep Narayan'
   },
 
-  // Budget placeholders — all values to be entered in NZD
-  budget: {
-    mtd: { '01s7F00000IZVgzQAH': null, '01s7F00000IZVh4QAH': null, '01s7F00000IZVhJQAX': null, '01s7F00000IZVhOQAX': null, '01s7F00000IZVhTQAX': null },
-    ytd: { '01s7F00000IZVgzQAH': null, '01s7F00000IZVh4QAH': null, '01s7F00000IZVhJQAX': null, '01s7F00000IZVhOQAX': null, '01s7F00000IZVhTQAX': null }
-  },
-
-  // ── ORDERS (Type=New, Status=Activated) — Sales actuals in LOCAL currency ──
-  salesWtd: [
-    // EffectiveDate 9–16 Mar 2026
-    { pb: '01s7F00000IZVhOQAX', currency: 'WST', count: 1, localValue: 1344.09 },
-    { pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 1, localValue: 0 }
-  ],
-  salesMtd: [
-    // EffectiveDate 1–16 Mar 2026
-    { pb: '01s7F00000IZVhOQAX', currency: 'WST', count: 1, localValue: 1344.09 },
-    { pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 3, localValue: 12631.76 },
-    { pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 2, localValue: 12091.03 }
-  ],
-  salesPriorMonth: [
-    // EffectiveDate Feb 2026
-    { pb: '01s7F00000IZVhOQAX', currency: 'WST', count: 6, localValue: 27043.01 },
-    { pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 3, localValue: 19586.81 },
-    { pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 1, localValue: 3349.77 },
-    { pb: '01s7F00000IZVhTQAX', currency: 'SBD', count: 1, localValue: 3014.18 },
-    { pb: '01s7F00000IZVgzQAH', currency: 'NZD', count: 2, localValue: 0 }
-  ],
-  salesYtd: [
-    // CALENDAR_YEAR 2026
-    { pb: '01s7F00000IZVhOQAX', currency: 'WST', count: 18, localValue: 29883.87 },
-    { pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 10, localValue: 50657.16 },
-    { pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 5,  localValue: 18480.86 },
-    { pb: '01s7F00000IZVhTQAX', currency: 'SBD', count: 13, localValue: 41595.74 },
-    { pb: '01s7F00000IZVgzQAH', currency: 'NZD', count: 7,  localValue: 0 }
+  // ── QUOTA (ForecastingQuota, StartDate = 2026-03-01, local currency) ──
+  quotaMar: [
+    {owner:'0057F000004tzjEQAQ', name:'Ronaldo Mercado',   currency:'WST', localQuota:78540},
+    {owner:'0057F000003GciYQAS', name:'Pradeep Narayan',   currency:'NZD', localQuota:400000},
+    {owner:'005Mp00000BUnxpIAD', name:'Max Lyness',         currency:'NZD', localQuota:100000},
+    {owner:'005Mp000008od81IAA', name:'Josef Petelo',        currency:'WST', localQuota:40460},
+    {owner:'005Mp00000BGnuTIAT', name:'Jester Bernardino',  currency:'VUV', localQuota:3696000},
+    {owner:'0057F000008XjrTQAS', name:'Aisea Fakaosi',       currency:'TOP', localQuota:58000},
+    {owner:'0057F000004u88WQAQ', name:'Avi Sharma',          currency:'NZD', localQuota:250000},
+    {owner:'0057F000004tzzkQAA', name:'Samson Ragaruma',     currency:'SBD', localQuota:132600},
+    {owner:'0057F000004tzziQAA', name:'Victor Geonzon',      currency:'SBD', localQuota:132600},
   ],
 
-  // ── OPEN PIPELINE — by territory × currency ──
-  pipelineByTerritory: [
-    { pb: '01s7F00000IZVgzQAH', currency: 'NZD', count: 25,  localValue: 116433.02 },
-    { pb: '01s7F00000IZVhOQAX', currency: 'WST', count: 99,  localValue: 1258026.52 },
-    { pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 204, localValue: 1839146.00 },
-    { pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 76,  localValue: 704630.93 },
-    { pb: '01s7F00000IZVhTQAX', currency: 'SBD', count: 251, localValue: 3687136.36 },
-    // Unassigned (null PB / standard PB) — mixed currencies
-    { pb: null, currency: 'NZD', count: 28,  localValue: 384200.00 },
-    { pb: null, currency: 'WST', count: 26,  localValue: 254060.48 },
-    { pb: null, currency: 'TOP', count: 21,  localValue: 134501.75 },
-    { pb: null, currency: 'VUV', count: 12,  localValue: 291998.48 },
-    { pb: null, currency: 'SBD', count: 31,  localValue: 207405.27 },
-    { pb: '01s7F00000BU3IfQAL', currency: 'NZD', count: 1,  localValue: 36889.89 }
+  // ── ORDERS (Type=New, Activated) — local currency ──
+  salesWtd:[
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:1,localValue:1344.09},
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:1,localValue:0}
+  ],
+  salesMtd:[
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:1,localValue:1344.09},
+    {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:3,localValue:12631.76},
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:2,localValue:12091.03}
+  ],
+  salesPrior:[
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:6,localValue:27043.01},
+    {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:3,localValue:19586.81},
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:1,localValue:3349.77},
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:1,localValue:3014.18},
+    {pb:'01s7F00000IZVgzQAH',currency:'NZD',count:2,localValue:0}
+  ],
+  salesYtd:[
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:18,localValue:29883.87},
+    {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:10,localValue:50657.16},
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:5, localValue:18480.86},
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:13,localValue:41595.74},
+    {pb:'01s7F00000IZVgzQAH',currency:'NZD',count:7, localValue:0}
   ],
 
-  // ── PIPELINE by territory × stage × currency ──
-  pipelineByTerritoryStage: [
-    { pb: '01s7F00000IZVgzQAH', currency: 'NZD', stage: 'Proposal',      count: 21,  localValue: 89159.88 },
-    { pb: '01s7F00000IZVgzQAH', currency: 'NZD', stage: 'Qualification', count: 1,   localValue: 3000.00 },
-    { pb: '01s7F00000IZVgzQAH', currency: 'NZD', stage: 'Negotiation',   count: 3,   localValue: 24273.14 },
-    { pb: '01s7F00000IZVhOQAX', currency: 'WST', stage: 'Proposal',      count: 97,  localValue: 1246785.27 },
-    { pb: '01s7F00000IZVhOQAX', currency: 'WST', stage: 'Negotiation',   count: 1,   localValue: 10864.90 },
-    { pb: '01s7F00000IZVhJQAX', currency: 'TOP', stage: 'Proposal',      count: 191, localValue: 1734174.30 },
-    { pb: '01s7F00000IZVhJQAX', currency: 'TOP', stage: 'Negotiation',   count: 13,  localValue: 104971.70 },
-    { pb: '01s7F00000IZVh4QAH', currency: 'VUV', stage: 'Proposal',      count: 73,  localValue: 662389.68 },
-    { pb: '01s7F00000IZVh4QAH', currency: 'VUV', stage: 'Negotiation',   count: 3,   localValue: 42241.25 },
-    { pb: '01s7F00000IZVhTQAX', currency: 'SBD', stage: 'Proposal',      count: 240, localValue: 3589001.96 },
-    { pb: '01s7F00000IZVhTQAX', currency: 'SBD', stage: 'Negotiation',   count: 10,  localValue: 78563.48 },
-    { pb: '01s7F00000IZVhTQAX', currency: 'SBD', stage: 'Qualification', count: 1,   localValue: 19570.92 }
+  // ── OPEN PIPELINE (IsClosed=false AND StageName != 'Closed') ──
+  pipeline:[
+    {pb:'01s7F00000IZVgzQAH',currency:'NZD',count:25, localValue:116433.02},
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:96, localValue:1250771.29},
+    {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:203,localValue:1863370.60},
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:53, localValue:526956.30},
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:254,localValue:3706817.21},
+    {pb:null,currency:'NZD',count:28, localValue:384200.00},
+    {pb:null,currency:'WST',count:26, localValue:220995.97},
+    {pb:null,currency:'TOP',count:21, localValue:134501.75},
+    {pb:null,currency:'VUV',count:13, localValue:293262.55},
+    {pb:null,currency:'SBD',count:31, localValue:207405.27},
+    {pb:'01s7F00000BU3IfQAL',currency:'NZD',count:1,localValue:36889.89}
   ],
 
-  // ── OPEN PIPELINE by rep × territory × currency ──
-  pipelineByRep: [
-    { owner: '005Mp00000BGnuTIAT', pb: null,                 currency: 'VUV', count: 11,  localValue: 127670.33 },
-    { owner: '0057F000004tzm2QAA', pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 92,  localValue: 760604.63 },
-    { owner: '0057F000004tzpXQAQ', pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 14,  localValue: 152447.26 },
-    { owner: '0057F000004u88WQAQ', pb: null,                 currency: 'WST', count: 3,   localValue: 33870.97 },
-    { owner: '0057F000004u88WQAQ', pb: null,                 currency: 'NZD', count: 1,   localValue: 60000.00 },
-    { owner: '0057F000004u88WQAQ', pb: null,                 currency: 'TOP', count: 1,   localValue: 0 },
-    { owner: '005Mp00000BUnxpIAD', pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 1,   localValue: 51.83 },
-    { owner: '0057F000004tzm2QAA', pb: null,                 currency: 'TOP', count: 16,  localValue: 124347.83 },
-    { owner: '0057F000003GciYQAS', pb: null,                 currency: 'NZD', count: 3,   localValue: 205000.00 },
-    { owner: '0057F000004tzpSQAQ', pb: null,                 currency: 'VUV', count: 1,   localValue: 164328.15 },
-    { owner: '0057F000004tzjEQAQ', pb: '01s7F00000IZVhOQAX', currency: 'WST', count: 69,  localValue: 1018955.51 },
-    { owner: '0057F000008O6vVQAS', pb: '01s7F00000IZVhTQAX', currency: 'SBD', count: 6,   localValue: 95652.55 },
-    { owner: '0057F000004u88WQAQ', pb: '01s7F00000BU3IfQAL', currency: 'NZD', count: 1,   localValue: 36889.89 },
-    { owner: '0057F000004tzhSQAQ', pb: null,                 currency: 'WST', count: 7,   localValue: 48860.22 },
-    { owner: '0057F000004tzzkQAA', pb: null,                 currency: 'SBD', count: 11,  localValue: 47583.11 },
-    { owner: '0057F000004tzzkQAA', pb: null,                 currency: 'NZD', count: 1,   localValue: 2200.00 },
-    { owner: '0057F000004tzhSQAQ', pb: '01s7F00000IZVhOQAX', currency: 'WST', count: 22,  localValue: 189866.41 },
-    { owner: '0057F000004tzpSQAQ', pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 2,   localValue: 34847.04 },
-    { owner: '0057F000004tzm0QAA', pb: null,                 currency: 'TOP', count: 1,   localValue: 10153.93 },
-    { owner: '0057F000004u88WQAQ', pb: '01s7F00000IZVhOQAX', currency: 'WST', count: 3,   localValue: 21619.55 },
-    { owner: '0057F000005AuKzQAK', pb: null,                 currency: 'SBD', count: 12,  localValue: 94857.62 },
-    { owner: '005Mp00000BUnxpIAD', pb: null,                 currency: 'NZD', count: 23,  localValue: 117000.00 },
-    { owner: '005Mp00000BGnuTIAT', pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 41,  localValue: 327487.36 },
-    { owner: '0057F000004u88WQAQ', pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 9,   localValue: 166951.30 },
-    { owner: '0057F000008O6vVQAS', pb: null,                 currency: 'SBD', count: 1,   localValue: 10000.00 },
-    { owner: '0057F000004tzm0QAA', pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 17,  localValue: 167789.09 },
-    { owner: '0057F000006JcvKQAS', pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 2,   localValue: 32591.22 },
-    { owner: '0057F000004tzziQAA', pb: null,                 currency: 'SBD', count: 7,   localValue: 54964.54 },
-    { owner: '0057F000008O6vVQAS', pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 2,   localValue: 21383.17 },
-    { owner: '0057F000004tzziQAA', pb: '01s7F00000IZVhTQAX', currency: 'SBD', count: 43,  localValue: 777922.64 },
-    { owner: '0057F000004u88WQAQ', pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 13,  localValue: 127147.26 },
-    { owner: '0057F000005B9L9QAK', pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 2,   localValue: 17552.93 },
-    { owner: '0057F000008O6vVQAS', pb: '01s7F00000IZVhOQAX', currency: 'WST', count: 5,   localValue: 27585.05 },
-    { owner: '0057F000004u88WQAQ', pb: '01s7F00000IZVhTQAX', currency: 'SBD', count: 10,  localValue: 801719.87 },
-    { owner: '0057F000004tzpUQAQ', pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 1,   localValue: 12506.03 },
-    { owner: '0057F000004tzzkQAA', pb: '01s7F00000IZVhTQAX', currency: 'SBD', count: 60,  localValue: 684824.69 },
-    { owner: '0057F000004tzm1QAA', pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 39,  localValue: 325784.20 },
-    { owner: '0057F000008XjrTQAS', pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 45,  localValue: 396633.61 },
-    { owner: '0057F000004tzjEQAQ', pb: null,                 currency: 'WST', count: 16,  localValue: 171329.30 },
-    { owner: '0057F000008XjrTQAS', pb: null,                 currency: 'TOP', count: 3,   localValue: 0 },
-    { owner: '0057F000005AuKzQAK', pb: '01s7F00000IZVhTQAX', currency: 'SBD', count: 132, localValue: 1327016.62 },
-    { owner: '005Mp00000BUnxpIAD', pb: '01s7F00000IZVgzQAH', currency: 'NZD', count: 17,  localValue: 68059.87 },
-    { owner: '0057F000004u88WQAQ', pb: '01s7F00000IZVgzQAH', currency: 'NZD', count: 7,   localValue: 39328.65 },
-    { owner: '0057F000008O6vVQAS', pb: '01s7F00000IZVgzQAH', currency: 'NZD', count: 1,   localValue: 9044.50 }
+  pipelineByStage:[
+    {pb:'01s7F00000IZVgzQAH',currency:'NZD',stage:'Proposal',     count:21, localValue:89159.88},
+    {pb:'01s7F00000IZVgzQAH',currency:'NZD',stage:'Qualification',count:1,  localValue:3000.00},
+    {pb:'01s7F00000IZVgzQAH',currency:'NZD',stage:'Negotiation',  count:3,  localValue:24273.14},
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',stage:'Proposal',     count:97, localValue:1246785.27},
+    {pb:'01s7F00000IZVhOQAX',currency:'WST',stage:'Negotiation',  count:1,  localValue:10864.90},
+    {pb:'01s7F00000IZVhJQAX',currency:'TOP',stage:'Proposal',     count:191,localValue:1734174.30},
+    {pb:'01s7F00000IZVhJQAX',currency:'TOP',stage:'Negotiation',  count:13, localValue:104971.70},
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',stage:'Proposal',     count:73, localValue:662389.68},
+    {pb:'01s7F00000IZVh4QAH',currency:'VUV',stage:'Negotiation',  count:3,  localValue:42241.25},
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',stage:'Proposal',     count:240,localValue:3589001.96},
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',stage:'Negotiation',  count:10, localValue:78563.48},
+    {pb:'01s7F00000IZVhTQAX',currency:'SBD',stage:'Qualification',count:1,  localValue:19570.92}
   ],
 
-  // ── CLOSED WON MTD — by rep × territory × currency ──
-  closedWonMtdByRep: [
-    { owner: '0057F000004u88WQAQ', pb: '01s7F00000IZVgzQAH', currency: 'NZD', count: 1, localValue: 1999.00 },
-    { owner: '0057F000004tzjEQAQ', pb: '01s7F00000IZVhOQAX', currency: 'WST', count: 3, localValue: 23279.57 },
-    { owner: '005Mp00000BGnuTIAT', pb: '01s7F00000IZVh4QAH', currency: 'VUV', count: 2, localValue: 19675.40 },
-    { owner: '005Mp00000BGnuTIAT', pb: null,                 currency: 'VUV', count: 1, localValue: 507.76 },
-    { owner: '0057F000008XjrTQAS', pb: '01s7F00000IZVhJQAX', currency: 'TOP', count: 3, localValue: 20247.20 }
+  pipelineByRep:[
+    {owner:'005Mp00000BGnuTIAT',pb:null,                 currency:'VUV',count:11, localValue:127670.33},
+    {owner:'0057F000004tzm2QAA',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:92, localValue:760604.63},
+    {owner:'0057F000004tzpXQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:14, localValue:152447.26},
+    {owner:'0057F000004u88WQAQ',pb:null,                 currency:'WST',count:3,  localValue:33870.97},
+    {owner:'0057F000004u88WQAQ',pb:null,                 currency:'NZD',count:1,  localValue:60000.00},
+    {owner:'0057F000004u88WQAQ',pb:null,                 currency:'TOP',count:1,  localValue:0},
+    {owner:'005Mp00000BUnxpIAD',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:1,  localValue:51.83},
+    {owner:'0057F000004tzm2QAA',pb:null,                 currency:'TOP',count:16, localValue:124347.83},
+    {owner:'0057F000003GciYQAS',pb:null,                 currency:'NZD',count:3,  localValue:205000.00},
+    {owner:'0057F000004tzpSQAQ',pb:null,                 currency:'VUV',count:1,  localValue:164328.15},
+    {owner:'0057F000004tzjEQAQ',pb:'01s7F00000IZVhOQAX', currency:'WST',count:69, localValue:1018955.51},
+    {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:6,  localValue:95652.55},
+    {owner:'0057F000004u88WQAQ',pb:'01s7F00000BU3IfQAL', currency:'NZD',count:1,  localValue:36889.89},
+    {owner:'0057F000004tzhSQAQ',pb:null,                 currency:'WST',count:7,  localValue:48860.22},
+    {owner:'0057F000004tzzkQAA',pb:null,                 currency:'SBD',count:11, localValue:47583.11},
+    {owner:'0057F000004tzzkQAA',pb:null,                 currency:'NZD',count:1,  localValue:2200.00},
+    {owner:'0057F000004tzhSQAQ',pb:'01s7F00000IZVhOQAX', currency:'WST',count:22, localValue:189866.41},
+    {owner:'0057F000004tzpSQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:2,  localValue:34847.04},
+    {owner:'0057F000004tzm0QAA',pb:null,                 currency:'TOP',count:1,  localValue:10153.93},
+    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhOQAX', currency:'WST',count:3,  localValue:21619.55},
+    {owner:'0057F000005AuKzQAK',pb:null,                 currency:'SBD',count:12, localValue:94857.62},
+    {owner:'005Mp00000BUnxpIAD',pb:null,                 currency:'NZD',count:23, localValue:117000.00},
+    {owner:'005Mp00000BGnuTIAT',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:41, localValue:327487.36},
+    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:9,  localValue:166951.30},
+    {owner:'0057F000008O6vVQAS',pb:null,                 currency:'SBD',count:1,  localValue:10000.00},
+    {owner:'0057F000004tzm0QAA',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:17, localValue:167789.09},
+    {owner:'0057F000006JcvKQAS',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:2,  localValue:32591.22},
+    {owner:'0057F000004tzziQAA',pb:null,                 currency:'SBD',count:7,  localValue:54964.54},
+    {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:2,  localValue:21383.17},
+    {owner:'0057F000004tzziQAA',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:43, localValue:777922.64},
+    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:13, localValue:127147.26},
+    {owner:'0057F000005B9L9QAK',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:2,  localValue:17552.93},
+    {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVhOQAX', currency:'WST',count:5,  localValue:27585.05},
+    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:10, localValue:801719.87},
+    {owner:'0057F000004tzpUQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:1,  localValue:12506.03},
+    {owner:'0057F000004tzzkQAA',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:60, localValue:684824.69},
+    {owner:'0057F000004tzm1QAA',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:39, localValue:325784.20},
+    {owner:'0057F000008XjrTQAS',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:45, localValue:396633.61},
+    {owner:'0057F000004tzjEQAQ',pb:null,                 currency:'WST',count:16, localValue:171329.30},
+    {owner:'0057F000008XjrTQAS',pb:null,                 currency:'TOP',count:3,  localValue:0},
+    {owner:'0057F000005AuKzQAK',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:132,localValue:1327016.62},
+    {owner:'005Mp00000BUnxpIAD',pb:'01s7F00000IZVgzQAH', currency:'NZD',count:17, localValue:68059.87},
+    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVgzQAH', currency:'NZD',count:7,  localValue:39328.65},
+    {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVgzQAH', currency:'NZD',count:1,  localValue:9044.50}
   ],
 
-  // ── CLOSED WON 6-MONTH TREND — by month × currency ──
-  closedWonTrend: [
-    // Oct 2025
-    { year: 2025, month: 10, currency: 'SBD', count: 4,  localValue: 18931.68 },
-    { year: 2025, month: 10, currency: 'WST', count: 9,  localValue: 80215.05 },
-    { year: 2025, month: 10, currency: 'TOP', count: 3,  localValue: 31677.02 },
-    { year: 2025, month: 10, currency: 'VUV', count: 9,  localValue: 37669.07 },
-    // Nov 2025
-    { year: 2025, month: 11, currency: 'SBD', count: 1,  localValue: 4432.62 },
-    { year: 2025, month: 11, currency: 'WST', count: 3,  localValue: 13494.62 },
-    { year: 2025, month: 11, currency: 'TOP', count: 5,  localValue: 34753.32 },
-    { year: 2025, month: 11, currency: 'VUV', count: 6,  localValue: 66435.98 },
-    { year: 2025, month: 11, currency: 'NZD', count: 1,  localValue: 175.00 },
-    // Dec 2025
-    { year: 2025, month: 12, currency: 'VUV', count: 4,  localValue: 14769.06 },
-    { year: 2025, month: 12, currency: 'WST', count: 6,  localValue: 40133.33 },
-    { year: 2025, month: 12, currency: 'TOP', count: 1,  localValue: 1333.54 },
-    { year: 2025, month: 12, currency: 'SBD', count: 3,  localValue: 25628.40 },
-    // Jan 2026
-    { year: 2026, month: 1,  currency: 'SBD', count: 5,  localValue: 29184.40 },
-    { year: 2026, month: 1,  currency: 'TOP', count: 5,  localValue: 23245.50 },
-    { year: 2026, month: 1,  currency: 'WST', count: 2,  localValue: 2445.70 },
-    { year: 2026, month: 1,  currency: 'VUV', count: 2,  localValue: 5309.06 },
-    // Feb 2026
-    { year: 2026, month: 2,  currency: 'NZD', count: 1,  localValue: 5000.00 },
-    { year: 2026, month: 2,  currency: 'VUV', count: 3,  localValue: 4140.64 },
-    { year: 2026, month: 2,  currency: 'TOP', count: 6,  localValue: 60454.55 },
-    { year: 2026, month: 2,  currency: 'WST', count: 9,  localValue: 74569.89 },
-    { year: 2026, month: 2,  currency: 'SBD', count: 1,  localValue: 15070.92 },
-    // Mar 2026 MTD
-    { year: 2026, month: 3,  currency: 'TOP', count: 3,  localValue: 20247.20 },
-    { year: 2026, month: 3,  currency: 'WST', count: 3,  localValue: 23279.57 },
-    { year: 2026, month: 3,  currency: 'NZD', count: 1,  localValue: 1999.00 },
-    { year: 2026, month: 3,  currency: 'VUV', count: 3,  localValue: 20183.16 }
+  closedWonMtdByRep:[
+    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVgzQAH',currency:'NZD',count:1,localValue:1999.00},
+    {owner:'0057F000004tzjEQAQ',pb:'01s7F00000IZVhOQAX',currency:'WST',count:3,localValue:23279.57},
+    {owner:'005Mp00000BGnuTIAT',pb:'01s7F00000IZVh4QAH',currency:'VUV',count:2,localValue:19675.40},
+    {owner:'005Mp00000BGnuTIAT',pb:null,                currency:'VUV',count:1,localValue:507.76},
+    {owner:'0057F000008XjrTQAS',pb:'01s7F00000IZVhJQAX',currency:'TOP',count:3,localValue:20247.20}
   ],
 
-  // Win rate — counts only, no currency
-  winRate: { mar: { total: 12, won: 10 }, feb: { total: 36, won: 20 } },
+  closedWonTrend:[
+    {year:2025,month:10,currency:'SBD',count:4, localValue:18931.68},
+    {year:2025,month:10,currency:'WST',count:9, localValue:80215.05},
+    {year:2025,month:10,currency:'TOP',count:3, localValue:31677.02},
+    {year:2025,month:10,currency:'VUV',count:9, localValue:37669.07},
+    {year:2025,month:11,currency:'SBD',count:1, localValue:4432.62},
+    {year:2025,month:11,currency:'WST',count:3, localValue:13494.62},
+    {year:2025,month:11,currency:'TOP',count:5, localValue:34753.32},
+    {year:2025,month:11,currency:'VUV',count:6, localValue:66435.98},
+    {year:2025,month:11,currency:'NZD',count:1, localValue:175.00},
+    {year:2025,month:12,currency:'VUV',count:4, localValue:14769.06},
+    {year:2025,month:12,currency:'WST',count:6, localValue:40133.33},
+    {year:2025,month:12,currency:'TOP',count:1, localValue:1333.54},
+    {year:2025,month:12,currency:'SBD',count:3, localValue:25628.40},
+    {year:2026,month:1, currency:'SBD',count:5, localValue:29184.40},
+    {year:2026,month:1, currency:'TOP',count:5, localValue:23245.50},
+    {year:2026,month:1, currency:'WST',count:2, localValue:2445.70},
+    {year:2026,month:1, currency:'VUV',count:2, localValue:5309.06},
+    {year:2026,month:2, currency:'NZD',count:1, localValue:5000.00},
+    {year:2026,month:2, currency:'VUV',count:3, localValue:4140.64},
+    {year:2026,month:2, currency:'TOP',count:6, localValue:60454.55},
+    {year:2026,month:2, currency:'WST',count:9, localValue:74569.89},
+    {year:2026,month:2, currency:'SBD',count:1, localValue:15070.92},
+    {year:2026,month:3, currency:'TOP',count:3, localValue:20247.20},
+    {year:2026,month:3, currency:'WST',count:3, localValue:23279.57},
+    {year:2026,month:3, currency:'NZD',count:1, localValue:1999.00},
+    {year:2026,month:3, currency:'VUV',count:3, localValue:20183.16}
+  ],
 
-  // Overdue open opps — counts only
-  overdueByTerritory: [
-    { pb: null,                  count: 103 },
-    { pb: '01s7F00000IZVhTQAX',  count: 239 },
-    { pb: '01s7F00000IZVhJQAX',  count: 190 },
-    { pb: '01s7F00000IZVhOQAX',  count: 77 },
-    { pb: '01s7F00000IZVh4QAH',  count: 66 },
-    { pb: '01s7F00000IZVgzQAH',  count: 25 },
-    { pb: '01s7F00000BU3IfQAL',  count: 1 }
-  ]
+  winRate:{mar:{total:12,won:10},feb:{total:36,won:20}},
+
+  overdueByTerritory:[
+    {pb:null,                 count:103},
+    {pb:'01s7F00000IZVhTQAX', count:239},
+    {pb:'01s7F00000IZVhJQAX', count:190},
+    {pb:'01s7F00000IZVhOQAX', count:77},
+    {pb:'01s7F00000IZVh4QAH', count:66},
+    {pb:'01s7F00000IZVgzQAH', count:25},
+    {pb:'01s7F00000BU3IfQAL', count:1}
+  ],
+
+  // Lead measures — counts, no FX needed
+  nextStepCompliance:{totalOpen:751, withFutureNextStep:62},
+  agedPipeline:{total:624, inProposal:551}
 };
 
-// ─────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────
-const TERRITORY_PB_IDS = Object.keys(DATA.pricebookMap);
+// ─── HELPERS ───
+const PB_IDS = Object.keys(DATA.pricebookMap);
+const fmt    = n => 'NZ$'+Math.round(n||0).toLocaleString('en-NZ');
+const fmtRaw = n => Math.round(n||0).toLocaleString('en-NZ');
+const fmtPct = n => (n||0).toFixed(1)+'%';
+const mName  = m => ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1];
+const repName= id => DATA.userMap[id]||id;
+const sumNZD = arr => arr.reduce((s,r) => s+toNZD(r.localValue||0,r.currency),0);
+const sumCt  = arr => arr.reduce((s,r) => s+(r.count||0),0);
 
-const fmt    = (n) => 'NZ$' + Math.round(n || 0).toLocaleString('en-NZ');
-const fmtRaw = (n) => Math.round(n || 0).toLocaleString('en-NZ');
-const fmtPct = (n) => (n || 0).toFixed(1) + '%';
-const mName  = (m) => ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1];
-
-function repName(id)  { return DATA.userMap[id] || id; }
-
-function sumNZD(arr)   { return arr.reduce((s, r) => s + toNZD(r.localValue || 0, r.currency), 0); }
-function sumCount(arr) { return arr.reduce((s, r) => s + (r.count || 0), 0); }
-
-function trendHtml(cur, prior) {
-  if (!prior) return '';
-  const pct  = ((cur - prior) / prior) * 100;
-  const sign = pct >= 0 ? '▲' : '▼';
-  const cls  = pct >= 0 ? 'trend-up' : 'trend-down';
-  return `<span class="${cls}">${sign} ${Math.abs(pct).toFixed(1)}% vs Feb</span>`;
+function trendHtml(cur,prior){
+  if(!prior) return '';
+  const p=((cur-prior)/prior)*100,sign=p>=0?'▲':'▼',cls=p>=0?'tu':'td';
+  return `<span class="${cls}">${sign} ${Math.abs(p).toFixed(1)}% vs Feb</span>`;
 }
-function ppTrendHtml(cur, prior) {
-  const pp   = cur - prior;
-  const sign = pp >= 0 ? '▲' : '▼';
-  const cls  = pp >= 0 ? 'trend-up' : 'trend-down';
-  return `<span class="${cls}">${sign} ${Math.abs(pp).toFixed(1)}pp vs Feb</span>`;
+function ppHtml(cur,prior){
+  const p=cur-prior,sign=p>=0?'▲':'▼',cls=p>=0?'tu':'td';
+  return `<span class="${cls}">${sign} ${Math.abs(p).toFixed(1)}pp vs Feb</span>`;
 }
 
-// ─────────────────────────────────────────────
-// STATE
-// ─────────────────────────────────────────────
-let state = { territory: 'all', rep: 'all', tab: 'territory' };
+// Total quota NZD (all reps, March)
+const totalQuotaNZD = DATA.quotaMar.reduce((s,q) => s+toNZD(q.localQuota,q.currency),0);
 
-function populateReps() {
-  const sel  = document.getElementById('filterRep');
-  const reps = [...new Set(DATA.pipelineByRep.map(r => r.owner))]
-    .sort((a, b) => repName(a).localeCompare(repName(b)));
-  reps.forEach(id => {
-    const o = document.createElement('option');
-    o.value = id; o.textContent = repName(id);
-    sel.appendChild(o);
-  });
+// ─── STATE ───
+let S = {territory:'all', rep:'all', tab:'territory'};
+
+function populateReps(){
+  const sel=document.getElementById('fRep');
+  const ids=[...new Set(DATA.pipelineByRep.map(r=>r.owner))].sort((a,b)=>repName(a).localeCompare(repName(b)));
+  ids.forEach(id=>{const o=document.createElement('option');o.value=id;o.textContent=repName(id);sel.appendChild(o);});
 }
 
-// ─────────────────────────────────────────────
-// COMPUTE FILTERED TOTALS (all in NZD)
-// ─────────────────────────────────────────────
-function computeTotals() {
-  const { territory: selPb, rep: selRep } = state;
+// ─── COMPUTE ───
+function calc(){
+  const {territory:pb,rep} = S;
+  const f = arr => pb==='all' ? arr : arr.filter(r=>r.pb===pb);
 
-  // Orders — territory filter only (Orders have no individual rep)
-  const filt = (arr) => selPb === 'all' ? arr : arr.filter(r => r.pb === selPb);
-  const wtdNZD   = sumNZD(filt(DATA.salesWtd));
-  const mtdNZD   = sumNZD(filt(DATA.salesMtd));
-  const priorNZD = sumNZD(filt(DATA.salesPriorMonth));
-  const ytdNZD   = sumNZD(filt(DATA.salesYtd));
-  const wtdCount = sumCount(filt(DATA.salesWtd));
-  const mtdCount = sumCount(filt(DATA.salesMtd));
+  const wtdNZD  = sumNZD(f(DATA.salesWtd));
+  const mtdNZD  = sumNZD(f(DATA.salesMtd));
+  const priorNZD= sumNZD(f(DATA.salesPrior));
+  const ytdNZD  = sumNZD(f(DATA.salesYtd));
+  const wtdCt   = sumCt(f(DATA.salesWtd));
+  const mtdCt   = sumCt(f(DATA.salesMtd));
 
-  // Budget (entered in NZD)
-  const budgetMtd = selPb === 'all' ? null : DATA.budget.mtd[selPb];
-  const budgetYtd = selPb === 'all' ? null : DATA.budget.ytd[selPb];
-  const mtdPct    = budgetMtd ? (mtdNZD / budgetMtd) * 100 : null;
-  const ytdPct    = budgetYtd ? (ytdNZD / budgetYtd) * 100 : null;
+  // Quota for selected territory
+  let quotaMtdNZD = null;
+  if(pb !== 'all'){
+    const pbCur = DATA.pbCurrency[pb];
+    const pbQuotas = DATA.quotaMar.filter(q => q.currency === pbCur);
+    if(pbQuotas.length) quotaMtdNZD = pbQuotas.reduce((s,q)=>s+toNZD(q.localQuota,q.currency),0);
+  } else {
+    quotaMtdNZD = totalQuotaNZD;
+  }
+  const mtdPct = quotaMtdNZD ? (mtdNZD/quotaMtdNZD)*100 : null;
 
-  // Pipeline — territory + rep
   let pipRows = DATA.pipelineByRep;
-  if (selPb !== 'all')  pipRows = pipRows.filter(r => r.pb === selPb);
-  if (selRep !== 'all') pipRows = pipRows.filter(r => r.owner === selRep);
-  const pipelineNZD   = sumNZD(pipRows);
-  const pipelineCount = sumCount(pipRows);
+  if(pb!=='all') pipRows=pipRows.filter(r=>r.pb===pb);
+  if(rep!=='all') pipRows=pipRows.filter(r=>r.owner===rep);
+  const pipNZD = sumNZD(pipRows), pipCt = sumCt(pipRows);
 
-  // Overdue — territory filter
-  const overdueRows  = selPb === 'all' ? DATA.overdueByTerritory : DATA.overdueByTerritory.filter(r => r.pb === selPb);
-  const overdueCount = sumCount(overdueRows);
+  // Pipeline coverage = pipeline / quota (need 3x)
+  const coverageRatio = quotaMtdNZD ? pipNZD/quotaMtdNZD : null;
 
-  // Win rate
-  const marRate = (DATA.winRate.mar.won / DATA.winRate.mar.total) * 100;
-  const febRate = (DATA.winRate.feb.won / DATA.winRate.feb.total) * 100;
+  const overdueCt = sumCt(pb==='all' ? DATA.overdueByTerritory : DATA.overdueByTerritory.filter(r=>r.pb===pb));
+  const marRate = (DATA.winRate.mar.won/DATA.winRate.mar.total)*100;
+  const febRate = (DATA.winRate.feb.won/DATA.winRate.feb.total)*100;
 
-  // Closed Won MTD — territory + rep
   let cwRows = DATA.closedWonMtdByRep;
-  if (selPb !== 'all')  cwRows = cwRows.filter(r => r.pb === selPb);
-  if (selRep !== 'all') cwRows = cwRows.filter(r => r.owner === selRep);
-  const cwMtdNZD   = sumNZD(cwRows);
-  const cwMtdCount = sumCount(cwRows);
+  if(pb!=='all') cwRows=cwRows.filter(r=>r.pb===pb);
+  if(rep!=='all') cwRows=cwRows.filter(r=>r.owner===rep);
+  const cwNZD = sumNZD(cwRows), cwCt = sumCt(cwRows);
 
-  // Feb CW from trend
-  const febCwRows  = DATA.closedWonTrend.filter(r => r.year === 2026 && r.month === 2);
-  const febCwNZD   = sumNZD(febCwRows);
-  const febCwCount = sumCount(febCwRows);
+  const febCw = DATA.closedWonTrend.filter(r=>r.year===2026&&r.month===2);
+  const febCwNZD = sumNZD(febCw), febCwCt = sumCt(febCw);
 
-  return {
-    wtdNZD, wtdCount, mtdNZD, mtdCount, priorNZD, ytdNZD,
-    budgetMtd, budgetYtd, mtdPct, ytdPct,
-    pipelineNZD, pipelineCount, overdueCount,
-    marRate, febRate,
-    cwMtdNZD, cwMtdCount, febCwNZD, febCwCount
-  };
+  const nsCt = DATA.nextStepCompliance;
+  const nsPct = (nsCt.withFutureNextStep/nsCt.totalOpen)*100;
+  const aged = DATA.agedPipeline;
+
+  return {wtdNZD,mtdNZD,priorNZD,ytdNZD,wtdCt,mtdCt,
+          quotaMtdNZD,mtdPct,coverageRatio,
+          pipNZD,pipCt,overdueCt,marRate,febRate,
+          cwNZD,cwCt,febCwNZD,febCwCt,
+          nsCt,nsPct,aged};
 }
 
-// ─────────────────────────────────────────────
-// RENDER KPIs
-// ─────────────────────────────────────────────
-function renderKPIs(t) {
+// ─── KPIs ───
+function renderKPIs(t){
+  const covPct = t.coverageRatio ? Math.min(t.coverageRatio/3*100,100) : 0;
+  const covClass = !t.coverageRatio ? 'am' : t.coverageRatio>=3?'ag':t.coverageRatio>=2?'aa':'ar';
+  const covDot   = !t.coverageRatio ? 'dm' : t.coverageRatio>=3?'dg':t.coverageRatio>=2?'da':'dr';
+  const covLabel = !t.coverageRatio ? 'No quota set' : t.coverageRatio>=3?'On track':'Below 3× target';
   return `
-  <div class="section-header">
-    <span class="section-title">Sales Actuals — Orders (New, Activated) · All figures NZD</span>
-    <div class="section-line"></div>
-  </div>
-  <div class="kpi-grid kpi-grid-4">
-
-    <div class="kpi-card accent-red">
-      <div class="kpi-label"><span class="dot dot-red"></span>Sales This Week</div>
-      <div class="kpi-value">${fmt(t.wtdNZD)}</div>
-      <div class="kpi-sub">9–16 Mar · ${t.wtdCount} order${t.wtdCount !== 1 ? 's' : ''}</div>
+  <div class="sh"><span class="sh-title">Sales Actuals — Orders (New, Activated) · NZD</span><div class="sh-line"></div></div>
+  <div class="kg kg4">
+    <div class="kc ar">
+      <div class="kl"><span class="dot dr"></span>Sales This Week</div>
+      <div class="kv">${fmt(t.wtdNZD)}</div>
+      <div class="ks">9–16 Mar · ${t.wtdCt} order${t.wtdCt!==1?'s':''}</div>
     </div>
-
-    <div class="kpi-card accent-amber">
-      <div class="kpi-label"><span class="dot dot-amber"></span>MTD Actual vs Budget</div>
-      <div class="kpi-value">${fmt(t.mtdNZD)}</div>
-      <div class="kpi-sub">
-        Budget: ${t.budgetMtd ? fmt(t.budgetMtd) : '<span style="color:var(--text-muted)">TBC</span>'}
-        &nbsp;${trendHtml(t.mtdNZD, t.priorNZD)}
-      </div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-fill ${!t.budgetMtd ? 'grey' : ''}" style="width:${Math.min(t.mtdPct || 0, 100)}%"></div>
-      </div>
+    <div class="kc aa">
+      <div class="kl"><span class="dot da"></span>MTD Actual vs Quota</div>
+      <div class="kv">${fmt(t.mtdNZD)}</div>
+      <div class="ks">Quota: ${t.quotaMtdNZD?fmt(t.quotaMtdNZD):'<span style="color:var(--t3)">TBC</span>'}&nbsp;${trendHtml(t.mtdNZD,t.priorNZD)}</div>
+      <div class="pb"><div class="pbf a" style="width:${Math.min(t.mtdPct||0,100)}%"></div></div>
     </div>
-
-    <div class="kpi-card accent-amber">
-      <div class="kpi-label"><span class="dot dot-amber"></span>YTD Actual vs Budget</div>
-      <div class="kpi-value">${fmt(t.ytdNZD)}</div>
-      <div class="kpi-sub">Budget: ${t.budgetYtd ? fmt(t.budgetYtd) : '<span style="color:var(--text-muted)">TBC</span>'}</div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-fill ${!t.budgetYtd ? 'grey' : ''}" style="width:${Math.min(t.ytdPct || 0, 100)}%"></div>
-      </div>
+    <div class="kc aa">
+      <div class="kl"><span class="dot da"></span>YTD Actual</div>
+      <div class="kv">${fmt(t.ytdNZD)}</div>
+      <div class="ks">Jan–Mar 2026 · ${sumCt(DATA.salesYtd)} orders</div>
     </div>
-
-    <div class="kpi-card ${t.mtdPct && t.mtdPct >= 80 ? 'accent-green' : 'accent-amber'}">
-      <div class="kpi-label"><span class="dot ${t.mtdPct && t.mtdPct >= 80 ? 'dot-green' : 'dot-amber'}"></span>MTD % of Budget</div>
-      <div class="kpi-value ${!t.mtdPct ? 'tbc' : ''}">${t.mtdPct ? fmtPct(t.mtdPct) : 'Budget TBC'}</div>
-      <div class="kpi-sub">Mar 2026 actuals vs target</div>
+    <div class="kc ${t.mtdPct&&t.mtdPct>=80?'ag':'aa'}">
+      <div class="kl"><span class="dot ${t.mtdPct&&t.mtdPct>=80?'dg':'da'}"></span>MTD % of Quota</div>
+      <div class="kv ${!t.mtdPct?'tbc':''}">${t.mtdPct?fmtPct(t.mtdPct):'Quota TBC'}</div>
+      <div class="ks">Mar 2026 orders vs monthly quota</div>
     </div>
-
   </div>
 
-  <div class="section-header" style="margin-top:20px">
-    <span class="section-title">Pipeline &amp; Win Rate · All figures NZD</span>
-    <div class="section-line"></div>
-  </div>
-  <div class="kpi-grid kpi-grid-4">
-
-    <div class="kpi-card accent-red">
-      <div class="kpi-label"><span class="dot dot-red"></span>Open Pipeline</div>
-      <div class="kpi-value">${fmt(t.pipelineNZD)}</div>
-      <div class="kpi-sub">${fmtRaw(t.pipelineCount)} opportunities</div>
+  <div class="sh" style="margin-top:20px"><span class="sh-title">4DX Lead Measures · Pipeline Health</span><div class="sh-line"></div></div>
+  <div class="kg kg4">
+    <div class="kc ${covClass}">
+      <div class="kl"><span class="dot ${covDot}"></span>Pipeline Coverage Ratio</div>
+      <div class="kv">${t.coverageRatio?t.coverageRatio.toFixed(1)+'×':'—'}</div>
+      <div class="ks">${covLabel} · Target ≥ 3×</div>
+      <div class="pb"><div class="pbf ${t.coverageRatio>=3?'g':t.coverageRatio>=2?'a':''}" style="width:${covPct}%"></div></div>
     </div>
-
-    <div class="kpi-card accent-red alert">
-      <div class="kpi-label"><span class="dot dot-red"></span>Overdue Close Dates</div>
-      <div class="kpi-value alert-value">${fmtRaw(t.overdueCount)}</div>
-      <div class="kpi-sub">Open opps past close date</div>
+    <div class="kc ${t.nsPct>=50?'aa':'ar'} ${t.nsPct<30?'alert':''}">
+      <div class="kl"><span class="dot ${t.nsPct>=50?'da':'dr'}"></span>Next Step Compliance</div>
+      <div class="kv ${t.nsPct<30?'rv':''}">${fmtPct(t.nsPct)}</div>
+      <div class="ks">${fmtRaw(t.nsCt.withFutureNextStep)} of ${fmtRaw(t.nsCt.totalOpen)} opps have a future next step</div>
+      <div class="pb"><div class="pbf ${t.nsPct>=50?'a':'g'}" style="width:${t.nsPct}%;background:${t.nsPct<30?'var(--red)':'var(--amber)}"></div></div>
     </div>
-
-    <div class="kpi-card accent-green">
-      <div class="kpi-label"><span class="dot dot-green"></span>Win Rate — Mar MTD</div>
-      <div class="kpi-value">${fmtPct(t.marRate)}</div>
-      <div class="kpi-sub">${DATA.winRate.mar.won}/${DATA.winRate.mar.total} opps &nbsp;${ppTrendHtml(t.marRate, t.febRate)}</div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill green" style="width:${t.marRate}%"></div></div>
+    <div class="kc ar alert">
+      <div class="kl"><span class="dot dr"></span>Aged Pipeline (&gt;90 days)</div>
+      <div class="kv rv">${fmtRaw(t.aged.total)}</div>
+      <div class="ks">${fmtRaw(t.aged.inProposal)} stuck in Proposal · ${fmtRaw(t.overdueCt)} overdue close date</div>
     </div>
-
-    <div class="kpi-card accent-muted">
-      <div class="kpi-label"><span class="dot dot-grey"></span>Win Rate — Feb</div>
-      <div class="kpi-value">${fmtPct(t.febRate)}</div>
-      <div class="kpi-sub">${DATA.winRate.feb.won}/${DATA.winRate.feb.total} opps closed</div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill grey" style="width:${t.febRate}%"></div></div>
+    <div class="kc ag">
+      <div class="kl"><span class="dot dg"></span>Win Rate — Mar MTD</div>
+      <div class="kv">${fmtPct(t.marRate)}</div>
+      <div class="ks">${DATA.winRate.mar.won}/${DATA.winRate.mar.total} opps &nbsp;${ppHtml(t.marRate,t.febRate)}</div>
+      <div class="pb"><div class="pbf g" style="width:${t.marRate}%"></div></div>
     </div>
-
   </div>`;
 }
 
-// ─────────────────────────────────────────────
-// TAB: BY TERRITORY
-// ─────────────────────────────────────────────
-function renderTerritoryTab() {
-  const selPb      = state.territory;
-  const territories = selPb === 'all' ? TERRITORY_PB_IDS : [selPb];
-
-  const tiles = territories.map(pb => {
-    const cur  = DATA.pbCurrency[pb] || 'NZD';
-    const wtd  = sumNZD(DATA.salesWtd.filter(r => r.pb === pb));
-    const mtd  = sumNZD(DATA.salesMtd.filter(r => r.pb === pb));
-    const ytd  = sumNZD(DATA.salesYtd.filter(r => r.pb === pb));
-    const pip  = sumNZD(DATA.pipelineByTerritory.filter(r => r.pb === pb));
-    const cw   = sumNZD(DATA.closedWonMtdByRep.filter(r => r.pb === pb));
-    const cwCt = sumCount(DATA.closedWonMtdByRep.filter(r => r.pb === pb));
-    const mtdCt= sumCount(DATA.salesMtd.filter(r => r.pb === pb));
-
-    return `
-    <div class="territory-tile">
-      <div class="territory-tile-name">
-        ${DATA.pricebookMap[pb]}
-        <span class="fx-badge">${cur}</span>
-      </div>
-      <div class="territory-tile-value">${fmt(mtd)}</div>
-      <div class="territory-tile-meta">MTD Sales · ${mtdCt} order${mtdCt !== 1 ? 's' : ''}</div>
-      <div class="territory-tile-row"><span class="territory-tile-row-label">This week</span><span class="territory-tile-row-val">${fmt(wtd)}</span></div>
-      <div class="territory-tile-row"><span class="territory-tile-row-label">YTD Sales</span><span class="territory-tile-row-val">${fmt(ytd)}</span></div>
-      <div class="territory-tile-row"><span class="territory-tile-row-label">Pipeline</span><span class="territory-tile-row-val">${fmt(pip)}</span></div>
-      <div class="territory-tile-row"><span class="territory-tile-row-label">CW MTD (Opps)</span><span class="territory-tile-row-val">${cwCt ? fmt(cw) : '—'}</span></div>
+// ─── TAB: TERRITORY ───
+function renderTerritory(){
+  const selPb=S.territory, pbs=selPb==='all'?PB_IDS:[selPb];
+  return `<div class="tgrid">${pbs.map(pb=>{
+    const cur=DATA.pbCurrency[pb]||'NZD';
+    const wtd=sumNZD(DATA.salesWtd.filter(r=>r.pb===pb));
+    const mtd=sumNZD(DATA.salesMtd.filter(r=>r.pb===pb));
+    const ytd=sumNZD(DATA.salesYtd.filter(r=>r.pb===pb));
+    const pip=sumNZD(DATA.pipeline.filter(r=>r.pb===pb));
+    const cw=sumNZD(DATA.closedWonMtdByRep.filter(r=>r.pb===pb));
+    const cwCt=sumCt(DATA.closedWonMtdByRep.filter(r=>r.pb===pb));
+    const mtdCt=sumCt(DATA.salesMtd.filter(r=>r.pb===pb));
+    const q=DATA.quotaMar.filter(r=>r.currency===cur);
+    const qNZD=q.length?q.reduce((s,r)=>s+toNZD(r.localQuota,r.currency),0):null;
+    const qPct=qNZD&&mtd?(mtd/qNZD*100):null;
+    return `<div class="ttile">
+      <div class="tname">${DATA.pricebookMap[pb]}<span class="fxb">${cur}</span></div>
+      <div class="tval">${fmt(mtd)}</div>
+      <div class="tmeta">MTD Sales · ${mtdCt} order${mtdCt!==1?'s':''}</div>
+      <div class="trow"><span class="trl">vs Quota MTD</span><span class="trv">${qNZD?(fmtPct(qPct||0)+' of '+fmt(qNZD)):'TBC'}</span></div>
+      <div class="trow"><span class="trl">This week</span><span class="trv">${fmt(wtd)}</span></div>
+      <div class="trow"><span class="trl">YTD Sales</span><span class="trv">${fmt(ytd)}</span></div>
+      <div class="trow"><span class="trl">Pipeline</span><span class="trv">${fmt(pip)}</span></div>
+      <div class="trow"><span class="trl">CW MTD</span><span class="trv">${cwCt?fmt(cw):'—'}</span></div>
     </div>`;
-  });
-
-  return `<div class="territory-grid">${tiles.join('')}</div>`;
+  }).join('')}</div>`;
 }
 
-// ─────────────────────────────────────────────
-// TAB: PIPELINE BY STAGE
-// ─────────────────────────────────────────────
-function renderStageTab() {
-  const selPb      = state.territory;
-  const territories = selPb === 'all' ? TERRITORY_PB_IDS : [selPb];
-  const STAGES      = ['Proposal', 'Negotiation', 'Qualification', 'Needs Analysis'];
-  const stageCols   = { Proposal: '#3b82f6', Negotiation: '#f97316', Qualification: '#22c55e', 'Needs Analysis': '#a855f7' };
+// ─── TAB: STAGE ───
+function renderStage(){
+  const selPb=S.territory,pbs=selPb==='all'?PB_IDS:[selPb];
+  const SC={'Proposal':'#3b82f6','Negotiation':'#f97316','Qualification':'#22c55e','Needs Analysis':'#a855f7'};
+  const STAGES=['Proposal','Negotiation','Qualification','Needs Analysis'];
+  const rows=pbs.map(pb=>{
+    const sd=DATA.pipelineByStage.filter(r=>r.pb===pb);
+    const tot=sumNZD(sd),totCt=sumCt(sd);
+    const bd=STAGES.map(s=>{const d=sd.filter(r=>r.stage===s);return{stage:s,nzd:sumNZD(d),count:sumCt(d)};});
+    const segs=bd.map(s=>`<div class="sbseg" style="width:${tot>0?(s.nzd/tot*100):0}%;background:${SC[s.stage]}"></div>`).join('');
+    const pills=bd.filter(s=>s.count>0).map(s=>`<span class="spill s${s.stage.replace(/\s/,'')}">${s.stage} ${s.count}</span>`).join('');
+    return `<tr><td><div class="en">${DATA.pricebookMap[pb]}</div><div class="es">${totCt} opps</div></td><td class="r">${fmt(tot)}</td><td><div class="sbar">${segs}</div></td><td>${pills}</td></tr>`;
+  });
+  return `<div class="dt"><table><thead><tr><th>Territory</th><th class="r">Pipeline (NZD)</th><th>Mix</th><th>Stage Breakdown</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+}
 
-  const rows = territories.map(pb => {
-    const stageData = DATA.pipelineByTerritoryStage.filter(r => r.pb === pb);
-    const totalNZD  = sumNZD(stageData);
-    const totalCt   = sumCount(stageData);
+// ─── TAB: BY REP (with quota) ───
+function renderRep(){
+  const {territory:selPb,rep:selRep}=S;
+  let pipRows=DATA.pipelineByRep;
+  if(selPb!=='all') pipRows=pipRows.filter(r=>r.pb===selPb);
+  if(selRep!=='all') pipRows=pipRows.filter(r=>r.owner===selRep);
+  const rPip={};
+  pipRows.forEach(r=>{if(!rPip[r.owner])rPip[r.owner]={nzd:0,count:0};rPip[r.owner].nzd+=toNZD(r.localValue||0,r.currency);rPip[r.owner].count+=r.count;});
 
-    const breakdown = STAGES.map(s => {
-      const d = stageData.filter(r => r.stage === s);
-      return { stage: s, nzd: sumNZD(d), count: sumCount(d) };
-    });
+  let cwRows=DATA.closedWonMtdByRep;
+  if(selPb!=='all') cwRows=cwRows.filter(r=>r.pb===selPb);
+  if(selRep!=='all') cwRows=cwRows.filter(r=>r.owner===selRep);
+  const rCw={};
+  cwRows.forEach(r=>{if(!rCw[r.owner])rCw[r.owner]={nzd:0,count:0};rCw[r.owner].nzd+=toNZD(r.localValue||0,r.currency);rCw[r.owner].count+=r.count;});
 
-    const segs = breakdown.map(s => {
-      const pct = totalNZD > 0 ? (s.nzd / totalNZD) * 100 : 0;
-      return `<div class="share-bar-seg" style="width:${pct}%;background:${stageCols[s.stage]}"></div>`;
-    }).join('');
+  // Build quota map
+  const qMap={};
+  DATA.quotaMar.forEach(q=>{qMap[q.owner]={nzd:toNZD(q.localQuota,q.currency),currency:q.currency,local:q.localQuota};});
 
-    const pills = breakdown.filter(s => s.count > 0).map(s => {
-      const cls = s.stage.replace(/\s/g, '');
-      return `<span class="stage-pill stage-${cls}">${s.stage} ${s.count}</span>`;
-    }).join('');
+  const allOwners=[...new Set([...Object.keys(rPip),...Object.keys(rCw)])].sort((a,b)=>(rPip[b]?.nzd||0)-(rPip[a]?.nzd||0));
+  if(!allOwners.length) return '<div class="empty">No data for selected filters.</div>';
 
+  const rows=allOwners.map(id=>{
+    const pip=rPip[id]||{nzd:0,count:0};
+    const cw=rCw[id]||{nzd:0,count:0};
+    const q=qMap[id];
+    const attain=q&&cw.nzd?(cw.nzd/q.nzd*100):null;
+    const badge=!q?`<span class="quota-badge qb-none">No quota</span>`:
+      attain>=100?`<span class="quota-badge qb-over">${fmtPct(attain)}</span>`:
+      attain>=50 ?`<span class="quota-badge qb-warn">${fmtPct(attain)}</span>`:
+                  `<span class="quota-badge qb-under">${fmtPct(attain||0)}</span>`;
+    const bar=q?`<div class="attain-bar"><div class="attain-fill" style="width:${Math.min(attain||0,100)}%;background:${attain>=100?'var(--green)':attain>=50?'var(--amber)':'var(--red)'}"></div></div>`:'';
     return `<tr>
-      <td><div class="entity-name">${DATA.pricebookMap[pb]}</div><div class="entity-sub">${totalCt} opps</div></td>
-      <td class="right">${fmt(totalNZD)}</td>
-      <td><div class="share-bar-wrap">${segs}</div></td>
-      <td>${pills}</td>
+      <td><div class="en">${repName(id)}</div></td>
+      <td class="r">${fmt(pip.nzd)}</td>
+      <td class="r">${fmtRaw(pip.count)}</td>
+      <td class="r">${cw.count?fmt(cw.nzd):'<span style="color:var(--t3)">—</span>'}</td>
+      <td class="r">${q?fmt(q.nzd):'<span style="color:var(--t3)">—</span>'}</td>
+      <td><div>${badge}</div>${bar}</td>
     </tr>`;
   });
-
-  return `
-  <div class="data-table">
-    <table>
-      <thead><tr>
-        <th>Territory</th>
-        <th class="right">Pipeline (NZD)</th>
-        <th>Mix</th>
-        <th>Stage Breakdown</th>
-      </tr></thead>
-      <tbody>${rows.join('')}</tbody>
-    </table>
-  </div>`;
+  return `<div class="dt"><table><thead><tr><th>Sales Rep</th><th class="r">Pipeline (NZD)</th><th class="r">Opps</th><th class="r">CW MTD (NZD)</th><th class="r">Mar Quota (NZD)</th><th>Attainment</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
 }
 
-// ─────────────────────────────────────────────
-// TAB: BY SALES REP
-// ─────────────────────────────────────────────
-function renderRepTab() {
-  const { territory: selPb, rep: selRep } = state;
-
-  let pipRows = DATA.pipelineByRep;
-  if (selPb !== 'all')  pipRows = pipRows.filter(r => r.pb === selPb);
-  if (selRep !== 'all') pipRows = pipRows.filter(r => r.owner === selRep);
-
-  const repPip = {};
-  pipRows.forEach(r => {
-    if (!repPip[r.owner]) repPip[r.owner] = { nzd: 0, count: 0 };
-    repPip[r.owner].nzd   += toNZD(r.localValue || 0, r.currency);
-    repPip[r.owner].count += r.count;
-  });
-
-  let cwRows = DATA.closedWonMtdByRep;
-  if (selPb !== 'all')  cwRows = cwRows.filter(r => r.pb === selPb);
-  if (selRep !== 'all') cwRows = cwRows.filter(r => r.owner === selRep);
-
-  const repCw = {};
-  cwRows.forEach(r => {
-    if (!repCw[r.owner]) repCw[r.owner] = { nzd: 0, count: 0 };
-    repCw[r.owner].nzd   += toNZD(r.localValue || 0, r.currency);
-    repCw[r.owner].count += r.count;
-  });
-
-  const allOwners = [...new Set([...Object.keys(repPip), ...Object.keys(repCw)])]
-    .sort((a, b) => (repPip[b]?.nzd || 0) - (repPip[a]?.nzd || 0));
-
-  if (!allOwners.length) return '<div class="empty-state">No data for selected filters.</div>';
-
-  const rows = allOwners.map(id => {
-    const pip = repPip[id] || { nzd: 0, count: 0 };
-    const cw  = repCw[id]  || { nzd: 0, count: 0 };
-    return `<tr>
-      <td><div class="entity-name">${repName(id)}</div></td>
-      <td class="right">${fmt(pip.nzd)}</td>
-      <td class="right">${fmtRaw(pip.count)}</td>
-      <td class="right">${cw.count ? fmt(cw.nzd) : '<span style="color:var(--text-muted)">—</span>'}</td>
-      <td class="right">${cw.count || '<span style="color:var(--text-muted)">—</span>'}</td>
-    </tr>`;
-  });
-
-  return `
-  <div class="data-table">
-    <table>
-      <thead><tr>
-        <th>Sales Rep</th>
-        <th class="right">Pipeline (NZD)</th>
-        <th class="right">Opp Count</th>
-        <th class="right">Closed Won MTD (NZD)</th>
-        <th class="right">Won Count</th>
-      </tr></thead>
-      <tbody>${rows.join('')}</tbody>
-    </table>
-  </div>`;
+// ─── TAB: CLOSED WON TREND ───
+function renderCW(){
+  const MONTHS=[{y:2025,m:10},{y:2025,m:11},{y:2025,m:12},{y:2026,m:1},{y:2026,m:2},{y:2026,m:3}];
+  const agg=MONTHS.map(mo=>{const r=DATA.closedWonTrend.filter(x=>x.year===mo.y&&x.month===mo.m);return{...mo,nzd:sumNZD(r),count:sumCt(r)};});
+  const maxNZD=Math.max(...agg.map(r=>r.nzd),1);
+  const bars=agg.map(r=>{const isCur=r.y===2026&&r.m===3;const pct=(r.nzd/maxNZD)*100;
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;min-width:0">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--t2);text-align:center;white-space:nowrap">${fmt(r.nzd)}</div>
+      <div style="width:100%;background:var(--border);border-radius:4px;height:80px;display:flex;align-items:flex-end;overflow:hidden">
+        <div style="width:100%;height:${Math.max(pct,2)}%;background:${isCur?'var(--red)':'#cbd5e1'};border-radius:4px 4px 0 0"></div>
+      </div>
+      <div style="font-size:10px;color:var(--t3);text-align:center;line-height:1.3">${mName(r.m)}<br>${r.y}${isCur?'<br><b style="color:var(--red);font-size:9px">MTD</b>':''}</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--t2)">${r.count} won</div>
+    </div>`;}).join('');
+  const trows=[...agg].reverse().map(r=>{const isCur=r.y===2026&&r.m===3;
+    return `<tr><td style="font-weight:${isCur?600:400}">${mName(r.m)} ${r.y}${isCur?' <span style="font-size:10px;color:var(--red)">(MTD)</span>':''}</td><td class="r">${fmt(r.nzd)}</td><td class="r">${r.count}</td></tr>`;}).join('');
+  return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px"><div style="display:flex;gap:10px;align-items:flex-end;height:140px">${bars}</div></div>
+  <div class="dt"><table><thead><tr><th>Month</th><th class="r">Closed Won (NZD)</th><th class="r">Won Count</th></tr></thead><tbody>${trows}</tbody></table></div>`;
 }
 
-// ─────────────────────────────────────────────
-// TAB: CLOSED WON TREND
-// ─────────────────────────────────────────────
-function renderClosedWonTab() {
-  const MONTHS = [
-    { year: 2025, month: 10 }, { year: 2025, month: 11 }, { year: 2025, month: 12 },
-    { year: 2026, month: 1  }, { year: 2026, month: 2  }, { year: 2026, month: 3  }
+// ─── TAB: DATA DICTIONARY ───
+function renderDict(){
+  const items=[
+    {
+      name:'Sales This Week',tag:'lag',
+      calc:'SUM(TotalAmount) from Orders where Type=New, Status=Activated, EffectiveDate in current ISO week. Converted to NZD using Salesforce FX rates.',
+      why:'Tracks revenue booked in the current week. In MPS, an Order is raised when a contract is signed or a device is shipped — this is the most timely revenue signal available.',
+      soql:`SELECT SUM(TotalAmount), COUNT(Id), CurrencyIsoCode
+FROM Order
+WHERE Type = 'New'
+  AND Status = 'Activated'
+  AND EffectiveDate >= 2026-03-09
+  AND EffectiveDate <= 2026-03-16
+GROUP BY CurrencyIsoCode`
+    },
+    {
+      name:'MTD Actual vs Quota',tag:'lag',
+      calc:'SUM(TotalAmount) from Orders (Type=New, Activated) with EffectiveDate in current month, converted to NZD. Compared against SUM of ForecastingQuota.QuotaAmount for matching reps in the current StartDate period, also converted to NZD.',
+      why:'The primary accountability metric. Quota is set per rep in local currency in Salesforce Forecasting — this converts all territories to a common NZD basis for comparison.',
+      soql:`-- Actuals
+SELECT SUM(TotalAmount), CurrencyIsoCode
+FROM Order
+WHERE Type = 'New' AND Status = 'Activated'
+  AND EffectiveDate >= 2026-03-01
+  AND EffectiveDate <= 2026-03-16
+GROUP BY CurrencyIsoCode
+
+-- Quota
+SELECT QuotaOwner.Name, QuotaAmount, CurrencyIsoCode
+FROM ForecastingQuota
+WHERE StartDate = 2026-03-01`
+    },
+    {
+      name:'YTD Actual',tag:'lag',
+      calc:'SUM(TotalAmount) from Orders (Type=New, Activated) where CALENDAR_YEAR(EffectiveDate) = 2026, converted to NZD.',
+      why:'Cumulative revenue against the full-year target. Useful for pacing: if YTD is behind the pro-rata quota run rate by March, the full year is at risk.',
+      soql:`SELECT SUM(TotalAmount), CurrencyIsoCode
+FROM Order
+WHERE Type = 'New'
+  AND Status = 'Activated'
+  AND CALENDAR_YEAR(EffectiveDate) = 2026
+GROUP BY CurrencyIsoCode`
+    },
+    {
+      name:'Pipeline Coverage Ratio',tag:'lead',
+      calc:'Total open pipeline value (NZD) ÷ total monthly quota (NZD). Formula: SUM(open Opportunity.Amount converted to NZD) / SUM(ForecastingQuota.QuotaAmount converted to NZD for current month).',
+      why:'The single most predictive lead measure in MPS sales. A healthy pipeline should be 3–4× the monthly quota to account for the typical win rate of 25–33%. A ratio below 3× means the team cannot hit quota even with perfect execution — this is the signal to drive new pipeline generation.',
+      soql:`-- Pipeline (open opps, excluding orphaned 'Closed' stage records)
+SELECT SUM(Amount), COUNT(Id), CurrencyIsoCode, Pricebook2Id
+FROM Opportunity
+WHERE IsClosed = false
+  AND StageName != 'Closed'
+GROUP BY CurrencyIsoCode, Pricebook2Id
+
+-- Then divide SUM(converted to NZD) by SUM(ForecastingQuota for current month, converted to NZD)`
+    },
+    {
+      name:'Next Step Compliance',tag:'lead',
+      calc:'COUNT of open Opportunities (IsClosed=false, StageName!="Closed") where Next_Step_Date__c >= today divided by total open opp count. Expressed as a percentage.',
+      why:'The highest-leverage activity lead measure available in Salesforce without requiring additional logging. A rep who has scheduled a next step on every open opp is managing their pipeline. An opp with no future next step is effectively stalled. At 8.3% compliance (62 of 751 opps), this signals a systemic pipeline hygiene problem and is a strong proxy for forecast accuracy.',
+      soql:`-- Total open
+SELECT COUNT(Id)
+FROM Opportunity
+WHERE IsClosed = false AND StageName != 'Closed'
+
+-- With future next step date
+SELECT COUNT(Id)
+FROM Opportunity
+WHERE IsClosed = false
+  AND StageName != 'Closed'
+  AND Next_Step_Date__c >= TODAY`
+    },
+    {
+      name:'Aged Pipeline (>90 days)',tag:'hygiene',
+      calc:'COUNT of open Opportunities (IsClosed=false, StageName!="Closed") where CreatedDate < 90 days ago (i.e., < 2025-12-16 as of 16 Mar 2026). Sub-count for those specifically in Proposal stage.',
+      why:'624 of 751 open opps (83%) were created more than 90 days ago. In MPS sales cycles, a proposal that has not converted in 90 days is almost certainly dead weight — it inflates pipeline, distorts the coverage ratio, and masks real opportunities. The 551 aged proposals in particular should be reviewed and either progressed or closed lost.',
+      soql:`SELECT COUNT(Id), StageName
+FROM Opportunity
+WHERE IsClosed = false
+  AND StageName != 'Closed'
+  AND CreatedDate < 2025-12-16T00:00:00Z
+GROUP BY StageName`
+    },
+    {
+      name:'Win Rate',tag:'lag',
+      calc:'COUNT(Opportunities where IsWon=true AND CloseDate in month) / COUNT(Opportunities where IsClosed=true AND CloseDate in month). Calculated separately for March MTD and February.',
+      why:'Win rate is a lag measure but a critical pipeline planning input. At 83% in March (10/12), the team is converting well — but the sample is very small. February at 56% (20/36) is more statistically meaningful. Win rate directly drives the pipeline coverage target: if win rate is 33%, you need 3× coverage; if it falls to 25%, you need 4×.',
+      soql:`-- Won this month
+SELECT COUNT(Id)
+FROM Opportunity
+WHERE IsWon = true
+  AND CloseDate >= 2026-03-01
+  AND CloseDate <= 2026-03-16
+
+-- Total closed this month (won + lost)
+SELECT COUNT(Id)
+FROM Opportunity
+WHERE IsClosed = true
+  AND CloseDate >= 2026-03-01
+  AND CloseDate <= 2026-03-16`
+    },
+    {
+      name:'Overdue Close Dates',tag:'hygiene',
+      calc:'COUNT of open Opportunities (IsClosed=false, StageName!="Closed") where CloseDate < today (2026-03-16).',
+      why:'An overdue close date means the rep has not updated their forecast. This is a data quality issue that makes the pipeline unreliable. In combination with the aged pipeline metric, it identifies the records most likely to need immediate review or closure.',
+      soql:`SELECT COUNT(Id), Pricebook2Id
+FROM Opportunity
+WHERE IsClosed = false
+  AND StageName != 'Closed'
+  AND CloseDate < 2026-03-16
+GROUP BY Pricebook2Id`
+    },
+    {
+      name:'Closed Won MTD (Opportunity-based)',tag:'lag',
+      calc:'SUM(Amount) and COUNT from Opportunities where IsWon=true AND CloseDate in current month, converted to NZD using Salesforce FX rates. This differs from Order-based Sales Actuals — Opportunities may be won before an Order is raised.',
+      why:'Provides a rep-level view of what has been won this month, including deals not yet converted to Orders. Used for quota attainment tracking per rep in the By Rep tab.',
+      soql:`SELECT OwnerId, Pricebook2Id, CurrencyIsoCode,
+       COUNT(Id), SUM(Amount)
+FROM Opportunity
+WHERE IsWon = true
+  AND CloseDate >= 2026-03-01
+  AND CloseDate <= 2026-03-16
+GROUP BY OwnerId, Pricebook2Id, CurrencyIsoCode`
+    },
+    {
+      name:'Territory / Pricebook mapping',tag:'hygiene',
+      calc:'Territory is determined by Pricebook2Id on the Opportunity or Order record. The five territory pricebooks are: NZ (01s7F00000IZVgzQAH), Samoa (01s7F00000IZVhOQAX), Solomon Islands (01s7F00000IZVhTQAX), Tonga (01s7F00000IZVhJQAX), Vanuatu (01s7F00000IZVh4QAH). Records without a pricebook or on the Standard Price Book are shown as Unassigned.',
+      why:'Pricebook2Id is the most reliable territory signal in this org — more consistently populated than Sharepoint__c. Each pricebook maps to a territory currency, which also drives FX conversion. 118+ open opps lack a pricebook assignment and are therefore excluded from territory-specific views.',
+      soql:`SELECT Id, Name, IsActive
+FROM Pricebook2
+WHERE IsActive = true`
+    },
+    {
+      name:'FX Conversion',tag:'hygiene',
+      calc:'All local amounts are divided by the Salesforce CurrencyType.ConversionRate to produce NZD. Rates as of dashboard date: 1 NZD = 1.86 WST · 5.64 SBD · 1.61 TOP · 79.11 VUV. NZD values are not converted. ConvertedAmount is not available in aggregate SOQL queries.',
+      why:'RSP operates in five currencies. Without conversion, pipeline and sales figures are meaningless as a cross-territory total. Salesforce stores conversion rates in the CurrencyType object — these are the rates actively maintained in your org.',
+      soql:`SELECT IsoCode, ConversionRate, IsCorporate
+FROM CurrencyType
+WHERE IsActive = true`
+    }
   ];
 
-  const agg = MONTHS.map(m => {
-    const rows = DATA.closedWonTrend.filter(r => r.year === m.year && r.month === m.month);
-    return { ...m, nzd: sumNZD(rows), count: sumCount(rows) };
-  });
-
-  const maxNZD = Math.max(...agg.map(r => r.nzd), 1);
-
-  const bars = agg.map(r => {
-    const isCur = r.year === 2026 && r.month === 3;
-    const pct   = (r.nzd / maxNZD) * 100;
-    return `
-    <div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;min-width:0">
-      <div style="font-family:var(--mono);font-size:10px;color:var(--text-secondary);text-align:center;white-space:nowrap">${fmt(r.nzd)}</div>
-      <div style="width:100%;background:var(--border);border-radius:4px;height:80px;display:flex;align-items:flex-end;overflow:hidden">
-        <div style="width:100%;height:${Math.max(pct, 2)}%;background:${isCur ? 'var(--ricoh-red)' : '#cbd5e1'};border-radius:4px 4px 0 0"></div>
+  const rows=items.map(item=>`
+  <div class="dict-row">
+    <div>
+      <div class="dict-kpi-name">${item.name}</div>
+      <span class="dict-kpi-tag tag-${item.tag}">${item.tag==='lead'?'Lead Measure':item.tag==='lag'?'Lag Measure':'Data Quality'}</span>
+    </div>
+    <div class="dict-content">
+      <div>
+        <div class="dict-section-label">Why it matters</div>
+        <div class="dict-text">${item.why}</div>
       </div>
-      <div style="font-size:10px;color:var(--text-muted);text-align:center;line-height:1.3">${mName(r.month)}<br>${r.year}${isCur ? '<br><b style="color:var(--ricoh-red);font-size:9px">MTD</b>' : ''}</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--text-secondary)">${r.count} won</div>
-    </div>`;
-  });
+      <div>
+        <div class="dict-section-label">How it's calculated</div>
+        <div class="dict-formula">${item.calc}</div>
+      </div>
+      <div>
+        <div class="dict-section-label">Salesforce SOQL</div>
+        <pre class="dict-soql">${item.soql}</pre>
+      </div>
+    </div>
+  </div>`).join('');
 
-  const tableRows = [...agg].reverse().map(r => {
-    const isCur = r.year === 2026 && r.month === 3;
-    return `<tr>
-      <td style="font-weight:${isCur ? '600' : '400'}">${mName(r.month)} ${r.year}${isCur ? ' <span style="font-size:10px;color:var(--ricoh-red)">(MTD)</span>' : ''}</td>
-      <td class="right">${fmt(r.nzd)}</td>
-      <td class="right">${r.count}</td>
-    </tr>`;
-  });
-
-  return `
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px">
-    <div style="display:flex;gap:10px;align-items:flex-end;height:140px">${bars.join('')}</div>
-  </div>
-  <div class="data-table">
-    <table>
-      <thead><tr>
-        <th>Month</th>
-        <th class="right">Closed Won (NZD)</th>
-        <th class="right">Won Count</th>
-      </tr></thead>
-      <tbody>${tableRows.join('')}</tbody>
-    </table>
+  return `<div class="dict-panel">
+    <div class="dict-header">
+      <div>
+        <div class="dict-header-title">KPI Data Dictionary</div>
+        <div class="dict-header-sub">How every metric on this dashboard is calculated — reconcile against Salesforce</div>
+      </div>
+    </div>
+    ${rows}
   </div>`;
 }
 
-// ─────────────────────────────────────────────
-// MAIN RENDER
-// ─────────────────────────────────────────────
-function render() {
-  const totals = computeTotals();
-  let tabContent = '';
-  if      (state.tab === 'territory') tabContent = renderTerritoryTab();
-  else if (state.tab === 'stage')     tabContent = renderStageTab();
-  else if (state.tab === 'rep')       tabContent = renderRepTab();
-  else if (state.tab === 'cw')        tabContent = renderClosedWonTab();
+// ─── RENDER ───
+function render(){
+  const t=calc();
+  const tab=S.tab;
+  let tabContent='';
+  if(tab==='territory') tabContent=renderTerritory();
+  else if(tab==='stage') tabContent=renderStage();
+  else if(tab==='rep') tabContent=renderRep();
+  else if(tab==='cw') tabContent=renderCW();
+  else if(tab==='dict') tabContent=renderDict();
 
-  document.getElementById('app').innerHTML = `
-    ${renderKPIs(totals)}
+  document.getElementById('app').innerHTML=`
+    ${renderKPIs(t)}
     <div style="margin-top:28px">
-      <div class="section-header"><span class="section-title">Breakdown</span><div class="section-line"></div></div>
-      <div class="tab-nav">
-        <button class="tab-btn ${state.tab==='territory'?'active':''}" onclick="setTab('territory')">By Territory</button>
-        <button class="tab-btn ${state.tab==='stage'    ?'active':''}" onclick="setTab('stage')">Pipeline by Stage</button>
-        <button class="tab-btn ${state.tab==='rep'      ?'active':''}" onclick="setTab('rep')">By Sales Rep</button>
-        <button class="tab-btn ${state.tab==='cw'       ?'active':''}" onclick="setTab('cw')">Closed Won Trend</button>
+      <div class="sh"><span class="sh-title">Breakdown</span><div class="sh-line"></div></div>
+      <div class="tnav">
+        <button class="tbtn ${tab==='territory'?'active':''}" onclick="setTab('territory')">By Territory</button>
+        <button class="tbtn ${tab==='stage'?'active':''}" onclick="setTab('stage')">Pipeline by Stage</button>
+        <button class="tbtn ${tab==='rep'?'active':''}" onclick="setTab('rep')">By Sales Rep</button>
+        <button class="tbtn ${tab==='cw'?'active':''}" onclick="setTab('cw')">Closed Won Trend</button>
+        <button class="tbtn ${tab==='dict'?'active':''}" onclick="setTab('dict')">📋 Data Dictionary</button>
       </div>
       ${tabContent}
     </div>`;
 }
 
-function setTab(tab) { state.tab = tab; render(); }
+function setTab(t){S.tab=t;render();}
 
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('fxNote').textContent =
-    `All values NZD · FX (Salesforce rates): 1 NZD = 1.86 WST · 5.64 SBD · 1.61 TOP · 79.11 VUV · As of ${DATA.asOf}`;
-
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('fxNote').textContent=`All values NZD · FX: 1 NZD = 1.86 WST · 5.64 SBD · 1.61 TOP · 79.11 VUV · As of ${DATA.asOf}`;
   populateReps();
-
-  document.getElementById('filterTerritory').addEventListener('change', e => {
-    state.territory = e.target.value;
-    state.rep = 'all';
-    document.getElementById('filterRep').value = 'all';
-    render();
-  });
-  document.getElementById('filterRep').addEventListener('change', e => {
-    state.rep = e.target.value;
-    render();
-  });
-
+  document.getElementById('fTerritory').addEventListener('change',e=>{S.territory=e.target.value;S.rep='all';document.getElementById('fRep').value='all';render();});
+  document.getElementById('fRep').addEventListener('change',e=>{S.rep=e.target.value;render();});
   render();
 });
 </script>
