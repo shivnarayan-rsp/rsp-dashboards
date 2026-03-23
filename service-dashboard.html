@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="auth.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RSP — Service Dashboard</title>
@@ -22,76 +21,18 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-  /* ── HEADER ── */
-  header {
-    background: var(--charcoal);
-    color: white;
-    padding: 0 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .header-brand {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-    color: white;
-  }
-  .header-brand span { color: var(--red); }
-  .header-divider {
-    width: 1px;
-    height: 24px;
-    background: rgba(255,255,255,0.2);
-  }
-  .header-subtitle {
-    font-size: 13px;
-    color: rgba(255,255,255,0.6);
-    font-weight: 400;
-  }
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  .live-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.06em;
-  }
-  .live-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #4caf50;
-    animation: pulse 2s infinite;
-  }
-  .as-of {
-    font-size: 11px;
-    color: rgba(255,255,255,0.4);
-    font-family: 'DM Mono', monospace;
-  }
-  .back-link {
-    color: rgba(255,255,255,0.6);
-    text-decoration: none;
-    font-size: 13px;
-    transition: color 0.15s;
-  }
-  .back-link:hover { color: white; }
-
+  /* HEADER */
+  header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
+  .header-center{display:flex;align-items:center;gap:16px;}
+  .header-divider{width:1px;height:22px;background:#444;}
+  .header-title{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em;}
+  .header-right{display:flex;align-items:center;gap:16px;}
+  .live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:#aaa;font-family:'DM Mono',monospace;letter-spacing:.05em;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite;}
+  .as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+  .back-link{font-size:11px;color:#666;text-decoration:none;letter-spacing:.03em;transition:color .15s;}
+  .back-link:hover{color:#aaa;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 
   /* LAYOUT */
@@ -178,16 +119,16 @@
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 
   @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.overage-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-  @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-subtitle{display:none;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-title{display:none;}.kpi-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-left">
-    <div class="header-brand">Ricoh South Pacific</div>
+  <div class="header-center">
+    <span class="wordmark">Ricoh</span>
     <div class="header-divider"></div>
-    <div class="header-subtitle">Service Dashboard</div>
+    <span class="header-title">South Pacific — Service Dashboard</span>
   </div>
   <div class="header-right">
     <span class="live-badge"><span class="live-dot"></span>LIVE</span>
@@ -225,10 +166,10 @@
 <script>
 // ─────────────────────────────────────────────
 //  DATA — update this block on each refresh
-//  Last refreshed: 16 March 2026
+//  Last refreshed: 23 March 2026
 // ─────────────────────────────────────────────
 const DATA = {
-  asOf: "16 Mar 2026",
+  asOf: "23 Mar 2026",
 
   territories: {
     "0Hh7F0000000O5fSAE": "New Zealand",
@@ -253,104 +194,117 @@ const DATA = {
     "08q7F000000Y4VuQAK": "Relief Machine Run Up",
     "08q7F0000000RDmQAM": "Asset Assessment",
     "08qMp000000JMfxIAG": "Paper Delivery",
+    "08q7F0000000RDqQAM": "Asset Disposal",
+    "08q7F0000000RDtQAM": "Asset Refurbish",
+    "08q7F000000Y4RTQA0": "Asset Rundown and Assessment",
+    "08q7F000000Y4VvQAK": "Relief Machine Installation",
     "null": "No work type"
   },
 
+  // Open cases total per territory
   openByTerritory: [
-    { id: "0Hh7F0000000O5fSAE", count: 37 },
-    { id: "0Hh7F0000000O5uSAE", count: 23 },
-    { id: "0Hh7F0000000O5kSAE", count: 22 },
-    { id: "0Hh7F0000000O5pSAE", count: 21 },
-    { id: "0Hh7F0000000O5bSAE", count: 14 },
-    { id: "null",               count: 4  }
+    { id: "0Hh7F0000000O5fSAE", count: 39 },
+    { id: "0Hh7F0000000O5uSAE", count: 32 },
+    { id: "0Hh7F0000000O5kSAE", count: 20 },
+    { id: "0Hh7F0000000O5bSAE", count: 18 },
+    { id: "0Hh7F0000000O5pSAE", count: 13 },
+    { id: "null",               count: 9  }
   ],
 
+  // Open >72h per territory (cases created before 20 Mar 2026)
   over72ByTerritory: [
-    { id: "0Hh7F0000000O5fSAE", count: 36 },
-    { id: "0Hh7F0000000O5kSAE", count: 17 },
-    { id: "0Hh7F0000000O5pSAE", count: 16 },
-    { id: "0Hh7F0000000O5uSAE", count: 14 },
-    { id: "0Hh7F0000000O5bSAE", count: 10 },
-    { id: "null",               count: 3  }
+    { id: "0Hh7F0000000O5fSAE", count: 38 },
+    { id: "0Hh7F0000000O5uSAE", count: 21 },
+    { id: "0Hh7F0000000O5bSAE", count: 14 },
+    { id: "0Hh7F0000000O5kSAE", count: 14 },
+    { id: "0Hh7F0000000O5pSAE", count: 13 },
+    { id: "null",               count: 8  }
   ],
 
+  // Status breakdown: [territoryId, status, count]
   byStatus: [
-    ["null",               "New",                              4],
-    ["0Hh7F0000000O5bSAE","Processing Invoice",               3],
-    ["0Hh7F0000000O5bSAE","Waiting on Quotation Approval",    3],
-    ["0Hh7F0000000O5bSAE","Waiting on Parts Delivery",        3],
-    ["0Hh7F0000000O5bSAE","Work Order Issued",                3],
-    ["0Hh7F0000000O5bSAE","Waiting on Customer",              1],
-    ["0Hh7F0000000O5bSAE","Waiting on Parts Request Approval",1],
-    ["0Hh7F0000000O5fSAE","Processing Invoice",              15],
-    ["0Hh7F0000000O5fSAE","Work Order Issued",               14],
-    ["0Hh7F0000000O5fSAE","New",                              6],
-    ["0Hh7F0000000O5fSAE","Stop Credit",                      1],
-    ["0Hh7F0000000O5fSAE","Waiting on Quotation Approval",    1],
-    ["0Hh7F0000000O5kSAE","Work Order Issued",                9],
-    ["0Hh7F0000000O5kSAE","New",                              5],
-    ["0Hh7F0000000O5kSAE","Waiting on Parts Delivery",        2],
-    ["0Hh7F0000000O5kSAE","Processing Invoice",               2],
-    ["0Hh7F0000000O5kSAE","Waiting on Customer",              1],
-    ["0Hh7F0000000O5kSAE","Waiting on Quotation Approval",    1],
-    ["0Hh7F0000000O5kSAE","Waiting on Parts Request Approval",1],
-    ["0Hh7F0000000O5kSAE","Stop Credit",                      1],
-    ["0Hh7F0000000O5pSAE","Waiting on Quotation Approval",    9],
-    ["0Hh7F0000000O5pSAE","Work Order Issued",                4],
-    ["0Hh7F0000000O5pSAE","Processing Invoice",               3],
-    ["0Hh7F0000000O5pSAE","Waiting on Parts Request Approval",2],
-    ["0Hh7F0000000O5pSAE","Waiting on Customer",              1],
-    ["0Hh7F0000000O5pSAE","Escalated",                        1],
-    ["0Hh7F0000000O5pSAE","Waiting on Parts Delivery",        1],
-    ["0Hh7F0000000O5uSAE","Waiting on Quotation Approval",    6],
-    ["0Hh7F0000000O5uSAE","Waiting on Parts Delivery",        5],
-    ["0Hh7F0000000O5uSAE","Work Order Issued",                3],
-    ["0Hh7F0000000O5uSAE","Waiting on Customer",              3],
-    ["0Hh7F0000000O5uSAE","Processing Invoice",               2],
-    ["0Hh7F0000000O5uSAE","New",                              1]
+    ["null",               "New",                               9],
+    ["0Hh7F0000000O5bSAE","Processing Invoice",                4],
+    ["0Hh7F0000000O5bSAE","Waiting on Parts Delivery",         4],
+    ["0Hh7F0000000O5bSAE","Work Order Issued",                 3],
+    ["0Hh7F0000000O5bSAE","Waiting on Parts Request Approval", 3],
+    ["0Hh7F0000000O5bSAE","Waiting on Customer",               2],
+    ["0Hh7F0000000O5bSAE","Waiting on Quotation Approval",     2],
+    ["0Hh7F0000000O5fSAE","Processing Invoice",               16],
+    ["0Hh7F0000000O5fSAE","Work Order Issued",                14],
+    ["0Hh7F0000000O5fSAE","New",                               7],
+    ["0Hh7F0000000O5fSAE","Waiting on Quotation Approval",     1],
+    ["0Hh7F0000000O5fSAE","Stop Credit",                       1],
+    ["0Hh7F0000000O5kSAE","Work Order Issued",                 9],
+    ["0Hh7F0000000O5kSAE","Stop Credit",                       4],
+    ["0Hh7F0000000O5kSAE","Processing Invoice",                3],
+    ["0Hh7F0000000O5kSAE","Waiting on Parts Delivery",         2],
+    ["0Hh7F0000000O5kSAE","Waiting on Customer",               1],
+    ["0Hh7F0000000O5kSAE","Waiting on Quotation Approval",     1],
+    ["0Hh7F0000000O5pSAE","Processing Invoice",                3],
+    ["0Hh7F0000000O5pSAE","Waiting on Parts Request Approval", 3],
+    ["0Hh7F0000000O5pSAE","Work Order Issued",                 2],
+    ["0Hh7F0000000O5pSAE","Waiting on Quotation Approval",     2],
+    ["0Hh7F0000000O5pSAE","Escalated",                         1],
+    ["0Hh7F0000000O5pSAE","Waiting on Parts Delivery",         1],
+    ["0Hh7F0000000O5pSAE","Waiting on Customer",               1],
+    ["0Hh7F0000000O5uSAE","Waiting on Parts Delivery",         8],
+    ["0Hh7F0000000O5uSAE","Waiting on Quotation Approval",     7],
+    ["0Hh7F0000000O5uSAE","Work Order Issued",                 5],
+    ["0Hh7F0000000O5uSAE","Waiting on Customer",               5],
+    ["0Hh7F0000000O5uSAE","Processing Invoice",                3],
+    ["0Hh7F0000000O5uSAE","New",                               2],
+    ["0Hh7F0000000O5uSAE","Waiting on Parts Request Approval", 2]
   ],
 
+  // Work type breakdown: [territoryId, workTypeId, count]
   byWorkType: [
-    ["null",               "null",                  4],
-    ["0Hh7F0000000O5bSAE","08q7F0000000RDlQAM",    5],
-    ["0Hh7F0000000O5bSAE","08q7F0000000RDjQAM",    3],
-    ["0Hh7F0000000O5bSAE","08q7F0000004gQRQAY",    2],
+    ["null",               "null",                  9],
+    ["0Hh7F0000000O5bSAE","08q7F0000000RDlQAM",    8],
+    ["0Hh7F0000000O5bSAE","08q7F0000000RDqQAM",    4],
     ["0Hh7F0000000O5bSAE","08q7F0000000RDiQAM",    2],
-    ["0Hh7F0000000O5bSAE","08q7F0000000RDnQAM",    1],
     ["0Hh7F0000000O5bSAE","08q7F0000000RDkQAM",    1],
-    ["0Hh7F0000000O5fSAE","08q7F0000000RDlQAM",    9],
+    ["0Hh7F0000000O5bSAE","08q7F000000Y4WiQAK",    1],
+    ["0Hh7F0000000O5bSAE","08q7F0000000RDnQAM",    1],
+    ["0Hh7F0000000O5bSAE","08q7F0000000RDmQAM",    1],
+    ["0Hh7F0000000O5fSAE","08q7F0000000RDlQAM",   10],
     ["0Hh7F0000000O5fSAE","08q7F0000004gT6QAI",    7],
-    ["0Hh7F0000000O5fSAE","08q7F0000004gQRQAY",    4],
-    ["0Hh7F0000000O5fSAE","null",                  4],
-    ["0Hh7F0000000O5fSAE","08q7F0000000RDiQAM",    4],
+    ["0Hh7F0000000O5fSAE","null",                  5],
     ["0Hh7F0000000O5fSAE","08q7F0000000RDkQAM",    4],
+    ["0Hh7F0000000O5fSAE","08q7F0000004gQRQAY",    4],
+    ["0Hh7F0000000O5fSAE","08q7F0000000RDiQAM",    4],
     ["0Hh7F0000000O5fSAE","08q7F0000000RDsQAM",    2],
     ["0Hh7F0000000O5fSAE","08q7F000000Y4WiQAK",    2],
     ["0Hh7F0000000O5fSAE","08q7F000000Y4VfQAK",    1],
-    ["0Hh7F0000000O5kSAE","08q7F0000000RDlQAM",   14],
-    ["0Hh7F0000000O5kSAE","08q7F0000004gQRQAY",    4],
+    ["0Hh7F0000000O5kSAE","08q7F0000000RDlQAM",   10],
+    ["0Hh7F0000000O5kSAE","08q7F0000004gQRQAY",    5],
+    ["0Hh7F0000000O5kSAE","08q7F000000Y4RTQA0",    2],
+    ["0Hh7F0000000O5kSAE","08q7F0000000RDjQAM",    1],
     ["0Hh7F0000000O5kSAE","08q7F0000000RDnQAM",    1],
-    ["0Hh7F0000000O5kSAE","08q7F0000000RDsQAM",    1],
-    ["0Hh7F0000000O5kSAE","08q7F0000004gT6QAI",    1],
-    ["0Hh7F0000000O5kSAE","08q7F000000Y4VuQAK",    1],
-    ["0Hh7F0000000O5pSAE","08q7F0000000RDlQAM",   11],
-    ["0Hh7F0000000O5pSAE","08q7F0000004gQRQAY",    8],
-    ["0Hh7F0000000O5pSAE","08q7F0000000RDiQAM",    1],
+    ["0Hh7F0000000O5kSAE","08q7F000000Y4VvQAK",    1],
+    ["0Hh7F0000000O5pSAE","08q7F0000000RDlQAM",    9],
+    ["0Hh7F0000000O5pSAE","08q7F0000004gQRQAY",    3],
     ["0Hh7F0000000O5pSAE","08q7F0000004gT6QAI",    1],
-    ["0Hh7F0000000O5uSAE","08q7F0000004gQRQAY",    7],
-    ["0Hh7F0000000O5uSAE","08q7F0000000RDlQAM",    6],
-    ["0Hh7F0000000O5uSAE","08q7F0000000RDnQAM",    2],
+    ["0Hh7F0000000O5uSAE","08q7F0000000RDlQAM",   13],
+    ["0Hh7F0000000O5uSAE","08q7F0000004gQRQAY",    9],
+    ["0Hh7F0000000O5uSAE","08q7F0000000RDnQAM",    4],
     ["0Hh7F0000000O5uSAE","08q7F0000004gT6QAI",    2],
-    ["0Hh7F0000000O5uSAE","08q7F0000000RDsQAM",    1],
     ["0Hh7F0000000O5uSAE","08q7F0000000RDmQAM",    1],
-    ["0Hh7F0000000O5uSAE","08qMp000000JMfxIAG",    1]
+    ["0Hh7F0000000O5uSAE","08q7F0000000RDtQAM",    1],
+    ["0Hh7F0000000O5uSAE","null",                  1],
+    ["0Hh7F0000000O5uSAE","08q7F0000000RDiQAM",    1]
   ],
 
   performance: {
-    mar: { count: 99,  avgDays: 6.40, ftf: 78  },
+    mar: { count: 134, avgDays: 7.64, ftf: 104 },
     feb: { count: 241, avgDays: 8.28, ftf: 174 }
   }
 };
+// ─────────────────────────────────────────────
+//  END DATA — do not edit below this line
+// ─────────────────────────────────────────────
+
+// ── HELPERS ──────────────────────────────────
 
 const terrName = id => DATA.territories[id] || id;
 const wtName   = id => DATA.workTypes[id]   || id;
@@ -364,6 +318,7 @@ const escalated    = DATA.byStatus.find(r => r[1] === "Escalated");
 const escalatedTerr = escalated ? terrName(escalated[0]) : "None";
 const escalatedN   = escalated ? escalated[2] : 0;
 
+// ── BADGE CLASS ──────────────────────────────
 function badgeClass(status) {
   if (status === "New") return "b-New";
   if (status === "Work Order Issued") return "b-WOI";
@@ -372,6 +327,7 @@ function badgeClass(status) {
   return "b-Waiting";
 }
 
+// ── KPI CARDS ────────────────────────────────
 function kpiCard(cls, label, value, valueCls, sub, trend, trendCls, bar) {
   return `<div class="kpi-card ${cls}">
     <div class="kpi-label">${label}</div>
@@ -402,6 +358,7 @@ document.getElementById("kpiPerformance").innerHTML = [
   kpiCard("",      "First time fix — Feb",          fmt1(febFTFpct)+"%", "muted", `${feb.ftf} of ${feb.count} cases`, "", "", {cls:"fill-muted", w:febFTFpct})
 ].join("");
 
+// ── TERRITORY TABLE (shared structure) ───────
 function buildTerritoryTable(headers, rowsFn) {
   const terrOrder = DATA.openByTerritory.map(t => t.id);
   let rows = "";
@@ -417,6 +374,7 @@ function buildTerritoryTable(headers, rowsFn) {
   return `<table><thead><tr>${ths}</tr></thead><tbody>${rows}</tbody></table>`;
 }
 
+// ── STATUS TAB ───────────────────────────────
 document.getElementById("tab-status").innerHTML = buildTerritoryTable(
   ["Territory / Status", "Cases", "Share", ""],
   (tid, total) => {
@@ -432,6 +390,7 @@ document.getElementById("tab-status").innerHTML = buildTerritoryTable(
   }
 );
 
+// ── WORK TYPE TAB ────────────────────────────
 document.getElementById("tab-worktype").innerHTML = buildTerritoryTable(
   ["Territory / Work Type", "Cases", "Share", ""],
   (tid, total) => {
@@ -453,6 +412,7 @@ document.getElementById("tab-worktype").innerHTML = buildTerritoryTable(
   }
 );
 
+// ── OVER 72H TAB ─────────────────────────────
 const terrOrder72 = [...DATA.over72ByTerritory].sort((a,b) => b.count - a.count);
 const cells = terrOrder72.map(({ id, count }) => {
   const total = (DATA.openByTerritory.find(t => t.id === id) || {count:0}).count;
@@ -475,10 +435,12 @@ document.getElementById("tab-overage").innerHTML = `
     <span class="overage-total-val">${totalOver72} of ${totalOpen} &nbsp;·&nbsp; ${pct(totalOver72, totalOpen)}</span>
   </div>`;
 
+// ── FOOTER / DATE ─────────────────────────────
 document.getElementById("asOf").textContent = DATA.asOf;
 document.getElementById("footer").textContent =
   `Ricoh South Pacific · Data from Salesforce · ${DATA.asOf}`;
 
+// ── TAB SWITCHER ──────────────────────────────
 function switchTab(name, btn) {
   document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
   document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
