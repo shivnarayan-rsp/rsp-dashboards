@@ -476,6 +476,7 @@ function renderKPIs(t){
   const covClass = !t.coverageRatio ? 'am' : t.coverageRatio>=3?'ag':t.coverageRatio>=2?'aa':'ar';
   const covDot   = !t.coverageRatio ? 'dm' : t.coverageRatio>=3?'dg':t.coverageRatio>=2?'da':'dr';
   const covLabel = !t.coverageRatio ? 'No quota set' : t.coverageRatio>=3?'On track':'Below 3× target';
+  const nsBg = t.nsPct<30 ? 'var(--red)' : 'var(--amber)';
   return `
   <div class="sh"><span class="sh-title">Sales Actuals — Orders (New, Activated) · NZD</span><div class="sh-line"></div></div>
   <div class="kg kg4">
@@ -514,7 +515,7 @@ function renderKPIs(t){
       <div class="kl"><span class="dot ${t.nsPct>=50?'da':'dr'}"></span>Next Step Compliance</div>
       <div class="kv ${t.nsPct<30?'rv':''}">${fmtPct(t.nsPct)}</div>
       <div class="ks">${fmtRaw(t.nsCt.withFutureNextStep)} of ${fmtRaw(t.nsCt.totalOpen)} opps have a future next step</div>
-      <div class="pb"><div class="pbf ${t.nsPct>=50?'a':'g'}" style="width:${t.nsPct}%;background:${t.nsPct<30?'var(--red)':'var(--amber)}"></div></div>
+      <div class="pb"><div class="pbf" style="width:${t.nsPct}%;background:${nsBg}"></div></div>
     </div>
     <div class="kc ar alert">
       <div class="kl"><span class="dot dr"></span>Aged Pipeline (&gt;90 days)</div>
@@ -833,7 +834,7 @@ function render(){
         <button class="tbtn ${tab==='stage'?'active':''}" onclick="setTab('stage')">Pipeline by Stage</button>
         <button class="tbtn ${tab==='rep'?'active':''}" onclick="setTab('rep')">By Sales Rep</button>
         <button class="tbtn ${tab==='cw'?'active':''}" onclick="setTab('cw')">Closed Won Trend</button>
-        <button class="tbtn ${tab==='dict'?'active':''}" onclick="setTab('dict')">📋 Data Dictionary</button>
+        <button class="tbtn ${tab==='dict'?'active':''}" onclick="setTab('dict')">Data Dictionary</button>
       </div>
       ${tabContent}
     </div>`;
