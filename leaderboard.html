@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP — Service Leaderboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:#D7063B; --red-light:#f5e0e6;
+    --charcoal:#1a1a1a; --mid:#444; --muted:#888;
+    --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
+    --green:#1a6e2e; --green-bg:#e6f4ea;
+    --amber:#8a5200; --amber-bg:#fef3dc;
+    --danger:#c0392b; --danger-bg:#fdecea;
+    --blue:#0057b8; --blue-bg:#e8f0fb;
+    --gold:#b8860b; --gold-bg:#fff8e1;
+    --silver:#666; --silver-bg:#f0f0f0;
+    --bronze:#a0522d; --bronze-bg:#fdf0e8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+  /* HEADER */
+  header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .header-center{display:flex;align-items:center;gap:16px;}
+  .wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
+  .header-divider{width:1px;height:22px;background:#444;}
+  .header-title{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em;}
+  .header-right{display:flex;align-items:center;gap:16px;}
+  .live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:#aaa;font-family:'DM Mono',monospace;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite;}
+  .as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+  .back-link{font-size:11px;color:#666;text-decoration:none;letter-spacing:.03em;transition:color .15s;}
+  .back-link:hover{color:#aaa;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+  /* LAYOUT */
+  main{max-width:1200px;margin:0 auto;padding:32px 24px 64px;}
+
+  /* SECTION LABEL */
+  .section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* NAV PILLS */
+  .nav-pills{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap;}
+  .nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;letter-spacing:.02em;}
+  .nav-pill:hover{border-color:var(--red);color:var(--red);}
+  .nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+
+  /* KPI GRID */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:32px;}
+  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px 20px;position:relative;overflow:hidden;transition:box-shadow .15s;animation:fadeUp .4s ease both;}
+  .kpi-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07);}
+  .kpi-card.accent::before,.kpi-card.alert::before,.kpi-card.good::before,.kpi-card.warn::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+  .kpi-card.accent::before{background:var(--red);}
+  .kpi-card.alert::before{background:var(--danger);}
+  .kpi-card.good::before{background:var(--green);}
+  .kpi-card.warn::before{background:var(--amber);}
+  .kpi-card:nth-child(1){animation-delay:.05s;}.kpi-card:nth-child(2){animation-delay:.1s;}.kpi-card:nth-child(3){animation-delay:.15s;}.kpi-card:nth-child(4){animation-delay:.2s;}
+  .kpi-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+  .kpi-value{font-size:32px;font-weight:300;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;}
+  .kpi-value.alert{color:var(--danger);}.kpi-value.good{color:var(--green);}.kpi-value.warn{color:var(--amber);}.kpi-value.muted{color:var(--mid);}
+  .kpi-sub{font-size:11px;color:var(--muted);line-height:1.4;}
+
+  /* DIVIDER */
+  hr.divider{border:none;border-top:1px solid var(--border);margin:28px 0;}
+
+  /* TWO COL */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;}
+
+  /* PANEL CARD */
+  .panel-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+  .panel-header{padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:space-between;}
+  .panel-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
+  .panel-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+
+  /* TABLES */
+  table{width:100%;border-collapse:collapse;}
+  th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);white-space:nowrap;}
+  th.right{text-align:right;}
+  td{padding:10px 14px;font-size:13px;color:var(--charcoal);border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  td.right{text-align:right;}
+  td.mono{font-family:'DM Mono',monospace;font-size:12px;}
+  td.count{text-align:right;font-family:'DM Mono',monospace;font-weight:500;}
+  td.pct{text-align:right;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);}
+  td.good-text{color:var(--green);font-weight:500;}
+  td.warn-text{color:var(--amber);font-weight:500;}
+  td.danger-text{color:var(--danger);font-weight:500;}
+  .total-row td{font-weight:600;border-top:1px solid var(--border);background:var(--surface2);}
+
+  /* RANK BADGE */
+  .rank{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;font-size:11px;font-weight:600;font-family:'DM Mono',monospace;}
+  .rank-1{background:var(--gold-bg);color:var(--gold);}
+  .rank-2{background:var(--silver-bg);color:var(--silver);}
+  .rank-3{background:var(--bronze-bg);color:var(--bronze);}
+  .rank-n{background:var(--surface2);color:var(--muted);}
+
+  /* TERRITORY PILL */
+  .terr-pill{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:500;letter-spacing:.04em;white-space:nowrap;}
+  .t-NZ{background:#e8f0fb;color:#0057b8;}
+  .t-Vanuatu{background:#e6f4ea;color:#1a6e2e;}
+  .t-Solomons{background:#fef3dc;color:#8a5200;}
+  .t-Tonga{background:#fdecea;color:#c0392b;}
+  .t-Samoa{background:#f3e8fb;color:#6b21a8;}
+  .t-Unknown{background:#f0f0f0;color:#666;}
+
+  /* PROGRESS BAR */
+  .progress-bar{height:4px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden;width:80px;}
+  .progress-fill{height:100%;border-radius:2px;}
+  .fill-green{background:var(--green);}
+  .fill-amber{background:var(--amber);}
+  .fill-danger{background:var(--danger);}
+  .fill-red{background:var(--red);}
+
+  /* SLA GRID */
+  .sla-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--border);}
+  .sla-cell{background:var(--surface);padding:16px;}
+  .sla-name{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:8px;}
+  .sla-nums{display:flex;align-items:baseline;gap:5px;margin-bottom:4px;}
+  .sla-big{font-size:26px;font-weight:300;line-height:1;font-variant-numeric:tabular-nums;}
+  .sla-of{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+  .sla-pct{font-size:11px;font-weight:500;margin-bottom:6px;}
+  .sla-bar-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+  .sla-bar-fill{height:100%;border-radius:2px;}
+
+  /* FOOTER */
+  footer{text-align:center;padding:24px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;letter-spacing:.04em;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.two-col{grid-template-columns:1fr;}.sla-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+  @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-title{display:none;}.kpi-grid{grid-template-columns:1fr 1fr;}.sla-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-center">
+    <span class="wordmark">Ricoh</span>
+    <div class="header-divider"></div>
+    <span class="header-title">South Pacific — Service Leaderboard</span>
+  </div>
+  <div class="header-right">
+    <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+    <span class="as-of" id="asOf"></span>
+    <a href="index.html" class="back-link">← Scorecards</a>
+  </div>
+</header>
+
+<main>
+
+  <div class="nav-pills">
+    <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
+    <a href="leaderboard.html" class="nav-pill active">Leaderboard</a>
+  </div>
+
+  <div class="section-label">Summary — 2026 year to date · service calls only</div>
+  <div class="kpi-grid" id="kpiSummary"></div>
+
+  <hr class="divider">
+
+  <div class="section-label">Technician leaderboard — 2026 YTD</div>
+  <div class="panel-card" style="margin-bottom:32px;">
+    <div class="panel-header">
+      <span class="panel-title">Ranked by cases closed</span>
+      <span class="panel-sub" id="leaderboardPeriod"></span>
+    </div>
+    <table id="leaderboardTable">
+      <thead>
+        <tr>
+          <th style="width:40px"></th>
+          <th>Technician</th>
+          <th>Territory</th>
+          <th class="right">Cases closed</th>
+          <th class="right">Avg days to close</th>
+          <th class="right">FTF rate</th>
+          <th class="right">Callbacks</th>
+          <th class="right">Callback rate</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboardBody"></tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">SLA violations — open service calls</div>
+  <div class="panel-card" style="margin-bottom:32px;">
+    <div class="panel-header">
+      <span class="panel-title">Cases with response or resolution SLA breach</span>
+      <span class="panel-sub">Open service calls only</span>
+    </div>
+    <div class="sla-grid" id="slaGrid"></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Callback rate — March 2026 · by territory</div>
+  <div class="panel-card" style="margin-bottom:32px;">
+    <div class="panel-header">
+      <span class="panel-title">Callbacks as % of closed service calls</span>
+      <span class="panel-sub">Mar 2026</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Territory</th>
+          <th class="right">Callbacks</th>
+          <th class="right">Total closed</th>
+          <th class="right">Rate</th>
+          <th style="width:120px"></th>
+        </tr>
+      </thead>
+      <tbody id="callbackBody"></tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-label">Repeat offender assets — 3+ service calls in 2026 YTD</div>
+  <div class="two-col">
+    <div class="panel-card">
+      <div class="panel-header">
+        <span class="panel-title">Asset repeat visits</span>
+        <span class="panel-sub" id="repeatSummary"></span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Asset</th>
+            <th>Serial</th>
+            <th>Territory</th>
+            <th class="right">Calls</th>
+          </tr>
+        </thead>
+        <tbody id="repeatBody"></tbody>
+      </table>
+    </div>
+    <div class="panel-card">
+      <div class="panel-header">
+        <span class="panel-title">Visit distribution</span>
+        <span class="panel-sub" id="visitDistSub"></span>
+      </div>
+      <table id="visitDistTable">
+        <thead>
+          <tr>
+            <th>Visit count</th>
+            <th class="right">Assets</th>
+            <th class="right">% of fleet</th>
+            <th style="width:100px"></th>
+          </tr>
+        </thead>
+        <tbody id="visitDistBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer id="footer"></footer>
+
+<script>
+// ─────────────────────────────────────────────
+//  DATA — update this block on each refresh
+//  Last refreshed: 23 March 2026
+// ─────────────────────────────────────────────
+const DATA = {
+  asOf: "23 Mar 2026",
+  period: "Jan – Mar 2026",
+
+  // Technician leaderboard
+  // fields: name, territory, casesClosed, avgDays, ftfCount, callbacks
+  technicians: [
+    { name: "Florencio Jr. Familar",  territory: "Vanuatu",  cases: 112, avgDays: 1.7,  ftf: 93, callbacks: 25 },
+    { name: "Arturo Regis",           territory: "Samoa",    cases: 103, avgDays: 3.9,  ftf: 85, callbacks: 32 },
+    { name: "Ramiro Cataquis",        territory: "Samoa",    cases: 93,  avgDays: 7.0,  ftf: 72, callbacks: 29 },
+    { name: "Victor Geonzon",         territory: "Solomons", cases: 68,  avgDays: 12.1, ftf: 51, callbacks: 14 },
+    { name: "John Cid",               territory: "Tonga",    cases: 47,  avgDays: 10.7, ftf: 37, callbacks: 12 },
+    { name: "Junriel Andoy",          territory: "Vanuatu",  cases: 26,  avgDays: 9.6,  ftf: 23, callbacks: 12 },
+    { name: "Samson Ragaruma",        territory: "Solomons", cases: 10,  avgDays: 30.1, ftf: 4,  callbacks: 2  },
+    { name: "Aisea Fakaosi",          territory: "Tonga",    cases: 10,  avgDays: 9.6,  ftf: 7,  callbacks: 0  },
+    { name: "Sridhar Bhattacharjee",  territory: "NZ",       cases: 8,   avgDays: 19.4, ftf: 8,  callbacks: 3  }
+  ],
+
+  // SLA violations on open service calls by territory
+  // fields: territory, openCases, withViolation
+  slaViolations: [
+    { territory: "NZ",       open: 10, violations: 7  },
+    { territory: "Vanuatu",  open: 13, violations: 9  },
+    { territory: "Solomons", open: 10, violations: 10 },
+    { territory: "Tonga",    open: 9,  violations: 9  },
+    { territory: "Samoa",    open: 8,  violations: 7  }
+  ],
+
+  // Callback rate by territory - March 2026
+  // fields: territory, totalClosed, callbacks
+  callbackByTerritory: [
+    { territory: "Samoa",    total: 55, callbacks: 20 },
+    { territory: "Vanuatu",  total: 37, callbacks: 12 },
+    { territory: "Solomons", total: 28, callbacks: 7  },
+    { territory: "Tonga",    total: 14, callbacks: 5  }
+  ],
+
+  // Asset repeat offenders - 3+ service calls YTD
+  repeatAssets: [
+    { name: "Ricoh Pro C7200SX",               serial: "C878FB20018", territory: "Vanuatu",  calls: 4 },
+    { name: "Signature Series Ricoh MP 5055",  serial: "C388P800039", territory: "Vanuatu",  calls: 4 },
+    { name: "Signature Series Ricoh MP 3054",  serial: "G156P400664", territory: "Samoa",    calls: 3 },
+    { name: "Ricoh MP 5055",                   serial: "C388P600183", territory: "Samoa",    calls: 3 },
+    { name: "Signature Series Ricoh MP C4503", serial: "E176M240011", territory: "Tonga",    calls: 3 },
+    { name: "Ricoh P 502",                     serial: "5381P702189", territory: "Solomons", calls: 3 }
+  ],
+
+  // Visit distribution summary
+  visitDistribution: [
+    { label: "1 visit",  count: 284 },
+    { label: "2 visits", count: 63  },
+    { label: "3+ visits",count: 31  }
+  ],
+
+  totalCasesYTD: 518,
+  uniqueAssetsYTD: 378
+};
+// ─────────────────────────────────────────────
+//  END DATA — do not edit below this line
+// ─────────────────────────────────────────────
+
+const fmt1   = n => Number(n).toFixed(1);
+const pct    = (n, d) => d ? Math.round(n/d*100) + "%" : "—";
+const pctNum = (n, d) => d ? Math.round(n/d*100) : 0;
+
+// ── DATE / FOOTER ─────────────────────────────
+document.getElementById("asOf").textContent = DATA.asOf;
+document.getElementById("leaderboardPeriod").textContent = DATA.period;
+document.getElementById("footer").textContent =
+  `Ricoh South Pacific · Data from Salesforce · ${DATA.asOf}`;
+
+// ── KPI SUMMARY ───────────────────────────────
+const totalCases   = DATA.technicians.reduce((s,t) => s+t.cases, 0);
+const totalFTF     = DATA.technicians.reduce((s,t) => s+t.ftf, 0);
+const totalCB      = DATA.technicians.reduce((s,t) => s+t.callbacks, 0);
+const totalSLAOpen = DATA.slaViolations.reduce((s,t) => s+t.open, 0);
+const totalSLAViol = DATA.slaViolations.reduce((s,t) => s+t.violations, 0);
+const ftfRate      = pctNum(totalFTF, totalCases);
+const cbRate       = pctNum(totalCB, totalCases);
+const slaViolRate  = pctNum(totalSLAViol, totalSLAOpen);
+
+document.getElementById("kpiSummary").innerHTML = `
+  <div class="kpi-card accent">
+    <div class="kpi-label">Cases closed YTD</div>
+    <div class="kpi-value">${totalCases}</div>
+    <div class="kpi-sub">Across ${DATA.technicians.length} technicians</div>
+  </div>
+  <div class="kpi-card good">
+    <div class="kpi-label">FTF rate YTD</div>
+    <div class="kpi-value good">${ftfRate}%</div>
+    <div class="kpi-sub">${totalFTF} of ${totalCases} cases</div>
+  </div>
+  <div class="kpi-card warn">
+    <div class="kpi-label">Callback rate YTD</div>
+    <div class="kpi-value warn">${cbRate}%</div>
+    <div class="kpi-sub">${totalCB} callbacks from ${totalCases} cases</div>
+  </div>
+  <div class="kpi-card alert">
+    <div class="kpi-label">SLA violation rate</div>
+    <div class="kpi-value alert">${slaViolRate}%</div>
+    <div class="kpi-sub">${totalSLAViol} of ${totalSLAOpen} open service calls</div>
+  </div>`;
+
+// ── LEADERBOARD TABLE ─────────────────────────
+const sorted = [...DATA.technicians].sort((a,b) => b.cases - a.cases);
+
+function daysCls(d) {
+  if (d <= 5)  return "good-text";
+  if (d <= 10) return "warn-text";
+  return "danger-text";
+}
+function ftfCls(r) {
+  if (r >= 80) return "good-text";
+  if (r >= 65) return "warn-text";
+  return "danger-text";
+}
+function cbCls(r) {
+  if (r <= 15) return "good-text";
+  if (r <= 30) return "warn-text";
+  return "danger-text";
+}
+function rankBadge(i) {
+  if (i===0) return `<span class="rank rank-1">1</span>`;
+  if (i===1) return `<span class="rank rank-2">2</span>`;
+  if (i===2) return `<span class="rank rank-3">3</span>`;
+  return `<span class="rank rank-n">${i+1}</span>`;
+}
+function terrPill(t) {
+  return `<span class="terr-pill t-${t.replace(' ','')}">${t}</span>`;
+}
+
+document.getElementById("leaderboardBody").innerHTML = sorted.map((t,i) => {
+  const ftfR  = pctNum(t.ftf, t.cases);
+  const cbR   = pctNum(t.callbacks, t.cases);
+  return `<tr>
+    <td style="text-align:center">${rankBadge(i)}</td>
+    <td style="font-weight:500">${t.name}</td>
+    <td>${terrPill(t.territory)}</td>
+    <td class="count">${t.cases}</td>
+    <td class="right ${daysCls(t.avgDays)}">${fmt1(t.avgDays)}d</td>
+    <td class="right ${ftfCls(ftfR)}">${ftfR}%</td>
+    <td class="count">${t.callbacks}</td>
+    <td class="right ${cbCls(cbR)}">${cbR}%</td>
+  </tr>`;
+}).join("") + `<tr class="total-row">
+    <td></td><td>Total / average</td><td></td>
+    <td class="count">${totalCases}</td>
+    <td class="right">${fmt1(DATA.technicians.reduce((s,t)=>s+(t.avgDays*t.cases),0)/totalCases)}d</td>
+    <td class="right">${ftfRate}%</td>
+    <td class="count">${totalCB}</td>
+    <td class="right">${cbRate}%</td>
+  </tr>`;
+
+// ── SLA GRID ──────────────────────────────────
+document.getElementById("slaGrid").innerHTML = DATA.slaViolations.map(s => {
+  const p = pctNum(s.violations, s.open);
+  const fillCls = p >= 80 ? "fill-danger" : p >= 50 ? "fill-amber" : "fill-green";
+  const txtCls  = p >= 80 ? "danger-text" : p >= 50 ? "warn-text" : "good-text";
+  return `<div class="sla-cell">
+    <div class="sla-name">${s.territory}</div>
+    <div class="sla-nums">
+      <span class="sla-big ${txtCls}">${s.violations}</span>
+      <span class="sla-of">/ ${s.open}</span>
+    </div>
+    <div class="sla-pct ${txtCls}">${p}% with breach</div>
+    <div class="sla-bar-bg"><div class="sla-bar-fill ${fillCls}" style="width:${p}%"></div></div>
+  </div>`;
+}).join("");
+
+// ── CALLBACK BY TERRITORY ─────────────────────
+const cbSorted = [...DATA.callbackByTerritory].sort((a,b) =>
+  pctNum(b.callbacks,b.total) - pctNum(a.callbacks,a.total));
+const cbMax = Math.max(...cbSorted.map(r => pctNum(r.callbacks,r.total)));
+const cbTotals = cbSorted.reduce((s,r) => ({total:s.total+r.total,cb:s.cb+r.callbacks}),{total:0,cb:0});
+
+document.getElementById("callbackBody").innerHTML = cbSorted.map(r => {
+  const p = pctNum(r.callbacks, r.total);
+  const cls = cbCls(p);
+  return `<tr>
+    <td>${terrPill(r.territory)}</td>
+    <td class="count">${r.callbacks}</td>
+    <td class="count">${r.total}</td>
+    <td class="right ${cls}">${p}%</td>
+    <td><div class="progress-bar" style="width:100px">
+      <div class="progress-fill ${p<=15?'fill-green':p<=30?'fill-amber':'fill-danger'}"
+           style="width:${Math.round(p/cbMax*100)}%"></div>
+    </div></td>
+  </tr>`;
+}).join("") + `<tr class="total-row">
+    <td>Total</td>
+    <td class="count">${cbTotals.cb}</td>
+    <td class="count">${cbTotals.total}</td>
+    <td class="right ${cbCls(pctNum(cbTotals.cb,cbTotals.total))}">${pct(cbTotals.cb,cbTotals.total)}</td>
+    <td></td>
+  </tr>`;
+
+// ── REPEAT ASSETS ─────────────────────────────
+const sortedAssets = [...DATA.repeatAssets].sort((a,b) => b.calls - a.calls);
+document.getElementById("repeatSummary").textContent =
+  `${DATA.repeatAssets.length} assets · ${DATA.uniqueAssetsYTD} total in fleet`;
+
+document.getElementById("repeatBody").innerHTML = sortedAssets.map(a => {
+  const cls = a.calls >= 5 ? "danger-text" : a.calls >= 4 ? "warn-text" : "";
+  return `<tr>
+    <td style="font-size:12px">${a.name}</td>
+    <td class="mono" style="font-size:11px;color:var(--muted)">${a.serial}</td>
+    <td>${terrPill(a.territory)}</td>
+    <td class="count ${cls}">${a.calls}</td>
+  </tr>`;
+}).join("");
+
+// ── VISIT DISTRIBUTION ────────────────────────
+const totalAssets = DATA.visitDistribution.reduce((s,v) => s+v.count, 0);
+document.getElementById("visitDistSub").textContent =
+  `${totalAssets} assets · ${DATA.totalCasesYTD} cases YTD`;
+
+document.getElementById("visitDistBody").innerHTML = DATA.visitDistribution.map((v,i) => {
+  const p = pctNum(v.count, totalAssets);
+  const cls = i===0 ? "fill-green" : i===1 ? "fill-amber" : "fill-danger";
+  return `<tr>
+    <td style="font-weight:${i===2?'500':'400'};color:${i===2?'var(--danger)':'inherit'}">${v.label}</td>
+    <td class="count">${v.count}</td>
+    <td class="pct">${p}%</td>
+    <td><div class="progress-bar" style="width:100px">
+      <div class="progress-fill ${cls}" style="width:${p}%"></div>
+    </div></td>
+  </tr>`;
+}).join("");
+</script>
+</body>
+</html>
