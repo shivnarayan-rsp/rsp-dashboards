@@ -10,7 +10,7 @@
     --border:rgba(0,0,0,0.1);--border-strong:rgba(0,0,0,0.2);
     --text:#2c2c2a;--text-muted:#888780;--text-hint:#b4b2a9;
     --accent:#1d9e75;--accent-bg:#e1f5ee;--accent-text:#085041;
-    --warn-bg:#faeeda;--warn-text:#633806;
+    --warn-bg:#faeeda;--warn-text:#633806;--warn:#ba7517;
     --danger:#a32d2d;--danger-bg:#fcebeb;--danger-text:#501313;
     --info-bg:#e6f1fb;--info-text:#042c53;
     --placed-bg:#eeedfe;--placed-text:#26215c;
@@ -21,13 +21,15 @@
     --border:rgba(255,255,255,0.1);--border-strong:rgba(255,255,255,0.2);
     --text:#f1efe8;--text-muted:#888780;--text-hint:#5f5e5a;
     --accent:#5dcaa5;--accent-bg:#04342c;--accent-text:#9fe1cb;
-    --warn-bg:#412402;--warn-text:#fac775;
+    --warn-bg:#412402;--warn-text:#fac775;--warn:#ef9f27;
     --danger:#f09595;--danger-bg:#501313;--danger-text:#f7c1c1;
     --info-bg:#042c53;--info-text:#b5d4f4;
     --placed-bg:#26215c;--placed-text:#cecbf6;
   }}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;}
+
+  /* ── header ── */
   .hdr{background:var(--surface);border-bottom:.5px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100;}
   .hl{display:flex;align-items:center;gap:12px;}
   .logo{width:30px;height:30px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -37,6 +39,16 @@
   .ts{font-size:12px;color:var(--text-muted);}
   .btnr{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--surface);border:.5px solid var(--border-strong);border-radius:var(--r);font-size:13px;color:var(--text);cursor:pointer;text-decoration:none;transition:background .15s;}
   .btnr:hover{background:var(--surface-2);}
+
+  /* ── scoreboard banner ── */
+  .banner{padding:10px 24px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;}
+  .banner.win{background:var(--accent-bg);color:var(--accent-text);border-bottom:.5px solid var(--accent);}
+  .banner.risk{background:var(--warn-bg);color:var(--warn-text);border-bottom:.5px solid var(--warn);}
+  .banner.behind{background:var(--danger-bg);color:var(--danger-text);border-bottom:.5px solid var(--danger);}
+  .banner-icon{font-size:16px;line-height:1;}
+  .banner-detail{font-weight:400;opacity:.85;margin-left:4px;}
+
+  /* ── filters ── */
   .ctrl{background:var(--surface);border-bottom:.5px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   .fl{font-size:11px;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:.04em;}
   .fg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
@@ -44,15 +56,30 @@
   .chip:hover{border-color:var(--accent);color:var(--text);}
   .chip.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-text);font-weight:500;}
   .dvd{width:1px;height:20px;background:var(--border);margin:0 4px;}
+
+  /* ── main ── */
   .main{padding:20px 24px;max-width:1400px;margin:0 auto;}
   .slbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px;}
-  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:24px;}
+
+  /* ── tile grid ── */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:10px;}
   .tile{background:var(--surface-2);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .12s;border:1.5px solid transparent;}
   .tile:hover{border-color:var(--border-strong);}
+  .tile.clickable:hover{border-color:var(--accent);}
+  .tile-danger{border-color:rgba(162,45,45,.25);}
   .tlbl{font-size:11px;color:var(--text-muted);font-weight:500;margin-bottom:6px;}
   .tn{font-size:28px;font-weight:500;color:var(--text);line-height:1;}
+  .tn-sm{font-size:20px;font-weight:500;color:var(--text);line-height:1.2;}
   .tsub{font-size:11px;color:var(--text-hint);margin-top:4px;}
+  .tref{font-size:10px;color:var(--text-hint);margin-top:3px;font-family:monospace;}
   .dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle;}
+
+  /* KPI divider label */
+  .section-divider{display:flex;align-items:center;gap:10px;margin:16px 0 10px;}
+  .section-divider .slbl{margin:0;}
+  .section-divider::after{content:'';flex:1;height:.5px;background:var(--border);}
+
+  /* ── table section ── */
   .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
   .bdg{font-size:12px;color:var(--text-muted);background:var(--surface-2);padding:2px 8px;border-radius:100px;border:.5px solid var(--border);}
   .srow{display:flex;gap:12px;flex-wrap:wrap;}
@@ -79,12 +106,16 @@
   .etag{font-size:11px;color:var(--info-text);background:var(--info-bg);padding:2px 7px;border-radius:4px;display:inline-block;}
   .lccy{font-size:10px;color:var(--text-hint);margin-left:3px;}
   .empty{padding:40px;text-align:center;color:var(--text-muted);}
+
+  /* ── fx bar ── */
   .fxbar{background:var(--surface-2);border-top:.5px solid var(--border);padding:10px 24px;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-  .fxlbl{font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;font-size:10px;}
+  .fxlbl{font-weight:500;text-transform:uppercase;letter-spacing:.04em;font-size:10px;}
   .fxrate{display:inline-flex;align-items:center;gap:5px;}
   .ccy-pill{background:var(--surface);border:.5px solid var(--border-strong);border-radius:4px;padding:1px 5px;font-size:10px;font-weight:500;color:var(--text-muted);}
+
+  /* col widths */
   .co{width:13%;}.ce{width:10%;}.cc{width:24%;}.cd{width:9%;}.crq{width:9%;}.ca{width:8%;}.cv{width:15%;}.cs{width:12%;}
-  @media(max-width:768px){.hdr,.ctrl{padding:12px 16px;}.main{padding:14px;}.cd,.crq{display:none;}}
+  @media(max-width:768px){.hdr,.ctrl,.banner{padding:12px 16px;}.main{padding:14px;}.cd,.crq{display:none;}}
 </style>
 </head>
 <body>
@@ -105,7 +136,7 @@
     </div>
   </div>
   <div class="hr2">
-    <span class="ts">Data as of 18 Mar 2026, 09:14 NZT</span>
+    <span class="ts">Data as of 23 Mar 2026, 09:00 NZT</span>
     <a class="btnr" href="javascript:location.reload()">
       <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M14 8A6 6 0 1 1 8 2" stroke-linecap="round"/>
@@ -116,6 +147,8 @@
   </div>
 </div>
 
+<div id="banner" class="banner"></div>
+
 <div class="ctrl">
   <span class="fl">Entity</span>
   <div class="fg" id="ef"></div>
@@ -125,8 +158,20 @@
 </div>
 
 <div class="main">
-  <div class="slbl">Order status summary</div>
-  <div class="tiles" id="tiles"></div>
+
+  <!-- Status summary tiles -->
+  <div class="slbl">Order status</div>
+  <div class="tiles" id="statusTiles"></div>
+
+  <!-- KPI divider -->
+  <div class="section-divider">
+    <div class="slbl">Performance indicators</div>
+  </div>
+
+  <!-- KPI tiles -->
+  <div class="tiles" id="kpiTiles"></div>
+
+  <!-- Orders table -->
   <div>
     <div class="sh">
       <div>
@@ -155,13 +200,13 @@
 </div>
 
 <div class="fxbar">
-  <span class="fxlbl">FX rates used</span>
+  <span class="fxlbl">FX rates</span>
   <span class="fxrate"><span class="ccy-pill">WST</span> 1 WST = NZD 0.6197</span>
   <span class="fxrate"><span class="ccy-pill">SBD</span> 1 SBD = NZD 0.2119</span>
   <span class="fxrate"><span class="ccy-pill">VUV</span> 1 VUV = NZD 0.01370</span>
   <span class="fxrate"><span class="ccy-pill">TOP</span> 1 TOP = NZD 0.6904</span>
   <span class="fxrate"><span class="ccy-pill">NZD</span> RSP native</span>
-  <span style="color:var(--text-hint);">· XE mid-market rates, 18 Mar 2026 · Indicative only</span>
+  <span style="color:var(--text-hint);">· XE mid-market, 18 Mar 2026 · Indicative only</span>
 </div>
 
 <script>
@@ -170,251 +215,260 @@ const CCY={RSP:'NZD',Samoa:'WST',Solomons:'SBD',Vanuatu:'VUV',Tonga:'TOP'};
 
 const D=[
   // RSP (NZD)
-  {o:"RSPSO-00126534",e:"RSP",c:"Ricoh Samoa Limited",od:"2025-12-04",rd:"2025-12-04",s:"Parked",lv:582.71,a:103},
-  {o:"RSPSO-00126475",e:"RSP",c:"Cook Islands Printing Services",od:"2025-12-16",rd:"2025-12-16",s:"Parked",lv:26094.34,a:91},
-  {o:"RSPSO-00126607",e:"RSP",c:"Cook Islands Printing Services",od:"2026-01-16",rd:"2026-01-16",s:"Parked",lv:10625.78,a:60},
-  {o:"RSPSO-00126616",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-01-21",rd:"2026-01-21",s:"Backordered",lv:398.89,a:55},
-  {o:"RSPSO-00126617",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-01-21",rd:"2026-01-21",s:"Parked",lv:163.12,a:55},
-  {o:"RSPSO-00126620",e:"RSP",c:"Daltons Limited",od:"2026-01-22",rd:"2026-01-22",s:"Parked",lv:5549.90,a:54},
-  {o:"RSPSO-00126659",e:"RSP",c:"Cook Islands Printing Services",od:"2026-01-30",rd:"2026-01-30",s:"Backordered",lv:20266.88,a:46},
-  {o:"RSPSO-00126666",e:"RSP",c:"Telecom Fiji (Pte) Limited",od:"2026-02-03",rd:"2026-02-04",s:"Parked",lv:5599.88,a:42},
-  {o:"RSPSO-00126697",e:"RSP",c:"Ricoh Solomon Islands Limited",od:"2026-02-18",rd:"2026-02-18",s:"Backordered",lv:8340.40,a:27},
-  {o:"RSPSO-00126700",e:"RSP",c:"Ricoh Tonga Limited",od:"2026-02-20",rd:"2026-02-19",s:"Parked",lv:98.69,a:25},
-  {o:"RSPSO-00126708",e:"RSP",c:"Taapuna Creations",od:"2026-02-23",rd:"2026-02-23",s:"Backordered",lv:35085.81,a:22},
-  {o:"RSPSO-00126719",e:"RSP",c:"Holloway Hudson Burgess",od:"2026-02-24",rd:"2026-02-24",s:"Backordered",lv:4053.75,a:21},
-  {o:"RSPSO-00126717",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-02-24",rd:"2026-02-24",s:"Backordered",lv:1309.28,a:21},
-  {o:"RSPSO-00126715",e:"RSP",c:"Ricoh New Zealand Limited",od:"2026-02-24",rd:"2026-02-24",s:"Parked",lv:2477.00,a:21},
-  {o:"RSPSO-00126714",e:"RSP",c:"Alpine Print Limited",od:"2026-02-24",rd:"2026-02-24",s:"Parked",lv:0,a:21},
-  {o:"RSPSO-00126718",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-02-24",rd:"2026-02-24",s:"Backordered",lv:2302.68,a:21},
-  {o:"RSPSO-00126720",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-02-25",rd:"2026-02-25",s:"Parked",lv:801.16,a:20},
-  {o:"RSPSO-00126725",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-02-27",rd:"2026-02-27",s:"Backordered",lv:21073.89,a:18},
-  {o:"RSPSO-00126730",e:"RSP",c:"Ricoh Solomon Islands Limited",od:"2026-03-03",rd:"2026-03-03",s:"Parked",lv:5071.88,a:14},
-  {o:"RSPSO-00126740",e:"RSP",c:"Sun Productions",od:"2026-03-05",rd:"2026-03-05",s:"Parked",lv:210152.00,a:12},
-  {o:"RSPSO-00126741",e:"RSP",c:"McConnell Dowell Tonga",od:"2026-03-06",rd:"2026-03-06",s:"Parked",lv:13947.28,a:11},
-  {o:"RSPSO-00126742",e:"RSP",c:"Ricoh Tonga Limited",od:"2026-03-09",rd:"2026-03-09",s:"Parked",lv:1087.50,a:8},
-  {o:"RSPSO-00126744",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-10",rd:"2026-03-10",s:"Parked",lv:641.45,a:7},
-  {o:"RSPSO-00126745",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-10",rd:"2026-03-10",s:"Parked",lv:1164.09,a:7},
-  {o:"RSPSO-00126746",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-10",rd:"2026-03-10",s:"Parked",lv:267403.52,a:7},
-  {o:"RSPSO-00126747",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-10",rd:"2026-03-10",s:"Parked",lv:53227.75,a:7},
-  {o:"RSPSO-00126748",e:"RSP",c:"The Asia Foundation - Fiji",od:"2026-03-10",rd:"2026-03-10",s:"Parked",lv:27337.16,a:7},
-  {o:"RSPSO-00126750",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-03-11",rd:"2026-03-11",s:"Parked",lv:1628.32,a:6},
-  {o:"RSPSO-00126756",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-12",rd:"2026-03-12",s:"Backordered",lv:363.10,a:5},
-  {o:"RSPSO-00126755",e:"RSP",c:"Congregational Christian Church of Samoa",od:"2026-03-12",rd:"2026-03-12",s:"Parked",lv:2298.85,a:5},
-  {o:"RSPSO-00126761",e:"RSP",c:"Alpine Print Limited",od:"2026-03-13",rd:"2026-03-13",s:"Backordered",lv:0,a:4},
-  {o:"RSPSO-00126762",e:"RSP",c:"Congregational Christian Church of Samoa",od:"2026-03-16",rd:"2026-03-13",s:"Parked",lv:2298.85,a:1},
-  {o:"RSPSO-00126765",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:8555.60,a:0},
-  {o:"RSPSO-00126767",e:"RSP",c:"WinMac Computer Solutions",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:111.32,a:0},
-  {o:"RSPSO-00126766",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:48598.20,a:0},
-  {o:"RSPSO-00126763",e:"RSP",c:"WinMac Computer Solutions",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:128.57,a:0},
+  {o:"RSPSO-00126607",e:"RSP",c:"Cook Islands Printing Services",od:"2026-01-16",rd:"2026-01-16",s:"Parked",lv:10625.78,a:66},
+  {o:"RSPSO-00126617",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-01-21",rd:"2026-01-21",s:"Parked",lv:163.12,a:61},
+  {o:"RSPSO-00126620",e:"RSP",c:"Daltons Limited",od:"2026-01-22",rd:"2026-01-22",s:"Parked",lv:5549.90,a:60},
+  {o:"RSPSO-00126659",e:"RSP",c:"Cook Islands Printing Services",od:"2026-01-30",rd:"2026-01-30",s:"Backordered",lv:20266.88,a:52},
+  {o:"RSPSO-00126666",e:"RSP",c:"Telecom Fiji (Pte) Limited",od:"2026-02-03",rd:"2026-02-04",s:"Parked",lv:5599.88,a:48},
+  {o:"RSPSO-00126697",e:"RSP",c:"Ricoh Solomon Islands Limited",od:"2026-02-18",rd:"2026-02-18",s:"Backordered",lv:8340.40,a:33},
+  {o:"RSPSO-00126700",e:"RSP",c:"Ricoh Tonga Limited",od:"2026-02-20",rd:"2026-02-19",s:"Parked",lv:98.69,a:31},
+  {o:"RSPSO-00126708",e:"RSP",c:"Taapuna Creations",od:"2026-02-23",rd:"2026-02-23",s:"Backordered",lv:35085.81,a:28},
+  {o:"RSPSO-00126719",e:"RSP",c:"Holloway Hudson Burgess",od:"2026-02-24",rd:"2026-02-24",s:"Backordered",lv:4053.75,a:27},
+  {o:"RSPSO-00126718",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-02-24",rd:"2026-02-24",s:"Parked",lv:2302.68,a:27},
+  {o:"RSPSO-00126714",e:"RSP",c:"Alpine Print Limited",od:"2026-02-24",rd:"2026-02-24",s:"Parked",lv:0,a:27},
+  {o:"RSPSO-00126715",e:"RSP",c:"Ricoh New Zealand Limited",od:"2026-02-24",rd:"2026-02-24",s:"Parked",lv:2477.00,a:27},
+  {o:"RSPSO-00126717",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-02-24",rd:"2026-02-24",s:"Backordered",lv:1309.28,a:27},
+  {o:"RSPSO-00126725",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-02-27",rd:"2026-02-27",s:"Backordered",lv:21073.89,a:24},
+  {o:"RSPSO-00126730",e:"RSP",c:"Ricoh Solomon Islands Limited",od:"2026-03-03",rd:"2026-03-03",s:"Parked",lv:5071.88,a:20},
+  {o:"RSPSO-00126740",e:"RSP",c:"Sun Productions",od:"2026-03-05",rd:"2026-03-05",s:"Parked",lv:210152.00,a:18},
+  {o:"RSPSO-00126741",e:"RSP",c:"McConnell Dowell Tonga",od:"2026-03-06",rd:"2026-03-06",s:"Parked",lv:6973.64,a:17},
+  {o:"RSPSO-00126748",e:"RSP",c:"The Asia Foundation - Fiji",od:"2026-03-10",rd:"2026-03-10",s:"Parked",lv:27337.16,a:13},
+  {o:"RSPSO-00126747",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-10",rd:"2026-03-10",s:"Parked",lv:53227.75,a:13},
+  {o:"RSPSO-00126746",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-10",rd:"2026-03-10",s:"Parked",lv:267403.52,a:13},
+  {o:"RSPSO-00126756",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-12",rd:"2026-03-12",s:"Parked",lv:3276.18,a:11},
+  {o:"RSPSO-00126755",e:"RSP",c:"Congregational Christian Church of Samoa",od:"2026-03-12",rd:"2026-03-12",s:"Parked",lv:2298.85,a:11},
+  {o:"RSPSO-00126761",e:"RSP",c:"Alpine Print Limited",od:"2026-03-13",rd:"2026-03-13",s:"Backordered",lv:0,a:10},
+  {o:"RSPSO-00126767",e:"RSP",c:"WinMac Computer Solutions",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:111.32,a:6},
+  {o:"RSPSO-00126763",e:"RSP",c:"WinMac Computer Solutions",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:128.57,a:6},
+  {o:"RSPSO-00126765",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:14509.57,a:6},
+  {o:"RSPSO-00126766",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:48598.20,a:6},
+  {o:"RSPSO-00126769",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-18",rd:"2026-03-18",s:"Backordered",lv:3374.19,a:5},
+  {o:"RSPSO-00126475",e:"RSP",c:"Cook Islands Printing Services",od:"2026-03-18",rd:"2026-03-18",s:"Parked",lv:26094.34,a:5},
+  {o:"RSPSO-00126774",e:"RSP",c:"Ricoh Tonga Limited",od:"2026-03-20",rd:"2026-03-20",s:"Parked",lv:0.50,a:3},
+  {o:"RSPSO-00126776",e:"RSP",c:"Pacific Audio Visual Ltd",od:"2026-03-20",rd:"2026-03-20",s:"Parked",lv:1773.63,a:3},
+  {o:"RSPSO-00126775",e:"RSP",c:"McConnell Dowell Tonga",od:"2026-03-20",rd:"2026-03-20",s:"Parked",lv:8446.89,a:3},
+  {o:"RSPSO-00126781",e:"RSP",c:"Cash Sales Account",od:"2026-03-20",rd:"2026-03-20",s:"Parked",lv:587.35,a:3},
+  {o:"RSPSO-00126779",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-03-20",rd:"2026-03-20",s:"Backordered",lv:218.05,a:3},
+  {o:"RSPSO-00126778",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-03-20",rd:"2026-03-20",s:"Backordered",lv:542.28,a:3},
+  {o:"RSPSO-00126780",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-20",rd:"2026-03-20",s:"Backordered",lv:10161.50,a:3},
+  {o:"RSPSO-00126777",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-03-20",rd:"2026-03-20",s:"Backordered",lv:0,a:3},
+  {o:"RSPSO-00126783",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:1807.92,a:0},
+  {o:"RSPSO-00126782",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-23",rd:"2026-03-23",s:"Backordered",lv:1579.88,a:0},
   // Samoa (WST)
-  {o:"RSSO-00030811",e:"Samoa",c:"Ministry of Sports and Recreation",od:"2026-01-09",rd:"2026-04-30",s:"Backordered",lv:17801.94,a:67},
-  {o:"RSSO-00032723",e:"Samoa",c:"Samoa Land Transport Authority",od:"2026-02-18",rd:"2026-03-31",s:"Backordered",lv:10527.07,a:27},
-  {o:"RSSO-00032743",e:"Samoa",c:"Ministry of Works Transport & Infrastructure",od:"2026-02-19",rd:"2026-03-31",s:"Backordered",lv:25300.00,a:26},
-  {o:"RSSO-00032782",e:"Samoa",c:"Ricoh Samoa",od:"2026-02-25",rd:"2026-03-31",s:"Backordered",lv:0,a:20},
-  {o:"RSSO-00032816",e:"Samoa",c:"Malua Printing Press",od:"2026-02-27",rd:"2026-04-30",s:"Backordered",lv:41400.00,a:18},
-  {o:"RSSO-00032830",e:"Samoa",c:"CCCS - Toamua",od:"2026-03-03",rd:"2026-03-20",s:"Parked",lv:219.94,a:14},
-  {o:"RSSO-00032849",e:"Samoa",c:"CCCS Treasurer's Office",od:"2026-03-05",rd:"2026-03-31",s:"Backordered",lv:4098.07,a:12},
-  {o:"RSSO-00032858",e:"Samoa",c:"Ministry of Works Transport & Infrastructure",od:"2026-03-05",rd:"2026-03-20",s:"Parked",lv:25300.00,a:12},
-  {o:"RSSO-00032869",e:"Samoa",c:"Samoa Shipping Corporation",od:"2026-03-06",rd:"2026-03-31",s:"Backordered",lv:37950.00,a:11},
-  {o:"RSSO-00032912",e:"Samoa",c:"Samoa Bureau of Statistics",od:"2026-03-12",rd:"2026-03-20",s:"Backordered",lv:1101.07,a:5},
-  {o:"RSSO-00032920",e:"Samoa",c:"Samoa Audit Office (SAO)",od:"2026-03-13",rd:"2026-03-27",s:"Backordered",lv:33350.00,a:4},
-  {o:"RSSO-00032932",e:"Samoa",c:"Ministry of Police (Samoa)",od:"2026-03-13",rd:"2026-03-27",s:"Backordered",lv:8970.00,a:4},
-  {o:"RSSO-00032917",e:"Samoa",c:"Conservation International",od:"2026-03-13",rd:"2026-03-27",s:"Backordered",lv:5888.36,a:4},
-  {o:"RSSO-00032946",e:"Samoa",c:"World Bank (Samoa)",od:"2026-03-16",rd:"2026-03-29",s:"Parked",lv:45724.21,a:1},
-  {o:"RSSO-00032962",e:"Samoa",c:"Ministry of Works Transport & Infrastructure",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:7289.88,a:0},
-  {o:"RSSO-00032947",e:"Samoa",c:"M. Lemisio Law Firm",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:0},
-  {o:"RSSO-00032964",e:"Samoa",c:"Arista Finance",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:0},
-  {o:"RSSO-00032963",e:"Samoa",c:"The Produce Company",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:0},
+  {o:"RSSO-00032723",e:"Samoa",c:"Samoa Land Transport Authority",od:"2026-02-18",rd:"2026-03-31",s:"Backordered",lv:10527.07,a:33},
+  {o:"RSSO-00032743",e:"Samoa",c:"Ministry of Works Transport & Infrastructure",od:"2026-02-19",rd:"2026-03-31",s:"Backordered",lv:25300.00,a:32},
+  {o:"RSSO-00032782",e:"Samoa",c:"Ricoh Samoa",od:"2026-02-25",rd:"2026-03-31",s:"Backordered",lv:0,a:26},
+  {o:"RSSO-00032816",e:"Samoa",c:"Malua Printing Press",od:"2026-02-27",rd:"2026-04-30",s:"Backordered",lv:41400.00,a:24},
+  {o:"RSSO-00032830",e:"Samoa",c:"CCCS - Toamua",od:"2026-03-03",rd:"2026-03-23",s:"Parked",lv:219.94,a:20},
+  {o:"RSSO-00032849",e:"Samoa",c:"CCCS Treasurer's Office",od:"2026-03-05",rd:"2026-03-31",s:"Backordered",lv:4098.07,a:18},
+  {o:"RSSO-00032858",e:"Samoa",c:"Ministry of Works Transport & Infrastructure",od:"2026-03-05",rd:"2026-03-23",s:"Parked",lv:25300.00,a:18},
+  {o:"RSSO-00032869",e:"Samoa",c:"Samoa Shipping Corporation",od:"2026-03-06",rd:"2026-03-31",s:"Backordered",lv:37950.00,a:17},
+  {o:"RSSO-00032912",e:"Samoa",c:"Samoa Bureau of Statistics",od:"2026-03-12",rd:"2026-03-31",s:"Backordered",lv:1101.07,a:11},
+  {o:"RSSO-00032932",e:"Samoa",c:"Ministry of Police (Samoa)",od:"2026-03-13",rd:"2026-03-27",s:"Backordered",lv:8970.00,a:10},
+  {o:"RSSO-00032920",e:"Samoa",c:"Samoa Audit Office (SAO)",od:"2026-03-13",rd:"2026-03-27",s:"Backordered",lv:33350.00,a:10},
+  {o:"RSSO-00032917",e:"Samoa",c:"Conservation International",od:"2026-03-13",rd:"2026-03-27",s:"Backordered",lv:5888.36,a:10},
+  {o:"RSSO-00032946",e:"Samoa",c:"World Bank (Samoa)",od:"2026-03-16",rd:"2026-03-29",s:"Backordered",lv:45724.21,a:7},
+  {o:"RSSO-00032962",e:"Samoa",c:"Ministry of Works Transport & Infrastructure",od:"2026-03-17",rd:"2026-03-31",s:"Backordered",lv:7289.88,a:6},
+  {o:"RSSO-00032947",e:"Samoa",c:"M. Lemisio Law Firm",od:"2026-03-17",rd:"2026-03-23",s:"Parked",lv:0,a:6},
+  {o:"RSSO-00030811",e:"Samoa",c:"Ministry of Sports and Recreation",od:"2026-03-18",rd:"2026-04-30",s:"Backordered",lv:17801.94,a:5},
+  {o:"RSSO-00033002",e:"Samoa",c:"Ricoh Samoa",od:"2026-03-20",rd:"2026-03-23",s:"Parked",lv:5680.69,a:3},
+  {o:"RSSO-00033010",e:"Samoa",c:"Samoa Bureau of Statistics",od:"2026-03-23",rd:"2026-03-23",s:"Backordered",lv:0,a:0},
   // Solomons (SBD)
-  {o:"RSISO-00019799",e:"Solomons",c:"Bank South Pacific (SI)",od:"2025-12-12",rd:"2025-12-12",s:"Parked",lv:273.88,a:95},
-  {o:"RSISO-00019786",e:"Solomons",c:"Asian Development Bank (SI)",od:"2025-12-15",rd:"2025-12-15",s:"Parked",lv:123500.00,a:92},
-  {o:"RSISO-00020062",e:"Solomons",c:"Asian Development Bank (SI)",od:"2026-02-19",rd:"2026-02-19",s:"Parked",lv:26000.00,a:26},
-  {o:"RSISO-00020072",e:"Solomons",c:"Cash Sales Account",od:"2026-03-04",rd:"2026-03-04",s:"Placed",lv:18496.00,a:13},
-  {o:"RSISO-00020102",e:"Solomons",c:"World Bank (Solomon Islands)",od:"2026-03-04",rd:"2026-03-15",s:"Backordered",lv:0,a:13},
-  {o:"RSISO-00020136",e:"Solomons",c:"Bulk Shop",od:"2026-03-10",rd:"2026-03-10",s:"Backordered",lv:0,a:7},
-  {o:"RSISO-00020138",e:"Solomons",c:"National Parliament Office",od:"2026-03-10",rd:"2026-03-10",s:"Parked",lv:260000.00,a:7},
-  {o:"RSISO-00020142",e:"Solomons",c:"Guadalcanal Provincial Government",od:"2026-03-11",rd:"2026-03-11",s:"Backordered",lv:1661.00,a:6},
-  {o:"RSISO-00020141",e:"Solomons",c:"Solomon Islands Tobacco Company",od:"2026-03-11",rd:"2026-03-11",s:"Parked",lv:91000.00,a:6},
-  {o:"RSISO-00020139",e:"Solomons",c:"Kulu Community High School",od:"2026-03-11",rd:"2026-03-11",s:"Parked",lv:941.60,a:6},
-  {o:"RSISO-00020092",e:"Solomons",c:"University of the South Pacific (SI)",od:"2026-03-12",rd:"2026-03-12",s:"Parked",lv:0,a:5},
-  {o:"RSISO-00020151",e:"Solomons",c:"Ricoh Solomon Islands Limited",od:"2026-03-13",rd:"2026-03-13",s:"Parked",lv:0,a:4},
-  {o:"RSISO-00020156",e:"Solomons",c:"Solomon Water",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:0,a:1},
-  {o:"RSISO-00020153",e:"Solomons",c:"RSE Limited",od:"2026-03-16",rd:"2026-03-16",s:"Backordered",lv:0,a:1},
-  {o:"RSISO-00020133",e:"Solomons",c:"CBIT Project - Climate Change Division",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:143569.40,a:1},
-  {o:"RSISO-00020154",e:"Solomons",c:"Bank South Pacific (SI)",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:0,a:1},
+  {o:"RSISO-00019799",e:"Solomons",c:"Bank South Pacific (SI)",od:"2025-12-12",rd:"2025-12-12",s:"Parked",lv:273.88,a:101},
+  {o:"RSISO-00019786",e:"Solomons",c:"Asian Development Bank (SI)",od:"2025-12-15",rd:"2025-12-15",s:"Parked",lv:123500.00,a:98},
+  {o:"RSISO-00020062",e:"Solomons",c:"Asian Development Bank (SI)",od:"2026-02-19",rd:"2026-02-19",s:"Parked",lv:26000.00,a:32},
+  {o:"RSISO-00020102",e:"Solomons",c:"World Bank (Solomon Islands)",od:"2026-03-04",rd:"2026-03-15",s:"Backordered",lv:0,a:19},
+  {o:"RSISO-00020138",e:"Solomons",c:"National Parliament Office",od:"2026-03-10",rd:"2026-03-10",s:"Parked",lv:260000.00,a:13},
+  {o:"RSISO-00020142",e:"Solomons",c:"Guadalcanal Provincial Government",od:"2026-03-11",rd:"2026-03-11",s:"Backordered",lv:1661.00,a:12},
+  {o:"RSISO-00020153",e:"Solomons",c:"RSE Limited",od:"2026-03-16",rd:"2026-03-16",s:"Backordered",lv:0,a:7},
+  {o:"RSISO-00020158",e:"Solomons",c:"Bmobile (Solomon Islands) Limited",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:6},
+  {o:"RSISO-00020159",e:"Solomons",c:"Bmobile (Solomon Islands) Limited",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:6},
+  {o:"RSISO-00020161",e:"Solomons",c:"Ricoh Solomon Islands Limited",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:6},
+  {o:"RSISO-00020136",e:"Solomons",c:"Bulk Shop",od:"2026-03-18",rd:"2026-03-18",s:"Placed",lv:0,a:5},
+  {o:"RSISO-00020169",e:"Solomons",c:"World Vision (Solomon Islands)",od:"2026-03-19",rd:"2026-03-19",s:"Parked",lv:1883.20,a:4},
+  {o:"RSISO-00020176",e:"Solomons",c:"Kulu Community High School",od:"2026-03-19",rd:"2026-03-19",s:"Parked",lv:7662.42,a:4},
+  {o:"RSISO-00020173",e:"Solomons",c:"Solomon Water",od:"2026-03-19",rd:"2026-03-19",s:"Backordered",lv:0,a:4},
+  {o:"RSISO-00020177",e:"Solomons",c:"Bank South Pacific (SI)",od:"2026-03-19",rd:"2026-03-19",s:"Parked",lv:0,a:4},
+  {o:"RSISO-00020141",e:"Solomons",c:"Solomon Islands Tobacco Company",od:"2026-03-20",rd:"2026-03-20",s:"Parked",lv:91000.00,a:3},
+  {o:"RSISO-00020181",e:"Solomons",c:"Pink South Pacific Limited",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:941.60,a:0},
+  {o:"RSISO-00020183",e:"Solomons",c:"Solomon Airlines",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
+  {o:"RSISO-00020186",e:"Solomons",c:"Pacific Labour Mobility Support Program",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
   // Vanuatu (VUV)
-  {o:"RVSO-00031797",e:"Vanuatu",c:"World Bank (Vanuatu)",od:"2025-01-16",rd:"2025-01-16",s:"Parked",lv:1557993.00,a:425},
-  {o:"RVSO-00032353",e:"Vanuatu",c:"Vanuatu Financial Services Commission",od:"2025-04-10",rd:"2025-04-10",s:"Parked",lv:578496.00,a:341},
-  {o:"RVSO-00033242",e:"Vanuatu",c:"Customary Land Management Office",od:"2025-10-28",rd:"2025-10-28",s:"Placed",lv:980836.00,a:140},
-  {o:"RVSO-00033531",e:"Vanuatu",c:"United Nations Development Program",od:"2025-10-28",rd:"2025-10-28",s:"Placed",lv:9350.00,a:140},
-  {o:"RVSO-00033516",e:"Vanuatu",c:"Cash Sales Account",od:"2025-10-28",rd:"2025-10-28",s:"Parked",lv:26500.00,a:140},
-  {o:"RVSO-00033841",e:"Vanuatu",c:"UN Women (Vanuatu)",od:"2025-10-31",rd:"2025-10-31",s:"Parked",lv:9350.00,a:137},
-  {o:"RVSO-00033846",e:"Vanuatu",c:"National Archives of Vanuatu",od:"2025-11-03",rd:"2025-11-20",s:"Parked",lv:1472000.00,a:134},
-  {o:"RVSO-00033996",e:"Vanuatu",c:"Vanuatu Mobile Force (VMF)",od:"2025-11-20",rd:"2025-11-20",s:"Parked",lv:66901.00,a:117},
-  {o:"RVSO-00034100",e:"Vanuatu",c:"Vanuatu Terminal Services",od:"2025-12-05",rd:"2025-12-05",s:"Parked",lv:250000.00,a:102},
-  {o:"RVSO-00034121",e:"Vanuatu",c:"Vanuatu Mobile Force (VMF)",od:"2025-12-10",rd:"2025-12-31",s:"Backordered",lv:0,a:97},
-  {o:"RVSO-00034123",e:"Vanuatu",c:"Asian Development Bank (Vanuatu)",od:"2025-12-10",rd:"2025-12-10",s:"Parked",lv:1548500.00,a:97},
-  {o:"RVSO-00034211",e:"Vanuatu",c:"Ricoh Vanuatu",od:"2026-01-09",rd:"2026-01-09",s:"Backordered",lv:0,a:67},
-  {o:"RVSO-00034215",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-01-09",rd:"2026-01-09",s:"Backordered",lv:47544.00,a:67},
-  {o:"RVSO-00034248",e:"Vanuatu",c:"Molbaleh & Taiva Lawyers",od:"2026-01-16",rd:"2026-01-30",s:"Parked",lv:299000.00,a:60},
-  {o:"RVSO-00034268",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-01-21",rd:"2026-01-21",s:"Parked",lv:35650.00,a:55},
-  {o:"RVSO-00034313",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-02-02",rd:"2026-02-02",s:"Backordered",lv:710691.00,a:43},
-  {o:"RVSO-00034365",e:"Vanuatu",c:"Ricoh Vanuatu",od:"2026-02-09",rd:"2026-02-09",s:"Parked",lv:0,a:36},
-  {o:"RVSO-00034391",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-02-11",rd:"2026-02-11",s:"Backordered",lv:323817.00,a:34},
-  {o:"RVSO-00034460",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-02-19",rd:"2026-02-19",s:"Backordered",lv:440787.00,a:26},
-  {o:"RVSO-00034478",e:"Vanuatu",c:"Central School",od:"2026-02-20",rd:"2026-02-20",s:"Backordered",lv:0,a:25},
-  {o:"RVSO-00034477",e:"Vanuatu",c:"Airports Vanuatu Limited",od:"2026-02-20",rd:"2026-02-20",s:"Parked",lv:62566.00,a:25},
-  {o:"RVSO-00034550",e:"Vanuatu",c:"Unelco Vanuatu Limited",od:"2026-03-04",rd:"2026-03-04",s:"Parked",lv:0,a:13},
-  {o:"RVSO-00034546",e:"Vanuatu",c:"USP Emalus Campus",od:"2026-03-04",rd:"2026-03-04",s:"Placed",lv:0,a:13},
-  {o:"RVSO-00034569",e:"Vanuatu",c:"Vanuatu College of Nursing Education",od:"2026-03-06",rd:"2026-03-06",s:"Parked",lv:197087.00,a:11},
-  {o:"RVSO-00034591",e:"Vanuatu",c:"World Vision (Vanuatu)",od:"2026-03-10",rd:"2026-03-31",s:"Backordered",lv:690000.00,a:7},
-  {o:"RVSO-00034601",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-03-11",rd:"2026-03-11",s:"Parked",lv:18400.00,a:6},
-  {o:"RVSO-00034607",e:"Vanuatu",c:"AJC Chartered Professional Accountants",od:"2026-03-12",rd:"2026-03-12",s:"Placed",lv:165036.00,a:5},
-  {o:"RVSO-00034613",e:"Vanuatu",c:"USP Emalus Campus",od:"2026-03-13",rd:"2026-03-15",s:"Parked",lv:1835639.85,a:4},
-  {o:"RVSO-00034618",e:"Vanuatu",c:"Suango Primary School",od:"2026-03-13",rd:"2026-03-13",s:"Parked",lv:0,a:4},
-  {o:"RVSO-00034617",e:"Vanuatu",c:"Central School",od:"2026-03-13",rd:"2026-03-13",s:"Parked",lv:16784.00,a:4},
-  {o:"RVSO-00034616",e:"Vanuatu",c:"National Archives of Vanuatu",od:"2026-03-13",rd:"2026-03-13",s:"Placed",lv:82369.00,a:4},
-  {o:"RVSO-00034615",e:"Vanuatu",c:"Peter Pan International Grammar School",od:"2026-03-13",rd:"2026-03-13",s:"Parked",lv:0,a:4},
-  {o:"RVSO-00034620",e:"Vanuatu",c:"BRED Bank (Vanuatu)",od:"2026-03-13",rd:"2026-03-13",s:"Parked",lv:0,a:4},
-  {o:"RVSO-00034611",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-03-13",rd:"2026-03-13",s:"Backordered",lv:82124.00,a:4},
-  {o:"RVSO-00034622",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:74156.60,a:1},
-  {o:"RVSO-00034625",e:"Vanuatu",c:"Survival School",od:"2026-03-16",rd:"2026-03-16",s:"Placed",lv:33730.00,a:1},
-  {o:"RVSO-00034623",e:"Vanuatu",c:"Société de Services Pétroliers",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:0,a:1},
-  {o:"RVSO-00034629",e:"Vanuatu",c:"Vanuatu Institute of Technology",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:1100001.00,a:1},
-  {o:"RVSO-00034631",e:"Vanuatu",c:"Vanuatu Institute of Technology",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:1100001.00,a:1},
-  {o:"RVSO-00034628",e:"Vanuatu",c:"Vanpawa",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:0,a:1},
-  {o:"RVSO-00034624",e:"Vanuatu",c:"Life Changer Christian College",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:0,a:1},
-  {o:"RVSO-00034626",e:"Vanuatu",c:"Life Changer Christian College",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:0,a:1},
-  // Tonga (TOP) — NEW
-  {o:"RTSO-00026057",e:"Tonga",c:"Free Wesleyan Church of Tonga",od:"2025-12-19",rd:"2025-12-19",s:"Parked",lv:5978.85,a:89},
-  {o:"RTSO-00026247",e:"Tonga",c:"MEIDECC",od:"2026-02-12",rd:"2026-02-12",s:"Backordered",lv:34497.70,a:34},
-  {o:"RTSO-00026306",e:"Tonga",c:"Statistics Department - Tonga",od:"2026-02-20",rd:"2026-02-20",s:"Parked",lv:40248.87,a:26},
-  {o:"RTSO-00026282",e:"Tonga",c:"MEIDECC",od:"2026-03-04",rd:"2026-03-04",s:"Parked",lv:3612.80,a:14},
-  {o:"RTSO-00026337",e:"Tonga",c:"Ministry of Education - CDU (Tonga)",od:"2026-03-04",rd:"2026-03-04",s:"Backordered",lv:10614.93,a:14},
-  {o:"RTSO-00026350",e:"Tonga",c:"Pacific Australia Skills",od:"2026-03-09",rd:"2026-03-09",s:"Parked",lv:48456.40,a:9},
-  {o:"RTSO-00026358",e:"Tonga",c:"Bank South Pacific (Tonga)",od:"2026-03-11",rd:"2026-03-11",s:"Parked",lv:23000.03,a:7},
-  {o:"RTSO-00026355",e:"Tonga",c:"Prime Minister's Office (Tonga)",od:"2026-03-11",rd:"2026-03-11",s:"Backordered",lv:3528.00,a:7},
-  {o:"RTSO-00026366",e:"Tonga",c:"Pacific Australia Skills",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:1},
+  {o:"RVSO-00032353",e:"Vanuatu",c:"Vanuatu Financial Services Commission",od:"2025-04-10",rd:"2025-04-10",s:"Parked",lv:578496.00,a:347},
+  {o:"RVSO-00033516",e:"Vanuatu",c:"Cash Sales Account",od:"2025-10-28",rd:"2025-10-28",s:"Parked",lv:26500.00,a:146},
+  {o:"RVSO-00033242",e:"Vanuatu",c:"Customary Land Management Office",od:"2025-10-28",rd:"2025-10-28",s:"Placed",lv:980836.00,a:146},
+  {o:"RVSO-00034121",e:"Vanuatu",c:"Vanuatu Mobile Force (VMF)",od:"2025-12-10",rd:"2025-12-31",s:"Backordered",lv:0,a:103},
+  {o:"RVSO-00034123",e:"Vanuatu",c:"Asian Development Bank (Vanuatu)",od:"2025-12-10",rd:"2025-12-10",s:"Parked",lv:1548500.00,a:103},
+  {o:"RVSO-00034211",e:"Vanuatu",c:"Ricoh Vanuatu",od:"2026-01-09",rd:"2026-01-09",s:"Backordered",lv:0,a:73},
+  {o:"RVSO-00034215",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-01-09",rd:"2026-01-09",s:"Backordered",lv:47544.00,a:73},
+  {o:"RVSO-00034268",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-01-21",rd:"2026-01-21",s:"Parked",lv:35650.00,a:61},
+  {o:"RVSO-00034313",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-02-02",rd:"2026-02-02",s:"Backordered",lv:710691.00,a:49},
+  {o:"RVSO-00034460",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-02-19",rd:"2026-02-19",s:"Backordered",lv:440787.00,a:32},
+  {o:"RVSO-00034478",e:"Vanuatu",c:"Central School",od:"2026-02-20",rd:"2026-02-20",s:"Backordered",lv:0,a:31},
+  {o:"RVSO-00034477",e:"Vanuatu",c:"Airports Vanuatu Limited",od:"2026-02-20",rd:"2026-02-20",s:"Parked",lv:62566.00,a:31},
+  {o:"RVSO-00034550",e:"Vanuatu",c:"Unelco Vanuatu Limited",od:"2026-03-04",rd:"2026-03-04",s:"Parked",lv:0,a:19},
+  {o:"RVSO-00034546",e:"Vanuatu",c:"USP Emalus Campus",od:"2026-03-04",rd:"2026-03-04",s:"Placed",lv:0,a:19},
+  {o:"RVSO-00034569",e:"Vanuatu",c:"Vanuatu College of Nursing Education",od:"2026-03-06",rd:"2026-03-06",s:"Parked",lv:197087.00,a:17},
+  {o:"RVSO-00034591",e:"Vanuatu",c:"World Vision (Vanuatu)",od:"2026-03-10",rd:"2026-03-31",s:"Backordered",lv:690000.00,a:13},
+  {o:"RVSO-00034601",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-03-11",rd:"2026-03-11",s:"Parked",lv:18400.00,a:12},
+  {o:"RVSO-00034607",e:"Vanuatu",c:"AJC Chartered Professional Accountants",od:"2026-03-12",rd:"2026-03-12",s:"Placed",lv:165036.00,a:11},
+  {o:"RVSO-00034613",e:"Vanuatu",c:"USP Emalus Campus",od:"2026-03-13",rd:"2026-03-15",s:"Parked",lv:1835639.85,a:11},
+  {o:"RVSO-00034615",e:"Vanuatu",c:"Peter Pan International Grammar School",od:"2026-03-13",rd:"2026-03-13",s:"Parked",lv:0,a:10},
+  {o:"RVSO-00034611",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-03-13",rd:"2026-03-13",s:"Backordered",lv:82124.00,a:10},
+  {o:"RVSO-00034622",e:"Vanuatu",c:"Sun Productions Printers",od:"2026-03-16",rd:"2026-03-16",s:"Backordered",lv:74157.00,a:7},
+  {o:"RVSO-00034625",e:"Vanuatu",c:"Survival School",od:"2026-03-16",rd:"2026-03-16",s:"Placed",lv:33730.00,a:7},
+  {o:"RVSO-00034629",e:"Vanuatu",c:"Vanuatu Institute of Technology",od:"2026-03-16",rd:"2026-03-16",s:"Parked",lv:1100001.00,a:7},
+  {o:"RVSO-00034634",e:"Vanuatu",c:"National Archives of Vanuatu",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:1472000.00,a:6},
+  {o:"RVSO-00034637",e:"Vanuatu",c:"Unelco Vanuatu Limited",od:"2026-03-17",rd:"2026-03-17",s:"Backordered",lv:0,a:6},
+  {o:"RVSO-00034248",e:"Vanuatu",c:"Molbaleh & Taiva Lawyers",od:"2026-03-18",rd:"2026-03-18",s:"Parked",lv:299000.00,a:5},
+  {o:"RVSO-00034646",e:"Vanuatu",c:"Rensarie College",od:"2026-03-18",rd:"2026-03-18",s:"Parked",lv:288031.00,a:5},
+  {o:"RVSO-00034660",e:"Vanuatu",c:"Central School",od:"2026-03-19",rd:"2026-03-19",s:"Parked",lv:1610000.00,a:4},
+  {o:"RVSO-00034675",e:"Vanuatu",c:"Vanuatu Institute of Teachers Education",od:"2026-03-20",rd:"2026-03-20",s:"Backordered",lv:312695.00,a:3},
+  {o:"RVSO-00034676",e:"Vanuatu",c:"Vanuatu National Provident Fund",od:"2026-03-20",rd:"2026-03-20",s:"Parked",lv:0,a:3},
+  {o:"RVSO-00034678",e:"Vanuatu",c:"Ricoh Vanuatu",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:1},
+  {o:"RVSO-00034683",e:"Vanuatu",c:"Agence Gauchet",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
+  {o:"RVSO-00034679",e:"Vanuatu",c:"Agence Gauchet",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
+  {o:"RVSO-00034687",e:"Vanuatu",c:"Save the Children (Vanuatu)",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
+  {o:"RVSO-00034685",e:"Vanuatu",c:"Central School",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
+  {o:"RVSO-00034688",e:"Vanuatu",c:"Life Changer Christian College",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
+  // Tonga (TOP)
+  {o:"RTSO-00026247",e:"Tonga",c:"MEIDECC",od:"2026-02-12",rd:"2026-02-12",s:"Backordered",lv:34497.70,a:39},
+  {o:"RTSO-00026306",e:"Tonga",c:"Statistics Department - Tonga",od:"2026-02-20",rd:"2026-02-20",s:"Parked",lv:40248.87,a:31},
+  {o:"RTSO-00026282",e:"Tonga",c:"MEIDECC",od:"2026-03-04",rd:"2026-03-04",s:"Parked",lv:3612.80,a:19},
+  {o:"RTSO-00026337",e:"Tonga",c:"Ministry of Education - CDU (Tonga)",od:"2026-03-04",rd:"2026-03-04",s:"Backordered",lv:10614.93,a:19},
+  {o:"RTSO-00026350",e:"Tonga",c:"Pacific Australia Skills",od:"2026-03-09",rd:"2026-03-09",s:"Parked",lv:48773.80,a:14},
+  {o:"RTSO-00026355",e:"Tonga",c:"Prime Minister's Office (Tonga)",od:"2026-03-11",rd:"2026-03-11",s:"Backordered",lv:3528.00,a:12},
+  {o:"RTSO-00026358",e:"Tonga",c:"Bank South Pacific (Tonga)",od:"2026-03-11",rd:"2026-03-11",s:"Parked",lv:23000.03,a:12},
+  {o:"RTSO-00026366",e:"Tonga",c:"Pacific Australia Skills",od:"2026-03-17",rd:"2026-03-17",s:"Parked",lv:0,a:6},
+  {o:"RTSO-00026376",e:"Tonga",c:"LDS Liahona High School",od:"2026-03-19",rd:"2026-03-19",s:"Parked",lv:0,a:4},
+  {o:"RTSO-00026378",e:"Tonga",c:"LDS Liahona High School",od:"2026-03-19",rd:"2026-03-19",s:"Backordered",lv:0,a:4},
+  {o:"RTSO-00026380",e:"Tonga",c:"LDS Saineha High School",od:"2026-03-20",rd:"2026-03-20",s:"Parked",lv:0,a:3},
+  {o:"RTSO-00026382",e:"Tonga",c:"Ahopanilolo Technical Institute",od:"2026-03-20",rd:"2026-03-20",s:"Parked",lv:0,a:3},
 ];
 
-// Pre-compute NZD value
 D.forEach(d=>{d.v=d.lv*FX[d.e];});
 
 const ENT=[...new Set(D.map(d=>d.e))];
 const STS=['Backordered','Parked','Placed'];
 let AE=new Set(),AS=new Set(),SF='age',SD='desc';
 
-function buildFilters(){
-  const ef=document.getElementById('ef'),sf=document.getElementById('sf');
-  const ae=mkChip('All',()=>{AE.clear();syncE();render();},true);
-  ae.classList.add('active','ea');ef.appendChild(ae);
-  ENT.forEach(e=>{
-    const c=mkChip(e+'  '+CCY[e],()=>{
-      document.querySelector('.ea').classList.remove('active');
-      AE.has(e)?AE.delete(e):AE.add(e);
-      c.classList.toggle('active');
-      if(!AE.size)document.querySelector('.ea').classList.add('active');
-      render();
-    });
-    ef.appendChild(c);
-  });
-  const as=mkChip('All',()=>{AS.clear();syncS();render();},true);
-  as.classList.add('active','sa2');sf.appendChild(as);
-  STS.forEach(s=>{
-    const c=mkChip(s,()=>{
-      document.querySelector('.sa2').classList.remove('active');
-      AS.has(s)?AS.delete(s):AS.add(s);
-      c.classList.toggle('active');
-      if(!AS.size)document.querySelector('.sa2').classList.add('active');
-      render();
-    });
-    sf.appendChild(c);
-  });
+// ── KPI calculations ──────────────────────────────────────────────
+function calcKPIs(data){
+  const total=data.length;
+  const bo=data.filter(d=>d.s==='Backordered');
+  const boCount=bo.length;
+  const aged30=data.filter(d=>d.a>=30);
+  const aged30Count=aged30.length;
+  const aged30Pct=total>0?Math.round(aged30Count/total*100):0;
+  const totalV=data.reduce((s,d)=>s+d.v,0);
+  const boV=bo.reduce((s,d)=>s+d.v,0);
+  const boValPct=totalV>0?Math.round(boV/totalV*100):0;
+  // avg backorder age (only backordered orders)
+  const avgBoAge=boCount>0?Math.round(bo.reduce((s,d)=>s+d.a,0)/boCount):0;
+  // avg age all open
+  const avgAge=total>0?Math.round(data.reduce((s,d)=>s+d.a,0)/total):0;
+  // oldest overall
+  const oldest=data.length>0?[...data].sort((a,b)=>b.a-a.a)[0]:null;
+  // oldest backorder
+  const oldestBo=bo.length>0?[...bo].sort((a,b)=>b.a-a.a)[0]:null;
+  return{total,boCount,aged30Count,aged30Pct,totalV,boV,boValPct,avgBoAge,avgAge,oldest,oldestBo};
 }
 
-function syncE(){document.querySelectorAll('#ef .chip:not(.ea)').forEach(c=>c.classList.remove('active'));document.querySelector('.ea').classList.add('active');}
-function syncS(){document.querySelectorAll('#sf .chip:not(.sa2)').forEach(c=>c.classList.remove('active'));document.querySelector('.sa2').classList.add('active');}
-function mkChip(l,fn,b){const el=document.createElement('div');el.className='chip';el.textContent=l;if(b)el.style.fontWeight='500';el.addEventListener('click',fn);return el;}
-
-function fil(){return D.filter(d=>(!AE.size||AE.has(d.e))&&(!AS.size||AS.has(d.s)));}
-
-function srt(data){return[...data].sort((a,b)=>{
-  let va,vb;
-  if(SF==='order'){va=a.o;vb=b.o;}
-  else if(SF==='entity'){va=a.e;vb=b.e;}
-  else if(SF==='customer'){va=a.c;vb=b.c;}
-  else if(SF==='date'){va=a.od;vb=b.od;}
-  else if(SF==='req'){va=a.rd;vb=b.rd;}
-  else if(SF==='age'){va=a.a;vb=b.a;}
-  else if(SF==='val'){va=a.v;vb=b.v;}
-  else if(SF==='status'){va=a.s;vb=b.s;}
-  if(typeof va==='string')return SD==='asc'?va.localeCompare(vb):vb.localeCompare(va);
-  return SD==='asc'?va-vb:vb-va;
-});}
-
-function sb2(f){if(SF===f)SD=SD==='asc'?'desc':'asc';else{SF=f;SD=(f==='age'||f==='val')?'desc':'asc';}render();}
-
-function fd(s){if(!s)return'—';const d=new Date(s);return d.toLocaleDateString('en-NZ',{day:'2-digit',month:'short'});}
-
-function fv(nzd,localV,entity){
-  if(!localV)return'<span style="color:var(--text-hint)">—</span>';
-  const ccy=CCY[entity];
-  const nf=nzd>=1000000?'NZ$'+(nzd/1000000).toFixed(2)+'M':nzd>=1000?'NZ$'+(nzd/1000).toFixed(1)+'K':'NZ$'+Math.round(nzd).toLocaleString('en-NZ');
-  if(ccy==='NZD')return nf;
-  const lf=localV>=1000000?(localV/1000000).toFixed(1)+'M':localV>=1000?(localV/1000).toFixed(0)+'K':Math.round(localV).toLocaleString();
-  return nf+'<span class="lccy">'+ccy+' '+lf+'</span>';
+// ── Banner ────────────────────────────────────────────────────────
+function renderBanner(kpi){
+  const b=document.getElementById('banner');
+  // Scoring: aged30Pct < 15% = winning, 15-30% = at risk, >30% = behind
+  const pct=kpi.aged30Pct;
+  if(pct<15){
+    b.className='banner win';
+    b.innerHTML=`<span class="banner-icon">●</span> Scoreboard: <strong>Winning</strong> <span class="banner-detail">— ${pct}% of open orders are aged 30+ days (target: below 15%)</span>`;
+  } else if(pct<=30){
+    b.className='banner risk';
+    b.innerHTML=`<span class="banner-icon">●</span> Scoreboard: <strong>At Risk</strong> <span class="banner-detail">— ${pct}% of open orders are aged 30+ days (target: below 15%)</span>`;
+  } else {
+    b.className='banner behind';
+    b.innerHTML=`<span class="banner-icon">●</span> Scoreboard: <strong>Behind</strong> <span class="banner-detail">— ${pct}% of open orders are aged 30+ days (target: below 15%)</span>`;
+  }
 }
 
-function fvSimple(nzd){
-  if(!nzd)return'—';
-  if(nzd>=1000000)return'NZ$'+(nzd/1000000).toFixed(2)+'M';
-  if(nzd>=1000)return'NZ$'+(nzd/1000).toFixed(1)+'K';
-  return'NZ$'+Math.round(nzd).toLocaleString('en-NZ');
-}
-
-function abadge(d){
-  if(d===0)return'<span class="ab an">Today</span>';
-  if(d>=60)return`<span class="ab ac">${d}d</span>`;
-  if(d>=30)return`<span class="ab aw">${d}d</span>`;
-  if(d>=7) return`<span class="ab ao">${d}d</span>`;
-  return`<span class="ab an">${d}d</span>`;
-}
-
-function render(){
-  const data=fil();
+// ── Status tiles ──────────────────────────────────────────────────
+function renderStatusTiles(data,kpi){
   const cnts={};STS.forEach(s=>cnts[s]=0);data.forEach(d=>{if(cnts[d.s]!==undefined)cnts[d.s]++;});
-  const tv=data.reduce((s,d)=>s+d.v,0);
-  const bv=data.filter(d=>d.s==='Backordered').reduce((s,d)=>s+d.v,0);
-  const a30=data.filter(d=>d.a>=30).length;
-
-  document.getElementById('tiles').innerHTML=`
-    <div class="tile"><div class="tlbl">Total open orders</div><div class="tn">${data.length}</div><div class="tsub">${fvSimple(tv)} total NZD</div></div>
-    <div class="tile" onclick="qf('Backordered')"><div class="tlbl"><span class="dot" style="background:#e24b4a"></span>Backordered</div><div class="tn">${cnts['Backordered']}</div><div class="tsub">${fvSimple(bv)}</div></div>
-    <div class="tile" onclick="qf('Parked')"><div class="tlbl"><span class="dot" style="background:#ba7517"></span>Parked</div><div class="tn">${cnts['Parked']}</div><div class="tsub">${cnts['Parked']} orders</div></div>
-    <div class="tile" onclick="qf('Placed')"><div class="tlbl"><span class="dot" style="background:#534ab7"></span>Placed</div><div class="tn">${cnts['Placed']}</div><div class="tsub">${cnts['Placed']} orders</div></div>
-    <div class="tile"><div class="tlbl">Aged 30+ days</div><div class="tn" style="color:var(--danger)">${a30}</div><div class="tsub">Needs immediate action</div></div>
+  document.getElementById('statusTiles').innerHTML=`
+    <div class="tile clickable" onclick=""><div class="tlbl">Total open orders</div><div class="tn">${data.length}</div><div class="tsub">${fvs(kpi.totalV)} total NZD</div></div>
+    <div class="tile clickable" onclick="qf('Backordered')"><div class="tlbl"><span class="dot" style="background:#e24b4a"></span>Backordered</div><div class="tn">${cnts['Backordered']}</div><div class="tsub">${fvs(kpi.boV)}</div></div>
+    <div class="tile clickable" onclick="qf('Parked')"><div class="tlbl"><span class="dot" style="background:#ba7517"></span>Parked</div><div class="tn">${cnts['Parked']}</div><div class="tsub">${cnts['Parked']} orders</div></div>
+    <div class="tile clickable" onclick="qf('Placed')"><div class="tlbl"><span class="dot" style="background:#534ab7"></span>Placed</div><div class="tn">${cnts['Placed']}</div><div class="tsub">${cnts['Placed']} orders</div></div>
   `;
+}
 
+// ── KPI tiles ─────────────────────────────────────────────────────
+function renderKPITiles(kpi){
+  const aged30Class=kpi.aged30Pct>30?'tile tile-danger':kpi.aged30Pct>15?'tile':'tile';
+  const aged30Color=kpi.aged30Pct>30?'var(--danger)':kpi.aged30Pct>15?'var(--warn)':'var(--text)';
+  const avgBoColor=kpi.avgBoAge>30?'var(--danger)':kpi.avgBoAge>14?'var(--warn)':'var(--text)';
+
+  document.getElementById('kpiTiles').innerHTML=`
+
+    <div class="${aged30Class}" onclick="filterAged()">
+      <div class="tlbl">Aged 30+ days</div>
+      <div class="tn" style="color:${aged30Color}">${kpi.aged30Count}</div>
+      <div class="tsub" style="color:${aged30Color};font-weight:500;">${kpi.aged30Pct}% of open orders</div>
+    </div>
+
+    <div class="tile">
+      <div class="tlbl">Avg backorder age</div>
+      <div class="tn" style="color:${avgBoColor}">${kpi.avgBoAge}d</div>
+      <div class="tsub">Across ${kpi.boCount} backordered orders</div>
+    </div>
+
+    <div class="tile">
+      <div class="tlbl">Avg age — all open</div>
+      <div class="tn">${kpi.avgAge}d</div>
+      <div class="tsub">Across all ${kpi.total} orders</div>
+    </div>
+
+    <div class="tile">
+      <div class="tlbl">Backorder value %</div>
+      <div class="tn" style="color:${kpi.boValPct>50?'var(--danger)':kpi.boValPct>30?'var(--warn)':'var(--text)'}">${kpi.boValPct}%</div>
+      <div class="tsub">Of total open NZD value</div>
+    </div>
+
+    <div class="tile" onclick="qf('Backordered')" style="cursor:pointer;">
+      <div class="tlbl">Oldest backorder</div>
+      <div class="tn-sm" style="color:var(--danger)">${kpi.oldestBo?kpi.oldestBo.a+'d':'—'}</div>
+      ${kpi.oldestBo?`<div class="tsub">${kpi.oldestBo.c.length>22?kpi.oldestBo.c.slice(0,22)+'…':kpi.oldestBo.c}</div><div class="tref">${kpi.oldestBo.e} · ${kpi.oldestBo.o}</div>`:'<div class="tsub">No backordered orders</div>'}
+    </div>
+
+    <div class="tile">
+      <div class="tlbl">Oldest open order</div>
+      <div class="tn-sm" style="color:${kpi.oldest&&kpi.oldest.a>=60?'var(--danger)':kpi.oldest&&kpi.oldest.a>=30?'var(--warn)':'var(--text)'}">${kpi.oldest?kpi.oldest.a+'d':'—'}</div>
+      ${kpi.oldest?`<div class="tsub">${kpi.oldest.c.length>22?kpi.oldest.c.slice(0,22)+'…':kpi.oldest.c}</div><div class="tref">${kpi.oldest.e} · ${kpi.oldest.o}</div>`:''}
+    </div>
+
+  `;
+}
+
+// ── Table ─────────────────────────────────────────────────────────
+function renderTable(data){
   const rows=srt(data);
   document.getElementById('cnt').textContent=rows.length+' order'+(rows.length!==1?'s':'');
   const rtv=rows.reduce((s,d)=>s+d.v,0);
   const rbo=rows.filter(d=>d.s==='Backordered').length;
   const ra=rows.filter(d=>d.a>=30).length;
   document.getElementById('srow').innerHTML=`
-    <span class="ss">Total NZD: <strong>${fvSimple(rtv)}</strong></span>
+    <span class="ss">Total NZD: <strong>${fvs(rtv)}</strong></span>
     <span style="color:var(--text-hint);margin:0 6px;">·</span>
     <span class="ss">Backordered: <strong>${rbo}</strong></span>
     <span style="color:var(--text-hint);margin:0 6px;">·</span>
     <span class="ss">Aged 30+ days: <strong style="color:var(--danger)">${ra}</strong></span>
   `;
-
   const flds=['order','entity','customer','date','req','age','val','status'];
   document.querySelectorAll('th').forEach((th,i)=>{
     const sa=th.querySelector('.sa');if(!sa)return;
     th.classList.toggle('sorted',flds[i]===SF);
     sa.textContent=flds[i]===SF?(SD==='asc'?'↑':'↓'):'↕';
   });
-
   const emp=document.getElementById('emp'),tb=document.getElementById('tb');
   if(!rows.length){tb.innerHTML='';emp.style.display='block';return;}
   emp.style.display='none';
@@ -432,10 +486,76 @@ function render(){
   `).join('');
 }
 
-function qf(s){AS.clear();AS.add(s);syncS();document.querySelectorAll('#sf .chip:not(.sa2)').forEach(c=>{if(c.textContent===s)c.classList.add('active');});render();}
+// ── Master render ─────────────────────────────────────────────────
+function render(){
+  const data=fil();
+  const kpi=calcKPIs(data);
+  renderBanner(kpi);
+  renderStatusTiles(data,kpi);
+  renderKPITiles(kpi);
+  renderTable(data);
+}
 
-buildFilters();
-render();
+// ── Filters ───────────────────────────────────────────────────────
+function buildFilters(){
+  const ef=document.getElementById('ef'),sf=document.getElementById('sf');
+  const ae=mkChip('All',()=>{AE.clear();syncE();render();},true);
+  ae.classList.add('active','ea');ef.appendChild(ae);
+  ENT.forEach(e=>{
+    const c=mkChip(e+'  '+CCY[e],()=>{
+      document.querySelector('.ea').classList.remove('active');
+      AE.has(e)?AE.delete(e):AE.add(e);c.classList.toggle('active');
+      if(!AE.size)document.querySelector('.ea').classList.add('active');
+      render();
+    });ef.appendChild(c);
+  });
+  const as=mkChip('All',()=>{AS.clear();syncS();render();},true);
+  as.classList.add('active','sa2');sf.appendChild(as);
+  STS.forEach(s=>{
+    const c=mkChip(s,()=>{
+      document.querySelector('.sa2').classList.remove('active');
+      AS.has(s)?AS.delete(s):AS.add(s);c.classList.toggle('active');
+      if(!AS.size)document.querySelector('.sa2').classList.add('active');
+      render();
+    });sf.appendChild(c);
+  });
+}
+function syncE(){document.querySelectorAll('#ef .chip:not(.ea)').forEach(c=>c.classList.remove('active'));document.querySelector('.ea').classList.add('active');}
+function syncS(){document.querySelectorAll('#sf .chip:not(.sa2)').forEach(c=>c.classList.remove('active'));document.querySelector('.sa2').classList.add('active');}
+function mkChip(l,fn,b){const el=document.createElement('div');el.className='chip';el.textContent=l;if(b)el.style.fontWeight='500';el.addEventListener('click',fn);return el;}
+function fil(){return D.filter(d=>(!AE.size||AE.has(d.e))&&(!AS.size||AS.has(d.s)));}
+function srt(data){return[...data].sort((a,b)=>{
+  let va,vb;
+  if(SF==='order'){va=a.o;vb=b.o;}else if(SF==='entity'){va=a.e;vb=b.e;}else if(SF==='customer'){va=a.c;vb=b.c;}else if(SF==='date'){va=a.od;vb=b.od;}else if(SF==='req'){va=a.rd;vb=b.rd;}else if(SF==='age'){va=a.a;vb=b.a;}else if(SF==='val'){va=a.v;vb=b.v;}else if(SF==='status'){va=a.s;vb=b.s;}
+  if(typeof va==='string')return SD==='asc'?va.localeCompare(vb):vb.localeCompare(va);
+  return SD==='asc'?va-vb:vb-va;
+});}
+function sb2(f){if(SF===f)SD=SD==='asc'?'desc':'asc';else{SF=f;SD=(f==='age'||f==='val')?'desc':'asc';}render();}
+function fd(s){if(!s)return'—';const d=new Date(s);return d.toLocaleDateString('en-NZ',{day:'2-digit',month:'short'});}
+function fv(nzd,lv,e){
+  if(!lv)return'<span style="color:var(--text-hint)">—</span>';
+  const ccy=CCY[e];
+  const nf=nzd>=1000000?'NZ$'+(nzd/1000000).toFixed(2)+'M':nzd>=1000?'NZ$'+(nzd/1000).toFixed(1)+'K':'NZ$'+Math.round(nzd).toLocaleString('en-NZ');
+  if(ccy==='NZD')return nf;
+  const lf=lv>=1000000?(lv/1000000).toFixed(1)+'M':lv>=1000?(lv/1000).toFixed(0)+'K':Math.round(lv).toLocaleString();
+  return nf+'<span class="lccy">'+ccy+' '+lf+'</span>';
+}
+function fvs(n){if(!n)return'—';if(n>=1000000)return'NZ$'+(n/1000000).toFixed(2)+'M';if(n>=1000)return'NZ$'+(n/1000).toFixed(1)+'K';return'NZ$'+Math.round(n).toLocaleString('en-NZ');}
+function abadge(d){
+  if(d===0)return'<span class="ab an">Today</span>';
+  if(d>=60)return`<span class="ab ac">${d}d</span>`;
+  if(d>=30)return`<span class="ab aw">${d}d</span>`;
+  if(d>=7) return`<span class="ab ao">${d}d</span>`;
+  return`<span class="ab an">${d}d</span>`;
+}
+function qf(s){AS.clear();AS.add(s);syncS();document.querySelectorAll('#sf .chip:not(.sa2)').forEach(c=>{if(c.textContent===s)c.classList.add('active');});render();}
+function filterAged(){
+  // scroll to table and show all aged 30+ — clear status filter, let table sort by age
+  AS.clear();syncS();SF='age';SD='desc';render();
+  document.querySelector('.tw').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+buildFilters();render();
 </script>
 </body>
 </html>
