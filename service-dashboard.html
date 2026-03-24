@@ -334,8 +334,18 @@ const escalatedN   = escalated ? escalated[2] : 0;
 // ── CASES LINK HELPER ────────────────────────
 // Builds a URL to cases-open.html with pre-set filters
 function casesUrl(territory, status, worktype) {
+  // Map full territory names (used in service dashboard) to short names (used in cases-open dropdown)
+  const terrMap = {
+    "New Zealand":    "NZ",
+    "Solomon Islands":"Solomons",
+    "No territory":   "Unassigned",
+    "Vanuatu":        "Vanuatu",
+    "Tonga":          "Tonga",
+    "Samoa":          "Samoa"
+  };
   const params = new URLSearchParams();
-  if (territory && territory !== "null") params.set('territory', territory);
+  const mappedTerr = terrMap[territory] || territory;
+  if (mappedTerr && mappedTerr !== "null") params.set('territory', mappedTerr);
   if (status)    params.set('status', status);
   if (worktype)  params.set('worktype', worktype);
   return 'cases-open.html?' + params.toString();
