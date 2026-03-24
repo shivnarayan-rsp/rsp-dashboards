@@ -304,6 +304,23 @@
     }
     .empty-state strong { display: block; margin-bottom: 6px; color: var(--text-muted); font-size: 14px; }
 
+    /* ── MIF COVERAGE BADGE ─────────────────────────────────── */
+    .mif-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .mif-covered { background: var(--green-bg); color: var(--green); }
+    .mif-zero    { background: var(--red-bg); color: var(--ricoh-red); }
+    .mif-unknown { background: #f0f0ef; color: var(--text-muted); }
+    .mif-platform { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+    .mif-note    { font-size: 10px; color: var(--ricoh-red); margin-top: 3px; line-height: 1.3; max-width: 160px; }
+
     /* ── FOOTER ─────────────────────────────────────────── */
     .dash-footer {
       text-align: center;
@@ -378,7 +395,7 @@
     <div class="table-card-header">
       <div>
         <div class="table-card-title">Top 10 SLOB SKUs per Entity</div>
-        <div class="table-card-sub">Stock aged &gt;12 months by last sale date · Sorted by total value descending · Red rows = 2+ years</div>
+        <div class="table-card-sub">Stock aged &gt;12 months by last sale date · Sorted by total value descending · Red rows = 2+ years · MIF coverage from Salesforce</div>
       </div>
     </div>
     <div class="action-bar">
@@ -387,6 +404,7 @@
       <span class="action-pill">Transfer to active entity</span>
       <span class="action-pill">Kit or bundle</span>
       <span class="action-pill">Write-off provision</span>
+      <span style="margin-left:12px;color:var(--text-light);font-size:11px;">MIF coverage sourced from Salesforce Assets · Active-Installed only · 24 Mar 2026</span>
     </div>
     <div class="tab-bar" id="slobTabBar"></div>
     <div id="slobTabPanels"></div>
@@ -474,6 +492,108 @@ const DATA = {
     WST: 0.6181,
     TOP: 0.7191,
     NZD: 1.0000
+  },
+
+  // ── MIF COVERAGE ─────────────────────────────────────────
+  // Source: Salesforce Assets — Status = 'Active - Installed'
+  // Queried 24 Mar 2026. Machine product codes mapped to
+  // Unleashed SLOB part descriptions by platform family.
+  // Territory mapping: Sharepoint__c field on Asset.
+  // RSP = "Ricoh South Pacific" | Samoa = "Ricoh Samoa Team"
+  // Solomons = "Ricoh Solomons Team" | Vanuatu = "Ricoh Vanuatu Team"
+  // Tonga = "Ricoh Tonga Team"
+  //
+  // partToMifMap: for each SLOB part code, which machine platform
+  // it fits, and how many active machines are installed per entity.
+  // "fits" is a display label. mif is { entity: count }.
+  // mifNote flags if the SLOB entity has zero coverage (write-off signal).
+  partToMifMap: {
+    // Ricoh Copier Parts — SLOB work list
+    "D2423091": { fits: "MPC3004 / MPC6004", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 15, "Tonga": 0 } },
+    "D0A44029": { fits: "IM 430F", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "IM 430F not in active MIF — write-off candidate" },
+    "D1863054": { fits: "MPC3003 / MPC3503", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC3003 platform has zero active MIF — write-off candidate" },
+    "D1764042": { fits: "MP C2003SP / C2503SP", mif: { "RSP": 0, "Samoa": 3, "Solomon Islands": 7, "Vanuatu": 2, "Tonga": 7 } },
+    "AE020268": { fits: "MPC3003 / MPC3503", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC3003 platform has zero active MIF — write-off candidate" },
+    "D3EW2796": { fits: "ProC9100", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "ProC9100 not in Pacific MIF — write-off candidate" },
+    "D0CB6201": { fits: "IM C300F", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "IM C300F not in active MIF — write-off candidate" },
+    "D1363407": { fits: "MPC6502", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC6502 not in active MIF — write-off candidate" },
+    // Tonga SLOB parts
+    "D0BK3002": { fits: "IM C2000 / IM C2500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 3, "Tonga": 0 } },
+    "D0BK3001": { fits: "IM C2000 / IM C2500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 3, "Tonga": 0 } },
+    "D0BK3003": { fits: "IM C2000 / IM C2500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 3, "Tonga": 0 } },
+    // Solomons SLOB parts
+    "D1464062": { fits: "MPC3003 / MPC3503", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC3003 platform has zero active MIF — write-off candidate" },
+    "D2423091_SL": { fits: "MPC3004 / MPC6004", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 15, "Tonga": 0 } },
+    // Vanuatu SLOB parts
+    "M0EB2320": { fits: "ProC7500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "ProC7500 not in Pacific MIF — write-off candidate" },
+    "M0EB9510": { fits: "ProC7500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "ProC7500 not in Pacific MIF — write-off candidate" },
+    "D0BL5836": { fits: "IM C2500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 3, "Tonga": 0 } },
+    "D0BQ3002": { fits: "IM C4500 / IM C6000", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 2, "Tonga": 0 } },
+    "D0BQ3001": { fits: "IM C4500 / IM C6000", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 2, "Tonga": 0 } },
+    "D0BQ3003": { fits: "IM C4500 / IM C6000", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 2, "Tonga": 0 } },
+    "D8694034": { fits: "MP3054", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MP3054 not in active MIF — write-off candidate" },
+    "D2385686": { fits: "MPC2504", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC2504 not in active MIF — write-off candidate" },
+    // Samoa SLOB parts
+    "D0392040": { fits: "MPC2050 / MPC2550", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC2050/2550 not in active MIF — write-off candidate" },
+    "D0C94038": { fits: "IM C300F", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "IM C300F not in active MIF — write-off candidate" },
+    "M2813030": { fits: "MP501", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MP501 not in active MIF — write-off candidate" },
+    "D1424273": { fits: "MPC3002 / MPC3502", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC3002/3502 not in active MIF — write-off candidate" },
+  },
+
+  // ── MIF SUMMARY BY TERRITORY ─────────────────────────────
+  // Active installed machine counts by model and territory
+  // Source: Salesforce Assets query 24 Mar 2026
+  mifByTerritory: {
+    "RSP": {
+      total: 0,
+      models: []
+    },
+    "Samoa": {
+      total: 493,
+      topModels: [
+        { name: "Ricoh M 2701",         code: "418120", count: 19 },
+        { name: "Ricoh IM C3010",        code: "419309", count: 11 },
+        { name: "Ricoh IM C6010",        code: "419338", count: 7  },
+        { name: "Ricoh IM 4000",         code: "418846", count: 3  },
+        { name: "MP C2503",              code: "916929", count: 3  },
+        { name: "Ricoh IM 550F",         code: "418460", count: 2  },
+        { name: "MP C4503",              code: "916522", count: 2  }
+      ]
+    },
+    "Solomon Islands": {
+      total: 422,
+      topModels: [
+        { name: "MP C2503",              code: "916929", count: 7  },
+        { name: "Ricoh M 2701",          code: "418120", count: 9  },
+        { name: "MP C4503",              code: "916522", count: 4  },
+        { name: "Ricoh IM C3010",        code: "419309", count: 2  },
+        { name: "Ricoh IM C6010",        code: "419338", count: 2  },
+        { name: "Ricoh IM 550F",         code: "418460", count: 1  }
+      ]
+    },
+    "Vanuatu": {
+      total: 387,
+      topModels: [
+        { name: "Ricoh M 2701",          code: "418120", count: 15 },
+        { name: "Ricoh IM 550F",         code: "418460", count: 9  },
+        { name: "Ricoh IM C3010",        code: "419309", count: 3  },
+        { name: "IM C2500",              code: "918290", count: 3  },
+        { name: "Ricoh IM C6010",        code: "419338", count: 2  },
+        { name: "IM C4500",              code: "918315", count: 2  },
+        { name: "Ricoh IM 4000",         code: "418846", count: 5  }
+      ]
+    },
+    "Tonga": {
+      total: 271,
+      topModels: [
+        { name: "Ricoh M 2701",          code: "418120", count: 19 },
+        { name: "MP C4503",              code: "916522", count: 9  },
+        { name: "MP C2503",              code: "916929", count: 7  },
+        { name: "Ricoh IM 550F",         code: "418460", count: 7  },
+        { name: "Ricoh IM C6010",        code: "419338", count: 3  },
+        { name: "Ricoh IM 4000",         code: "418846", count: 1  }
+      ]
+    }
   },
 
   entities: ["RSP", "Samoa", "Solomon Islands", "Vanuatu", "Tonga"],
@@ -1133,19 +1253,37 @@ function renderSlobWorkList() {
         <th>Qty</th>
         <th>Total Value</th>
         <th>Days Since Sale</th>
+        <th style="min-width:140px">MIF Coverage</th>
       </tr></thead>`;
       const tbody = document.createElement("tbody");
       rows.forEach(r => {
         const tr = document.createElement("tr");
         if (r.days >= 730) tr.className = "slob-critical";
+
+        // MIF lookup
+        const mif = DATA.partToMifMap[r.code];
+        let mifCell = `<div class="mif-badge mif-unknown">Unknown</div>`;
+        if (mif) {
+          const entityCount = mif.mif[entity] ?? 0;
+          const totalCount  = Object.values(mif.mif).reduce((s, v) => s + v, 0);
+          const badgeClass  = entityCount > 0 ? "mif-covered" : (totalCount > 0 ? "mif-zero" : "mif-zero");
+          const badgeLabel  = entityCount > 0 ? `${entityCount} active` : (totalCount > 0 ? `0 here / ${totalCount} elsewhere` : "0 anywhere");
+          mifCell = `
+            <div class="mif-badge ${badgeClass}">${badgeLabel}</div>
+            <div class="mif-platform">${mif.fits}</div>
+            ${mif.mifNote ? `<div class="mif-note">${mif.mifNote}</div>` : ""}
+          `;
+        }
+
         tr.innerHTML = `
           <td><span class="mono" style="font-size:11.5px">${r.code}</span></td>
-          <td style="text-align:left;max-width:220px;white-space:normal;line-height:1.3">${r.desc}</td>
+          <td style="text-align:left;max-width:200px;white-space:normal;line-height:1.3">${r.desc}</td>
           <td style="text-align:left"><span style="font-size:11px;color:var(--text-muted)">${r.group}</span></td>
           <td><span class="mono">${fmt(r.unitCost, 2)}</span></td>
           <td><span class="mono">${r.qty}</span></td>
           <td><span class="mono" style="font-weight:600">${fmt(r.totalNZD)}</span></td>
           <td><span class="mono ${r.days >= 730 ? 'pct-cell flag' : r.days >= 500 ? 'pct-cell warn' : 'pct-cell'}">${r.days}d</span></td>
+          <td>${mifCell}</td>
         `;
         tbody.appendChild(tr);
       });
