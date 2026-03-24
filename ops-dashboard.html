@@ -22,7 +22,7 @@
   .topbar-left { display: flex; align-items: center; gap: 14px; }
   .logo-mark { width: 32px; height: 32px; background: #2C2C2A; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
   .logo-mark span { color: #fff; font-size: 11px; font-weight: 700; letter-spacing: -0.5px; }
-  .topbar-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+  .topbar-title { font-size: 15px; font-weight: 600; }
   .topbar-sub { font-size: 12px; color: var(--text-secondary); }
   .topbar-right { display: flex; align-items: center; gap: 12px; }
   .last-updated { font-size: 12px; color: var(--text-secondary); }
@@ -36,73 +36,103 @@
   .tab { padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text-secondary); transition: all 0.15s; border: none; background: transparent; }
   .tab.active { background: #2C2C2A; color: #fff; }
   .tab:hover:not(.active) { background: var(--gray-bg); color: var(--text-primary); }
+  .tab.stub { opacity: 0.5; font-style: italic; }
 
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  /* ── KPI grid ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
   .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
   .kpi-label { font-size: 11px; color: var(--text-secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
   .kpi-value { font-size: 28px; font-weight: 700; line-height: 1; }
   .kpi-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
   .kpi-card.rag-green { border-left: 3px solid var(--green); }
   .kpi-card.rag-amber { border-left: 3px solid var(--amber); }
-  .kpi-card.rag-red { border-left: 3px solid var(--red); }
+  .kpi-card.rag-red   { border-left: 3px solid var(--red);   }
   .kpi-card.rag-green .kpi-value { color: var(--green); }
   .kpi-card.rag-amber .kpi-value { color: var(--amber); }
-  .kpi-card.rag-red .kpi-value { color: var(--red); }
+  .kpi-card.rag-red   .kpi-value { color: var(--red);   }
 
+  /* ── 4DX scoreboard strip ── */
+  .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  @media (max-width: 700px) { .scoreboard { grid-template-columns: 1fr; } }
+  .score-card { border-radius: var(--radius); padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; }
+  .score-card.lead  { background: var(--green-bg); border: 1px solid #C0DD97; }
+  .score-card.lag   { background: var(--red-bg);   border: 1px solid #F7C1C1; }
+  .score-card.warn  { background: var(--amber-bg); border: 1px solid #FAC775; }
+  .score-card.neutral { background: var(--gray-bg); border: 1px solid var(--border); }
+  .score-icon { font-size: 22px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+  .score-body { flex: 1; }
+  .score-title { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+  .score-value { font-size: 26px; font-weight: 700; line-height: 1.1; }
+  .score-card.lead  .score-value { color: var(--green); }
+  .score-card.lag   .score-value { color: var(--red);   }
+  .score-card.warn  .score-value { color: var(--amber); }
+  .score-card.neutral .score-value { color: var(--gray-text); }
+  .score-sub { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+
+  /* ── RAG legend tile ── */
+  .rag-tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 24px; }
+  .rag-tile-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 10px; }
+  .rag-tile-grid { display: flex; flex-wrap: wrap; gap: 20px; }
+  .rag-group { display: flex; flex-direction: column; gap: 3px; min-width: 140px; }
+  .rag-group-name { font-size: 11px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+  .rag-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-secondary); }
+  .rag-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .rag-dot.g { background: var(--green); }
+  .rag-dot.a { background: var(--amber); }
+  .rag-dot.r { background: var(--red);   }
+  .rag-divider { width: 1px; background: var(--border); }
+
+  /* ── Tables ── */
   .tables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
   @media (max-width: 900px) { .tables-grid { grid-template-columns: 1fr; } }
-
   .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
   .table-card-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
   .table-card-title { font-size: 13px; font-weight: 600; }
   .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .badge-red { background: var(--red-bg); color: var(--red-text); }
-  .badge-amber { background: var(--amber-bg); color: var(--amber-text); }
-  .badge-green { background: var(--green-bg); color: var(--green-text); }
-
+  .badge-red    { background: var(--red-bg);   color: var(--red-text);   }
+  .badge-amber  { background: var(--amber-bg); color: var(--amber-text); }
+  .badge-green  { background: var(--green-bg); color: var(--green-text); }
   table { width: 100%; border-collapse: collapse; }
   th { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); padding: 10px 18px; text-align: left; background: var(--page-bg); border-bottom: 1px solid var(--border); }
   td { padding: 10px 18px; border-bottom: 1px solid var(--border); font-size: 13px; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: var(--gray-bg); }
-
   .status-pill { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .status-draft { background: var(--amber-bg); color: var(--amber-text); }
-  .status-submitted { background: var(--red-bg); color: var(--red-text); }
-
+  .status-draft     { background: var(--amber-bg); color: var(--amber-text); }
+  .status-submitted { background: var(--red-bg);   color: var(--red-text);   }
   .row-submitted td:first-child { border-left: 3px solid var(--red); }
-  .row-draft td:first-child { border-left: 3px solid var(--amber); }
+  .row-draft     td:first-child { border-left: 3px solid var(--amber); }
 
-  .aging-cell { font-weight: 600; }
-  .aging-green { color: var(--green); }
-  .aging-amber { color: var(--amber); }
-  .aging-red { color: var(--red); }
-
+  /* ── Aging strip ── */
   .aging-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 24px; }
   .aging-title { font-size: 13px; font-weight: 600; margin-bottom: 14px; }
   .aging-strips { display: flex; flex-direction: column; gap: 10px; }
-  .aging-row { display: flex; align-items: center; gap: 12px; }
+  .aging-row-bar { display: flex; align-items: center; gap: 12px; }
   .aging-entity-label { font-size: 12px; color: var(--text-secondary); width: 160px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .aging-track { flex: 1; background: var(--border); border-radius: 4px; height: 10px; display: flex; overflow: hidden; }
   .aging-segment { height: 100%; }
   .seg-green { background: var(--green); }
   .seg-amber { background: var(--amber); }
-  .seg-red { background: var(--red); }
-  .aging-legend { display: flex; gap: 16px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
-  .aging-legend span { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .seg-red   { background: var(--red);   }
+  .aging-bar-legend { display: flex; gap: 16px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .aging-bar-legend span { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; }
+  .legend-sq { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
 
-  .data-note { font-size: 11px; color: var(--text-secondary); background: var(--gray-bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 14px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-  .data-note strong { color: var(--text-primary); }
-
-  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--text-primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .count-bold { font-size: 15px; font-weight: 700; }
-  .c-red { color: var(--red); }
+  .aging-cell { font-weight: 600; }
+  .aging-green { color: var(--green); }
+  .aging-amber { color: var(--amber); }
+  .aging-red   { color: var(--red);   }
+  .count-bold  { font-size: 15px; font-weight: 700; }
+  .c-red   { color: var(--red);   }
   .c-amber { color: var(--amber); }
   .c-green { color: var(--green); }
   .c-muted { color: var(--text-secondary); }
+
+  .stub-notice { background: var(--gray-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; text-align: center; color: var(--text-secondary); }
+  .stub-notice strong { display: block; font-size: 15px; color: var(--text-primary); margin-bottom: 8px; }
+
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--text-primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
   .footer { text-align: center; padding: 24px; font-size: 12px; color: var(--text-secondary); border-top: 1px solid var(--border); margin-top: 12px; }
   .env-badge { display: inline-block; background: var(--blue-bg); color: var(--blue-text); padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 6px; }
@@ -115,7 +145,7 @@
     <div class="logo-mark"><span>RSP</span></div>
     <div>
       <div class="topbar-title">RSP Group Finance Operations</div>
-      <div class="topbar-sub">Daily back-office review — Pacific Island entities</div>
+      <div class="topbar-sub">Daily back-office review — all entities</div>
     </div>
   </div>
   <div class="topbar-right">
@@ -129,12 +159,13 @@
 
 <div class="container">
   <div class="entity-tabs">
-    <button class="tab active" onclick="switchTab('all', this)">All Entities</button>
-    <button class="tab" onclick="switchTab('samoa', this)">Samoa</button>
-    <button class="tab" onclick="switchTab('vanuatu', this)">Vanuatu</button>
-    <button class="tab" onclick="switchTab('tonga', this)">Tonga</button>
-    <button class="tab" onclick="switchTab('solomons', this)">Solomon Islands</button>
-    <button class="tab" onclick="switchTab('rsp', this)">RSP (NZ)</button>
+    <button class="tab active" onclick="switchTab('all',this)">All Entities</button>
+    <button class="tab" onclick="switchTab('samoa',this)">Samoa</button>
+    <button class="tab" onclick="switchTab('vanuatu',this)">Vanuatu</button>
+    <button class="tab" onclick="switchTab('tonga',this)">Tonga</button>
+    <button class="tab" onclick="switchTab('solomons',this)">Solomon Islands</button>
+    <button class="tab" onclick="switchTab('rsp',this)">RSP (NZ)</button>
+    <button class="tab stub" onclick="switchTab('alpine',this)">Alpine Print</button>
   </div>
   <div id="dashboard-content">
     <div style="text-align:center;padding:60px 0;color:var(--text-secondary);">
@@ -145,87 +176,98 @@
 </div>
 
 <div class="footer">
-  Data source: SyncHub &rarr; Xero &nbsp;&middot;&nbsp;
-  Last queried: 18 March 2026
+  Data source: SyncHub &rarr; Xero &nbsp;&middot;&nbsp; Last queried: 24 March 2026
   <span class="env-badge">PRODUCTION</span>
-  &nbsp;&middot;&nbsp; Auto-refreshes at 6:00 AM NZST daily
+  &nbsp;&middot;&nbsp; "Journal-" prefix records excluded &nbsp;&middot;&nbsp; Auto-refreshes 6:00 AM NZST daily
 </div>
 
 <script>
-// ── Data as of 18 March 2026 — fresh from SyncHub ────────────────────────────
-// Aging in days calculated from 18 March 2026.
-// Only DRAFT and SUBMITTED statuses shown (AUTHORISED, PAID, VOIDED excluded).
-//
-// NOTE FOR RECONCILIATION (Shikha / Minoo):
-// SyncHub pulls from the Xero API. Counts here reflect what Xero's API returns
-// for each status. If Xero's web UI shows different numbers, it may be grouping
-// statuses differently (e.g. showing Awaiting Approval = SUBMITTED + AUTHORISED).
-// Please compare against Xero's API-level status labels, not the UI labels.
+// ── RAG thresholds — adjust based on Shikha / Minoo feedback ─────────────────
+const RAG = {
+  totalPending:  { warn: 15,  alert: 35  },
+  invoices:      { warn: 8,   alert: 20  },
+  bills:         { warn: 5,   alert: 15  },
+  oldestDays:    { warn: 7,   alert: 21  },
+  agedItems:     { warn: 5,   alert: 15  },  // 4DX: items stuck > 7 days
+  groupTotal:    { warn: 30,  alert: 70  },
+  groupInvoices: { warn: 20,  alert: 50  },
+  groupBills:    { warn: 15,  alert: 40  },
+};
 
-const TODAY = new Date('2026-03-18');
+// ── Data: 24 March 2026 — queried one entity at a time ───────────────────────
+// Journal- prefix records excluded throughout.
+// $0 MPS/CPC invoices NOT prefixed Journal are retained.
+// 4DX lead measures: newToday = items created in last 24hrs; agedOver7 = items
+// still pending after 7+ days — the backlog health indicator.
 
-function daysSince(dateStr) {
-  const d = new Date(dateStr);
-  return Math.round((TODAY - d) / 86400000);
-}
+const TODAY = new Date('2026-03-24');
+function daysSince(d) { return Math.round((TODAY - new Date(d)) / 86400000); }
 
 const RAW_DATA = {
   samoa: {
     invoices: [
-      { status: 'DRAFT',     count: 2,  oldestDays: daysSince('2026-03-06') },
-      { status: 'SUBMITTED', count: 41, oldestDays: daysSince('2026-03-02') },
+      { status: 'DRAFT',     count: 9,  oldestDays: daysSince('2026-03-06') },
+      { status: 'SUBMITTED', count: 30, oldestDays: daysSince('2026-03-06') },
     ],
     bills: [
-      { status: 'DRAFT',     count: 17, oldestDays: daysSince('2026-01-15') },
-      { status: 'SUBMITTED', count: 23, oldestDays: daysSince('2026-03-02') },
+      { status: 'DRAFT',     count: 4,  oldestDays: daysSince('2024-03-06') },
+      { status: 'SUBMITTED', count: 0,  oldestDays: 0 },
     ],
-    pos: [
-      { status: 'DRAFT', count: 1, oldestDays: daysSince('2024-03-06') },
-    ],
+    pos: [],
+    newToday:   12,
+    agedOver7:  19,
   },
   vanuatu: {
     invoices: [
-      { status: 'DRAFT',     count: 2,  oldestDays: daysSince('2026-03-16') },
-      { status: 'SUBMITTED', count: 36, oldestDays: daysSince('2026-03-06') },
+      { status: 'DRAFT',     count: 4,  oldestDays: daysSince('2025-10-28') },
+      { status: 'SUBMITTED', count: 18, oldestDays: daysSince('2026-03-06') },
     ],
     bills: [
-      { status: 'DRAFT',     count: 22, oldestDays: daysSince('2026-01-01') },
-      { status: 'SUBMITTED', count: 36, oldestDays: daysSince('2026-03-02') },
+      { status: 'DRAFT',     count: 8,  oldestDays: daysSince('2026-01-01') },
+      { status: 'SUBMITTED', count: 0,  oldestDays: 0 },
     ],
     pos: [],
+    newToday:   4,
+    agedOver7:  17,
   },
   tonga: {
     invoices: [
-      { status: 'DRAFT',     count: 3, oldestDays: daysSince('2026-03-03') },
-      { status: 'SUBMITTED', count: 2, oldestDays: daysSince('2026-03-05') },
+      { status: 'DRAFT',     count: 6,  oldestDays: daysSince('2026-01-01') },
+      { status: 'SUBMITTED', count: 13, oldestDays: daysSince('2026-03-05') },
     ],
     bills: [
-      { status: 'DRAFT',     count: 6, oldestDays: daysSince('2026-01-01') },
-      { status: 'SUBMITTED', count: 2, oldestDays: daysSince('2026-03-04') },
+      { status: 'DRAFT',     count: 0,  oldestDays: 0 },
+      { status: 'SUBMITTED', count: 0,  oldestDays: 0 },
     ],
     pos: [],
+    newToday:   2,
+    agedOver7:  8,
   },
   solomons: {
     invoices: [
-      { status: 'DRAFT',     count: 4, oldestDays: daysSince('2026-03-11') },
-      { status: 'SUBMITTED', count: 2, oldestDays: daysSince('2026-03-06') },
+      { status: 'DRAFT',     count: 0,  oldestDays: 0 },
+      { status: 'SUBMITTED', count: 13, oldestDays: daysSince('2026-03-11') },
     ],
     bills: [
-      { status: 'DRAFT',     count: 7, oldestDays: daysSince('2026-03-01') },
-      { status: 'SUBMITTED', count: 6, oldestDays: daysSince('2026-03-01') },
+      { status: 'DRAFT',     count: 1,  oldestDays: daysSince('2026-03-01') },
+      { status: 'SUBMITTED', count: 0,  oldestDays: 0 },
     ],
     pos: [],
+    newToday:   4,
+    agedOver7:  4,
   },
   rsp: {
     invoices: [
-      { status: 'DRAFT',     count: 12, oldestDays: daysSince('2026-02-17') },
-      { status: 'SUBMITTED', count: 1,  oldestDays: daysSince('2026-03-13') },
+      { status: 'DRAFT',     count: 24, oldestDays: daysSince('2026-02-17') },
+      { status: 'SUBMITTED', count: 2,  oldestDays: daysSince('2026-02-26') },
     ],
     bills: [
-      { status: 'DRAFT',     count: 16, oldestDays: daysSince('2026-02-24') },
-      { status: 'SUBMITTED', count: 33, oldestDays: daysSince('2026-02-24') },
+      { status: 'DRAFT',     count: 0,  oldestDays: 0 },
+      { status: 'SUBMITTED', count: 0,  oldestDays: 0 },
     ],
     pos: [],
+    newToday:   0,
+    agedOver7:  10,
   },
 };
 
@@ -237,58 +279,14 @@ const ENTITIES = [
   { key: 'rsp',      label: 'Ricoh South Pacific (NZ)', shortLabel: 'RSP NZ'   },
 ];
 
-function agingLabel(days) {
-  if (!days) return '<span class="c-muted">—</span>';
-  const cls = days <= 7 ? 'aging-green' : days <= 21 ? 'aging-amber' : 'aging-red';
-  return `<span class="aging-cell ${cls}">${days}d</span>`;
+// ── RAG helpers ───────────────────────────────────────────────────────────────
+function rag(v, t) {
+  if (v === 0) return 'green';
+  return v <= t.warn ? 'green' : v <= t.alert ? 'amber' : 'red';
 }
+function ragCls(v, t) { return 'rag-' + rag(v, t); }
 
-function statusPill(s) {
-  return `<span class="status-pill status-${s.toLowerCase()}">${s}</span>`;
-}
-
-function rowCls(s) {
-  return s === 'SUBMITTED' ? 'row-submitted' : 'row-draft';
-}
-
-function countSpan(count, status) {
-  if (count === 0) return `<span class="c-muted">0</span>`;
-  const cls = status === 'SUBMITTED' ? (count > 20 ? 'c-red' : 'c-amber') : 'c-amber';
-  return `<span class="count-bold ${cls}">${count}</span>`;
-}
-
-function buildTable(rows, title) {
-  const visible = rows.filter(r => r.count > 0);
-  const total = visible.reduce((a, r) => a + r.count, 0);
-  const submittedTotal = visible.filter(r => r.status === 'SUBMITTED').reduce((a, r) => a + r.count, 0);
-  const badgeCls = submittedTotal > 20 ? 'badge-red' : total > 0 ? 'badge-amber' : 'badge-green';
-
-  if (!visible.length) return `
-    <div class="table-card">
-      <div class="table-card-header"><span class="table-card-title">${title}</span><span class="badge badge-green">All clear</span></div>
-      <div style="padding:20px 18px;color:var(--text-secondary);font-size:13px;">No pending items.</div>
-    </div>`;
-
-  return `
-    <div class="table-card">
-      <div class="table-card-header">
-        <span class="table-card-title">${title}</span>
-        <span class="badge ${badgeCls}">${total} pending</span>
-      </div>
-      <table>
-        <thead><tr><th>Status</th><th style="text-align:right">Count</th><th style="text-align:right">Oldest (days)</th></tr></thead>
-        <tbody>
-          ${visible.map(r => `
-            <tr class="${rowCls(r.status)}">
-              <td>${statusPill(r.status)}</td>
-              <td style="text-align:right">${countSpan(r.count, r.status)}</td>
-              <td style="text-align:right">${agingLabel(r.oldestDays)}</td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`;
-}
-
+// ── KPI calculations ──────────────────────────────────────────────────────────
 function getKPIs(data) {
   const all = [...data.invoices, ...data.bills, ...data.pos].filter(r => r.count > 0);
   return {
@@ -299,19 +297,153 @@ function getKPIs(data) {
   };
 }
 
-function ragKPI(v, warn, alert) { return v === 0 ? 'rag-green' : v <= warn ? 'rag-amber' : 'rag-red'; }
-function agingRAG(d) { return d <= 7 ? 'rag-green' : d <= 21 ? 'rag-amber' : 'rag-red'; }
+// ── RAG legend tile ───────────────────────────────────────────────────────────
+function buildRagLegend() {
+  const defs = [
+    { name: 'Total pending',    t: RAG.totalPending,  unit: '' },
+    { name: 'Invoices',         t: RAG.invoices,      unit: '' },
+    { name: 'Bills',            t: RAG.bills,         unit: '' },
+    { name: 'Oldest pending',   t: RAG.oldestDays,    unit: 'd' },
+    { name: 'Aged &gt; 7 days', t: RAG.agedItems,     unit: '' },
+  ];
+  const cols = defs.map(d => `
+    <div class="rag-group">
+      <div class="rag-group-name">${d.name}</div>
+      <div class="rag-row"><span class="rag-dot g"></span>0 – ${d.t.warn}${d.unit}</div>
+      <div class="rag-row"><span class="rag-dot a"></span>${d.t.warn + 1} – ${d.t.alert}${d.unit}</div>
+      <div class="rag-row"><span class="rag-dot r"></span>&gt; ${d.t.alert}${d.unit}</div>
+    </div>`).join('<div class="rag-divider"></div>');
+  return `<div class="rag-tile"><div class="rag-tile-title">RAG thresholds</div><div class="rag-tile-grid">${cols}</div></div>`;
+}
+
+// ── 4DX scoreboard ────────────────────────────────────────────────────────────
+function buildScoreboard(data, isAll) {
+  const totalAged  = isAll
+    ? ENTITIES.reduce((a, e) => a + RAW_DATA[e.key].agedOver7, 0)
+    : data.agedOver7;
+  const totalNew   = isAll
+    ? ENTITIES.reduce((a, e) => a + RAW_DATA[e.key].newToday, 0)
+    : data.newToday;
+  const kpis       = isAll
+    ? (() => {
+        const t = ENTITIES.reduce((a,e) => { const k = getKPIs(RAW_DATA[e.key]); a.total+=k.total; a.oldest=Math.max(a.oldest,k.oldest); return a; }, {total:0,oldest:0});
+        return t;
+      })()
+    : getKPIs(data);
+
+  const agedRag  = rag(totalAged, RAG.agedItems);
+  const newClass = totalNew > 0 ? 'lead' : 'neutral';
+  const agedClass= agedRag === 'green' ? 'lead' : agedRag === 'amber' ? 'warn' : 'lag';
+
+  // WIG indicator: are we winning today?
+  const winning = totalAged === 0;
+  const wigClass = winning ? 'lead' : (totalAged <= RAG.agedItems.warn ? 'warn' : 'lag');
+  const wigText  = winning ? 'Winning — no backlog over 7 days' :
+                   totalAged <= RAG.agedItems.warn ? 'Watch — small backlog ageing' :
+                   'Behind — backlog needs attention today';
+  const wigValue = winning ? '&#10003;' : totalAged;
+  const wigSub   = winning ? 'WIG on track' : `items stuck &gt; 7 days`;
+
+  return `
+    <div class="scoreboard">
+      <div class="score-card ${wigClass}">
+        <div class="score-icon">${winning ? '&#9733;' : '&#9888;'}</div>
+        <div class="score-body">
+          <div class="score-title">Today's scoreboard — WIG</div>
+          <div class="score-value">${wigValue}</div>
+          <div class="score-sub">${wigText}</div>
+        </div>
+      </div>
+      <div class="score-card ${agedClass}">
+        <div class="score-icon">&#9203;</div>
+        <div class="score-body">
+          <div class="score-title">Aged &gt; 7 days (lag measure)</div>
+          <div class="score-value">${totalAged}</div>
+          <div class="score-sub">items still pending past threshold</div>
+        </div>
+      </div>
+      <div class="score-card ${newClass}">
+        <div class="score-icon">&#43;</div>
+        <div class="score-body">
+          <div class="score-title">New items today (lead measure)</div>
+          <div class="score-value">${totalNew}</div>
+          <div class="score-sub">created in last 24 hours</div>
+        </div>
+      </div>
+      <div class="score-card ${rag(kpis.oldest, RAG.oldestDays) === 'green' ? 'lead' : rag(kpis.oldest, RAG.oldestDays) === 'amber' ? 'warn' : 'lag'}">
+        <div class="score-icon">&#128197;</div>
+        <div class="score-body">
+          <div class="score-title">Oldest pending item</div>
+          <div class="score-value">${kpis.oldest}d</div>
+          <div class="score-sub">days since earliest pending record created</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Table builder ─────────────────────────────────────────────────────────────
+function agingLabel(days) {
+  if (!days) return '<span class="c-muted">—</span>';
+  const r = rag(days, RAG.oldestDays);
+  return `<span class="aging-cell aging-${r}">${days}d</span>`;
+}
+function statusPill(s) {
+  return `<span class="status-pill status-${s.toLowerCase()}">${s}</span>`;
+}
+function rowCls(s) { return s === 'SUBMITTED' ? 'row-submitted' : 'row-draft'; }
+function countSpan(count, status) {
+  if (!count) return `<span class="c-muted">0</span>`;
+  const cls = status === 'SUBMITTED' ? (count > RAG.invoices.alert ? 'c-red' : 'c-amber') : 'c-amber';
+  return `<span class="count-bold ${cls}">${count}</span>`;
+}
+
+function buildTable(rows, title) {
+  const visible = rows.filter(r => r.count > 0);
+  const total   = visible.reduce((a, r) => a + r.count, 0);
+  const subTot  = visible.filter(r => r.status === 'SUBMITTED').reduce((a, r) => a + r.count, 0);
+  const bCls    = subTot > RAG.invoices.alert ? 'badge-red' : total > 0 ? 'badge-amber' : 'badge-green';
+  if (!visible.length) return `
+    <div class="table-card">
+      <div class="table-card-header"><span class="table-card-title">${title}</span><span class="badge badge-green">All clear</span></div>
+      <div style="padding:20px 18px;color:var(--text-secondary);font-size:13px;">No pending items.</div>
+    </div>`;
+  return `
+    <div class="table-card">
+      <div class="table-card-header">
+        <span class="table-card-title">${title}</span>
+        <span class="badge ${bCls}">${total} pending</span>
+      </div>
+      <table>
+        <thead><tr><th>Status</th><th style="text-align:right">Count</th><th style="text-align:right">Oldest (days)</th></tr></thead>
+        <tbody>${visible.map(r => `
+          <tr class="${rowCls(r.status)}">
+            <td>${statusPill(r.status)}</td>
+            <td style="text-align:right">${countSpan(r.count, r.status)}</td>
+            <td style="text-align:right">${agingLabel(r.oldestDays)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+// ── Aging strip ───────────────────────────────────────────────────────────────
+const agingBarLegendHTML = `
+  <div class="aging-bar-legend">
+    <span><span class="legend-sq" style="background:var(--green)"></span>On track (&le; ${RAG.oldestDays.warn}d)</span>
+    <span><span class="legend-sq" style="background:var(--amber)"></span>Watch (${RAG.oldestDays.warn+1}–${RAG.oldestDays.alert}d)</span>
+    <span><span class="legend-sq" style="background:var(--red)"></span>Overdue (&gt; ${RAG.oldestDays.alert}d)</span>
+  </div>`;
 
 function buildAgingStrip(rows, label) {
   const action = rows.filter(r => r.count > 0);
-  const total = action.reduce((a, r) => a + r.count, 0) || 1;
-  const g  = action.filter(r => r.oldestDays <= 7).reduce((a, r) => a + r.count, 0);
-  const am = action.filter(r => r.oldestDays > 7 && r.oldestDays <= 21).reduce((a, r) => a + r.count, 0);
+  const total  = action.reduce((a, r) => a + r.count, 0) || 1;
+  const g  = action.filter(r => r.oldestDays <= RAG.oldestDays.warn).reduce((a, r) => a + r.count, 0);
+  const am = action.filter(r => r.oldestDays > RAG.oldestDays.warn && r.oldestDays <= RAG.oldestDays.alert).reduce((a, r) => a + r.count, 0);
   const gP = Math.round(g / total * 100);
   const aP = Math.round(am / total * 100);
   const rP = 100 - gP - aP;
   return `
-    <div class="aging-row">
+    <div class="aging-row-bar">
       <div class="aging-entity-label">${label}</div>
       <div class="aging-track">
         <div class="aging-segment seg-green" style="width:${gP}%"></div>
@@ -322,45 +454,33 @@ function buildAgingStrip(rows, label) {
     </div>`;
 }
 
-const agingLegendHTML = `
-  <div class="aging-legend">
-    <span><span class="legend-dot" style="background:var(--green)"></span>On track (&le; 7 days)</span>
-    <span><span class="legend-dot" style="background:var(--amber)"></span>Watch (8–21 days)</span>
-    <span><span class="legend-dot" style="background:var(--red)"></span>Overdue (&gt; 21 days)</span>
-  </div>`;
-
-const reconcileNote = `
-  <div class="data-note">
-    <strong>Reconciliation note:</strong> Counts reflect Xero API status labels. Xero's web UI uses different labels —
-    "Awaiting Approval" in the UI = SUBMITTED via API. If numbers differ, check whether Xero UI is combining statuses.
-  </div>`;
-
+// ── Entity view ───────────────────────────────────────────────────────────────
 function buildEntityView(key) {
-  const data = RAW_DATA[key];
+  const data   = RAW_DATA[key];
   const entity = ENTITIES.find(e => e.key === key);
-  const k = getKPIs(data);
+  const k      = getKPIs(data);
   const allRows = [...data.invoices, ...data.bills, ...data.pos];
-  const hasPOs = data.pos.filter(r => r.count > 0).length > 0;
 
   return `
-    ${reconcileNote}
+    ${buildRagLegend()}
+    ${buildScoreboard(data, false)}
     <div class="kpi-grid">
-      <div class="kpi-card ${ragKPI(k.total, 10, 30)}">
+      <div class="kpi-card ${ragCls(k.total, RAG.totalPending)}">
         <div class="kpi-label">Total Pending</div>
         <div class="kpi-value">${k.total}</div>
         <div class="kpi-sub">draft + submitted</div>
       </div>
-      <div class="kpi-card ${ragKPI(k.invTotal, 5, 15)}">
+      <div class="kpi-card ${ragCls(k.invTotal, RAG.invoices)}">
         <div class="kpi-label">Invoices</div>
         <div class="kpi-value">${k.invTotal}</div>
         <div class="kpi-sub">pending approval</div>
       </div>
-      <div class="kpi-card ${ragKPI(k.billTotal, 5, 20)}">
+      <div class="kpi-card ${ragCls(k.billTotal, RAG.bills)}">
         <div class="kpi-label">Bills</div>
         <div class="kpi-value">${k.billTotal}</div>
         <div class="kpi-sub">pending approval</div>
       </div>
-      <div class="kpi-card ${agingRAG(k.oldest)}">
+      <div class="kpi-card rag-${rag(k.oldest, RAG.oldestDays)}">
         <div class="kpi-label">Oldest Pending</div>
         <div class="kpi-value">${k.oldest}d</div>
         <div class="kpi-sub">days since created</div>
@@ -370,14 +490,15 @@ function buildEntityView(key) {
       ${buildTable(data.invoices, 'Sales Invoices')}
       ${buildTable(data.bills, 'Bills')}
     </div>
-    ${hasPOs ? `<div style="margin-bottom:24px;max-width:50%">${buildTable(data.pos, 'Purchase Orders')}</div>` : ''}
+    ${data.pos.filter(r => r.count > 0).length ? `<div style="margin-bottom:24px;max-width:50%">${buildTable(data.pos, 'Purchase Orders')}</div>` : ''}
     <div class="aging-wrap">
       <div class="aging-title">Aging profile — pending items</div>
       <div class="aging-strips">${buildAgingStrip(allRows, entity.label)}</div>
-      ${agingLegendHTML}
+      ${agingBarLegendHTML}
     </div>`;
 }
 
+// ── All entities view ─────────────────────────────────────────────────────────
 function buildAllView() {
   const grand = ENTITIES.reduce((acc, e) => {
     const k = getKPIs(RAW_DATA[e.key]);
@@ -386,19 +507,23 @@ function buildAllView() {
     return acc;
   }, { total: 0, inv: 0, bill: 0, oldest: 0 });
 
-  const rows = ENTITIES.map(e => {
-    const k = getKPIs(RAW_DATA[e.key]);
-    const tCls = k.total === 0 ? 'c-green' : k.total > 30 ? 'c-red' : 'c-amber';
-    const iCls = k.invTotal === 0 ? 'c-green' : k.invTotal > 15 ? 'c-red' : 'c-amber';
-    const bCls = k.billTotal === 0 ? 'c-green' : k.billTotal > 20 ? 'c-red' : 'c-amber';
-    const oCol = k.oldest <= 7 ? 'var(--green)' : k.oldest <= 21 ? 'var(--amber)' : 'var(--red)';
+  const entRows = ENTITIES.map(e => {
+    const k    = getKPIs(RAW_DATA[e.key]);
+    const d    = RAW_DATA[e.key];
+    const tCol = `var(--${rag(k.total,  RAG.totalPending)})`;
+    const iCol = `var(--${rag(k.invTotal, RAG.invoices)})`;
+    const bCol = `var(--${rag(k.billTotal, RAG.bills)})`;
+    const oCol = `var(--${rag(k.oldest, RAG.oldestDays)})`;
+    const aCol = `var(--${rag(d.agedOver7, RAG.agedItems)})`;
     return `
       <tr>
         <td style="font-weight:600">${e.label}</td>
-        <td style="text-align:right"><span class="count-bold ${tCls}">${k.total}</span></td>
-        <td style="text-align:right"><span class="count-bold ${iCls}">${k.invTotal}</span></td>
-        <td style="text-align:right"><span class="count-bold ${bCls}">${k.billTotal}</span></td>
+        <td style="text-align:right"><span class="count-bold" style="color:${tCol}">${k.total}</span></td>
+        <td style="text-align:right"><span class="count-bold" style="color:${iCol}">${k.invTotal}</span></td>
+        <td style="text-align:right"><span class="count-bold" style="color:${bCol}">${k.billTotal}</span></td>
         <td style="text-align:right"><span style="font-weight:600;color:${oCol}">${k.oldest}d</span></td>
+        <td style="text-align:right"><span style="font-weight:600;color:${aCol}">${d.agedOver7}</span></td>
+        <td style="text-align:right"><span style="font-weight:600;color:var(--green)">${d.newToday}</span></td>
       </tr>`;
   }).join('');
 
@@ -407,27 +532,28 @@ function buildAllView() {
     return buildAgingStrip(all, e.shortLabel);
   }).join('');
 
-  const grandBadgeCls = grand.total > 80 ? 'badge-red' : grand.total > 30 ? 'badge-amber' : 'badge-green';
+  const grandBadgeCls = rag(grand.total, RAG.groupTotal) === 'red' ? 'badge-red' : rag(grand.total, RAG.groupTotal) === 'amber' ? 'badge-amber' : 'badge-green';
 
   return `
-    ${reconcileNote}
+    ${buildRagLegend()}
+    ${buildScoreboard(null, true)}
     <div class="kpi-grid">
-      <div class="kpi-card ${ragKPI(grand.total, 30, 80)}">
+      <div class="kpi-card ${ragCls(grand.total, RAG.groupTotal)}">
         <div class="kpi-label">Group Total Pending</div>
         <div class="kpi-value">${grand.total}</div>
         <div class="kpi-sub">across all 5 entities</div>
       </div>
-      <div class="kpi-card ${ragKPI(grand.inv, 15, 40)}">
+      <div class="kpi-card ${ragCls(grand.inv, RAG.groupInvoices)}">
         <div class="kpi-label">Invoices Pending</div>
         <div class="kpi-value">${grand.inv}</div>
         <div class="kpi-sub">group-wide</div>
       </div>
-      <div class="kpi-card ${ragKPI(grand.bill, 20, 60)}">
+      <div class="kpi-card ${ragCls(grand.bill, RAG.groupBills)}">
         <div class="kpi-label">Bills Pending</div>
         <div class="kpi-value">${grand.bill}</div>
         <div class="kpi-sub">group-wide</div>
       </div>
-      <div class="kpi-card ${agingRAG(grand.oldest)}">
+      <div class="kpi-card rag-${rag(grand.oldest, RAG.oldestDays)}">
         <div class="kpi-label">Oldest Pending</div>
         <div class="kpi-value">${grand.oldest}d</div>
         <div class="kpi-sub">worst case across entities</div>
@@ -435,8 +561,8 @@ function buildAllView() {
     </div>
     <div style="margin-bottom:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
       <div class="table-card-header">
-        <span class="table-card-title">Entity summary — draft &amp; submitted items</span>
-        <span class="badge ${grandBadgeCls}">${grand.total} total</span>
+        <span class="table-card-title">Entity summary</span>
+        <span class="badge ${grandBadgeCls}">${grand.total} total pending</span>
       </div>
       <table>
         <thead>
@@ -446,55 +572,63 @@ function buildAllView() {
             <th style="text-align:right">Invoices</th>
             <th style="text-align:right">Bills</th>
             <th style="text-align:right">Oldest</th>
+            <th style="text-align:right">Aged &gt;7d</th>
+            <th style="text-align:right">New today</th>
           </tr>
         </thead>
-        <tbody>${rows}</tbody>
+        <tbody>${entRows}</tbody>
       </table>
     </div>
     <div class="aging-wrap">
       <div class="aging-title">Aging profile — pending items by entity</div>
       <div class="aging-strips">${strips}</div>
-      ${agingLegendHTML}
+      ${agingBarLegendHTML}
     </div>`;
 }
 
-let currentTab = 'all';
+// ── Alpine stub ───────────────────────────────────────────────────────────────
+function buildAlpineStub() {
+  return `
+    ${buildRagLegend()}
+    <div class="stub-notice">
+      <strong>Alpine Print — coming soon</strong>
+      Alpine Print's Xero connection needs to be added to SyncHub before data can be displayed here.
+      Contact Vijendra Singh to add the Alpine Print Xero organisation to SyncHub.
+    </div>`;
+}
 
+// ── Routing ───────────────────────────────────────────────────────────────────
+let currentTab = 'all';
 function switchTab(key, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   currentTab = key;
   renderDashboard();
 }
-
 function renderDashboard() {
-  document.getElementById('dashboard-content').innerHTML =
-    currentTab === 'all' ? buildAllView() : buildEntityView(currentTab);
+  const el = document.getElementById('dashboard-content');
+  if (currentTab === 'alpine') { el.innerHTML = buildAlpineStub(); return; }
+  if (currentTab === 'all')    { el.innerHTML = buildAllView();    return; }
+  el.innerHTML = buildEntityView(currentTab);
 }
-
 function loadData() {
   const btn = document.querySelector('.refresh-btn');
   btn.innerHTML = '<span class="spinner"></span> Refreshing...';
   btn.disabled = true;
   setTimeout(() => {
     renderDashboard();
-    const now = new Date();
     document.getElementById('last-updated-label').textContent =
-      'Refreshed: ' + now.toLocaleString('en-NZ', { timeZone: 'Pacific/Auckland', hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' });
+      'Refreshed: ' + new Date().toLocaleString('en-NZ', { timeZone: 'Pacific/Auckland', hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' });
     btn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 2.5A6.5 6.5 0 1 1 7.5 1"/><path d="M13.5 2.5V6.5H9.5"/></svg> Refresh';
     btn.disabled = false;
   }, 400);
 }
-
 function scheduleDailyRefresh() {
-  const now = new Date();
-  const nzNow = new Date(now.toLocaleString('en-US', { timeZone: 'Pacific/Auckland' }));
-  const next6am = new Date(nzNow);
-  next6am.setHours(6, 0, 0, 0);
+  const nzNow  = new Date(new Date().toLocaleString('en-US', { timeZone: 'Pacific/Auckland' }));
+  const next6am = new Date(nzNow); next6am.setHours(6,0,0,0);
   if (nzNow >= next6am) next6am.setDate(next6am.getDate() + 1);
   setTimeout(() => { loadData(); setInterval(loadData, 86400000); }, next6am - nzNow);
 }
-
 loadData();
 scheduleDailyRefresh();
 </script>
