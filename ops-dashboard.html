@@ -50,6 +50,8 @@
   .kpi-card.rag-green .kpi-value { color: var(--green); }
   .kpi-card.rag-amber .kpi-value { color: var(--amber); }
   .kpi-card.rag-red   .kpi-value { color: var(--red);   }
+  .kpi-card.kpi-link { cursor: pointer; text-decoration: none; display: block; transition: box-shadow 0.15s, border-color 0.15s; }
+  .kpi-card.kpi-link:hover { border-color: #2C2C2A; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 
   /* ── 4DX scoreboard strip ── */
   .scoreboard { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
@@ -454,6 +456,11 @@ function buildAgingStrip(rows, label) {
     </div>`;
 }
 
+// ── Drill-down link helper ────────────────────────────────────────────────────
+function drill(entity, type) {
+  return `ops-dashboard-drilldown.html?entity=${entity}&type=${type}`;
+}
+
 // ── Entity view ───────────────────────────────────────────────────────────────
 function buildEntityView(key) {
   const data   = RAW_DATA[key];
@@ -470,16 +477,16 @@ function buildEntityView(key) {
         <div class="kpi-value">${k.total}</div>
         <div class="kpi-sub">draft + submitted</div>
       </div>
-      <div class="kpi-card ${ragCls(k.invTotal, RAG.invoices)}">
-        <div class="kpi-label">Invoices</div>
+      <a href="${drill(key,'invoices')}" class="kpi-card kpi-link ${ragCls(k.invTotal, RAG.invoices)}">
+        <div class="kpi-label">Invoices &#8599;</div>
         <div class="kpi-value">${k.invTotal}</div>
-        <div class="kpi-sub">pending approval</div>
-      </div>
-      <div class="kpi-card ${ragCls(k.billTotal, RAG.bills)}">
-        <div class="kpi-label">Bills</div>
+        <div class="kpi-sub">tap to view records</div>
+      </a>
+      <a href="${drill(key,'bills')}" class="kpi-card kpi-link ${ragCls(k.billTotal, RAG.bills)}">
+        <div class="kpi-label">Bills &#8599;</div>
         <div class="kpi-value">${k.billTotal}</div>
-        <div class="kpi-sub">pending approval</div>
-      </div>
+        <div class="kpi-sub">tap to view records</div>
+      </a>
       <div class="kpi-card rag-${rag(k.oldest, RAG.oldestDays)}">
         <div class="kpi-label">Oldest Pending</div>
         <div class="kpi-value">${k.oldest}d</div>
@@ -519,8 +526,8 @@ function buildAllView() {
       <tr>
         <td style="font-weight:600">${e.label}</td>
         <td style="text-align:right"><span class="count-bold" style="color:${tCol}">${k.total}</span></td>
-        <td style="text-align:right"><span class="count-bold" style="color:${iCol}">${k.invTotal}</span></td>
-        <td style="text-align:right"><span class="count-bold" style="color:${bCol}">${k.billTotal}</span></td>
+        <td style="text-align:right"><a href="${drill(e.key,'invoices')}" style="color:${iCol};font-weight:700;font-size:15px;text-decoration:none;" title="View invoice records">${k.invTotal} &#8599;</a></td>
+        <td style="text-align:right"><a href="${drill(e.key,'bills')}" style="color:${bCol};font-weight:700;font-size:15px;text-decoration:none;" title="View bill records">${k.billTotal} &#8599;</a></td>
         <td style="text-align:right"><span style="font-weight:600;color:${oCol}">${k.oldest}d</span></td>
         <td style="text-align:right"><span style="font-weight:600;color:${aCol}">${d.agedOver7}</span></td>
         <td style="text-align:right"><span style="font-weight:600;color:var(--green)">${d.newToday}</span></td>
@@ -543,16 +550,16 @@ function buildAllView() {
         <div class="kpi-value">${grand.total}</div>
         <div class="kpi-sub">across all 5 entities</div>
       </div>
-      <div class="kpi-card ${ragCls(grand.inv, RAG.groupInvoices)}">
-        <div class="kpi-label">Invoices Pending</div>
+      <a href="${drill('all','invoices')}" class="kpi-card kpi-link ${ragCls(grand.inv, RAG.groupInvoices)}">
+        <div class="kpi-label">Invoices Pending &#8599;</div>
         <div class="kpi-value">${grand.inv}</div>
-        <div class="kpi-sub">group-wide</div>
-      </div>
-      <div class="kpi-card ${ragCls(grand.bill, RAG.groupBills)}">
-        <div class="kpi-label">Bills Pending</div>
+        <div class="kpi-sub">tap to view records</div>
+      </a>
+      <a href="${drill('all','bills')}" class="kpi-card kpi-link ${ragCls(grand.bill, RAG.groupBills)}">
+        <div class="kpi-label">Bills Pending &#8599;</div>
         <div class="kpi-value">${grand.bill}</div>
-        <div class="kpi-sub">group-wide</div>
-      </div>
+        <div class="kpi-sub">tap to view records</div>
+      </a>
       <div class="kpi-card rag-${rag(grand.oldest, RAG.oldestDays)}">
         <div class="kpi-label">Oldest Pending</div>
         <div class="kpi-value">${grand.oldest}d</div>
