@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP — Data Dictionary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:#D7063B; --charcoal:#1a1a1a; --mid:#444; --muted:#888;
+    --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
+    --green:#1a6e2e; --green-bg:#e6f4ea;
+    --amber:#8a5200; --amber-bg:#fef3dc;
+    --danger:#c0392b; --danger-bg:#fdecea;
+    --blue:#0057b8; --blue-bg:#e8f0fb;
+    --code-bg:#1e1e2e; --code-text:#cdd6f4;
+    --code-keyword:#cba6f7; --code-string:#a6e3a1;
+    --code-comment:#6c7086; --code-function:#89b4fa;
+    --code-number:#fab387;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+  /* HEADER */
+  header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .header-center{display:flex;align-items:center;gap:16px;}
+  .wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
+  .hd{width:1px;height:22px;background:#444;}
+  .header-title{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em;}
+  .header-right{display:flex;align-items:center;gap:16px;}
+  .as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+  .back-link{font-size:11px;color:#666;text-decoration:none;transition:color .15s;}
+  .back-link:hover{color:#aaa;}
+
+  /* LAYOUT */
+  main{max-width:1100px;margin:0 auto;padding:32px 24px 80px;}
+
+  /* NAV */
+  .nav-pills{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap;}
+  .nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;letter-spacing:.02em;}
+  .nav-pill:hover{border-color:var(--red);color:var(--red);}
+  .nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+
+  /* SECTION LABEL */
+  .section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* INTRO */
+  .intro{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px 24px;margin-bottom:32px;display:flex;gap:24px;align-items:flex-start;}
+  .intro-icon{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+  .intro-icon svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+  .intro-text{font-size:13px;color:var(--mid);line-height:1.7;}
+  .intro-text strong{color:var(--charcoal);font-weight:500;}
+
+  /* KPI CARD */
+  .kpi-entry{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+  .kpi-entry-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;cursor:pointer;user-select:none;}
+  .kpi-entry-header:hover{background:#fafafa;}
+  .kpi-meta{flex:1;}
+  .kpi-name{font-size:15px;font-weight:500;color:var(--charcoal);margin-bottom:4px;}
+  .kpi-tagline{font-size:12px;color:var(--muted);}
+  .kpi-badges{display:flex;gap:6px;flex-shrink:0;align-items:center;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
+  .b-lag{background:#fdecea;color:#c0392b;}
+  .b-lead{background:#e6f4ea;color:#1a6e2e;}
+  .b-snapshot{background:#e8f0fb;color:#0057b8;}
+  .b-operational{background:#fef3dc;color:#8a5200;}
+  .chevron{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s;flex-shrink:0;}
+  .chevron.open{transform:rotate(180deg);}
+
+  .kpi-body{display:none;padding:0;}
+  .kpi-body.open{display:block;}
+
+  .kpi-section{padding:16px 20px;border-bottom:1px solid #f0f0f0;}
+  .kpi-section:last-child{border-bottom:none;}
+  .kpi-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px;}
+  .kpi-section p{font-size:13px;color:var(--mid);line-height:1.7;}
+  .kpi-section p + p{margin-top:8px;}
+
+  /* TWO COL IN KPI BODY */
+  .kpi-two-col{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .kpi-two-col .kpi-section{border-right:1px solid #f0f0f0;}
+  .kpi-two-col .kpi-section:last-child{border-right:none;border-bottom:none;}
+
+  /* FORMULA BOX */
+  .formula-box{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--mid);margin-top:8px;line-height:1.6;}
+  .formula-box .hl{color:var(--red);font-weight:500;}
+
+  /* SOQL CODE BLOCK */
+  .soql-block{background:var(--code-bg);border-radius:4px;overflow:hidden;margin-top:8px;}
+  .soql-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.06);}
+  .soql-lang{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#585b70;}
+  .copy-btn{font-size:10px;font-family:'DM Mono',monospace;color:#585b70;background:none;border:none;cursor:pointer;transition:color .15s;padding:2px 6px;border-radius:3px;}
+  .copy-btn:hover{color:var(--code-text);}
+  .copy-btn.copied{color:var(--code-string);}
+  pre{padding:14px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.7;color:var(--code-text);overflow-x:auto;white-space:pre;}
+  .kw{color:var(--code-keyword);}
+  .fn{color:var(--code-function);}
+  .str{color:var(--code-string);}
+  .cm{color:var(--code-comment);font-style:italic;}
+  .nm{color:var(--code-number);}
+
+  /* OBJECT REFERENCE TABLE */
+  .obj-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;}
+  .obj-table th{text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:7px 12px;border-bottom:1px solid var(--border);background:var(--surface2);}
+  .obj-table td{padding:8px 12px;border-bottom:1px solid #f0f0f0;color:var(--mid);vertical-align:top;}
+  .obj-table tr:last-child td{border-bottom:none;}
+  .field-name{font-family:'DM Mono',monospace;font-size:11px;color:var(--charcoal);}
+  .field-type{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+
+  /* FOOTER */
+  footer{text-align:center;padding:24px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;letter-spacing:.04em;}
+
+  @media(max-width:700px){
+    .kpi-two-col{grid-template-columns:1fr;}
+    .kpi-two-col .kpi-section{border-right:none;}
+    main{padding:16px 12px 48px;}
+    header{padding:0 16px;}
+    .header-title{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-center">
+    <span class="wordmark">Ricoh</span>
+    <div class="hd"></div>
+    <span class="header-title">South Pacific — Data Dictionary</span>
+  </div>
+  <div class="header-right">
+    <span class="as-of">Service dashboards</span>
+    <a href="index.html" class="back-link">← Scorecards</a>
+  </div>
+</header>
+
+<main>
+  <div class="nav-pills">
+    <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
+    <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
+    <a href="cases-open.html" class="nav-pill">Open Cases</a>
+    <a href="data-dictionary.html" class="nav-pill active">Data Dictionary</a>
+  </div>
+
+  <div class="intro">
+    <div class="intro-icon">
+      <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    </div>
+    <div class="intro-text">
+      This page documents every KPI displayed across the RSP service dashboards — what it measures, why it matters, how it is calculated, and the exact SOQL query used to pull the data from Salesforce. Badges indicate whether a metric is a <strong>lag indicator</strong> (a result already achieved), a <strong>lead indicator</strong> (a behaviour that predicts future results), a <strong>snapshot</strong> (current state at time of refresh), or <strong>operational</strong> (a queue management metric).
+      <br><br>Click any KPI row to expand it. All queries run against <strong>clearedgepacific.my.salesforce.com</strong>. The Work Type ID for Service Call is <strong style="font-family:'DM Mono',monospace">08q7F0000000RDlQAM</strong>.
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <div class="section-label">Service Dashboard — open cases snapshot</div>
+
+  <!-- TOTAL OPEN CASES -->
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">Total open cases</div>
+        <div class="kpi-tagline">All non-closed cases across all territories and work types</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-snapshot">Snapshot</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-two-col">
+        <div class="kpi-section">
+          <div class="kpi-section-title">Why it matters</div>
+          <p>The total queue size. The primary indicator of team workload and capacity strain. A rising trend week-on-week signals that cases are being created faster than they are being closed — a precursor to SLA breaches and customer dissatisfaction.</p>
+        </div>
+        <div class="kpi-section">
+          <div class="kpi-section-title">How it is calculated</div>
+          <div class="formula-box"><span class="hl">COUNT</span>(Case WHERE IsClosed = false)</div>
+          <p style="margin-top:8px">Counts every Case record where the system field <code>IsClosed</code> is false. No work type filter — all case types are included.</p>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">SOQL query</div>
+        <div class="soql-block">
+          <div class="soql-header"><span class="soql-lang">SOQL</span><button class="copy-btn" onclick="copySOQL(this)">Copy</button></div>
+          <pre><span class="kw">SELECT</span> Service_Territory__c, <span class="fn">COUNT</span>(Id) CaseCount
+<span class="kw">FROM</span> Case
+<span class="kw">WHERE</span> IsClosed = <span class="nm">false</span>
+<span class="kw">GROUP BY</span> Service_Territory__c
+<span class="kw">ORDER BY</span> <span class="fn">COUNT</span>(Id) <span class="kw">DESC</span></pre>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">Salesforce fields used</div>
+        <table class="obj-table">
+          <tr><th>Object</th><th>Field</th><th>Type</th><th>Notes</th></tr>
+          <tr><td>Case</td><td class="field-name">IsClosed</td><td class="field-type">Boolean</td><td>System field. True when Status is a closed status value.</td></tr>
+          <tr><td>Case</td><td class="field-name">Service_Territory__c</td><td class="field-type">Lookup → ServiceTerritory</td><td>Custom field. Lookup to ServiceTerritory object. Territory names resolved via separate query on ServiceTerritory.Name.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPEN > 72 HOURS -->
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">Open cases &gt;72 hours</div>
+        <div class="kpi-tagline">Open cases created more than 3 calendar days ago</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-lead">Lead</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-two-col">
+        <div class="kpi-section">
+          <div class="kpi-section-title">Why it matters</div>
+          <p>A leading indicator of resolution SLA breaches and customer dissatisfaction. In Pacific Island MPS markets, a case that has been open for more than 3 days without resolution typically signals a parts availability problem, a travel constraint, or a case that has been forgotten. Monitoring this weekly creates accountability before the case becomes a complaint.</p>
+        </div>
+        <div class="kpi-section">
+          <div class="kpi-section-title">How it is calculated</div>
+          <div class="formula-box"><span class="hl">COUNT</span>(Case WHERE IsClosed = false AND CreatedDate &lt; NOW − 72h)</div>
+          <p style="margin-top:8px">The 72-hour threshold is calculated as a fixed datetime: the current timestamp minus 72 hours. Because SOQL does not support <code>LAST_N_HOURS</code> in aggregate queries, this is computed as a literal datetime at query time (e.g. <code>2026-03-20T00:00:00Z</code> for a refresh on 23 March).</p>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">SOQL query</div>
+        <div class="soql-block">
+          <div class="soql-header"><span class="soql-lang">SOQL</span><button class="copy-btn" onclick="copySOQL(this)">Copy</button></div>
+          <pre><span class="cm">-- Replace the datetime with: current refresh datetime minus 72 hours</span>
+<span class="kw">SELECT</span> Service_Territory__c, <span class="fn">COUNT</span>(Id) CaseCount
+<span class="kw">FROM</span> Case
+<span class="kw">WHERE</span> IsClosed = <span class="nm">false</span>
+  <span class="kw">AND</span> CreatedDate &lt; <span class="str">2026-03-20T00:00:00Z</span>
+<span class="kw">GROUP BY</span> Service_Territory__c
+<span class="kw">ORDER BY</span> <span class="fn">COUNT</span>(Id) <span class="kw">DESC</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <div class="section-label" style="margin-top:32px">Service Dashboard — service call performance</div>
+
+  <!-- AVG DAYS TO CLOSE -->
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">Average days to close — Service Call</div>
+        <div class="kpi-tagline">Mean calendar days from case creation to closure, Service Call work type only</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-lag">Lag</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-two-col">
+        <div class="kpi-section">
+          <div class="kpi-section-title">Why it matters</div>
+          <p>The primary efficiency lag measure for field service. It reflects the end-to-end time a customer waits from logging a fault to having it resolved. A lower number means faster resolution and higher customer satisfaction. Comparing month-on-month reveals whether operational improvements (parts stocking, scheduling, technician training) are having an effect.</p>
+          <p>Scoped to Service Call work type only to isolate reactive service visits from logistical tasks (toner delivery, asset installation) which have structurally different durations.</p>
+        </div>
+        <div class="kpi-section">
+          <div class="kpi-section-title">How it is calculated</div>
+          <div class="formula-box">
+            For each closed case:<br>
+            <span class="hl">days</span> = (ClosedDate − CreatedDate) in ms ÷ 86,400,000<br><br>
+            <span class="hl">Avg days to close</span> = SUM(days) ÷ COUNT(cases)
+          </div>
+          <p style="margin-top:8px">Calculated in Apex (Anonymous Block) because SOQL cannot compute the difference between two datetime fields natively. Both CreatedDate and ClosedDate are queried as datetime values and the delta is computed in milliseconds then converted to days.</p>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">Apex query (used at refresh time)</div>
+        <div class="soql-block">
+          <div class="soql-header"><span class="soql-lang">Apex</span><button class="copy-btn" onclick="copySOQL(this)">Copy</button></div>
+          <pre><span class="kw">List</span>&lt;Case&gt; cases = [
+  <span class="kw">SELECT</span> Id, CreatedDate, ClosedDate
+  <span class="kw">FROM</span> Case
+  <span class="kw">WHERE</span> IsClosed = <span class="nm">true</span>
+    <span class="kw">AND</span> Work_Type__c = <span class="str">'08q7F0000000RDlQAM'</span>  <span class="cm">// Service Call</span>
+    <span class="kw">AND</span> ClosedDate &gt;= <span class="str">2026-03-01T00:00:00Z</span>
+    <span class="kw">AND</span> ClosedDate &lt;  <span class="str">2026-04-01T00:00:00Z</span>
+];
+<span class="kw">Double</span> total = <span class="nm">0</span>;
+<span class="kw">for</span> (Case c : cases) {
+  total += (c.ClosedDate.getTime() - c.CreatedDate.getTime())
+           / (<span class="nm">1000.0</span> * <span class="nm">60</span> * <span class="nm">60</span> * <span class="nm">24</span>);
+}
+<span class="kw">Double</span> avgDays = cases.size() > <span class="nm">0</span> ? total / cases.size() : <span class="nm">0</span>;</pre>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">Salesforce fields used</div>
+        <table class="obj-table">
+          <tr><th>Object</th><th>Field</th><th>Type</th><th>Notes</th></tr>
+          <tr><td>Case</td><td class="field-name">CreatedDate</td><td class="field-type">DateTime</td><td>System field. Timestamp when the case was created.</td></tr>
+          <tr><td>Case</td><td class="field-name">ClosedDate</td><td class="field-type">DateTime</td><td>System field. Populated when case Status moves to a closed value.</td></tr>
+          <tr><td>Case</td><td class="field-name">Work_Type__c</td><td class="field-type">Lookup → WorkType</td><td>Custom field. Filtered to Service Call ID <code>08q7F0000000RDlQAM</code>.</td></tr>
+          <tr><td>Case</td><td class="field-name">IsClosed</td><td class="field-type">Boolean</td><td>System field.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIRST TIME FIX RATE -->
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">First time fix rate (FTF)</div>
+        <div class="kpi-tagline">% of closed Service Call cases resolved with exactly one Work Order</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-lag">Lag</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-two-col">
+        <div class="kpi-section">
+          <div class="kpi-section-title">Why it matters</div>
+          <p>Industry benchmark for MPS service quality. A case with only one Work Order means the technician diagnosed and resolved the fault on a single visit. Multiple Work Orders indicate a return visit was required — meaning the customer's machine was down for longer, and technician travel costs were incurred twice.</p>
+          <p>Industry benchmark for managed print services is 75–80%. RSP is currently at 77.6% MTD, which is at the top of that range.</p>
+          <p><strong>Current definition caveat:</strong> any second Work Order — including parts-only follow-ups or scheduled PMs — counts against FTF. Sridhar is reviewing whether non-callback second Work Orders should be excluded. This may increase the reported rate.</p>
+        </div>
+        <div class="kpi-section">
+          <div class="kpi-section-title">How it is calculated</div>
+          <div class="formula-box">
+            <span class="hl">FTF rate</span> = cases with exactly 1 Work Order ÷ total closed Service Call cases<br><br>
+            A case is a <span class="hl">first-time fix</span> if:<br>
+            COUNT(WorkOrders WHERE CaseId = this case) = 1
+          </div>
+          <p style="margin-top:8px">Calculated in Apex. All closed Service Call cases for the period are queried, then their related WorkOrder records are counted via a second SOQL query. Cases with exactly one WorkOrder are counted as FTF.</p>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">Apex query (used at refresh time)</div>
+        <div class="soql-block">
+          <div class="soql-header"><span class="soql-lang">Apex</span><button class="copy-btn" onclick="copySOQL(this)">Copy</button></div>
+          <pre><span class="cm">// Step 1: get closed Service Call cases for the period</span>
+<span class="kw">List</span>&lt;Case&gt; cases = [
+  <span class="kw">SELECT</span> Id <span class="kw">FROM</span> Case
+  <span class="kw">WHERE</span> IsClosed = <span class="nm">true</span>
+    <span class="kw">AND</span> Work_Type__c = <span class="str">'08q7F0000000RDlQAM'</span>
+    <span class="kw">AND</span> ClosedDate &gt;= <span class="str">2026-03-01T00:00:00Z</span>
+];
+<span class="cm">// Step 2: count Work Orders per case</span>
+<span class="kw">Map</span>&lt;Id, <span class="kw">Integer</span>&gt; woCount = <span class="kw">new</span> <span class="kw">Map</span>&lt;Id, <span class="kw">Integer</span>&gt;();
+<span class="kw">for</span> (Case c : cases) woCount.put(c.Id, <span class="nm">0</span>);
+<span class="kw">for</span> (WorkOrder wo : [
+  <span class="kw">SELECT</span> CaseId <span class="kw">FROM</span> WorkOrder
+  <span class="kw">WHERE</span> CaseId <span class="kw">IN</span> :woCount.keySet()
+]) {
+  woCount.put(wo.CaseId, woCount.get(wo.CaseId) + <span class="nm">1</span>);
+}
+<span class="cm">// Step 3: count cases with exactly 1 Work Order</span>
+<span class="kw">Integer</span> ftf = <span class="nm">0</span>;
+<span class="kw">for</span> (<span class="kw">Integer</span> n : woCount.values()) <span class="kw">if</span> (n == <span class="nm">1</span>) ftf++;</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <div class="section-label" style="margin-top:32px">Leaderboard — technician performance</div>
+
+  <!-- TECHNICIAN CASES CLOSED -->
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">Cases closed per technician</div>
+        <div class="kpi-tagline">Total closed Service Call cases YTD, grouped by Assigned_Technician__c</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-lag">Lag</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-two-col">
+        <div class="kpi-section">
+          <div class="kpi-section-title">Why it matters</div>
+          <p>The primary throughput measure per technician. Used to identify volume differences between technicians — which may reflect territory size, customer density, or scheduling efficiency. Not used in isolation: a high case count with a poor FTF rate or high callback rate is a worse outcome than a moderate case count with excellent quality metrics.</p>
+        </div>
+        <div class="kpi-section">
+          <div class="kpi-section-title">How it is calculated</div>
+          <div class="formula-box"><span class="hl">COUNT</span>(Case WHERE IsClosed = true AND Work_Type__c = 'Service Call' AND ClosedDate &gt;= 2026-01-01) GROUP BY Assigned_Technician__c</div>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">Note on technician field</div>
+        <p style="font-size:13px;color:var(--mid);line-height:1.7">Technician name is stored in <code style="font-family:'DM Mono',monospace;font-size:11px">Assigned_Technician__c</code>, a text field on the Case object — not a lookup to the User object. This means technician names are free-text strings, which can result in duplicates (e.g. "Ramiro Cataquis" and "Ramiro Cataquis (2)" appearing as separate entries). This is a data quality issue worth resolving in Salesforce by converting the field to a User lookup.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALLBACK RATE -->
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">Callback rate</div>
+        <div class="kpi-tagline">% of closed Service Call cases where Callback_ReadOnly__c = true</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-lead">Lead</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-two-col">
+        <div class="kpi-section">
+          <div class="kpi-section-title">Why it matters</div>
+          <p>A callback occurs when a customer calls back after a case has been closed because the fault has reappeared or was not fully resolved. It is the strongest leading indicator of FTF rate — a high callback rate this month predicts a lower FTF rate next month. It also directly represents customer experience: every callback is a customer whose machine failed again.</p>
+          <p>Currently RSP's overall callback rate is 32.8% MTD (March 2026), which is high. A target of &lt;15% is realistic for a well-run MPS operation.</p>
+        </div>
+        <div class="kpi-section">
+          <div class="kpi-section-title">How it is calculated</div>
+          <div class="formula-box">
+            <span class="hl">Callback rate</span> = callbacks ÷ total closed Service Call cases<br><br>
+            A case is a <span class="hl">callback</span> if:<br>
+            Callback_ReadOnly__c = true
+          </div>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">SOQL / Apex query</div>
+        <div class="soql-block">
+          <div class="soql-header"><span class="soql-lang">Apex</span><button class="copy-btn" onclick="copySOQL(this)">Copy</button></div>
+          <pre><span class="kw">List</span>&lt;Case&gt; cases = [
+  <span class="kw">SELECT</span> Id, Assigned_Technician__c, Callback_ReadOnly__c,
+         Service_Territory__c
+  <span class="kw">FROM</span> Case
+  <span class="kw">WHERE</span> IsClosed = <span class="nm">true</span>
+    <span class="kw">AND</span> Work_Type__c = <span class="str">'08q7F0000000RDlQAM'</span>
+    <span class="kw">AND</span> ClosedDate &gt;= <span class="str">2026-01-01T00:00:00Z</span>
+    <span class="kw">AND</span> Assigned_Technician__c != <span class="nm">null</span>
+];
+<span class="cm">// Count callbacks per technician</span>
+<span class="kw">for</span> (Case c : cases) {
+  <span class="kw">if</span> (c.Callback_ReadOnly__c) callbacks++;
+}</pre>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">Salesforce fields used</div>
+        <table class="obj-table">
+          <tr><th>Object</th><th>Field</th><th>Type</th><th>Notes</th></tr>
+          <tr><td>Case</td><td class="field-name">Callback_ReadOnly__c</td><td class="field-type">Boolean</td><td>Custom field. Read-only formula or process-set field. True when a case has been flagged as a callback by the system or a user.</td></tr>
+          <tr><td>Case</td><td class="field-name">Assigned_Technician__c</td><td class="field-type">Text(40)</td><td>Custom field. Free-text technician name. Not a User lookup — see data quality note above.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLA VIOLATIONS -->
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">SLA violation rate</div>
+        <div class="kpi-tagline">% of open Service Call cases with a response or resolution SLA breach</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-lead">Lead</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-two-col">
+        <div class="kpi-section">
+          <div class="kpi-section-title">Why it matters</div>
+          <p>SLA violations on open cases are forward-looking risk indicators. A case with a resolution SLA breach that is still open is almost certainly going to generate a customer complaint and a poor CSAT score. Solomons and Tonga currently show 100% violation rates on open Service Calls — meaning every open service call in those territories has already breached at least one SLA milestone.</p>
+        </div>
+        <div class="kpi-section">
+          <div class="kpi-section-title">How it is calculated</div>
+          <div class="formula-box">
+            <span class="hl">Violation rate</span> = cases with any SLA breach ÷ total open Service Call cases<br><br>
+            A case has a violation if ANY of these are true:<br>
+            SLA_Response_Violation__c = true<br>
+            SLA_Resolution_Violation__c = true
+          </div>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">SOQL query</div>
+        <div class="soql-block">
+          <div class="soql-header"><span class="soql-lang">SOQL</span><button class="copy-btn" onclick="copySOQL(this)">Copy</button></div>
+          <pre><span class="kw">SELECT</span> Id, Service_Territory__c,
+       SLA_Response_Violation__c,
+       SLA_Resolution_Violation__c
+<span class="kw">FROM</span> Case
+<span class="kw">WHERE</span> IsClosed = <span class="nm">false</span>
+  <span class="kw">AND</span> Work_Type__c = <span class="str">'08q7F0000000RDlQAM'</span></pre>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">Salesforce fields used</div>
+        <table class="obj-table">
+          <tr><th>Object</th><th>Field</th><th>Type</th><th>Notes</th></tr>
+          <tr><td>Case</td><td class="field-name">SLA_Response_Violation__c</td><td class="field-type">Boolean</td><td>Custom field. Set by Salesforce Entitlement process when the response milestone is breached.</td></tr>
+          <tr><td>Case</td><td class="field-name">SLA_Processing_Violation__c</td><td class="field-type">Boolean</td><td>Custom field. Processing milestone breach.</td></tr>
+          <tr><td>Case</td><td class="field-name">SLA_Resolution_Violation__c</td><td class="field-type">Boolean</td><td>Custom field. Resolution milestone breach — the most significant for customer impact.</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPEAT ASSET VISITS -->
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">Repeat visit rate by asset</div>
+        <div class="kpi-tagline">Assets with 3+ closed Service Call cases in 2026 YTD</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-lead">Lead</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-two-col">
+        <div class="kpi-section">
+          <div class="kpi-section-title">Why it matters</div>
+          <p>A machine generating 3+ service calls in a year is a repeat offender — it is consuming disproportionate technician time, likely frustrating the customer, and may indicate an asset at end-of-life that should be proactively replaced or refurbished. In a 4DX context this is a leading indicator of contract churn: customers with persistently faulty machines are the most likely to terminate or refuse contract renewal.</p>
+          <p>Currently 31 of 378 active assets (8.2%) have generated 3+ service calls YTD. These should be reviewed in the next customer business review.</p>
+        </div>
+        <div class="kpi-section">
+          <div class="kpi-section-title">How it is calculated</div>
+          <div class="formula-box">
+            Group closed Service Call cases by AssetId.<br>
+            Assets with <span class="hl">COUNT &gt;= 3</span> are flagged as repeat offenders.<br><br>
+            Distribution buckets:<br>
+            1 visit: single-visit assets<br>
+            2 visits: moderate repeat<br>
+            3+ visits: repeat offenders
+          </div>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">SOQL / Apex query</div>
+        <div class="soql-block">
+          <div class="soql-header"><span class="soql-lang">Apex</span><button class="copy-btn" onclick="copySOQL(this)">Copy</button></div>
+          <pre><span class="kw">List</span>&lt;Case&gt; cases = [
+  <span class="kw">SELECT</span> Id, AssetId, Asset.Name, Asset.SerialNumber,
+         Service_Territory__c
+  <span class="kw">FROM</span> Case
+  <span class="kw">WHERE</span> IsClosed = <span class="nm">true</span>
+    <span class="kw">AND</span> Work_Type__c = <span class="str">'08q7F0000000RDlQAM'</span>
+    <span class="kw">AND</span> ClosedDate &gt;= <span class="str">2026-01-01T00:00:00Z</span>
+    <span class="kw">AND</span> AssetId != <span class="nm">null</span>
+];
+<span class="cm">// Group by asset and count</span>
+<span class="kw">Map</span>&lt;Id, <span class="kw">Integer</span>&gt; assetCount = <span class="kw">new</span> <span class="kw">Map</span>&lt;Id, <span class="kw">Integer</span>&gt;();
+<span class="kw">for</span> (Case c : cases) {
+  assetCount.put(c.AssetId,
+    (assetCount.containsKey(c.AssetId) ? assetCount.get(c.AssetId) : <span class="nm">0</span>) + <span class="nm">1</span>
+  );
+}
+<span class="cm">// Filter for 3+ visits</span>
+<span class="kw">for</span> (Id aid : assetCount.keySet()) {
+  <span class="kw">if</span> (assetCount.get(aid) &gt;= <span class="nm">3</span>) repeatOffenders.add(aid);
+}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <div class="section-label" style="margin-top:32px">Open Cases — record-level detail</div>
+
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">Open Cases list</div>
+        <div class="kpi-tagline">Individual open case records with account, status, work type, age, and technician</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-operational">Operational</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-two-col">
+        <div class="kpi-section">
+          <div class="kpi-section-title">Why it matters</div>
+          <p>Provides Sridhar with a drill-down view of every open case — filterable by territory, status, work type, and age. Each case number links directly to the Salesforce record for immediate action. This is the operational tool that the summary dashboard metrics point toward: when the dashboard shows 88% SLA violation rate, this list tells you which specific cases are breached.</p>
+        </div>
+        <div class="kpi-section">
+          <div class="kpi-section-title">Age calculation</div>
+          <div class="formula-box">
+            <span class="hl">Age</span> = (query timestamp − CreatedDate) ÷ 3,600,000 milliseconds<br><br>
+            Colour thresholds:<br>
+            Green: &lt; 3 days (72h)<br>
+            Amber: 3–14 days<br>
+            Red: &gt; 14 days
+          </div>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">Apex query (run per territory at refresh time)</div>
+        <div class="soql-block">
+          <div class="soql-header"><span class="soql-lang">Apex</span><button class="copy-btn" onclick="copySOQL(this)">Copy</button></div>
+          <pre><span class="kw">List</span>&lt;Case&gt; cases = [
+  <span class="kw">SELECT</span> Id, CaseNumber, Account.Name, Subject,
+         Status, Service_Territory__c, Work_Type__c,
+         Assigned_Technician__c, CreatedDate, Priority
+  <span class="kw">FROM</span> Case
+  <span class="kw">WHERE</span> IsClosed = <span class="nm">false</span>
+    <span class="kw">AND</span> Service_Territory__c = <span class="str">'&lt;territory_id&gt;'</span>
+  <span class="kw">ORDER BY</span> CreatedDate <span class="kw">ASC</span>
+];
+<span class="cm">// Age computed at query time:</span>
+<span class="cm">// hoursOpen = (DateTime.now().getTime() - c.CreatedDate.getTime()) / (1000*60*60)</span>
+
+<span class="cm">// Salesforce record link format:</span>
+<span class="cm">// https://clearedgepacific.my.salesforce.com/{Case.Id}</span></pre>
+        </div>
+      </div>
+      <div class="kpi-section">
+        <div class="kpi-section-title">Salesforce fields used</div>
+        <table class="obj-table">
+          <tr><th>Object</th><th>Field</th><th>Type</th><th>Notes</th></tr>
+          <tr><td>Case</td><td class="field-name">CaseNumber</td><td class="field-type">Text</td><td>System auto-number field. Used as the display identifier and link text.</td></tr>
+          <tr><td>Case</td><td class="field-name">Account.Name</td><td class="field-name">Relationship</td><td>Parent Account name via lookup.</td></tr>
+          <tr><td>Case</td><td class="field-name">Subject</td><td class="field-type">Text(255)</td><td>Case subject. Typically auto-populated from asset name and serial number.</td></tr>
+          <tr><td>Case</td><td class="field-name">Priority</td><td class="field-type">Picklist</td><td>High / Medium / Low. Currently most cases are Medium.</td></tr>
+          <tr><td>Case</td><td class="field-name">Id</td><td class="field-type">ID</td><td>18-character Salesforce record ID. Used to construct the direct link: <code>https://clearedgepacific.my.salesforce.com/{Id}</code></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════ -->
+  <div class="section-label" style="margin-top:32px">Metrics planned — not yet active</div>
+
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">Response time / case acceptance rate</div>
+        <div class="kpi-tagline">% of Service Call cases accepted within 4 hours — field Date_Time_Accepted__c not yet populated</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-lead">Lead</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-section">
+        <div class="kpi-section-title">Current status</div>
+        <p>The field <code style="font-family:'DM Mono',monospace;font-size:11px">Date_Time_Accepted__c</code> exists on the Case object but is not being populated — 0 of 50 open Service Call cases have a value. A Salesforce validation rule or Flow should be implemented to require this field to be populated when a technician first accepts/acknowledges a case. Once populated, this becomes the strongest 4DX lead measure for the team: the speed of acknowledgement predicts resolution speed.</p>
+        <p style="margin-top:8px"><strong>Target once active:</strong> 90% of Service Call cases acknowledged within 4 hours of creation.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-entry">
+    <div class="kpi-entry-header" onclick="toggle(this)">
+      <div class="kpi-meta">
+        <div class="kpi-name">Cases without a next step date</div>
+        <div class="kpi-tagline">Open cases where Next_Step_Date__c is null — field not yet consistently used</div>
+      </div>
+      <div class="kpi-badges">
+        <span class="badge b-lead">Lead</span>
+        <svg class="chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-section">
+        <div class="kpi-section-title">Current status</div>
+        <p>The field <code style="font-family:'DM Mono',monospace;font-size:11px">Next_Step_Date__c</code> exists on the Case object but is not consistently populated. In a 4DX model, every open case older than 24 hours should have a committed next step date — this creates explicit accountability. A case without a next step date is invisible on the team's radar.</p>
+        <p style="margin-top:8px"><strong>Target once active:</strong> 0 open cases without a next step date set.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>Ricoh South Pacific · Service Dashboard Data Dictionary · clearedgepacific.my.salesforce.com</footer>
+
+<script>
+function toggle(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chevron.classList.toggle('open', !isOpen);
+}
+
+function copySOQL(btn) {
+  const pre = btn.closest('.soql-block').querySelector('pre');
+  const text = pre.innerText || pre.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
