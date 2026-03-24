@@ -415,16 +415,18 @@
     <div class="table-card-header">
       <div>
         <div class="table-card-title">Cross-Entity Transfer Candidates</div>
-        <div class="table-card-sub">SKUs that are SLOB in one entity but have sold in another entity within the last 90 days</div>
+        <div class="table-card-sub">Parts and toners only · SLOB in one entity (&gt;365 days) but actively selling in another (&lt;90 days) · Values in NZD</div>
       </div>
     </div>
     <div class="transfer-header-note">
-      These SKUs represent cash trapped in one location while another entity is actively selling the same product.
-      An internal transfer eliminates the write-off risk and avoids a repurchase order elsewhere.
+      These SKUs are sitting idle in one entity while another is actively selling the same product.
+      An internal transfer avoids a write-off and eliminates a repurchase order. Machines excluded — parts and toners only.
     </div>
-    <div style="overflow-x:auto;">
-      <table id="transferTable"></table>
+    <div class="tab-bar" id="transferTabBar">
+      <button class="tab-btn active" data-transfer="parts">Ricoh Copier Parts</button>
+      <button class="tab-btn" data-transfer="toners">Ricoh Copier Toners &amp; Developers</button>
     </div>
+    <div id="transferTabPanels"></div>
   </div>
 
   <div class="dash-footer" id="dashFooter"></div>
@@ -732,65 +734,225 @@ const DATA = {
   },
 
   // ── TRANSFER OPPORTUNITIES ───────────────────────────────
-  // Cross-entity candidates: same ProductCode appears as SLOB
-  // (DaysSinceLastSale > 365) in one entity and as active
-  // (DaysSinceLastSale < 90) in another.
-  // Identified from SLOB worklist cross-reference — D1863054
-  // and D1464062 appear across multiple entities.
-  // Full cross-entity query requires a separate Synchub session
-  // joining all five StockOnHand tables on ProductCode.
-  transferOpportunities: [
-    {
-      code:         "D1863054",
-      desc:         "Dev Unit K MPC3003 - MPC6003",
-      slobEntity:   "RSP",
-      slobQty:      13,
-      slobValueNZD: 2887.54,
-      slobDays:     523,
-      buyerEntity:  "Samoa",
-      buyerNote:    "Also SLOB in Samoa (402d) — assess demand before transfer"
-    },
-    {
-      code:         "D1464062",
-      desc:         "Fusing Unit MPC3003 - 3503",
-      slobEntity:   "RSP",
-      slobQty:      16,
-      slobValueNZD: 3555.55,
-      slobDays:     566,
-      buyerEntity:  "Solomon Islands",
-      buyerNote:    "Same SKU SLOB in Solomons (426d) — shared MPC3003 fleet, check active install base"
-    },
-    {
-      code:         "418460",
-      desc:         "Ricoh IM 550F",
-      slobEntity:   "Solomon Islands",
-      slobQty:      3,
-      slobValueNZD: 13229.37,
-      slobDays:     517,
-      buyerEntity:  "Vanuatu",
-      buyerNote:    "Vanuatu also holds 7 units SLOB (620d) — consider regional consolidation or supplier return"
-    },
-    {
-      code:         "418846",
-      desc:         "Ricoh IM 4000",
-      slobEntity:   "Solomon Islands",
-      slobQty:      3,
-      slobValueNZD: 18501.42,
-      slobDays:     384,
-      buyerEntity:  "Samoa",
-      buyerNote:    "Samoa holds same SKU SLOB (750d) — assess whether any Pacific market has active pipeline for IM 4000"
-    },
-    {
-      code:         "D0BK3003",
-      desc:         "Development Unit Yellow IM C2000/2500",
-      slobEntity:   "Vanuatu",
-      slobQty:      6,
-      slobValueNZD: 1622.60,
-      slobDays:     755,
-      buyerEntity:  "Tonga",
-      buyerNote:    "Tonga holds same SKU SLOB (593d) — shared IMC2000/2500 platform across entities"
-    }
-  ]
+  // Source: Synchub live cross-entity query 24 Mar 2026
+  // Parts and toners only — machines excluded (too large for transfer)
+  // SLOB = DaysSinceLastSale > 365 in one entity
+  // Active = DaysSinceLastSale < 90 in a different entity
+  // Costs converted to NZD: VUV×0.0141 · SBD×0.2119 · WST×0.6181 · TOP×0.7191
+  // Where same SLOB SKU has multiple active buyers, buyers are consolidated into one row.
+  transferOpportunities: {
+    parts: [
+      {
+        code:         "D2423091",
+        desc:         "Development Unit Black MPC3004 MPC6004",
+        slobEntity:   "Vanuatu",
+        slobQty:      2,
+        slobValueNZD: 958.42,   // VUV 67,972.73 × 0.0141
+        slobDays:     620,
+        activeEntities: ["RSP", "Samoa", "Tonga"]
+      },
+      {
+        code:         "D0A44029",
+        desc:         "Fusing Unit IM 430",
+        slobEntity:   "Solomon Islands",
+        slobQty:      5,
+        slobValueNZD: 3291.35,  // SBD 15,532.79 × 0.2119
+        slobDays:     1042,
+        activeEntities: ["Samoa"]
+      },
+      {
+        code:         "D2423091",
+        desc:         "Development Unit Black MPC3004 MPC6004",
+        slobEntity:   "Solomon Islands",
+        slobQty:      4,
+        slobValueNZD: 2330.57,  // SBD 10,998.96 × 0.2119
+        slobDays:     531,
+        activeEntities: ["RSP", "Samoa", "Tonga"]
+      },
+      {
+        code:         "D3EW2796",
+        desc:         "Pully Rolling Short Ass'y ProC9100",
+        slobEntity:   "Vanuatu",
+        slobQty:      1,
+        slobValueNZD: 107.99,   // VUV 7,658.59 × 0.0141
+        slobDays:     731,
+        activeEntities: ["RSP"]
+      },
+      {
+        code:         "D1863054",
+        desc:         "Dev Unit K MPC3003 - MPC6003",
+        slobEntity:   "RSP",
+        slobQty:      13,
+        slobValueNZD: 2887.54,  // NZD direct
+        slobDays:     523,
+        activeEntities: ["Solomon Islands", "Tonga"]
+      },
+      {
+        code:         "D1863054",
+        desc:         "Dev Unit K MPC3003 - MPC6003",
+        slobEntity:   "Samoa",
+        slobQty:      3,
+        slobValueNZD: 1447.26,  // WST 2,341.37 × 0.6181
+        slobDays:     402,
+        activeEntities: ["Solomon Islands", "Tonga"]
+      },
+      {
+        code:         "D1363407",
+        desc:         "Seal Development Roller Rear MPC6502",
+        slobEntity:   "Vanuatu",
+        slobQty:      1,
+        slobValueNZD: 33.64,    // VUV 2,386.15 × 0.0141
+        slobDays:     1123,
+        activeEntities: ["RSP"]
+      },
+      {
+        code:         "D1764042",
+        desc:         "Fuser Belt Unit MP C2003SP/C2503SP",
+        slobEntity:   "Tonga",
+        slobQty:      1,
+        slobValueNZD: 714.67,   // TOP 993.86 × 0.7191
+        slobDays:     3038,
+        activeEntities: ["Solomon Islands"]
+      },
+      {
+        code:         "AE020268",
+        desc:         "Pressure Roller MPC3003 6003",
+        slobEntity:   "Tonga",
+        slobQty:      1,
+        slobValueNZD: 357.39,   // TOP 497.10 × 0.7191
+        slobDays:     671,
+        activeEntities: ["RSP"]
+      },
+      {
+        code:         "D0CB6201",
+        desc:         "Transfer/Separation Unit IM C300F",
+        slobEntity:   "Tonga",
+        slobQty:      1,
+        slobValueNZD: 115.40,   // TOP 160.47 × 0.7191
+        slobDays:     736,
+        activeEntities: ["Solomon Islands"]
+      }
+    ],
+    toners: [
+      {
+        code:         "407337",
+        desc:         "Ricoh Toner Cartridge SP3600 SP4500S",
+        slobEntity:   "Vanuatu",
+        slobQty:      4,
+        slobValueNZD: 1199.84,  // VUV 85,095.20 × 0.0141
+        slobDays:     402,
+        activeEntities: ["Tonga"]
+      },
+      {
+        code:         "842143",
+        desc:         "Ricoh Toner Type MP 305S",
+        slobEntity:   "Vanuatu",
+        slobQty:      5,
+        slobValueNZD: 278.19,   // VUV 19,729.69 × 0.0141
+        slobDays:     657,
+        activeEntities: ["RSP"]
+      },
+      {
+        code:         "841635",
+        desc:         "Ricoh Toner Black CW2200",
+        slobEntity:   "Vanuatu",
+        slobQty:      1,
+        slobValueNZD: 203.44,   // VUV 14,428.63 × 0.0141
+        slobDays:     3532,
+        activeEntities: ["Solomon Islands"]
+      },
+      {
+        code:         "841637",
+        desc:         "Ricoh Toner Magenta CW2200",
+        slobEntity:   "Vanuatu",
+        slobQty:      1,
+        slobValueNZD: 98.95,    // VUV 7,017.87 × 0.0141
+        slobDays:     3532,
+        activeEntities: ["Solomon Islands"]
+      },
+      {
+        code:         "841638",
+        desc:         "Ricoh Toner Yellow CW2200",
+        slobEntity:   "Vanuatu",
+        slobQty:      1,
+        slobValueNZD: 98.95,    // VUV 7,017.87 × 0.0141
+        slobDays:     3532,
+        activeEntities: ["Solomon Islands"]
+      },
+      {
+        code:         "885450",
+        desc:         "Ricoh Toner Black Type 2320D",
+        slobEntity:   "Vanuatu",
+        slobQty:      1,
+        slobValueNZD: 58.85,    // VUV 4,173.68 × 0.0141
+        slobDays:     473,
+        activeEntities: ["Samoa"]
+      },
+      {
+        code:         "842616",
+        desc:         "Ricoh Toner Type IM 460F",
+        slobEntity:   "Tonga",
+        slobQty:      10,
+        slobValueNZD: 1594.69,  // TOP 2,217.34 × 0.7191
+        slobDays:     383,
+        activeEntities: ["RSP", "Samoa", "Vanuatu"]
+      },
+      {
+        code:         "406650",
+        desc:         "Ricoh Toner Black SP 6330S",
+        slobEntity:   "Solomon Islands",
+        slobQty:      1,
+        slobValueNZD: 240.38,   // SBD 1,133.99 × 0.2119
+        slobDays:     507,
+        activeEntities: ["RSP"]
+      },
+      {
+        code:         "841635",
+        desc:         "Ricoh Toner Black CW2200",
+        slobEntity:   "Samoa",
+        slobQty:      2,
+        slobValueNZD: 403.85,   // WST 653.18 × 0.6181
+        slobDays:     419,
+        activeEntities: ["Solomon Islands"]
+      },
+      {
+        code:         "841637",
+        desc:         "Ricoh Toner Magenta CW2200",
+        slobEntity:   "Samoa",
+        slobQty:      2,
+        slobValueNZD: 203.34,   // WST 328.84 × 0.6181
+        slobDays:     419,
+        activeEntities: ["Solomon Islands"]
+      },
+      {
+        code:         "841638",
+        desc:         "Ricoh Toner Yellow CW2200",
+        slobEntity:   "Samoa",
+        slobQty:      2,
+        slobValueNZD: 203.34,   // WST 328.84 × 0.6181
+        slobDays:     419,
+        activeEntities: ["Solomon Islands"]
+      },
+      {
+        code:         "885450",
+        desc:         "Ricoh Toner Black Type 2320D",
+        slobEntity:   "Tonga",
+        slobQty:      1,
+        slobValueNZD: 57.99,    // TOP 80.62 × 0.7191
+        slobDays:     454,
+        activeEntities: ["Samoa"]
+      },
+      {
+        code:         "842026",
+        desc:         "Ricoh Toner Type MP 301S",
+        slobEntity:   "Samoa",
+        slobQty:      7,
+        slobValueNZD: 97.76,    // WST 158.11 × 0.6181
+        slobDays:     389,
+        activeEntities: ["Vanuatu"]
+      }
+    ]
+  }
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -1156,61 +1318,88 @@ function initDrillDown() {
 initDrillDown();
 
 // ═══════════════════════════════════════════════════════════
-//  TRANSFER OPPORTUNITIES
+//  TRANSFER OPPORTUNITIES — TABBED BY PRODUCT GROUP
 // ═══════════════════════════════════════════════════════════
 function renderTransferOpportunities() {
-  const table = document.getElementById("transferTable");
-  const rows  = DATA.transferOpportunities;
+  const tabBar    = document.getElementById("transferTabBar");
+  const panels    = document.getElementById("transferTabPanels");
+  let activeTab   = "parts";
 
-  if (!rows || rows.length === 0) {
-    table.parentElement.innerHTML += `<div class="empty-state">
-      <strong>No transfer opportunities identified</strong>
-      This requires the same ProductCode to appear as SLOB in one entity and active (&lt;90 days last sale) in another.
-      Populate transferOpportunities in the DATA object from a cross-entity Synchub query.
-    </div>`;
-    return;
+  const groups = [
+    { key: "parts",   label: "Ricoh Copier Parts" },
+    { key: "toners",  label: "Ricoh Copier Toners & Developers" }
+  ];
+
+  function buildTable(key) {
+    const rows = DATA.transferOpportunities[key];
+    const wrap = document.createElement("div");
+    wrap.style.overflowX = "auto";
+
+    if (!rows || rows.length === 0) {
+      wrap.innerHTML = `<div class="empty-state"><strong>No transfer opportunities identified</strong>No SKUs in this group are SLOB in one entity and active in another.</div>`;
+      return wrap;
+    }
+
+    const tbl = document.createElement("table");
+    tbl.innerHTML = `<thead><tr>
+      <th>SKU</th>
+      <th style="text-align:left">Description</th>
+      <th>Has SLOB Stock</th>
+      <th>Qty</th>
+      <th>Value (NZD)</th>
+      <th>Days Idle</th>
+      <th>Active In</th>
+    </tr></thead>`;
+
+    const tbody = document.createElement("tbody");
+    let grandTotal = 0;
+
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="mono" style="font-size:11.5px">${r.code}</span></td>
+        <td style="text-align:left;white-space:normal;line-height:1.3;max-width:200px">${r.desc}</td>
+        <td><span class="entity-tag">${r.slobEntity}</span></td>
+        <td><span class="mono">${r.slobQty}</span></td>
+        <td><span class="mono" style="font-weight:600">${fmt(r.slobValueNZD)}</span></td>
+        <td><span class="mono ${r.slobDays >= 730 ? 'pct-cell flag' : 'pct-cell warn'}">${r.slobDays}d</span></td>
+        <td>${r.activeEntities.map(e => `<span class="entity-tag buyer" style="margin:1px 2px;display:inline-block">${e}</span>`).join("")}</td>
+      `;
+      tbody.appendChild(tr);
+      grandTotal += r.slobValueNZD;
+    });
+
+    const totalTr = document.createElement("tr");
+    totalTr.className = "total-row";
+    totalTr.innerHTML = `
+      <td colspan="4"><strong>Total transferable value</strong></td>
+      <td><span class="mono" style="font-weight:700">${fmt(grandTotal)}</span></td>
+      <td colspan="2"></td>
+    `;
+    tbody.appendChild(totalTr);
+    tbl.appendChild(tbody);
+    wrap.appendChild(tbl);
+    return wrap;
   }
 
-  const thead = document.createElement("thead");
-  thead.innerHTML = `<tr>
-    <th>SKU</th>
-    <th style="text-align:left">Description</th>
-    <th>Has SLOB Stock</th>
-    <th>Qty</th>
-    <th>Value (NZD)</th>
-    <th>Days Idle</th>
-    <th>Active Seller</th>
-  </tr>`;
-  table.appendChild(thead);
-
-  const tbody = document.createElement("tbody");
-  rows.forEach(r => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><span class="mono" style="font-size:11.5px">${r.code}</span></td>
-      <td style="text-align:left;white-space:normal;line-height:1.3;max-width:200px">${r.desc}</td>
-      <td><span class="entity-tag">${r.slobEntity}</span></td>
-      <td><span class="mono">${r.slobQty}</span></td>
-      <td><span class="mono" style="font-weight:600">${fmt(r.slobValueNZD)}</span></td>
-      <td><span class="mono ${r.slobDays >= 730 ? 'pct-cell flag' : 'pct-cell warn'}">${r.slobDays}d</span></td>
-      <td>
-        <span class="entity-tag buyer">${r.buyerEntity}</span>
-        <div style="font-size:10.5px;color:var(--text-muted);margin-top:3px">${r.buyerNote}</div>
-      </td>
-    `;
-    tbody.appendChild(tr);
+  // Build both panels upfront
+  groups.forEach((g, idx) => {
+    const panel = document.createElement("div");
+    panel.className = "tab-panel" + (idx === 0 ? " active" : "");
+    panel.id = "transfer-panel-" + g.key;
+    panel.appendChild(buildTable(g.key));
+    panels.appendChild(panel);
   });
 
-  const totalVal = rows.reduce((s, r) => s + r.slobValueNZD, 0);
-  const totalTr  = document.createElement("tr");
-  totalTr.className = "total-row";
-  totalTr.innerHTML = `
-    <td colspan="4"><strong>Total transferable value</strong></td>
-    <td><span class="mono" style="font-weight:700">${fmt(totalVal)}</span></td>
-    <td colspan="2"></td>
-  `;
-  tbody.appendChild(totalTr);
-  table.appendChild(tbody);
+  // Wire tab bar
+  tabBar.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabBar.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      panels.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+      document.getElementById("transfer-panel-" + btn.dataset.transfer).classList.add("active");
+    });
+  });
 }
 renderTransferOpportunities();
 
