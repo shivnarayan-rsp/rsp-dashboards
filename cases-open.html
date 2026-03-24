@@ -502,8 +502,20 @@ function clearFilters() {
   renderTable();
 }
 
+// ── URL PARAM INIT ───────────────────────────
+// Reads ?territory=NZ&status=Processing+Invoice&worktype=Service+Call from URL
+// so that links from service-dashboard.html pre-filter the table on arrival
+function initFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('territory')) document.getElementById("filterTerritory").value = params.get('territory');
+  if (params.get('status'))    document.getElementById("filterStatus").value    = params.get('status');
+  if (params.get('worktype'))  document.getElementById("filterWorkType").value  = params.get('worktype');
+  if (params.get('age'))       document.getElementById("filterAge").value       = params.get('age');
+}
+
 // ── INIT ──────────────────────────────────────
 populateFilters();
+initFromURL();
 renderTable();
 </script>
 </body>
