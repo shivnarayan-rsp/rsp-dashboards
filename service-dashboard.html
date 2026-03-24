@@ -118,6 +118,11 @@
 
   @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 
+  .clickable-row{cursor:pointer;}
+  .clickable-row:hover td{background:#f0f4ff;}
+  .row-link{color:inherit;text-decoration:none;}
+  .row-link:hover{text-decoration:underline;}
+
   @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.overage-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
   @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-title{display:none;}.kpi-grid{grid-template-columns:1fr 1fr;}}
 </style>
@@ -325,6 +330,17 @@ const escalated    = DATA.byStatus.find(r => r[1] === "Escalated");
 const escalatedTerr = escalated ? terrName(escalated[0]) : "None";
 const escalatedN   = escalated ? escalated[2] : 0;
 
+
+// ── CASES LINK HELPER ────────────────────────
+// Builds a URL to cases-open.html with pre-set filters
+function casesUrl(territory, status, worktype) {
+  const params = new URLSearchParams();
+  if (territory && territory !== "null") params.set('territory', territory);
+  if (status)    params.set('status', status);
+  if (worktype)  params.set('worktype', worktype);
+  return 'cases-open.html?' + params.toString();
+}
+
 // ── BADGE CLASS ──────────────────────────────
 function badgeClass(status) {
   if (status === "New") return "b-New";
@@ -387,13 +403,18 @@ document.getElementById("tab-status").innerHTML = buildTerritoryTable(
   (tid, total) => {
     const rows = DATA.byStatus.filter(r => r[0] === tid);
     const max  = Math.max(...rows.map(r => r[2]));
-    return rows.map(([,status,count]) => `
-      <tr>
-        <td class="indent"><span class="badge ${badgeClass(status)}">${status}</span></td>
+    return rows.map(([,status,count]) => {
+      const terr = terrName(tid);
+      const url  = casesUrl(terr, status, "");
+      const isNull_ = isNull(tid);
+      return `
+      <tr class="clickable-row" onclick="window.location='${url}'">
+        <td class="indent"><a href="${url}" class="row-link"><span class="badge ${badgeClass(status)}">${status}</span></a></td>
         <td class="count">${count}</td>
         <td class="pct">${pct(count, total)}</td>
         <td><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(count/max*100)}%"></div></div></td>
-      </tr>`).join("");
+      </tr>`;
+    }).join("");
   }
 );
 
@@ -405,11 +426,13 @@ document.getElementById("tab-worktype").innerHTML = buildTerritoryTable(
     const max  = Math.max(...rows.map(r => r[2]));
     return rows.map(([,wtId,count]) => {
       const isNullWt = wtId === "null";
+      const terr = terrName(tid);
+      const url  = casesUrl(terr, "", isNullWt ? "" : wtName(wtId));
       const label = isNullWt
         ? `<span style="color:var(--muted);font-style:italic">${wtName(wtId)}</span>`
-        : wtName(wtId);
+        : `<a href="${url}" class="row-link">${wtName(wtId)}</a>`;
       return `
-        <tr>
+        <tr class="${isNullWt?'':'clickable-row'}" ${isNullWt?'':'onclick="window.location=\''+url+'\'"'}>
           <td class="indent">${label}</td>
           <td class="count" ${isNullWt?'style="color:var(--muted)"':''}>${count}</td>
           <td class="pct">${pct(count, total)}</td>
@@ -427,7 +450,8 @@ const cells = terrOrder72.map(({ id, count }) => {
   const name = isNull(id)
     ? `<span style="font-style:italic">${terrName(id)}</span>`
     : terrName(id);
-  return `<div class="overage-cell">
+  const o72url = isNull(id) ? 'cases-open.html?age=72' : 'cases-open.html?territory=' + encodeURIComponent(terrName(id)) + '&age=72';
+  return `<div class="overage-cell" style="cursor:pointer" onclick="window.location='${o72url}'" title="View in Open Cases">
     <div class="overage-name">${name}</div>
     <div class="overage-nums"><span class="overage-big">${count}</span><span class="overage-of">/ ${total}</span></div>
     <div class="overage-pct">${p}% of territory</div>
