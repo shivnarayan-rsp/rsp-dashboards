@@ -4,7 +4,7 @@
   <script src="auth.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ricoh South Pacific — Inventory Dashboard</title>
+  <title>Ricoh | South Pacific — Inventory Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -325,7 +325,7 @@
 
 <header>
   <div class="header-left">
-    <div class="header-brand">Ricoh South Pacific</div>
+    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
     <div class="header-divider"></div>
     <div class="header-subtitle">Inventory Dashboard</div>
   </div>
@@ -735,221 +735,157 @@ const DATA = {
 
   // ── TRANSFER OPPORTUNITIES ───────────────────────────────
   // Source: Synchub live cross-entity query 24 Mar 2026
-  // Parts and toners only — machines excluded (too large for transfer)
-  // SLOB = DaysSinceLastSale > 365 in one entity
-  // Active = DaysSinceLastSale < 90 in a different entity
-  // Costs converted to NZD: VUV×0.0141 · SBD×0.2119 · WST×0.6181 · TOP×0.7191
-  // Where same SLOB SKU has multiple active buyers, buyers are consolidated into one row.
+  // Parts and toners only — machines excluded
+  // activeEntities: array of { entity, lastSaleDate } from live Synchub query
   transferOpportunities: {
     parts: [
-      {
-        code:         "D2423091",
-        desc:         "Development Unit Black MPC3004 MPC6004",
-        slobEntity:   "Vanuatu",
-        slobQty:      2,
-        slobValueNZD: 958.42,   // VUV 67,972.73 × 0.0141
-        slobDays:     620,
-        activeEntities: ["RSP", "Samoa", "Tonga"]
+      { code: "D2423091", desc: "Development Unit Black MPC3004 MPC6004",
+        slobEntity: "Vanuatu", slobQty: 2, slobValueNZD: 958.42, slobDays: 620,
+        activeEntities: [
+          { entity: "RSP",             lastSaleDate: "27 Jan 2026" },
+          { entity: "Samoa",           lastSaleDate: "19 Mar 2026" },
+          { entity: "Tonga",           lastSaleDate: "12 Feb 2026" }
+        ]
       },
-      {
-        code:         "D0A44029",
-        desc:         "Fusing Unit IM 430",
-        slobEntity:   "Solomon Islands",
-        slobQty:      5,
-        slobValueNZD: 3291.35,  // SBD 15,532.79 × 0.2119
-        slobDays:     1042,
-        activeEntities: ["Samoa"]
+      { code: "D0A44029", desc: "Fusing Unit IM 430",
+        slobEntity: "Solomon Islands", slobQty: 5, slobValueNZD: 3291.35, slobDays: 1042,
+        activeEntities: [
+          { entity: "Samoa",           lastSaleDate: "17 Mar 2026" }
+        ]
       },
-      {
-        code:         "D2423091",
-        desc:         "Development Unit Black MPC3004 MPC6004",
-        slobEntity:   "Solomon Islands",
-        slobQty:      4,
-        slobValueNZD: 2330.57,  // SBD 10,998.96 × 0.2119
-        slobDays:     531,
-        activeEntities: ["RSP", "Samoa", "Tonga"]
+      { code: "D2423091", desc: "Development Unit Black MPC3004 MPC6004",
+        slobEntity: "Solomon Islands", slobQty: 4, slobValueNZD: 2330.57, slobDays: 531,
+        activeEntities: [
+          { entity: "RSP",             lastSaleDate: "27 Jan 2026" },
+          { entity: "Samoa",           lastSaleDate: "19 Mar 2026" },
+          { entity: "Tonga",           lastSaleDate: "12 Feb 2026" }
+        ]
       },
-      {
-        code:         "D3EW2796",
-        desc:         "Pully Rolling Short Ass'y ProC9100",
-        slobEntity:   "Vanuatu",
-        slobQty:      1,
-        slobValueNZD: 107.99,   // VUV 7,658.59 × 0.0141
-        slobDays:     731,
-        activeEntities: ["RSP"]
+      { code: "D1863054", desc: "Dev Unit K MPC3003 - MPC6003",
+        slobEntity: "RSP", slobQty: 13, slobValueNZD: 2887.54, slobDays: 523,
+        activeEntities: [
+          { entity: "Solomon Islands", lastSaleDate: "7 Mar 2026" },
+          { entity: "Tonga",           lastSaleDate: "25 Jan 2026" }
+        ]
       },
-      {
-        code:         "D1863054",
-        desc:         "Dev Unit K MPC3003 - MPC6003",
-        slobEntity:   "RSP",
-        slobQty:      13,
-        slobValueNZD: 2887.54,  // NZD direct
-        slobDays:     523,
-        activeEntities: ["Solomon Islands", "Tonga"]
+      { code: "D1863054", desc: "Dev Unit K MPC3003 - MPC6003",
+        slobEntity: "Samoa", slobQty: 3, slobValueNZD: 1447.26, slobDays: 402,
+        activeEntities: [
+          { entity: "Solomon Islands", lastSaleDate: "7 Mar 2026" },
+          { entity: "Tonga",           lastSaleDate: "25 Jan 2026" }
+        ]
       },
-      {
-        code:         "D1863054",
-        desc:         "Dev Unit K MPC3003 - MPC6003",
-        slobEntity:   "Samoa",
-        slobQty:      3,
-        slobValueNZD: 1447.26,  // WST 2,341.37 × 0.6181
-        slobDays:     402,
-        activeEntities: ["Solomon Islands", "Tonga"]
+      { code: "D1764042", desc: "Fuser Belt Unit MP C2003SP/C2503SP",
+        slobEntity: "Tonga", slobQty: 1, slobValueNZD: 714.67, slobDays: 3038,
+        activeEntities: [
+          { entity: "Solomon Islands", lastSaleDate: "20 Mar 2026" }
+        ]
       },
-      {
-        code:         "D1363407",
-        desc:         "Seal Development Roller Rear MPC6502",
-        slobEntity:   "Vanuatu",
-        slobQty:      1,
-        slobValueNZD: 33.64,    // VUV 2,386.15 × 0.0141
-        slobDays:     1123,
-        activeEntities: ["RSP"]
+      { code: "AE020268", desc: "Pressure Roller MPC3003 6003",
+        slobEntity: "Tonga", slobQty: 1, slobValueNZD: 357.39, slobDays: 671,
+        activeEntities: [
+          { entity: "RSP",             lastSaleDate: "13 Mar 2026" }
+        ]
       },
-      {
-        code:         "D1764042",
-        desc:         "Fuser Belt Unit MP C2003SP/C2503SP",
-        slobEntity:   "Tonga",
-        slobQty:      1,
-        slobValueNZD: 714.67,   // TOP 993.86 × 0.7191
-        slobDays:     3038,
-        activeEntities: ["Solomon Islands"]
+      { code: "D3EW2796", desc: "Pully Rolling Short Ass\'y ProC9100",
+        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 107.99, slobDays: 731,
+        activeEntities: [
+          { entity: "RSP",             lastSaleDate: "9 Mar 2026" }
+        ]
       },
-      {
-        code:         "AE020268",
-        desc:         "Pressure Roller MPC3003 6003",
-        slobEntity:   "Tonga",
-        slobQty:      1,
-        slobValueNZD: 357.39,   // TOP 497.10 × 0.7191
-        slobDays:     671,
-        activeEntities: ["RSP"]
+      { code: "D0CB6201", desc: "Transfer/Separation Unit IM C300F",
+        slobEntity: "Tonga", slobQty: 1, slobValueNZD: 115.40, slobDays: 736,
+        activeEntities: [
+          { entity: "Solomon Islands", lastSaleDate: "4 Feb 2026" }
+        ]
       },
-      {
-        code:         "D0CB6201",
-        desc:         "Transfer/Separation Unit IM C300F",
-        slobEntity:   "Tonga",
-        slobQty:      1,
-        slobValueNZD: 115.40,   // TOP 160.47 × 0.7191
-        slobDays:     736,
-        activeEntities: ["Solomon Islands"]
+      { code: "D1363407", desc: "Seal Development Roller Rear MPC6502",
+        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 33.64, slobDays: 1123,
+        activeEntities: [
+          { entity: "RSP",             lastSaleDate: "9 Mar 2026" }
+        ]
       }
     ],
     toners: [
-      {
-        code:         "407337",
-        desc:         "Ricoh Toner Cartridge SP3600 SP4500S",
-        slobEntity:   "Vanuatu",
-        slobQty:      4,
-        slobValueNZD: 1199.84,  // VUV 85,095.20 × 0.0141
-        slobDays:     402,
-        activeEntities: ["Tonga"]
+      { code: "407337", desc: "Ricoh Toner Cartridge SP3600 SP4500S",
+        slobEntity: "Vanuatu", slobQty: 4, slobValueNZD: 1199.84, slobDays: 402,
+        activeEntities: [
+          { entity: "Tonga",           lastSaleDate: "25 Feb 2026" }
+        ]
       },
-      {
-        code:         "842143",
-        desc:         "Ricoh Toner Type MP 305S",
-        slobEntity:   "Vanuatu",
-        slobQty:      5,
-        slobValueNZD: 278.19,   // VUV 19,729.69 × 0.0141
-        slobDays:     657,
-        activeEntities: ["RSP"]
+      { code: "842616", desc: "Ricoh Toner Type IM 460F",
+        slobEntity: "Tonga", slobQty: 10, slobValueNZD: 1594.69, slobDays: 383,
+        activeEntities: [
+          { entity: "RSP",             lastSaleDate: "10 Feb 2026" },
+          { entity: "Samoa",           lastSaleDate: "23 Mar 2026" },
+          { entity: "Vanuatu",         lastSaleDate: "23 Jan 2026" }
+        ]
       },
-      {
-        code:         "841635",
-        desc:         "Ricoh Toner Black CW2200",
-        slobEntity:   "Vanuatu",
-        slobQty:      1,
-        slobValueNZD: 203.44,   // VUV 14,428.63 × 0.0141
-        slobDays:     3532,
-        activeEntities: ["Solomon Islands"]
+      { code: "841635", desc: "Ricoh Toner Black CW2200",
+        slobEntity: "Samoa", slobQty: 2, slobValueNZD: 403.85, slobDays: 419,
+        activeEntities: [
+          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
+        ]
       },
-      {
-        code:         "841637",
-        desc:         "Ricoh Toner Magenta CW2200",
-        slobEntity:   "Vanuatu",
-        slobQty:      1,
-        slobValueNZD: 98.95,    // VUV 7,017.87 × 0.0141
-        slobDays:     3532,
-        activeEntities: ["Solomon Islands"]
+      { code: "406650", desc: "Ricoh Toner Black SP 6330S",
+        slobEntity: "Solomon Islands", slobQty: 1, slobValueNZD: 240.38, slobDays: 507,
+        activeEntities: [
+          { entity: "RSP",             lastSaleDate: "6 Feb 2026" }
+        ]
       },
-      {
-        code:         "841638",
-        desc:         "Ricoh Toner Yellow CW2200",
-        slobEntity:   "Vanuatu",
-        slobQty:      1,
-        slobValueNZD: 98.95,    // VUV 7,017.87 × 0.0141
-        slobDays:     3532,
-        activeEntities: ["Solomon Islands"]
+      { code: "841635", desc: "Ricoh Toner Black CW2200",
+        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 203.44, slobDays: 3532,
+        activeEntities: [
+          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
+        ]
       },
-      {
-        code:         "885450",
-        desc:         "Ricoh Toner Black Type 2320D",
-        slobEntity:   "Vanuatu",
-        slobQty:      1,
-        slobValueNZD: 58.85,    // VUV 4,173.68 × 0.0141
-        slobDays:     473,
-        activeEntities: ["Samoa"]
+      { code: "841638", desc: "Ricoh Toner Yellow CW2200",
+        slobEntity: "Samoa", slobQty: 2, slobValueNZD: 203.34, slobDays: 419,
+        activeEntities: [
+          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
+        ]
       },
-      {
-        code:         "842616",
-        desc:         "Ricoh Toner Type IM 460F",
-        slobEntity:   "Tonga",
-        slobQty:      10,
-        slobValueNZD: 1594.69,  // TOP 2,217.34 × 0.7191
-        slobDays:     383,
-        activeEntities: ["RSP", "Samoa", "Vanuatu"]
+      { code: "841637", desc: "Ricoh Toner Magenta CW2200",
+        slobEntity: "Samoa", slobQty: 2, slobValueNZD: 203.34, slobDays: 419,
+        activeEntities: [
+          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
+        ]
       },
-      {
-        code:         "406650",
-        desc:         "Ricoh Toner Black SP 6330S",
-        slobEntity:   "Solomon Islands",
-        slobQty:      1,
-        slobValueNZD: 240.38,   // SBD 1,133.99 × 0.2119
-        slobDays:     507,
-        activeEntities: ["RSP"]
+      { code: "841637", desc: "Ricoh Toner Magenta CW2200",
+        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 98.95, slobDays: 3532,
+        activeEntities: [
+          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
+        ]
       },
-      {
-        code:         "841635",
-        desc:         "Ricoh Toner Black CW2200",
-        slobEntity:   "Samoa",
-        slobQty:      2,
-        slobValueNZD: 403.85,   // WST 653.18 × 0.6181
-        slobDays:     419,
-        activeEntities: ["Solomon Islands"]
+      { code: "841638", desc: "Ricoh Toner Yellow CW2200",
+        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 98.95, slobDays: 3532,
+        activeEntities: [
+          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
+        ]
       },
-      {
-        code:         "841637",
-        desc:         "Ricoh Toner Magenta CW2200",
-        slobEntity:   "Samoa",
-        slobQty:      2,
-        slobValueNZD: 203.34,   // WST 328.84 × 0.6181
-        slobDays:     419,
-        activeEntities: ["Solomon Islands"]
+      { code: "842143", desc: "Ricoh Toner Type MP 305S",
+        slobEntity: "Vanuatu", slobQty: 5, slobValueNZD: 278.19, slobDays: 657,
+        activeEntities: [
+          { entity: "RSP",             lastSaleDate: "6 Feb 2026" }
+        ]
       },
-      {
-        code:         "841638",
-        desc:         "Ricoh Toner Yellow CW2200",
-        slobEntity:   "Samoa",
-        slobQty:      2,
-        slobValueNZD: 203.34,   // WST 328.84 × 0.6181
-        slobDays:     419,
-        activeEntities: ["Solomon Islands"]
+      { code: "885450", desc: "Ricoh Toner Black Type 2320D",
+        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 58.85, slobDays: 473,
+        activeEntities: [
+          { entity: "Samoa",           lastSaleDate: "12 Mar 2026" }
+        ]
       },
-      {
-        code:         "885450",
-        desc:         "Ricoh Toner Black Type 2320D",
-        slobEntity:   "Tonga",
-        slobQty:      1,
-        slobValueNZD: 57.99,    // TOP 80.62 × 0.7191
-        slobDays:     454,
-        activeEntities: ["Samoa"]
+      { code: "842026", desc: "Ricoh Toner Type MP 301S",
+        slobEntity: "Samoa", slobQty: 7, slobValueNZD: 97.76, slobDays: 389,
+        activeEntities: [
+          { entity: "Vanuatu",         lastSaleDate: "21 Mar 2026" }
+        ]
       },
-      {
-        code:         "842026",
-        desc:         "Ricoh Toner Type MP 301S",
-        slobEntity:   "Samoa",
-        slobQty:      7,
-        slobValueNZD: 97.76,    // WST 158.11 × 0.6181
-        slobDays:     389,
-        activeEntities: ["Vanuatu"]
+      { code: "885450", desc: "Ricoh Toner Black Type 2320D",
+        slobEntity: "Tonga", slobQty: 1, slobValueNZD: 57.99, slobDays: 454,
+        activeEntities: [
+          { entity: "Samoa",           lastSaleDate: "12 Mar 2026" }
+        ]
       }
     ]
   }
@@ -1349,6 +1285,7 @@ function renderTransferOpportunities() {
       <th>Value (NZD)</th>
       <th>Days Idle</th>
       <th>Active In</th>
+      <th>Last Sold</th>
     </tr></thead>`;
 
     const tbody = document.createElement("tbody");
@@ -1356,14 +1293,21 @@ function renderTransferOpportunities() {
 
     rows.forEach(r => {
       const tr = document.createElement("tr");
+      const activeTags = r.activeEntities.map(a =>
+        `<span class="entity-tag buyer" style="margin:1px 2px;display:inline-block">${a.entity}</span>`
+      ).join("");
+      const lastSaleDates = r.activeEntities.map(a =>
+        `<div style="font-size:11px;white-space:nowrap"><span style="color:var(--text-light)">${a.entity}:</span> <span class="mono">${a.lastSaleDate}</span></div>`
+      ).join("");
       tr.innerHTML = `
         <td><span class="mono" style="font-size:11.5px">${r.code}</span></td>
-        <td style="text-align:left;white-space:normal;line-height:1.3;max-width:200px">${r.desc}</td>
+        <td style="text-align:left;white-space:normal;line-height:1.3;max-width:180px">${r.desc}</td>
         <td><span class="entity-tag">${r.slobEntity}</span></td>
         <td><span class="mono">${r.slobQty}</span></td>
         <td><span class="mono" style="font-weight:600">${fmt(r.slobValueNZD)}</span></td>
         <td><span class="mono ${r.slobDays >= 730 ? 'pct-cell flag' : 'pct-cell warn'}">${r.slobDays}d</span></td>
-        <td>${r.activeEntities.map(e => `<span class="entity-tag buyer" style="margin:1px 2px;display:inline-block">${e}</span>`).join("")}</td>
+        <td>${activeTags}</td>
+        <td style="text-align:left">${lastSaleDates}</td>
       `;
       tbody.appendChild(tr);
       grandTotal += r.slobValueNZD;
@@ -1374,7 +1318,7 @@ function renderTransferOpportunities() {
     totalTr.innerHTML = `
       <td colspan="4"><strong>Total transferable value</strong></td>
       <td><span class="mono" style="font-weight:700">${fmt(grandTotal)}</span></td>
-      <td colspan="2"></td>
+      <td colspan="3"></td>
     `;
     tbody.appendChild(totalTr);
     tbl.appendChild(tbody);
