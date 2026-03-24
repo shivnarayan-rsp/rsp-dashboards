@@ -413,12 +413,14 @@ function getFiltered() {
 }
 
 // ── KPI STRIP ─────────────────────────────────
-function renderKPIs(rows) {
-  const total  = rows.length;
-  const over72 = rows.filter(c=>c[8]>=72).length;
-  const terrs  = ["NZ","Vanuatu","Solomons","Tonga","Samoa"];
-  const terrEl = document.getElementById("filterTerritory");
-  const activeTerr = terrEl.value;
+// Territory tiles always count from full CASES so they never zero out when a territory filter is active
+function renderKPIs(filteredRows) {
+  const terrs      = ["NZ","Vanuatu","Solomons","Tonga","Samoa"];
+  const activeTerr = document.getElementById("filterTerritory").value;
+
+  // All-territories tile reflects any active search/status/age filters
+  const total  = filteredRows.length;
+  const over72 = filteredRows.filter(c=>c[8]>=72).length;
 
   let html = `
     <div class="kpi-card ${!activeTerr?'selected':''}" onclick="setTerrFilter('')">
@@ -426,9 +428,11 @@ function renderKPIs(rows) {
       <div class="kpi-value">${total}</div>
       <div class="kpi-sub">${over72} over 72h</div>
     </div>`;
+
+  // Each territory tile always shows its total from the full dataset
   terrs.forEach(t => {
-    const n = rows.filter(c=>c[5]===t).length;
-    const n72 = rows.filter(c=>c[5]===t&&c[8]>=72).length;
+    const n   = CASES.filter(c=>c[5]===t).length;
+    const n72 = CASES.filter(c=>c[5]===t&&c[8]>=72).length;
     html += `
     <div class="kpi-card ${activeTerr===t?'selected':''}" onclick="setTerrFilter('${t}')">
       <div class="kpi-label">${t}</div>
