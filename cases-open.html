@@ -66,10 +66,10 @@
   .result-count{font-size:12px;color:var(--muted);margin-left:auto;font-family:'DM Mono',monospace;white-space:nowrap;}
 
   /* TABLE */
-  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
-  .table-scroll{overflow-x:auto;}
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;}
+  .table-scroll{overflow-x:auto;border-radius:6px;}
   table{width:100%;border-collapse:collapse;font-size:13px;}
-  thead{position:sticky;top:60px;z-index:10;}
+  thead{position:static;}
   th{
     padding:10px 12px;text-align:left;font-size:10px;font-weight:600;
     text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
@@ -143,6 +143,7 @@
     <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
     <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
     <a href="cases-open.html" class="nav-pill active">Open Cases</a>
+    <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
   </div>
 
   <div class="kpi-strip" id="kpiStrip"></div>
