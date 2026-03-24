@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP — Open Cases</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:#D7063B; --charcoal:#1a1a1a; --mid:#444; --muted:#888;
+    --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
+    --green:#1a6e2e; --green-bg:#e6f4ea;
+    --amber:#8a5200; --amber-bg:#fef3dc;
+    --danger:#c0392b; --danger-bg:#fdecea;
+    --blue:#0057b8; --blue-bg:#e8f0fb;
+    --gray:#555; --gray-bg:#efefef;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+  header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .header-center{display:flex;align-items:center;gap:16px;}
+  .wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
+  .hd{width:1px;height:22px;background:#444;}
+  .header-title{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em;}
+  .header-right{display:flex;align-items:center;gap:16px;}
+  .as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+  .back-link{font-size:11px;color:#666;text-decoration:none;transition:color .15s;}
+  .back-link:hover{color:#aaa;}
+
+  main{max-width:1400px;margin:0 auto;padding:28px 24px 64px;}
+
+  /* NAV */
+  .nav-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+  .nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;letter-spacing:.02em;}
+  .nav-pill:hover{border-color:var(--red);color:var(--red);}
+  .nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+
+  /* KPI STRIP */
+  .kpi-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:20px;}
+  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;position:relative;overflow:hidden;cursor:pointer;transition:box-shadow .15s;}
+  .kpi-card:hover{box-shadow:0 3px 12px rgba(0,0,0,.08);}
+  .kpi-card.selected{border-color:var(--red);}
+  .kpi-card.selected::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red);}
+  .kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
+  .kpi-value{font-size:26px;font-weight:300;line-height:1;font-variant-numeric:tabular-nums;}
+  .kpi-value.alert{color:var(--danger);}
+  .kpi-sub{font-size:10px;color:var(--muted);margin-top:4px;}
+
+  /* FILTER BAR */
+  .filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+  .filter-bar select, .filter-bar input{
+    height:34px;padding:0 10px;font-size:12px;font-family:'DM Sans',sans-serif;
+    border:1px solid var(--border);border-radius:4px;background:var(--surface);
+    color:var(--charcoal);outline:none;transition:border-color .15s;
+  }
+  .filter-bar select:focus,.filter-bar input:focus{border-color:var(--red);}
+  .filter-bar input{width:220px;}
+  .filter-bar select{cursor:pointer;}
+  .clear-btn{height:34px;padding:0 14px;font-size:12px;font-family:'DM Sans',sans-serif;
+    border:1px solid var(--border);border-radius:4px;background:var(--surface);
+    color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .clear-btn:hover{border-color:var(--red);color:var(--red);}
+  .result-count{font-size:12px;color:var(--muted);margin-left:auto;font-family:'DM Mono',monospace;white-space:nowrap;}
+
+  /* TABLE */
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+  .table-scroll{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead{position:sticky;top:60px;z-index:10;}
+  th{
+    padding:10px 12px;text-align:left;font-size:10px;font-weight:600;
+    text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+    background:var(--surface2);border-bottom:1px solid var(--border);
+    white-space:nowrap;cursor:pointer;user-select:none;
+  }
+  th:hover{color:var(--charcoal);}
+  th.sorted-asc::after{content:' ↑';color:var(--red);}
+  th.sorted-desc::after{content:' ↓';color:var(--red);}
+  td{padding:9px 12px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#fafafa;}
+
+  /* CASE LINK */
+  .case-link{
+    font-family:'DM Mono',monospace;font-size:12px;font-weight:500;
+    color:var(--red);text-decoration:none;
+  }
+  .case-link:hover{text-decoration:underline;}
+
+  /* BADGES */
+  .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;white-space:nowrap;}
+  .b-New{background:var(--blue-bg);color:var(--blue);}
+  .b-WOI{background:var(--green-bg);color:var(--green);}
+  .b-Invoice{background:var(--amber-bg);color:var(--amber);}
+  .b-Waiting{background:var(--gray-bg);color:var(--gray);}
+  .b-Escalated,.b-Stop{background:var(--danger-bg);color:var(--danger);}
+
+  .terr-pill{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:500;white-space:nowrap;}
+  .t-NZ{background:#e8f0fb;color:#0057b8;}
+  .t-Vanuatu{background:#e6f4ea;color:#1a6e2e;}
+  .t-Solomons{background:#fef3dc;color:#8a5200;}
+  .t-Tonga{background:#fdecea;color:#c0392b;}
+  .t-Samoa{background:#f3e8fb;color:#6b21a8;}
+  .t-Unassigned{background:#f0f0f0;color:#666;}
+
+  /* AGE */
+  .age-critical{color:var(--danger);font-weight:500;}
+  .age-warn{color:var(--amber);font-weight:500;}
+  .age-ok{color:var(--green);}
+
+  .tech-name{font-size:12px;color:var(--mid);}
+  .no-tech{font-size:11px;color:var(--muted);font-style:italic;}
+  .subj{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;}
+  .acct{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;}
+
+  .empty-state{padding:48px;text-align:center;color:var(--muted);font-size:13px;}
+
+  footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
+
+  @media(max-width:900px){.kpi-strip{grid-template-columns:repeat(3,minmax(0,1fr));}.filter-bar input{width:160px;}}
+  @media(max-width:600px){main{padding:12px 10px 48px;}header{padding:0 16px;}.header-title{display:none;}.kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-center">
+    <span class="wordmark">Ricoh</span>
+    <div class="hd"></div>
+    <span class="header-title">South Pacific — Open Cases</span>
+  </div>
+  <div class="header-right">
+    <span class="as-of" id="asOf"></span>
+    <a href="index.html" class="back-link">← Scorecards</a>
+  </div>
+</header>
+
+<main>
+  <div class="nav-pills">
+    <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
+    <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
+    <a href="cases-open.html" class="nav-pill active">Open Cases</a>
+  </div>
+
+  <div class="kpi-strip" id="kpiStrip"></div>
+
+  <div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="Search case, account, subject…" oninput="applyFilters()">
+    <select id="filterTerritory" onchange="applyFilters()">
+      <option value="">All territories</option>
+      <option>NZ</option>
+      <option>Vanuatu</option>
+      <option>Solomons</option>
+      <option>Tonga</option>
+      <option>Samoa</option>
+      <option>Unassigned</option>
+    </select>
+    <select id="filterStatus" onchange="applyFilters()">
+      <option value="">All statuses</option>
+    </select>
+    <select id="filterWorkType" onchange="applyFilters()">
+      <option value="">All work types</option>
+    </select>
+    <select id="filterAge" onchange="applyFilters()">
+      <option value="">All ages</option>
+      <option value="72">Over 72 hours</option>
+      <option value="168">Over 7 days</option>
+      <option value="720">Over 30 days</option>
+    </select>
+    <button class="clear-btn" onclick="clearFilters()">Clear filters</button>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-scroll">
+      <table id="caseTable">
+        <thead>
+          <tr>
+            <th onclick="sortBy(0)" data-col="0">Case #</th>
+            <th onclick="sortBy(2)" data-col="2">Account</th>
+            <th onclick="sortBy(3)" data-col="3">Subject</th>
+            <th onclick="sortBy(5)" data-col="5">Territory</th>
+            <th onclick="sortBy(4)" data-col="4">Status</th>
+            <th onclick="sortBy(6)" data-col="6">Work Type</th>
+            <th onclick="sortBy(8)" data-col="8">Age</th>
+            <th onclick="sortBy(7)" data-col="7">Technician</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<footer id="footer"></footer>
+
+<script>
+// ─────────────────────────────────────────────
+//  DATA — update this block on each refresh
+//  Last refreshed: 23 March 2026
+//  Columns: [sfId, caseNum, account, subject, status, territory, workType, tech, hoursOpen, priority]
+// ─────────────────────────────────────────────
+const ASOF = "23 Mar 2026";
+const SF_BASE = "https://clearedgepacific.my.salesforce.com/";
+
+const CASES = [
+  ["5007F00001Qj0q2QAB","00055349","Alpine Print Limited","Ricoh Signature Series Pro C9100 - X245FB50002 - A","Processing Invoice","NZ","Asset Maintenance","Murray Neilson",21141,"Medium"],
+  ["5007F00001Qj0sSQAR","00055350","Alpine Print Limited","Ricoh Signature Series Pro C9100 - X246F350001 - P","Processing Invoice","NZ","Parts Fitting","Murray Neilson",21141,"Medium"],
+  ["500GA00001RRs9tYAD","00056719","Alpine Print Limited","Ricoh Signature Series Pro C9100 - X246F350001 - A","Processing Invoice","NZ","Asset Maintenance","Murray Neilson",20017,"Medium"],
+  ["500GA00001SWCn3YAH","00057642","Alpine Print Limited","Ricoh Signature Series Pro C9100 - X246F350001 - P","Stop Credit","NZ","Parts Fitting","Ronald Bon",18909,"Low"],
+  ["500GA00001TFoTtYAL","00058541","Mangawhai Memo","Ricoh Priport DD 5450 - D287X240044 - Service Call","Processing Invoice","NZ","Service Call","",18149,"Medium"],
+  ["500GA00001UVBuxYAH","00060231","Ricoh South Pacific","Ricoh IM C4510 - 9173R820091 - Asset Maintenance S","Processing Invoice","NZ","Asset Maintenance","Sridhar Bhattacharjee",16799,"Medium"],
+  ["500GA00001SiLmRYAV","00060802","Alpine Print Limited","Ricoh Pro C7100SX - G367F120073 - Service Call","Processing Invoice","NZ","Service Call","Sridhar Bhattacharjee",16391,"Medium"],
+  ["500GA00001Uk2TxYAJ","00061292","Laura Homes Limited","Ricoh MP 305+ SPF - G586P801318 - Toner Delivery","Waiting on Quotation Approval","NZ","Toner Delivery","",15963,"Medium"],
+  ["500GA00001Uk5hkYAB","00061331","Ricoh South Pacific","Ricoh IM C3010 - 9154R130450 - Asset Run Up","Work Order Issued","NZ","Asset Run Up","Sridhar Bhattacharjee",15956,"Medium"],
+  ["500GA00001UkI1WYAV","00061394","Ricoh South Pacific","Ricoh IM C3010 - 9154R130496 - Asset Installation","Work Order Issued","NZ","Asset Installation","",15914,"Medium"],
+  ["500GA00001VKGANYA5","00062375","Temprecord International Limited","Ricoh MP 4002SP - W524M350095 - Parts Fitting","Work Order Issued","NZ","Parts Fitting","Sridhar Bhattacharjee",15122,"Medium"],
+  ["500GA00001W4HPjYAN","00063593","Alpine Print Limited","Ricoh Pro C7100SX - G367F120073 - Service Call","Processing Invoice","NZ","Service Call","Sridhar Bhattacharjee",14043,"Medium"],
+  ["500Mp00000Tx1NeIAJ","00068097","Ricoh South Pacific","","Processing Invoice","NZ","Fusing Unit Rebuild","Sridhar Bhattacharjee",9576,"Medium"],
+  ["500Mp00000V4hB5IAJ","00068856","Alpine Print Limited","Ricoh Pro C7100SX - G365F120009 - Service Call","Processing Invoice","NZ","Service Call","Sridhar Bhattacharjee",8880,"Medium"],
+  ["500Mp00000X6GNHIA3","00070338","Laura Homes Limited","Ricoh MP 305+ SPF - G586P801318 - Service Call","Work Order Issued","NZ","Service Call","Sridhar Bhattacharjee",7537,"Medium"],
+  ["500Mp00000ZZ8xxIAD","00071831","Northland Document Solutions Ltd trading as Ricoh Northland","Ricoh IM C4500 - 3121M120674 - Service Call","Work Order Issued","NZ","Service Call","Sridhar Bhattacharjee",6074,"Medium"],
+  ["500Mp00000g0CaWIAU","00075103","Crown Interiors Limited","Ricoh MP C3502 - W502M410089 - Service Call","Work Order Issued","NZ","Service Call","Sridhar Bhattacharjee",3026,"Medium"],
+  ["500Mp00000h76CqIAI","00075602","Laura Homes Limited","Ricoh MP C3004SP - C718R420386 - Asset Installatio","Processing Invoice","NZ","Asset Installation","Sridhar Bhattacharjee",2545,"Medium"],
+  ["500Mp00000he9eyIAA","00075832","Reuben & McGeachie Law","Ricoh MP 3555 - C367PA00264 - Toner Delivery","New","NZ","Toner Delivery","",2324,"Medium"],
+  ["500Mp00000ilayAIAQ","00076065","Laura Homes Limited","Ricoh MP C3004SP - G696M550109 - Service Call","Processing Invoice","NZ","Service Call","Sridhar Bhattacharjee",1683,"Medium"],
+  ["500Mp00000iq5VLIAY","00076110","Alpine Print Limited","Ricoh MP 3555 - C368P800367 - Asset Installation","Processing Invoice","NZ","Asset Installation","Sridhar Bhattacharjee",1656,"Medium"],
+  ["500Mp00000ja41ZIAQ","00076470","Laura Homes Limited","Ricoh MP C3004SP - G696M550109 - IT & Network Supp","Work Order Issued","NZ","IT & Network","Sridhar Bhattacharjee",1317,"Medium"],
+  ["500Mp00000jZiXPIA0","00076471","Granite Workshop","Ricoh IM C2000 - 3089R720383 - IT & Network Suppor","Work Order Issued","NZ","IT & Network","Sridhar Bhattacharjee",1316,"Medium"],
+  ["500Mp00000jcEzUIAU","00076490","Deloitte Test Account (New Zealand)","Ricoh IM C300F - 000000 - Toner Delivery","Work Order Issued","NZ","Toner Delivery","Sridhar Bhattacharjee",1299,"Medium"],
+  ["500Mp00000kaGyEIAU","00076998","Alpine Print Limited","Ricoh Pro C7100SX - G365F120009 - Parts Fitting","Processing Invoice","NZ","Parts Fitting","Sridhar Bhattacharjee",864,"Medium"],
+  ["500Mp00000kpS30IAE","00077146","Ricoh South Pacific","Ricoh IM C4510 - 9173R820091 - Asset Maintenance S","Work Order Issued","NZ","Asset Maintenance","Sridhar Bhattacharjee",772,"Medium"],
+  ["500Mp00000kqHgfIAE","00077170","Granite Workshop","Ricoh IM C2000 - 3089R720383 - Toner Delivery","New","NZ","Toner Delivery","",768,"Medium"],
+  ["500Mp00000kx23JIAQ","00077200","Alpine Print Limited","Ricoh Pro C7100SX - G365F120009 - Parts Fitting","Work Order Issued","NZ","Parts Fitting","",698,"Medium"],
+  ["500Mp00000l14BPIAY","00077239","Alpine Print Limited","Ricoh Signature Series Pro C9100 - X246F350001 - P","Processing Invoice","NZ","Parts Fitting","Sridhar Bhattacharjee",673,"Medium"],
+  ["500Mp00000l8faqIAA","00077337","Deloitte Test Account (New Zealand)","Ricoh IM C300F - 000000 - Service Call","Work Order Issued","NZ","Service Call","Sridhar Bhattacharjee",624,"Medium"],
+  ["500Mp00000lePG8IAM","00077578","Congregational Christian Church of Samoa (Otahuhu)","Signature Series Ricoh MP C3004SP - C718R420386 -","Processing Invoice","NZ","Asset Run Up","Sridhar Bhattacharjee",357,"Medium"],
+  ["500Mp00000lrlAeIAI","00077700","Alpine Print Limited","Ricoh Pro C7100SX - G367F120073 - Parts Fitting","Work Order Issued","NZ","Parts Fitting","Sridhar Bhattacharjee",266,"Medium"],
+  ["500Mp00000lsI53IAE","00077711","Congregational Christian Church of Samoa (Otahuhu)","Signature Series Ricoh MP C3004SP - C718R420386 -","Processing Invoice","NZ","Asset Installation","Sridhar Bhattacharjee",264,"Medium"],
+  ["500Mp00000m6wgoIAA","00077809","Alpine Print Limited","Ricoh Pro C7100SX - G365F120009 - Service Call","Work Order Issued","NZ","Service Call","Sridhar Bhattacharjee",146,"Medium"],
+  ["500Mp00000mROH9IAO","00077990","Alpine Print Limited","Ricoh Signature Series Pro C9100 - X246F350001 - T","New","NZ","Toner Delivery","",0,"Medium"],
+  ["500Mp00000mRQKbIAO","00077992","","TONNER REPLACEMENT","New","NZ","","",0,"Medium"],
+  ["500Mp00000iXcV7IAK","00076016","Ricoh Vanuatu","Ricoh MP 5055 - C387P900272 - Parts Robbing","Waiting on Parts Delivery","Vanuatu","Parts Robbing","Florencio Jr. Familar",1796,"Medium"],
+  ["500Mp00000jgV5VIAU","00076526","Sun Productions Printers","Ricoh Pro C7200SX - C878FB20018 - Service Call","Waiting on Parts Delivery","Vanuatu","Service Call","Florencio Jr. Familar",1274,"Medium"],
+  ["500Mp00000jo94dIAA","00076549","Sun Productions Printers","Ricoh Pro C7500 - 5794C620266 - Parts Fitting","Waiting on Parts Delivery","Vanuatu","Parts Fitting","",1202,"Medium"],
+  ["500Mp00000kJlNZIA0","00076845","Sun Productions Printers","Ricoh Pro C7200SX - C878FB20018 - Parts Fitting","Waiting on Parts Delivery","Vanuatu","Parts Fitting","Junriel Andoy",986,"Medium"],
+  ["500Mp00000kZaaxIAC","00076978","Sun Productions Printers","Ricoh Pro C7500 - 5794C620266 - Asset Assessment","Waiting on Parts Delivery","Vanuatu","Asset Assessment","Junriel Andoy",867,"Medium"],
+  ["500Mp00000lWsFMIA0","00077510","Ricoh Vanuatu","Signature Series Copier IM C2500 - 3090R220119 - P","Processing Invoice","Vanuatu","Parts Robbing","Junriel Andoy",435,"Medium"],
+  ["500Mp00000lgfFIIAY","00077596","SPBD Microfinance (Vanuatu) Ltd","Ricoh IM C4510 - 9174R820482 - Asset Maintenance S","Work Order Issued","Vanuatu","Asset Maintenance","Florencio Jr. Familar",339,"Medium"],
+  ["500Mp00000lhMdPIAU","00077614","AJC Chartered Professional Accountants","Ricoh IM C3000 - 3102R390096 - Toner Delivery","Waiting on Customer","Vanuatu","Toner Delivery","",336,"Medium"],
+  ["500Mp00000lkvZpIAI","00077646","Sun Productions Printers","Ricoh Pro C7200SX - C878FB20018 - Service Call","Waiting on Parts Delivery","Vanuatu","Service Call","Junriel Andoy",312,"Medium"],
+  ["500Mp00000loCe2IAE","00077664","VanCare Insurance Ltd","Ricoh IM 550F - 3203X159900 - Service Call","Waiting on Quotation Approval","Vanuatu","Service Call","",289,"Medium"],
+  ["500Mp00000lp1bmIAA","00077678","Rensarie College","Ricoh IM 5000 - 4451R320076 - Toner Delivery","Processing Invoice","Vanuatu","Toner Delivery","Florencio Jr. Familar",285,"Medium"],
+  ["500Mp00000ltQBkIAM","00077723","Customary Land Management Office (Vanuatu)","Ricoh IM C4500 - 3129MC20276 - Toner Delivery","Waiting on Quotation Approval","Vanuatu","Toner Delivery","",259,"Medium"],
+  ["500Mp00000lyk3SIAQ","00077748","Survival School","Ricoh M C250 - 5450P600863 - Toner Delivery","Waiting on Quotation Approval","Vanuatu","Toner Delivery","",193,"Medium"],
+  ["500Mp00000lziZ3IAI","00077761","Unelco Vanuatu Limited","Ricoh IM C2500 - 3090R920127 - Service Call","Waiting on Parts Delivery","Vanuatu","Service Call","Florencio Jr. Familar",189,"Medium"],
+  ["500Mp00000m7ZDVIA2","00077822","South Malekula Secondary School","Follow up","New","Vanuatu","","",144,"Medium"],
+  ["500Mp00000m7iglIAA","00077829","South Malekula Secondary School","Ricoh IM C2000 - 3080RC21090 - Service Call","Waiting on Quotation Approval","Vanuatu","Service Call","",143,"Medium"],
+  ["500Mp00000m8W8mIAE","00077840","Vanuatu Police Training College","Ricoh IM C4500 - 3128MB20553 - Service Call","Waiting on Quotation Approval","Vanuatu","Service Call","",140,"Medium"],
+  ["500Mp00000mBmTwIAK","00077881","Ricoh Vanuatu","Signature Series Ricoh MP C3003 - E155M950315 - As","Processing Invoice","Vanuatu","Asset Refurbish","Junriel Andoy",119,"Medium"],
+  ["500Mp00000mCmrgIAC","00077892","Vanuatu National Provident Fund","Ricoh MP C307 - C509P103848 - Service Call","Waiting on Parts Delivery","Vanuatu","Service Call","Junriel Andoy",115,"Medium"],
+  ["500Mp00000mEm7sIAC","00077920","Sun Productions Printers","Ricoh Pro C7200SX - C878FB20018 - Service Call","Processing Invoice","Vanuatu","Service Call","Junriel Andoy",97,"Medium"],
+  ["500Mp00000mG0bZIAS","00077924","Ricoh Vanuatu","Ricoh IM C4500 - 3129MC20143 - Parts Robbing","Waiting on Parts Request Approval","Vanuatu","Parts Robbing","Junriel Andoy",94,"Medium"],
+  ["500Mp00000mFgWXIA0","00077925","Ricoh Vanuatu","Ricoh IM 4000 - 4444R220052 - Parts Robbing","Waiting on Parts Request Approval","Vanuatu","Parts Robbing","Junriel Andoy",94,"Medium"],
+  ["500Mp00000mMfyXIAS","00077947","Vanuatu Institute of Teachers Education","Ricoh IM C4500 - 3121M120670 - Service Call","Waiting on Customer","Vanuatu","Service Call","Junriel Andoy",26,"Medium"],
+  ["500Mp00000mMZA3IAO","00077950","Western Union Money Transfers Vanuatu Ltd","Ricoh M 320F - 5852Z330659 - Toner Delivery","Waiting on Customer","Vanuatu","Toner Delivery","",26,"Medium"],
+  ["500Mp00000mMn9hIAC","00077951","Western Union Money Transfers Vanuatu Ltd","Ricoh M 320F - 5852Z130185 - Toner Delivery","Waiting on Customer","Vanuatu","Toner Delivery","",26,"Medium"],
+  ["500Mp00000mNAXkIAO","00077957","Sarakata English School","Ricoh IM C4500 - 3121M420072 - Service Call","Waiting on Quotation Approval","Vanuatu","Service Call","",24,"Medium"],
+  ["500Mp00000mNa0pIAC","00077963","Sun Productions Printers","Ricoh Pro C7500 - 5794C620266 - Toner Delivery","Waiting on Customer","Vanuatu","Toner Delivery","",22,"Medium"],
+  ["500Mp00000mNlaWIAS","00077965","Ministry of Trade (Vanuatu)","Ricoh IM C300F - 3920PA02536 - Service Call","Work Order Issued","Vanuatu","Service Call","Junriel Andoy",22,"Medium"],
+  ["500Mp00000mNs0wIAC","00077967","Save the Children (Vanuatu)","Ricoh IM C2500 - 3090RA20111 - Toner Delivery","Processing Invoice","Vanuatu","Toner Delivery","Florencio Jr. Familar",21,"Medium"],
+  ["500Mp00000mQHuWIAW","00077979","Vila North School","Ricoh IM 5000 - 4454R120005 - Service Call","Waiting on Quotation Approval","Vanuatu","Service Call","",3,"Medium"],
+  ["500Mp00000mQfNNIA0","00077987","Anamburu School","Ricoh IM 5000 - 4451R320079 - Toner Delivery","Work Order Issued","Vanuatu","Toner Delivery","Junriel Andoy",1,"Medium"],
+  ["500Mp00000mRFYqIAO","00077988","Digicel (Vanuatu)","Ricoh IM C2000 - 3082RB20146 - Service Call","Work Order Issued","Vanuatu","Service Call","Florencio Jr. Familar",0,"Medium"],
+  ["500Mp00000mRLvzIAG","00077989","Life Changer Christian College","Signature Series Ricoh MP 5055 - C389P300398 - Ser","Work Order Issued","Vanuatu","Service Call","Junriel Andoy",0,"Medium"],
+  ["500Mp00000l3oy9IAA","00077266","CCCS - Treasurer's Office","Ricoh IM C6010 - 9193RB30105 - Service Call","Waiting on Parts Delivery","Samoa","Service Call","Arturo Regis",653,"Medium"],
+  ["500Mp00000l4BmfIAE","00077274","Ricoh Samoa","Ricoh IM 4000 - 4443R120086 - Parts Robbing","Waiting on Parts Delivery","Samoa","Parts Robbing","Arturo Regis",652,"Medium"],
+  ["500Mp00000lNAtGIAW","00077429","Conservation International Pacific Island & Ocean Program","Ricoh IM C2000 - 3082R120591 - Service Call","Waiting on Parts Delivery","Samoa","Service Call","Ramiro Cataquis (2)",503,"Medium"],
+  ["500Mp00000ldjWyIAI","00077563","Office of the Regulator (Samoa)","Ricoh MP 5055 - C380P600080 - Service Call","Waiting on Customer","Samoa","Service Call","Arturo Regis",362,"Medium"],
+  ["500Mp00000lkAb1IAE","00077632","Air New Zealand (Samoa)","Zebra Printer installation","Waiting on Customer","Samoa","Asset Installation","Ramiro Cataquis (2)",316,"Medium"],
+  ["500Mp00000lkF7iIAE","00077637","Ministry of Works Transport & Infrastructure (Samoa)","Ricoh IM C4500 - 3122M220015 - Service Call","Waiting on Parts Delivery","Samoa","Service Call","Arturo Regis",315,"Medium"],
+  ["500Mp00000m6nTuIAI","00077805","All Saints and Anglican Primary School","Ricoh IM C2500 - 3090R920025 - Asset Assessment","Waiting on Quotation Approval","Samoa","Asset Assessment","Ramiro Cataquis (2)",147,"Medium"],
+  ["500Mp00000mAW1YIAW","00077845","Business Systems Limited","Ricoh MP C4504exSP w SPDF - C737M430082 - Asset Ma","Waiting on Parts Request Approval","Samoa","Asset Maintenance","Arturo Regis",124,"Medium"],
+  ["500Mp00000mAfO6IAK","00077846","Business Systems Limited","Ricoh IM C4500 - 3129M520104 - Service Call","Waiting on Parts Request Approval","Samoa","Service Call","Arturo Regis",124,"Medium"],
+  ["500Mp00000mAuLaIAK","00077853","Maali Company Pty Ltd","Ricoh IM C2500 - 3091R320254 - Service Call","Waiting on Parts Request Approval","Samoa","Service Call","Ramiro Cataquis (2)",123,"Medium"],
+  ["500Mp00000mEnrhIAC","00077903","Ricoh Samoa","Signature Series Ricoh MP 301 - W916P902265 - Asse","Processing Invoice","Samoa","Asset Disposal","Arturo Regis",99,"Medium"],
+  ["500Mp00000mEkgyIAC","00077904","Ricoh Samoa","Signature Series Ricoh MP 3053 - E754H950053 - As","Processing Invoice","Samoa","Asset Disposal","Arturo Regis",99,"Medium"],
+  ["500Mp00000mEq4nIAC","00077905","Ricoh Samoa","Signature Series Ricoh MP 2501 - E333MB50176 - Ass","Processing Invoice","Samoa","Asset Disposal","Arturo Regis",99,"Medium"],
+  ["500Mp00000mErdYIAS","00077906","Ricoh Samoa","Signature Series Ricoh MP C305SPF - W794P904095 -","Processing Invoice","Samoa","Asset Disposal","Arturo Regis",99,"Medium"],
+  ["500Mp00000mM7vGIAS","00077935","Ministry of Finance (Samoa)","Ricoh IM C6000 - 3149MB20060 - Service Call","Waiting on Quotation Approval","Samoa","Service Call","",28,"Medium"],
+  ["500Mp00000mMCV9IAO","00077936","Real Estate Samoa","Ricoh IM C2000 - 3081R920065 - Asset Maintenance S","Waiting on Parts Request Approval","Samoa","Asset Maintenance","Ramiro Cataquis (2)",27,"Medium"],
+  ["500Mp00000mN22WIAS","00077960","Lesa Law Firm","Signature Series Ricoh MP C307 - C508P904129 - IT","Work Order Issued","Samoa","IT & Network","Ramiro Cataquis (2)",23,"Medium"],
+  ["500Mp00000mQ0qSIAS","00077970","All Saints and Anglican Primary School","Ricoh IM C2500 - 3090R920025 - Toner Delivery","Waiting on Quotation Approval","Samoa","Toner Delivery","",5,"Medium"],
+  ["500Mp00000mQrTIIA0","00077983","Samoa Fa'afafine Association","Ricoh IM C2000 - 3082R590246 - IT & Network Suppor","Work Order Issued","Samoa","IT & Network","Ramiro Cataquis (2)",2,"Medium"],
+  ["500Mp00000mQYAnIAO","00077984","Samoa First Union","Ricoh IM C3010 - 9153RC30467 - IT & Network Suppor","Work Order Issued","Samoa","IT & Network","Ramiro Cataquis (2)",2,"Medium"],
+  ["500Mp00000mQdmxIAC","00077985","Oceania Gas Limited","Ricoh IM C300F - 3923P751905 - Service Call","Work Order Issued","Samoa","Service Call","Arturo Regis",1,"Medium"],
+  ["500Mp00000l24B1IAI","00077254","RSE Limited","Ricoh MP 501 - G988X993746 - Service Call","Waiting on Parts Delivery","Solomons","Service Call","Victor Geonzon",668,"Medium"],
+  ["500Mp00000lhPY5IAM","00077611","University of the South Pacific (Solomon Islands)","Signature Series Ricoh MP C2503 - E215R980096 - Se","Work Order Issued","Solomons","Service Call","Victor Geonzon",336,"Medium"],
+  ["500Mp00000lkmLAIAY","00077642","University of the South Pacific (Solomon Islands)","Signature Series Ricoh IM C300F - 3921P403629 - As","Processing Invoice","Solomons","Asset Decommission","Victor Geonzon",313,"Medium"],
+  ["500Mp00000lrganIAA","00077694","Bmobile (Solomon Islands) Limited","Ricoh MP 5055 - C386PC00381 - Service Call","Stop Credit","Solomons","Service Call","Victor Geonzon",266,"Medium"],
+  ["500Mp00000lrSclIAE","00077695","Bmobile (Solomon Islands) Limited","Ricoh MP 5055 - C386PC00381 - Toner Delivery","Stop Credit","Solomons","Toner Delivery","Victor Geonzon",266,"Medium"],
+  ["500Mp00000lrkUhIAI","00077696","Bmobile (Solomon Islands) Limited","Ricoh MP C4504 w SPDF - G716MA50046 - Service Call","Stop Credit","Solomons","Service Call","Victor Geonzon",266,"Medium"],
+  ["500Mp00000lrg9OIAQ","00077698","Bmobile (Solomon Islands) Limited","Ricoh MP C4504 w SPDF - G716MA50046 - Toner Delive","Stop Credit","Solomons","Toner Delivery","Victor Geonzon",266,"Medium"],
+  ["500Mp00000ls4RmIAI","00077703","Bank South Pacific (Solomon Islands)","Ricoh MP 501 - G988X790843 - Service Call","Waiting on Customer","Solomons","Service Call","Samson Ragaruma",265,"Medium"],
+  ["500Mp00000lzC2oIAE","00077749","MAKA Community High School","Ricoh M 2701 - 3283Z630050 - Service Call","Work Order Issued","Solomons","Service Call","Samson Ragaruma",192,"Medium"],
+  ["500Mp00000lzDIMIA2","00077758","Jejevo Primary School","Ricoh M 2701 - 3282Z130009 - Service Call","Work Order Issued","Solomons","Service Call","Samson Ragaruma",191,"Medium"],
+  ["500Mp00000m048BIAQ","00077765","Solomon Water","Ricoh IM C2500 - 3098RC20297 - Service Call","Waiting on Parts Delivery","Solomons","Service Call","Victor Geonzon",188,"Medium"],
+  ["500Mp00000m6sa2IAA","00077810","University of the South Pacific (Solomon Islands)","Signature Series Ricoh MP C3003 - E154M750027 - Re","Processing Invoice","Solomons","Relief Machine Install","Samson Ragaruma",146,"Medium"],
+  ["500Mp00000mCQ7xIAG","00077888","Pink South Pacific Limited","Ricoh M 320F - 5853Z830396 - Service Call","Work Order Issued","Solomons","Service Call","Samson Ragaruma",117,"Medium"],
+  ["500Mp00000mFaXPIA0","00077922","University of the South Pacific (Solomon Islands)","Signature Series Ricoh IM C300F - 3921P403629 - As","Processing Invoice","Solomons","Asset Rundown","Samson Ragaruma",96,"Medium"],
+  ["500Mp00000mFcZDIA0","00077923","University of the South Pacific (Solomon Islands)","Signature Series Ricoh MP C2503 - E215R980096 - As","Work Order Issued","Solomons","Asset Rundown","Samson Ragaruma",96,"Medium"],
+  ["500Mp00000mG64EIAS","00077926","Rennell And Bellona Constituency","Signature Series Ricoh MP C2003 - E205R870721 - As","Work Order Issued","Solomons","Asset Decommission","Samson Ragaruma",94,"Medium"],
+  ["500Mp00000mMgcrIAC","00077948","Mbokonavera Community High School","Ricoh IM C2010 - 9134RA10481 - Toner Delivery","Waiting on Quotation Approval","Solomons","Toner Delivery","",26,"Medium"],
+  ["500Mp00000mQKnhIAG","00077980","Mbokonavera Community High School","Ricoh IM 3500 - 4431R320043 - Toner Delivery","Waiting on Quotation Approval","Solomons","Toner Delivery","",3,"Medium"],
+  ["500Mp00000mQb6sIAC","00077981","National Parliament Office (Solomon Islands)","Ricoh IM C6010 - 9195R130167 - Asset Installation","Work Order Issued","Solomons","Asset Installation","Samson Ragaruma",2,"Medium"],
+  ["500Mp00000mRFvRIAW","00077991","Bank South Pacific (Solomon Islands)","Ricoh MP 4055 - C378P300510 - Service Call","Work Order Issued","Solomons","Service Call","Victor Geonzon",0,"Medium"],
+  ["500Mp00000bUKdYIAW","00072955","MEIDECC","Ricoh MP 5055 - C380PB00206 - Parts Fitting","Escalated","Tonga","Parts Fitting","John Cid",5040,"Medium"],
+  ["500Mp00000gt8rOIAQ","00075521","Ministry of Police","Signature Series Ricoh MP C4503 - E174M850313 - Se","Waiting on Customer","Tonga","Service Call","John Cid",2661,"Medium"],
+  ["500Mp00000ke8KfIAI","00077035","Prime Minister's Office (Tonga)","Ricoh IM C4500 - 3120M520265 - Service Call","Waiting on Parts Delivery","Tonga","Service Call","John Cid",839,"Medium"],
+  ["500Mp00000l7vPyIAI","00077318","Ministry of Commerce & Labour (Tonga)","Ricoh IM C2000 - 3089R120305 - Toner Delivery","Waiting on Quotation Approval","Tonga","Toner Delivery","",627,"Medium"],
+  ["500Mp00000lT7ntIAC","00077473","Federal Pacific Insurance (Tonga)","Ricoh IM C320F - A0B4PC02633 - Service Call","Waiting on Parts Request Approval","Tonga","Service Call","John Cid",461,"Medium"],
+  ["500Mp00000lgXnjIAE","00077588","Free Wesleyan Church - Education Department","Ricoh M C250 - 5451PC00251 - Service Call","Work Order Issued","Tonga","Service Call","John Cid",340,"Medium"],
+  ["500Mp00000lybCyIAI","00077742","The Church of Jesus Christ of Latter-day Saints in Tonga Trust Board - Liahona High School - Printing","Ricoh MP C6004 w SPDF - C758MA10054 - Service Call","Waiting on Parts Request Approval","Tonga","Service Call","John Cid",194,"Medium"],
+  ["500Mp00000lyqKBIAY","00077751","Ministry of Infrastructure - Marine Projects Division","Ricoh IM C4500 - 3129M520255 - Service Call","Processing Invoice","Tonga","Service Call","John Cid",192,"Medium"],
+  ["500Mp00000m2S7qIAE","00077770","Ministry of Revenue & Customs (Tonga)","Ricoh MP C4504exSP w SPDF - C738M130839 - Service","Processing Invoice","Tonga","Service Call","John Cid",172,"Medium"],
+  ["500Mp00000m3MGWIA2","00077784","Ministry of Health - Psychiatric Ward (Tonga)","Ricoh IM C4500 - 3120MA20344 - Toner Delivery","Waiting on Quotation Approval","Tonga","Toner Delivery","",168,"Medium"],
+  ["500Mp00000m6UiwIAE","00077798","Tonga Health Promotion Foundation","Ricoh IM C3000 - 3102RA90220 - Service Call","Processing Invoice","Tonga","Service Call","John Cid",149,"Medium"],
+  ["500Mp00000m7m7aIAA","00077835","The Church of Jesus Christ of Latter-day Saints in Tonga Trust Board - Saineha High School Admin","Ricoh IM C4510 - 9173R220018 - Toner Delivery","Waiting on Parts Request Approval","Tonga","Toner Delivery","Aisea Fakaosi",142,"Medium"],
+  ["500Mp00000mEhG1IAK","00077901","The Church of Jesus Christ of Latter-day Saints in Tonga Trust Board - Saineha High School Printing","Ricoh IM C3500 - 3111R220016 - Service Call","Work Order Issued","Tonga","Service Call","John Cid",100,"Medium"],
+  ["500Mp00000mQABPIA4","00077971","Queen Salote College","Ricoh IM C2000 - Ricoh IM C2000-3080RC21362 - Tone","Waiting on Quotation Approval","Tonga","Toner Delivery","",5,"Medium"],
+  ["500Mp00000mQFfjIAG","00077973","Tanoa International Dateline Hotel","Ricoh IM C4500 - 3129MC20268 - Asset Maintenance S","Work Order Issued","Tonga","Asset Maintenance","John Cid",5,"Medium"],
+  ["500Mp00000mQHcfIAG","00077974","Tanoa International Dateline Hotel","Ricoh IM 430F - 3352P950282 - Asset Maintenance Se","Work Order Issued","Tonga","Asset Maintenance","John Cid",5,"Medium"],
+  ["500Mp00000mQXHpIAO","00077982","University of the South Pacific (Tonga)","Ricoh MP C4504 w SPDF - G716M950213 - Toner Delive","Work Order Issued","Tonga","Toner Delivery","Aisea Fakaosi",2,"Medium"],
+  ["500Mp00000kxxzIIAQ","00077220","","WCP: LCL & FCL Export Sailing Schedules ex AUCKL","New","Unassigned","","",694,"Medium"],
+  ["500Mp00000lVvnBIAS","00077507","","WCP: LCL & FCL Export Sailing Schedules ex AUCKL","New","Unassigned","","",446,"Medium"],
+  ["500Mp00000lf2ajIAA","00077585","","WCP: LCL & FCL Export Sailing Schedules ex AUCKL","New","Unassigned","","",355,"Medium"],
+  ["500Mp00000lsWWHIA2","00077713","","WCP: LCL & FCL Export Sailing Schedules ex AUCK","New","Unassigned","","",263,"Medium"],
+  ["500Mp00000m7rVRIAY","00077830","","Re: Follow up","New","Unassigned","","",143,"Medium"],
+  ["500Mp00000mBF6jIAG","00077879","","Re: Follow up","New","Unassigned","","",120,"Medium"],
+  ["500Mp00000mDUpRIAW","00077893","","WCP: LCL & FCL Export Sailing Schedules ex AUCKL","New","Unassigned","","",112,"Medium"],
+  ["500Mp00000mEn0iIAC","00077916","","Faulty cartridge code 407723 - Richo SP C252HS Pri","New","Unassigned","","",99,"Medium"],
+  ["500Mp00000mLswLIAS","00077928","","WCP: LCL & FCL Export Sailing Schedules ex AUCKL","New","Unassigned","","",29,"Medium"]
+];
+// ─────────────────────────────────────────────
+//  END DATA
+// ─────────────────────────────────────────────
+
+document.getElementById("asOf").textContent = ASOF;
+document.getElementById("footer").textContent = `Ricoh South Pacific · Data from Salesforce · ${ASOF}`;
+
+// ── SORT STATE ────────────────────────────────
+let sortCol = 8, sortDir = -1; // default: age descending
+
+// ── BADGE HELPERS ─────────────────────────────
+function statusBadge(s) {
+  if (s === "New") return `<span class="badge b-New">New</span>`;
+  if (s === "Work Order Issued") return `<span class="badge b-WOI">Work Order Issued</span>`;
+  if (s === "Processing Invoice") return `<span class="badge b-Invoice">Processing Invoice</span>`;
+  if (s === "Escalated") return `<span class="badge b-Escalated">Escalated</span>`;
+  if (s === "Stop Credit") return `<span class="badge b-Stop">Stop Credit</span>`;
+  return `<span class="badge b-Waiting">${s}</span>`;
+}
+function terrPill(t) {
+  const cls = t.replace(/\s/g,'');
+  return `<span class="terr-pill t-${cls}">${t}</span>`;
+}
+function ageFmt(h) {
+  if (h < 1) return `<span class="age-ok">&lt;1h</span>`;
+  if (h < 24) return `<span class="age-ok">${h}h</span>`;
+  const d = Math.floor(h/24);
+  if (d < 3) return `<span class="age-ok">${d}d</span>`;
+  if (d < 14) return `<span class="age-warn">${d}d</span>`;
+  return `<span class="age-critical">${d}d</span>`;
+}
+
+// ── POPULATE FILTER DROPDOWNS ─────────────────
+function populateFilters() {
+  const statuses = [...new Set(CASES.map(c=>c[4]).filter(Boolean))].sort();
+  const wts = [...new Set(CASES.map(c=>c[6]).filter(Boolean))].sort();
+  const sel = document.getElementById("filterStatus");
+  statuses.forEach(s => { const o=document.createElement("option"); o.value=o.textContent=s; sel.appendChild(o); });
+  const selWt = document.getElementById("filterWorkType");
+  wts.forEach(w => { const o=document.createElement("option"); o.value=o.textContent=w; selWt.appendChild(o); });
+}
+
+// ── FILTER + SORT ─────────────────────────────
+function getFiltered() {
+  const search = document.getElementById("searchInput").value.toLowerCase();
+  const terr   = document.getElementById("filterTerritory").value;
+  const status = document.getElementById("filterStatus").value;
+  const wt     = document.getElementById("filterWorkType").value;
+  const age    = parseInt(document.getElementById("filterAge").value) || 0;
+
+  return CASES.filter(c => {
+    if (terr   && c[5] !== terr)   return false;
+    if (status && c[4] !== status) return false;
+    if (wt     && c[6] !== wt)     return false;
+    if (age    && c[8] < age)      return false;
+    if (search) {
+      const hay = (c[1]+c[2]+c[3]+c[4]+c[5]+c[6]+c[7]).toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  }).sort((a,b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (typeof av === "string") av = av.toLowerCase();
+    if (typeof bv === "string") bv = bv.toLowerCase();
+    return av < bv ? sortDir : av > bv ? -sortDir : 0;
+  });
+}
+
+// ── KPI STRIP ─────────────────────────────────
+function renderKPIs(rows) {
+  const total  = rows.length;
+  const over72 = rows.filter(c=>c[8]>=72).length;
+  const terrs  = ["NZ","Vanuatu","Solomons","Tonga","Samoa"];
+  const terrEl = document.getElementById("filterTerritory");
+  const activeTerr = terrEl.value;
+
+  let html = `
+    <div class="kpi-card ${!activeTerr?'selected':''}" onclick="setTerrFilter('')">
+      <div class="kpi-label">All territories</div>
+      <div class="kpi-value">${total}</div>
+      <div class="kpi-sub">${over72} over 72h</div>
+    </div>`;
+  terrs.forEach(t => {
+    const n = rows.filter(c=>c[5]===t).length;
+    const n72 = rows.filter(c=>c[5]===t&&c[8]>=72).length;
+    html += `
+    <div class="kpi-card ${activeTerr===t?'selected':''}" onclick="setTerrFilter('${t}')">
+      <div class="kpi-label">${t}</div>
+      <div class="kpi-value ${n72===n&&n>0?'alert':''}">${n}</div>
+      <div class="kpi-sub">${n72} over 72h</div>
+    </div>`;
+  });
+  document.getElementById("kpiStrip").innerHTML = html;
+}
+
+// ── RENDER TABLE ──────────────────────────────
+function renderTable() {
+  const rows = getFiltered();
+  renderKPIs(rows);
+  document.getElementById("resultCount").textContent = `${rows.length} of ${CASES.length} cases`;
+
+  if (!rows.length) {
+    document.getElementById("tableBody").innerHTML =
+      `<tr><td colspan="8"><div class="empty-state">No cases match the current filters.</div></td></tr>`;
+    return;
+  }
+
+  document.getElementById("tableBody").innerHTML = rows.map(c => {
+    const [sfId,caseNum,acct,subj,status,terr,wt,tech,hours] = c;
+    const url = SF_BASE + sfId;
+    return `<tr>
+      <td><a href="${url}" target="_blank" class="case-link">${caseNum}</a></td>
+      <td><div class="acct" title="${acct}">${acct||'—'}</div></td>
+      <td><div class="subj" title="${subj}">${subj||'—'}</div></td>
+      <td>${terrPill(terr)}</td>
+      <td>${statusBadge(status)}</td>
+      <td><span style="font-size:12px;color:var(--mid)">${wt||'—'}</span></td>
+      <td style="white-space:nowrap">${ageFmt(hours)}</td>
+      <td>${tech?`<span class="tech-name">${tech}</span>`:`<span class="no-tech">Unassigned</span>`}</td>
+    </tr>`;
+  }).join("");
+
+  // Update sort indicators
+  document.querySelectorAll("th").forEach(th => {
+    th.classList.remove("sorted-asc","sorted-desc");
+    if (parseInt(th.dataset.col)===sortCol)
+      th.classList.add(sortDir===1?"sorted-asc":"sorted-desc");
+  });
+}
+
+function applyFilters() { renderTable(); }
+
+function setTerrFilter(t) {
+  document.getElementById("filterTerritory").value = t;
+  renderTable();
+}
+
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = -1; }
+  renderTable();
+}
+
+function clearFilters() {
+  document.getElementById("searchInput").value = "";
+  document.getElementById("filterTerritory").value = "";
+  document.getElementById("filterStatus").value = "";
+  document.getElementById("filterWorkType").value = "";
+  document.getElementById("filterAge").value = "";
+  sortCol = 8; sortDir = -1;
+  renderTable();
+}
+
+// ── INIT ──────────────────────────────────────
+populateFilters();
+renderTable();
+</script>
+</body>
+</html>
