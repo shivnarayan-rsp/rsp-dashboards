@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RSP Operations Dashboard</title>
+<title>RSP Orders Dashboard</title>
 <style>
   :root {
     --bg:#f8f7f4;--surface:#ffffff;--surface-2:#f1efe8;
@@ -91,14 +91,11 @@
   .empty{padding:40px;text-align:center;color:var(--text-muted);}
 
   /* Deep link styling */
-  .order-link{
-    font-family:monospace;font-size:11px;color:var(--info-text);
-    text-decoration:none;display:inline-flex;align-items:center;gap:4px;
-    padding:2px 6px;border-radius:4px;background:var(--info-bg);
-    border:.5px solid transparent;transition:all .12s;white-space:nowrap;
-  }
-  .order-link:hover{border-color:var(--info-text);opacity:.85;}
-  .order-link svg{flex-shrink:0;opacity:.6;}
+  .order-num{font-family:monospace;font-size:11px;color:var(--text-muted);display:inline-flex;align-items:center;gap:5px;}
+  .copy-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:3px;cursor:pointer;background:transparent;border:.5px solid var(--border-strong);color:var(--text-hint);transition:all .12s;flex-shrink:0;}
+  .copy-btn:hover{background:var(--surface-2);color:var(--text-muted);border-color:var(--accent);}
+  .copy-btn.copied{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-text);}
+  .copy-btn svg{width:10px;height:10px;pointer-events:none;}
 
   .fxbar{background:var(--surface-2);border-top:.5px solid var(--border);padding:10px 24px;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
   .fxlbl{font-weight:500;text-transform:uppercase;letter-spacing:.04em;font-size:10px;}
@@ -121,7 +118,7 @@
       </svg>
     </div>
     <div>
-      <div class="h1">RSP Operations Dashboard</div>
+      <div class="h1">RSP Orders Dashboard</div>
       <div class="hsub">Open sales orders — all Pacific Island entities · Values in NZD</div>
     </div>
   </div>
@@ -192,8 +189,6 @@
 <script>
 const FX={RSP:1,Samoa:0.6197,Solomons:0.2119,Vanuatu:0.01370,Tonga:0.6904};
 const CCY={RSP:'NZD',Samoa:'WST',Solomons:'SBD',Vanuatu:'VUV',Tonga:'TOP'};
-const BASE='https://au.unleashedsoftware.com/v2/SalesOrder/Update/';
-
 const GUIDS={
   // RSP
   "RSPSO-00126763":"03e0343c-bee5-4f65-b1c9-68f4ddbdfc89",
@@ -540,12 +535,20 @@ function renderKPITiles(kpi){
 }
 
 function orderLink(orderNum){
-  const guid=GUIDS[orderNum];
-  const arrow=`<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 10L10 2M5 2h5v5"/></svg>`;
-  if(guid){
-    return`<a class="order-link" href="${BASE}${guid}" target="_blank" rel="noopener" title="Open in Unleashed">${orderNum}${arrow}</a>`;
-  }
-  return`<span style="font-family:monospace;font-size:11px;color:var(--text-muted)">${orderNum}</span>`;
+  const id='cb-'+orderNum.replace(/[^a-z0-9]/gi,'');
+  return`<span class="order-num">${orderNum}<button class="copy-btn" id="${id}" onclick="copyOrder('${orderNum}','${id}')" title="Copy order number"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M1 8V1h7v3"/></svg></button></span>`;
+}
+function copyOrder(num,id){
+  navigator.clipboard.writeText(num).then(()=>{
+    const btn=document.getElementById(id);
+    if(!btn)return;
+    btn.classList.add('copied');
+    btn.innerHTML=`<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 6 4.5 9 10.5 3"/></svg>`;
+    setTimeout(()=>{
+      btn.classList.remove('copied');
+      btn.innerHTML=`<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M1 8V1h7v3"/></svg>`;
+    },1500);
+  });
 }
 
 function renderTable(data){
