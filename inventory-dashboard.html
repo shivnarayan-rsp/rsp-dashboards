@@ -4,342 +4,84 @@
   <script src="auth.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ricoh | South Pacific — Inventory Dashboard</title>
+  <title>RSP Inventory — Summary</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --ricoh-red:     #D7063B;
-      --ricoh-red-dim: rgba(215,6,59,0.12);
-      --charcoal:      #1e1f22;
-      --charcoal-2:    #2a2b2f;
-      --body-bg:       #f7f7f6;
-      --surface:       #ffffff;
-      --border:        #e4e4e2;
-      --text-primary:  #1a1a1a;
-      --text-muted:    #6b6b6b;
-      --text-light:    #9a9a9a;
-      --amber:         #d97706;
-      --amber-bg:      rgba(217,119,6,0.10);
-      --red-bg:        rgba(215,6,59,0.08);
-      --green:         #16a34a;
-      --green-bg:      rgba(22,163,74,0.10);
-      --font-sans:     'DM Sans', sans-serif;
-      --font-mono:     'DM Mono', monospace;
-      --radius:        10px;
-      --shadow:        0 1px 4px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
-    }
-
-    body {
-      font-family: var(--font-sans);
-      background: var(--body-bg);
-      color: var(--text-primary);
-      min-height: 100vh;
-    }
-
-    /* ── HEADER ─────────────────────────────────────────── */
-    header {
-      background: var(--charcoal);
-      color: white;
-      padding: 0 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 64px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-    .header-left { display: flex; align-items: center; gap: 16px; }
-    .header-brand { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: white; }
-    .header-brand span { color: var(--ricoh-red); }
-    .header-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.2); }
-    .header-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 400; }
-    .header-right { display: flex; align-items: center; gap: 20px; }
-    .header-meta { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 0.04em; }
-    .back-link { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; transition: color 0.15s; }
-    .back-link:hover { color: white; }
-
-    /* ── LAYOUT ─────────────────────────────────────────── */
-    main { max-width: 1400px; margin: 0 auto; padding: 28px 24px 60px; }
-
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-    .section-gap { margin-bottom: 32px; }
-
-    /* ── NOTICES ────────────────────────────────────────── */
-    .fx-notice {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--amber);
-      border-radius: var(--radius);
-      padding: 10px 16px;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      line-height: 1.5;
-    }
-    .fx-notice strong { color: var(--text-primary); }
-
-    /* ── KPI GRID ───────────────────────────────────────── */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-    @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 640px)  { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-
-    .kpi-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px 20px;
-      box-shadow: var(--shadow);
-    }
-    .kpi-card.total-card { border-top: 3px solid var(--ricoh-red); }
-    .kpi-entity { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
-    .kpi-value { font-family: var(--font-mono); font-size: 20px; font-weight: 500; color: var(--text-primary); line-height: 1.1; margin-bottom: 4px; }
-    .kpi-value.total-val { font-size: 24px; }
-    .kpi-sublabel { font-size: 11px; color: var(--text-light); margin-bottom: 14px; }
-    .kpi-movement {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-family: var(--font-mono); font-size: 12px; font-weight: 500;
-      padding: 3px 8px; border-radius: 4px;
-    }
-    .kpi-movement.positive { background: var(--green-bg); color: var(--green); }
-    .kpi-movement.negative { background: var(--red-bg); color: var(--ricoh-red); }
-    .kpi-movement.neutral  { background: #f0f0ef; color: var(--text-muted); }
-    .kpi-lines { font-size: 11px; color: var(--text-light); font-family: var(--font-mono); margin-top: 8px; }
-
-    /* ── ALERT STRIP ────────────────────────────────────── */
-    .alert-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-    .alert-badge {
-      display: flex; align-items: center; gap: 6px;
-      padding: 5px 12px; border-radius: 20px;
-      font-size: 11.5px; font-weight: 600;
-    }
-    .alert-badge.warn  { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(217,119,6,0.25); }
-    .alert-badge.alert { background: var(--red-bg); color: var(--ricoh-red); border: 1px solid rgba(215,6,59,0.2); }
-
-    /* ── CARDS & TABLES ─────────────────────────────────── */
-    .table-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      margin-bottom: 28px;
-    }
-    .table-card-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .table-card-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-    .table-card-sub   { font-size: 11.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
-
-    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-    th {
-      background: #f9f9f8;
-      padding: 9px 16px;
-      text-align: right;
-      font-size: 10.5px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-    th:first-child { text-align: left; }
-    td {
-      padding: 10px 16px;
-      text-align: right;
-      border-bottom: 1px solid #f0f0ef;
-      vertical-align: middle;
-    }
-    td:first-child { text-align: left; }
-    tr:last-child td { border-bottom: none; }
-    tr.total-row td { background: #f9f9f8; font-weight: 600; border-top: 1px solid var(--border); }
-    tr.slob-critical td { background: rgba(215,6,59,0.04); }
-
-    .mono { font-family: var(--font-mono); }
-    .row-label { font-weight: 500; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
-    .bucket-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-
-    .benchmark-pill {
-      display: inline-block; font-size: 10px;
-      padding: 1px 6px; border-radius: 3px;
-      font-weight: 500; margin-left: 6px; vertical-align: middle;
-    }
-    .bench-ok   { background: var(--green-bg); color: var(--green); }
-    .bench-warn { background: var(--amber-bg); color: var(--amber); }
-    .bench-flag { background: var(--red-bg); color: var(--ricoh-red); }
-    .bench-info { background: #f0f0ef; color: var(--text-muted); }
-
-    .pct-cell { color: var(--text-muted); font-size: 11.5px; }
-    .pct-cell.warn { color: var(--amber); font-weight: 600; }
-    .pct-cell.flag { color: var(--ricoh-red); font-weight: 600; }
-
-    /* ── TABS ───────────────────────────────────────────── */
-    .tab-bar {
-      display: flex;
-      gap: 0;
-      border-bottom: 1px solid var(--border);
-      padding: 0 20px;
-      background: #fafaf9;
-      overflow-x: auto;
-    }
-    .tab-btn {
-      padding: 10px 16px;
-      font-size: 12.5px;
-      font-weight: 500;
-      color: var(--text-muted);
-      border: none;
-      background: none;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      white-space: nowrap;
-      transition: color 0.15s;
-    }
-    .tab-btn:hover { color: var(--text-primary); }
-    .tab-btn.active { color: var(--ricoh-red); border-bottom-color: var(--ricoh-red); font-weight: 600; }
-
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-
-    /* ── ENTITY SELECTOR ────────────────────────────────── */
-    .entity-selector {
-      display: flex;
-      gap: 8px;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
-      background: #fafaf9;
-    }
-    .entity-btn {
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: all 0.15s;
-    }
-    .entity-btn:hover { border-color: var(--ricoh-red); color: var(--ricoh-red); }
-    .entity-btn.active { background: var(--ricoh-red); border-color: var(--ricoh-red); color: white; }
-
-    /* ── DISPOSITION ACTION BAR ─────────────────────────── */
-    .action-bar {
-      background: #fafaf9;
-      border-bottom: 1px solid var(--border);
-      padding: 10px 20px;
-      font-size: 11.5px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-    .action-bar strong { color: var(--text-primary); }
-    .action-pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 10.5px;
-      font-weight: 600;
-      margin: 0 2px;
-      background: #f0f0ef;
-      color: var(--text-muted);
-    }
-
-    /* ── TRANSFER TABLE ─────────────────────────────────── */
-    .transfer-header-note {
-      padding: 12px 20px;
-      background: rgba(22,163,74,0.06);
-      border-bottom: 1px solid rgba(22,163,74,0.15);
-      font-size: 12px;
-      color: #14532d;
-      line-height: 1.5;
-    }
-    .entity-tag {
-      display: inline-block;
-      padding: 1px 7px;
-      border-radius: 4px;
-      font-size: 10.5px;
-      font-weight: 600;
-      background: var(--red-bg);
-      color: var(--ricoh-red);
-    }
-    .entity-tag.buyer {
-      background: var(--green-bg);
-      color: var(--green);
-    }
-
-    /* ── EMPTY STATE ────────────────────────────────────── */
-    .empty-state {
-      padding: 40px 20px;
-      text-align: center;
-      color: var(--text-light);
-      font-size: 13px;
-    }
-    .empty-state strong { display: block; margin-bottom: 6px; color: var(--text-muted); font-size: 14px; }
-
-    /* ── MIF COVERAGE BADGE ─────────────────────────────────── */
-    .mif-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 10.5px;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 4px;
-      white-space: nowrap;
-    }
-    .mif-covered { background: var(--green-bg); color: var(--green); }
-    .mif-zero    { background: var(--red-bg); color: var(--ricoh-red); }
-    .mif-unknown { background: #f0f0ef; color: var(--text-muted); }
-    .mif-platform { font-size: 10px; color: var(--text-light); margin-top: 2px; }
-    .mif-note    { font-size: 10px; color: var(--ricoh-red); margin-top: 3px; line-height: 1.3; max-width: 160px; }
-
-    /* ── FOOTER ─────────────────────────────────────────── */
-    .dash-footer {
-      text-align: center;
-      font-size: 11px;
-      color: var(--text-light);
-      font-family: var(--font-mono);
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-    }
-
-    @media (max-width: 600px) {
-      main { padding: 16px 12px 40px; }
-      header { padding: 0 16px; }
-      .header-subtitle { display: none; }
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--ricoh-red:#D7063B;--charcoal:#1e1f22;--body-bg:#f7f7f6;--surface:#ffffff;--border:#e4e4e2;--text-primary:#1a1a1a;--text-muted:#6b6b6b;--text-light:#9a9a9a;--amber:#d97706;--amber-bg:rgba(217,119,6,.10);--red-bg:rgba(215,6,59,.08);--green:#16a34a;--green-bg:rgba(22,163,74,.10);--font-sans:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;--radius:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04)}
+    body{font-family:var(--font-sans);background:var(--body-bg);color:var(--text-primary);min-height:100vh}
+    header{background:var(--charcoal);color:white;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .header-left{display:flex;align-items:center;gap:16px}
+    .header-brand{font-size:18px;font-weight:700;letter-spacing:-.3px}
+    .header-brand span{color:var(--ricoh-red)}
+    .header-divider{width:1px;height:24px;background:rgba(255,255,255,.2)}
+    .header-subtitle{font-size:13px;color:rgba(255,255,255,.6)}
+    .header-right{display:flex;align-items:center;gap:20px}
+    .header-meta{font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,.4)}
+    .back-link{color:rgba(255,255,255,.6);text-decoration:none;font-size:13px}
+    .back-link:hover{color:white}
+    .pill-nav{background:var(--charcoal);border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px}
+    .pill-btn{padding:8px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap}
+    .pill-btn:hover{color:rgba(255,255,255,.85)}
+    .pill-btn.active{color:white;border-bottom-color:var(--ricoh-red)}
+    main{max-width:1400px;margin:0 auto;padding:28px 24px 60px}
+    .section-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+    .section-gap{margin-bottom:32px}
+    .fx-notice{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:var(--radius);padding:10px 16px;font-size:12px;color:var(--text-muted);margin-bottom:20px;display:flex;align-items:flex-start;gap:10px;line-height:1.5}
+    .fx-notice strong{color:var(--text-primary)}
+    .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:8px}
+    @media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
+    .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow)}
+    .kpi-card.total-card{border-top:3px solid var(--ricoh-red)}
+    .kpi-entity{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+    .kpi-value{font-family:var(--font-mono);font-size:20px;font-weight:500;color:var(--text-primary);line-height:1.1;margin-bottom:4px}
+    .kpi-value.total-val{font-size:24px}
+    .kpi-sublabel{font-size:11px;color:var(--text-light);margin-bottom:10px}
+    .trend-pill{font-family:var(--font-mono);font-size:11px;font-weight:500;padding:2px 7px;border-radius:4px;display:inline-block}
+    .trend-pill.up{background:var(--red-bg);color:var(--ricoh-red)}
+    .trend-pill.down{background:var(--green-bg);color:var(--green)}
+    .trend-pill.flat{background:#f0f0ef;color:var(--text-muted)}
+    .kpi-lines{font-size:11px;color:var(--text-light);font-family:var(--font-mono);margin-top:6px}
+    .alert-strip{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+    .alert-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:600}
+    .alert-badge.warn{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(217,119,6,.25)}
+    .alert-badge.alert{background:var(--red-bg);color:var(--ricoh-red);border:1px solid rgba(215,6,59,.2)}
+    .alert-badge.ok{background:var(--green-bg);color:var(--green);border:1px solid rgba(22,163,74,.2)}
+    .table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:28px}
+    .table-card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .table-card-title{font-size:13px;font-weight:600;color:var(--text-primary)}
+    .table-card-sub{font-size:11.5px;color:var(--text-muted);margin-top:3px;line-height:1.4}
+    table{width:100%;border-collapse:collapse;font-size:12.5px}
+    th{background:#f9f9f8;padding:9px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap}
+    th:first-child{text-align:left}
+    td{padding:10px 16px;text-align:right;border-bottom:1px solid #f0f0ef;vertical-align:middle}
+    td:first-child{text-align:left}
+    tr:last-child td{border-bottom:none}
+    tr.total-row td{background:#f9f9f8;font-weight:600;border-top:1px solid var(--border)}
+    .mono{font-family:var(--font-mono)}
+    .bucket-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block}
+    .benchmark-pill{display:inline-block;font-size:10px;padding:1px 6px;border-radius:3px;font-weight:500;margin-left:6px}
+    .bench-info{background:#f0f0ef;color:var(--text-muted)}
+    .pct-cell{color:var(--text-muted);font-size:11.5px}
+    .pct-cell.warn{color:var(--amber);font-weight:600}
+    .pct-cell.flag{color:var(--ricoh-red);font-weight:600}
+    .mif-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px}
+    @media(max-width:1000px){.mif-grid{grid-template-columns:repeat(3,1fr)}}
+    .mif-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+    .mif-entity{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px}
+    .mif-total{font-family:var(--font-mono);font-size:22px;font-weight:500;color:var(--text-primary);margin-bottom:3px}
+    .mif-label{font-size:11px;color:var(--text-light);margin-bottom:12px}
+    .mif-model-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px}
+    .mif-model-name{color:var(--text-muted)}
+    .mif-model-count{font-family:var(--font-mono);font-weight:500}
+    .table-footnote{padding:10px 20px;font-size:11px;color:var(--text-light);border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:16px;line-height:1.6}
+    .dash-footer{text-align:center;font-size:11px;color:var(--text-light);font-family:var(--font-mono);padding-top:12px;border-top:1px solid var(--border)}
+    @media(max-width:600px){main{padding:16px 12px 40px}header{padding:0 16px}.header-subtitle{display:none}.pill-nav{padding:0 12px;overflow-x:auto}}
   </style>
 </head>
 <body>
-
 <header>
   <div class="header-left">
     <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
@@ -347,1149 +89,175 @@
     <div class="header-subtitle">Inventory Dashboard</div>
   </div>
   <div class="header-right">
-    <span class="header-meta" id="asAtDate"></span>
+    <span class="header-meta">As at 25 Mar 2026</span>
     <a href="index.html" class="back-link">← Scorecards</a>
   </div>
 </header>
-
+<nav class="pill-nav">
+  <a href="inventory-dashboard.html"  class="pill-btn active">Summary</a>
+  <a href="inventory-worklist.html"   class="pill-btn">Work List</a>
+  <a href="inventory-drilldown.html"  class="pill-btn">Drill-Down</a>
+  <a href="inventory-dictionary.html" class="pill-btn">Data Dictionary</a>
+</nav>
 <main>
-
   <div class="fx-notice">
     <span style="flex-shrink:0;font-size:15px;">💱</span>
-    <div>
-      <strong>Currency conversion applied.</strong>
-      All values shown in NZD equivalent. Pacific entity figures converted using mid-market rates as at 16 Mar 2026:
-      Vanuatu (VUV × 0.0141) · Solomon Islands (SBD × 0.2119) · Samoa (WST × 0.6181) · Tonga (TOP × 0.7191).
-      Unleashed records for each entity are stored in local currency. RSP (NZ) is already NZD.
-      Rates sourced from XE / Wise mid-market 24 Mar 2026.
-    </div>
+    <div><strong>Currency conversion applied post-query.</strong> Synchub queries return raw local currency. FX applied in DATA object: VUV×0.0141 · SBD×0.2119 · WST×0.6181 · TOP×0.7191 · NZD×1.0 (XE/Wise mid-market 25 Mar 2026). Age basis: FIFO receipt date — matches Unleashed BI. Validated: Samoa SLOB within 5% of Unleashed BI benchmark.</div>
   </div>
 
-  <!-- KPI SNAPSHOT -->
-  <div class="section-label">Inventory Snapshot — Week of <span id="weekLabel"></span></div>
+  <div class="section-label">Inventory Snapshot — 25 Mar 2026</div>
   <div class="kpi-grid" id="kpiGrid"></div>
-  <div style="font-size:11px;color:var(--text-light);margin-bottom:24px;padding:0 2px;">
-    ⚠ Week-on-week movement unavailable: Synchub/Unleashed does not support point-in-time stock snapshots. A scheduled snapshot job would enable movement tracking.
-  </div>
+  <div style="font-size:11px;color:var(--text-light);margin-bottom:24px;padding:0 2px;">⚠ Week-on-week movement: populate <code>previousWeekNZD</code> in the DATA object each refresh to enable trend arrows.</div>
 
-  <!-- ALERT STRIP -->
   <div id="alertStrip" class="alert-strip section-gap"></div>
 
-  <!-- AGED STOCK TABLE -->
-  <div class="section-label">Aged Stock Analysis</div>
+  <div class="section-label">Aged Stock by Bucket — All Entities</div>
   <div class="table-card section-gap">
     <div class="table-card-header">
       <div>
-        <div class="table-card-title">Aged Stock by Bucket — All Entities</div>
-        <div class="table-card-sub">Based on DaysSinceLastSale from Unleashed · NULL last-sale dates treated as Fresh (product never sold — monitor separately)</div>
+        <div class="table-card-title">Aged Stock Analysis</div>
+        <div class="table-card-sub">FIFO receipt date method · Matches Unleashed BI · Vanuatu &amp; Tonga use latest receipt date (conservative)</div>
       </div>
+      <a href="inventory-drilldown.html" style="font-size:12px;color:var(--ricoh-red);text-decoration:none;white-space:nowrap;align-self:center;">View drill-down →</a>
     </div>
-    <div style="overflow-x:auto;">
-      <table id="agedTable"></table>
+    <div style="overflow-x:auto;"><table id="agedTable"></table></div>
+    <div class="table-footnote">
+      <span>📋 <strong style="color:var(--text-muted)">Method:</strong> FIFO receipt date · matches Unleashed BI</span>
+      <span>✓ <strong style="color:var(--text-muted)">Validated:</strong> Samoa SLOB WST 180,017 vs Unleashed BI WST 172,000 (4.7%)</span>
+      <span style="color:var(--amber)">⚠ <strong>Vanuatu &amp; Tonga:</strong> latest receipt date used — SLOB figures are conservative</span>
     </div>
   </div>
 
-  <!-- SLOB WORK LIST -->
-  <div class="section-label">Disposition Candidates — SLOB Work List</div>
-  <div class="table-card section-gap">
-    <div class="table-card-header">
-      <div>
-        <div class="table-card-title">Top 10 SLOB SKUs per Entity</div>
-        <div class="table-card-sub">Stock aged &gt;12 months by last sale date · Sorted by total value descending · Red rows = 2+ years · MIF coverage from Salesforce</div>
-      </div>
-    </div>
-    <div class="action-bar">
-      <strong>Action options for each line:</strong>
-      <span class="action-pill">Return to supplier</span>
-      <span class="action-pill">Transfer to active entity</span>
-      <span class="action-pill">Kit or bundle</span>
-      <span class="action-pill">Write-off provision</span>
-      <span style="margin-left:12px;color:var(--text-light);font-size:11px;">MIF coverage sourced from Salesforce Assets · Active-Installed only · 24 Mar 2026</span>
-    </div>
-    <div class="tab-bar" id="slobTabBar"></div>
-    <div id="slobTabPanels"></div>
-  </div>
-
-  <!-- PRODUCT GROUP DRILL-DOWN -->
-  <div class="section-label">Product Group Drill-Down — At Risk &amp; SLOB Buckets</div>
-  <div class="table-card section-gap">
-    <div class="table-card-header">
-      <div>
-        <div class="table-card-title">Top 5 Product Groups by Bucket</div>
-        <div class="table-card-sub">Select entity and bucket · Value and share of that bucket shown per product group</div>
-      </div>
-    </div>
-    <div class="entity-selector" id="drillEntitySelector"></div>
-    <div class="tab-bar" id="drillTabBar">
-      <button class="tab-btn active" data-drill="atRisk">At Risk (9–12 months)</button>
-      <button class="tab-btn" data-drill="slob">SLOB (&gt;12 months)</button>
-    </div>
-    <div id="drillPanel"></div>
-  </div>
-
-  <!-- TRANSFER OPPORTUNITIES -->
-  <div class="section-label">Internal Transfer Opportunities</div>
-  <div class="table-card section-gap">
-    <div class="table-card-header">
-      <div>
-        <div class="table-card-title">Cross-Entity Transfer Candidates</div>
-        <div class="table-card-sub">Parts and toners only · SLOB in one entity (&gt;365 days) but actively selling in another (&lt;90 days) · Values in NZD</div>
-      </div>
-    </div>
-    <div class="transfer-header-note">
-      These SKUs are sitting idle in one entity while another is actively selling the same product.
-      An internal transfer avoids a write-off and eliminates a repurchase order. Machines excluded — parts and toners only.
-    </div>
-    <div class="tab-bar" id="transferTabBar">
-      <button class="tab-btn active" data-transfer="parts">Ricoh Copier Parts</button>
-      <button class="tab-btn" data-transfer="toners">Ricoh Copier Toners &amp; Developers</button>
-    </div>
-    <div id="transferTabPanels"></div>
-  </div>
+  <div class="section-label">Machines in Field (MIF) — Active Installed · Salesforce</div>
+  <div class="mif-grid" id="mifGrid"></div>
 
   <div class="dash-footer" id="dashFooter"></div>
 </main>
-
 <script>
-// ═══════════════════════════════════════════════════════════════════════
-//  DATA OBJECT — all figures in NZD
-//
-//  FX rates applied:
-//    VUV × 0.0138  (Vanuatu Vatu)
-//    SBD × 0.2095  (Solomon Islands Dollar)
-//    WST × 0.6197  (Samoan Tala)
-//    TOP × 0.8821  (Tongan Pa'anga — mid-market 16 Mar 2026)
-//    NZD × 1.0000  (RSP — no conversion)
-//
-//  Source: Unleashed via Synchub MCP · As at 16 Mar 2026
-//  Method: StockOnHand queried directly without product join.
-//          Orphaned/deleted product records excluded silently
-//          when joined — raw StockOnHand is the correct source.
-//
-//  Point-in-time snapshots: NOT supported by Synchub/Unleashed.
-//  Week-on-week movement requires a scheduled snapshot job
-//  writing to a separate table (e.g. Azure SQL staging layer).
-//
-//  Transfer opportunities: derived from StockOnHand DaysSinceLastSale
-//  cross-referenced across entities. Requires same ProductCode to
-//  appear as SLOB (>365 days) in one entity and active (<90 days)
-//  in another. Data populated below from query results.
-// ═══════════════════════════════════════════════════════════════════════
-
 const DATA = {
-  asAt: "24 Mar 2026",
-  week: "Week ending 24 Mar 2026",
-
-  // ── FX RATES ─────────────────────────────────────────────
-  // Mid-market sourced from XE / Wise — 24 Mar 2026
-  // VUV: Wise 30-day avg 0.0141 (range 0.0139–0.0145)
-  // SBD: XE live 0.2119
-  // WST: XE live (1 NZD = 1.6166 WST → 1 WST = 0.6181 NZD)
-  // TOP: Wise 30-day avg 0.7191 (range 0.7085–0.7350)
-  fxRates: {
-    VUV: 0.0141,
-    SBD: 0.2119,
-    WST: 0.6181,
-    TOP: 0.7191,
-    NZD: 1.0000
-  },
-
-  // ── MIF COVERAGE ─────────────────────────────────────────
-  // Source: Salesforce Assets — Status = 'Active - Installed'
-  // Queried 24 Mar 2026. Machine product codes mapped to
-  // Unleashed SLOB part descriptions by platform family.
-  // Territory mapping: Sharepoint__c field on Asset.
-  // RSP = "Ricoh South Pacific" | Samoa = "Ricoh Samoa Team"
-  // Solomons = "Ricoh Solomons Team" | Vanuatu = "Ricoh Vanuatu Team"
-  // Tonga = "Ricoh Tonga Team"
-  //
-  // partToMifMap: for each SLOB part code, which machine platform
-  // it fits, and how many active machines are installed per entity.
-  // "fits" is a display label. mif is { entity: count }.
-  // mifNote flags if the SLOB entity has zero coverage (write-off signal).
-  partToMifMap: {
-    // Ricoh Copier Parts — SLOB work list
-    "D2423091": { fits: "MPC3004 / MPC6004", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 15, "Tonga": 0 } },
-    "D0A44029": { fits: "IM 430F", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "IM 430F not in active MIF — write-off candidate" },
-    "D1863054": { fits: "MPC3003 / MPC3503", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC3003 platform has zero active MIF — write-off candidate" },
-    "D1764042": { fits: "MP C2003SP / C2503SP", mif: { "RSP": 0, "Samoa": 3, "Solomon Islands": 7, "Vanuatu": 2, "Tonga": 7 } },
-    "AE020268": { fits: "MPC3003 / MPC3503", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC3003 platform has zero active MIF — write-off candidate" },
-    "D3EW2796": { fits: "ProC9100", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "ProC9100 not in Pacific MIF — write-off candidate" },
-    "D0CB6201": { fits: "IM C300F", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "IM C300F not in active MIF — write-off candidate" },
-    "D1363407": { fits: "MPC6502", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC6502 not in active MIF — write-off candidate" },
-    // Tonga SLOB parts
-    "D0BK3002": { fits: "IM C2000 / IM C2500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 3, "Tonga": 0 } },
-    "D0BK3001": { fits: "IM C2000 / IM C2500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 3, "Tonga": 0 } },
-    "D0BK3003": { fits: "IM C2000 / IM C2500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 3, "Tonga": 0 } },
-    // Solomons SLOB parts
-    "D1464062": { fits: "MPC3003 / MPC3503", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC3003 platform has zero active MIF — write-off candidate" },
-    "D2423091_SL": { fits: "MPC3004 / MPC6004", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 15, "Tonga": 0 } },
-    // Vanuatu SLOB parts
-    "M0EB2320": { fits: "ProC7500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "ProC7500 not in Pacific MIF — write-off candidate" },
-    "M0EB9510": { fits: "ProC7500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "ProC7500 not in Pacific MIF — write-off candidate" },
-    "D0BL5836": { fits: "IM C2500", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 3, "Tonga": 0 } },
-    "D0BQ3002": { fits: "IM C4500 / IM C6000", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 2, "Tonga": 0 } },
-    "D0BQ3001": { fits: "IM C4500 / IM C6000", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 2, "Tonga": 0 } },
-    "D0BQ3003": { fits: "IM C4500 / IM C6000", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 2, "Tonga": 0 } },
-    "D8694034": { fits: "MP3054", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MP3054 not in active MIF — write-off candidate" },
-    "D2385686": { fits: "MPC2504", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC2504 not in active MIF — write-off candidate" },
-    // Samoa SLOB parts
-    "D0392040": { fits: "MPC2050 / MPC2550", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC2050/2550 not in active MIF — write-off candidate" },
-    "D0C94038": { fits: "IM C300F", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "IM C300F not in active MIF — write-off candidate" },
-    "M2813030": { fits: "MP501", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MP501 not in active MIF — write-off candidate" },
-    "D1424273": { fits: "MPC3002 / MPC3502", mif: { "RSP": 0, "Samoa": 0, "Solomon Islands": 0, "Vanuatu": 0, "Tonga": 0 }, mifNote: "MPC3002/3502 not in active MIF — write-off candidate" },
-  },
-
-  // ── MIF SUMMARY BY TERRITORY ─────────────────────────────
-  // Active installed machine counts by model and territory
-  // Source: Salesforce Assets query 24 Mar 2026
-  mifByTerritory: {
-    "RSP": {
-      total: 0,
-      models: []
-    },
-    "Samoa": {
-      total: 493,
-      topModels: [
-        { name: "Ricoh M 2701",         code: "418120", count: 19 },
-        { name: "Ricoh IM C3010",        code: "419309", count: 11 },
-        { name: "Ricoh IM C6010",        code: "419338", count: 7  },
-        { name: "Ricoh IM 4000",         code: "418846", count: 3  },
-        { name: "MP C2503",              code: "916929", count: 3  },
-        { name: "Ricoh IM 550F",         code: "418460", count: 2  },
-        { name: "MP C4503",              code: "916522", count: 2  }
-      ]
-    },
-    "Solomon Islands": {
-      total: 422,
-      topModels: [
-        { name: "MP C2503",              code: "916929", count: 7  },
-        { name: "Ricoh M 2701",          code: "418120", count: 9  },
-        { name: "MP C4503",              code: "916522", count: 4  },
-        { name: "Ricoh IM C3010",        code: "419309", count: 2  },
-        { name: "Ricoh IM C6010",        code: "419338", count: 2  },
-        { name: "Ricoh IM 550F",         code: "418460", count: 1  }
-      ]
-    },
-    "Vanuatu": {
-      total: 387,
-      topModels: [
-        { name: "Ricoh M 2701",          code: "418120", count: 15 },
-        { name: "Ricoh IM 550F",         code: "418460", count: 9  },
-        { name: "Ricoh IM C3010",        code: "419309", count: 3  },
-        { name: "IM C2500",              code: "918290", count: 3  },
-        { name: "Ricoh IM C6010",        code: "419338", count: 2  },
-        { name: "IM C4500",              code: "918315", count: 2  },
-        { name: "Ricoh IM 4000",         code: "418846", count: 5  }
-      ]
-    },
-    "Tonga": {
-      total: 271,
-      topModels: [
-        { name: "Ricoh M 2701",          code: "418120", count: 19 },
-        { name: "MP C4503",              code: "916522", count: 9  },
-        { name: "MP C2503",              code: "916929", count: 7  },
-        { name: "Ricoh IM 550F",         code: "418460", count: 7  },
-        { name: "Ricoh IM C6010",        code: "419338", count: 3  },
-        { name: "Ricoh IM 4000",         code: "418846", count: 1  }
-      ]
-    }
-  },
-
-  entities: ["RSP", "Samoa", "Solomon Islands", "Vanuatu", "Tonga"],
-
-  currencies: {
-    "RSP":             "NZD",
-    "Samoa":           "WST",
-    "Solomon Islands": "SBD",
-    "Vanuatu":         "VUV",
-    "Tonga":           "TOP"
-  },
-
-  // ── INVENTORY SNAPSHOT ──────────────────────────────────
-  // Source: Synchub live query 24 Mar 2026
-  // RSP: NZD direct. Samoa: WST×0.6181. Solomons: SBD×0.2119.
-  // Vanuatu: VUV×0.0141. Tonga: TOP×0.7191.
-  // Point-in-time snapshots not supported — movement shows N/A.
+  asAt: "25 Mar 2026",
+  fxRates: { VUV:0.0141, SBD:0.2119, WST:0.6181, TOP:0.7191, NZD:1.0 },
+  entities: ["RSP","Samoa","Solomon Islands","Vanuatu","Tonga"],
   inventorySnapshot: {
-    "RSP": {
-      currentNZD: 394520.10,
-      priorNZD:   null,
-      lines:      366
-    },
-    "Samoa": {
-      currentNZD: 192277.15,
-      priorNZD:   null,
-      lines:      262
-    },
-    "Solomon Islands": {
-      currentNZD: 576648.92,
-      priorNZD:   null,
-      lines:      305
-    },
-    "Vanuatu": {
-      currentNZD: 439860.69,
-      priorNZD:   null,
-      lines:      316
-    },
-    "Tonga": {
-      // Total = Fresh(211450.04) + SlowMoving(8443.44) + AtRisk(9498.27) + SLOB(18221.30)
-      currentNZD: 247613.05,
-      priorNZD:   null,
-      lines:      190
-    }
+    "RSP":             { currentNZD:385491.63, previousWeekNZD:null, lines:296 },
+    "Samoa":           { currentNZD:186472.25, previousWeekNZD:null, lines:247 },
+    "Solomon Islands": { currentNZD:534479.33, previousWeekNZD:null, lines:246 },
+    "Vanuatu":         { currentNZD:416179.23, previousWeekNZD:null, lines:289 },
+    "Tonga":           { currentNZD:242229.17, previousWeekNZD:null, lines:185 }
   },
-
-  // ── AGED STOCK ───────────────────────────────────────────
-  // All values NZD. Source: Synchub live queries 24 Mar 2026.
-  // Age basis: DaysSinceLastSale. NULL treated as Fresh.
   agedStock: {
     benchmarks: {
-      fresh:      { label: "Target 75–85%",   min: 0.75, max: 0.85, warnBelow: 0.70 },
-      slowMoving: { label: "Benchmark 8–15%", max: 0.15, warnAbove: 0.15 },
-      atRisk:     { label: "Benchmark <5%",   max: 0.05, warnAbove: 0.05 },
-      slob:       { label: "Review if >7%",   max: 0.07, warnAbove: 0.07 }
+      fresh:      { label:"Target 75–85%",   min:0.75, max:0.85, warnBelow:0.70 },
+      slowMoving: { label:"Benchmark 8–15%", max:0.15, warnAbove:0.15 },
+      atRisk:     { label:"Benchmark <5%",   max:0.05, warnAbove:0.05 },
+      slob:       { label:"Review if >7%",   max:0.07, warnAbove:0.07 }
     },
     entities: {
-      "RSP": {
-        fresh:      { costNZD: 324929.17, lines: 171 },
-        slowMoving: { costNZD: 25542.36,  lines: 8   },
-        atRisk:     { costNZD: 1923.73,   lines: 12  },
-        slob:       { costNZD: 42124.85,  lines: 175 },
-        totalNZD:   394520.10
-      },
-      "Samoa": {
-        // Synchub returned pre-converted NZD values (WST×0.6181 applied)
-        fresh:      { costNZD: 136625.03, lines: 135 },
-        slowMoving: { costNZD: 11068.89,  lines: 21  },
-        atRisk:     { costNZD: 12875.51,  lines: 17  },
-        slob:       { costNZD: 31707.71,  lines: 89  },
-        totalNZD:   192277.15
-      },
-      "Solomon Islands": {
-        // Synchub returned pre-converted NZD values (SBD×0.2119 applied)
-        fresh:      { costNZD: 383157.34, lines: 208 },
-        slowMoving: { costNZD: 12511.42,  lines: 10  },
-        atRisk:     { costNZD: 18927.47,  lines: 15  },
-        slob:       { costNZD: 162052.70, lines: 72  },
-        totalNZD:   576648.92
-      },
-      "Vanuatu": {
-        // Synchub returned pre-converted NZD values (VUV×0.0141 applied)
-        fresh:      { costNZD: 350465.31, lines: 194 },
-        slowMoving: { costNZD: 22937.02,  lines: 32  },
-        atRisk:     { costNZD: 5814.71,   lines: 11  },
-        slob:       { costNZD: 60643.66,  lines: 79  },
-        totalNZD:   439860.69
-      },
-      "Tonga": {
-        // Synchub returned pre-converted NZD values (TOP×0.7191 applied)
-        fresh:      { costNZD: 211450.04, lines: 133 },
-        slowMoving: { costNZD: 8443.44,   lines: 15  },
-        atRisk:     { costNZD: 9498.27,   lines: 5   },
-        slob:       { costNZD: 18221.30,  lines: 37  },
-        totalNZD:   247613.05
-      }
+      "RSP":             { fresh:{costNZD:231545.58,lines:122}, slowMoving:{costNZD:80241.62,lines:37},  atRisk:{costNZD:13791.32,lines:5},   slob:{costNZD:59913.11,lines:132}, totalNZD:385491.63 },
+      "Samoa":           { fresh:{costNZD:50131.11, lines:72},  slowMoving:{costNZD:21732.61,lines:22},  atRisk:{costNZD:3340.12, lines:18},  slob:{costNZD:111268.41,lines:135},totalNZD:186472.25 },
+      "Solomon Islands": { fresh:{costNZD:104838.84,lines:49},  slowMoving:{costNZD:25100.01,lines:14},  atRisk:{costNZD:173338.84,lines:45}, slob:{costNZD:231201.64,lines:138},totalNZD:534479.33 },
+      "Vanuatu":         { fresh:{costNZD:141996.88,lines:105}, slowMoving:{costNZD:5172.68, lines:8},   atRisk:{costNZD:27959.19,lines:20},  slob:{costNZD:241050.48,lines:156},totalNZD:416179.23 },
+      "Tonga":           { fresh:{costNZD:95374.20, lines:71},  slowMoving:{costNZD:3564.79, lines:5},   atRisk:{costNZD:4636.20, lines:12},  slob:{costNZD:138654.33,lines:97}, totalNZD:242229.17 }
     }
   },
-
-  // ── SLOB WORK LIST ───────────────────────────────────────
-  // Source: Synchub live query 24 Mar 2026
-  // DaysSinceLastSale > 365, QtyOnHand > 0, TotalCost > 0
-  // RSP values are NZD direct.
-  // Samoa values converted WST×0.6181.
-  // Solomons values converted SBD×0.2119.
-  // Vanuatu values converted VUV×0.0141.
-  // Tonga values converted TOP×0.7191.
-  slobWorkList: {
-    "RSP": [
-      { code: "D1496207",  desc: "ITB Transfer Belt MPC3003 - MPC6003",          group: "Ricoh Copier Parts",                   unitCost: 222.22,  qty: 27, totalNZD: 6000.00,  days: 523  },
-      { code: "D1476206",  desc: "Transfer Sep Unit Assy MPC3003",               group: "Ricoh Copier Parts",                   unitCost: 222.22,  qty: 18, totalNZD: 4000.00,  days: 571  },
-      { code: "D1464062",  desc: "Fusing Unit MPC3003 - 3503",                   group: "Ricoh Copier Parts",                   unitCost: 222.22,  qty: 16, totalNZD: 3555.55,  days: 566  },
-      { code: "D1863054",  desc: "Dev Unit K MPC3003 - MPC6003",                 group: "Ricoh Copier Parts",                   unitCost: 222.12,  qty: 13, totalNZD: 2887.54,  days: 523  },
-      { code: "M2057820",  desc: "Flat Conveyor Belt Cooling PRO C9100",         group: "Ricoh Copier Parts",                   unitCost: 986.41,  qty: 2,  totalNZD: 1972.82,  days: 887  },
-      { code: "917785",    desc: "Signature Series Ricoh MP 6055",               group: "Ricoh Copier Equipment",               unitCost: 813.56,  qty: 2,  totalNZD: 1627.12,  days: 1067 },
-      { code: "D2385686",  desc: "PCB Controller MPC2504",                       group: "Ricoh Copier Parts",                   unitCost: 1378.69, qty: 1,  totalNZD: 1378.69,  days: 1865 },
-      { code: "893196",    desc: "Ricoh Priport HQ40L Master",                   group: "Ricoh Priport Master Roll",            unitCost: 99.13,   qty: 8,  totalNZD: 793.02,   days: 777  },
-      { code: "893537",    desc: "Ricoh Priport DD5450 Red Ink 1000ml",          group: "Ricoh Priport Ink",                    unitCost: 143.18,  qty: 5,  totalNZD: 715.90,   days: 3231 },
-      { code: "D8694034",  desc: "Fusing Sleeve MP3054",                         group: "Ricoh Copier Parts",                   unitCost: 323.15,  qty: 2,  totalNZD: 646.30,   days: 1600 }
-    ],
-    "Samoa": [
-      { code: "418846",    desc: "Ricoh IM 4000",                                group: "Ricoh Copier Equipment",               unitCost: 4670.39, qty: 1,  totalNZD: 4670.39,  days: 750  },
-      { code: "893530",    desc: "Ricoh Priport Master Type 500",                group: "Ricoh Priport Master Roll",            unitCost: 265.65,  qty: 6,  totalNZD: 1593.11,  days: 1267 },
-      { code: "D0392040",  desc: "PCU Assy MPC2050 MPC2550",                     group: "Ricoh Copier Parts",                   unitCost: 530.31,  qty: 3,  totalNZD: 1591.07,  days: 1127 },
-      { code: "D1863054",  desc: "Dev Unit K MPC3003 - MPC6003",                 group: "Ricoh Copier Parts",                   unitCost: 482.60,  qty: 3,  totalNZD: 1447.13,  days: 402  },
-      { code: "841696",    desc: "Ricoh Toner Yellow MP5502S",                   group: "Ricoh Copier Toners and Developers",   unitCost: 422.73,  qty: 3,  totalNZD: 1268.29,  days: 461  },
-      { code: "986-000027",desc: "Logi Dock (UC version)",                       group: "IT Products",                          unitCost: 516.38,  qty: 2,  totalNZD: 1032.75,  days: 712  },
-      { code: "D0C94038",  desc: "Fusing Sleeve IM C300F",                       group: "Ricoh Copier Parts",                   unitCost: 898.63,  qty: 1,  totalNZD: 898.63,   days: 1394 },
-      { code: "M2813030",  desc: "Development Unit MP501",                       group: "Ricoh Copier Parts",                   unitCost: 872.40,  qty: 1,  totalNZD: 872.40,   days: 1588 },
-      { code: "417268",    desc: "Ricoh PB3220 Paper Feed Unit",                 group: "Ricoh Copier Equipment",               unitCost: 787.68,  qty: 1,  totalNZD: 787.68,   days: 1032 },
-      { code: "D1424273",  desc: "Sleeve Fusing Assy MPC3002 MPC3502",          group: "Ricoh Copier Parts",                   unitCost: 786.26,  qty: 1,  totalNZD: 786.26,   days: 1207 }
-    ],
-    "Solomon Islands": [
-      // Values converted SBD×0.2119
-      { code: "419309",    desc: "Ricoh IM C3010",                               group: "Ricoh Copier Equipment",               unitCost: 8598.36, qty: 6,  totalNZD: 51590.49, days: 412  },
-      { code: "419338",    desc: "Ricoh IM C6010",                               group: "Ricoh Copier Equipment",               unitCost: 13952.81,qty: 2,  totalNZD: 27905.25, days: 596  },
-      { code: "418846",    desc: "Ricoh IM 4000",                                group: "Ricoh Copier Equipment",               unitCost: 6167.11, qty: 3,  totalNZD: 18501.42, days: 384  },
-      { code: "418460",    desc: "Ricoh IM 550F",                                group: "Ricoh Copier Equipment",               unitCost: 4409.75, qty: 3,  totalNZD: 13229.37, days: 517  },
-      { code: "418845",    desc: "Ricoh IM 3500",                                group: "Ricoh Copier Equipment",               unitCost: 5939.29, qty: 1,  totalNZD: 5939.29,  days: 742  },
-      { code: "418373",    desc: "Ricoh ARDF DF3110",                            group: "Ricoh Copier Equipment",               unitCost: 1327.69, qty: 4,  totalNZD: 5311.49,  days: 371  },
-      { code: "BSP8195841-00", desc: "Blaze Satin Photopaper 195GSM 841mm×30m", group: "Digital Paper",                        unitCost: 21.74,   qty: 163,totalNZD: 3541.30,  days: 1384 },
-      { code: "D1464062",  desc: "Fusing Unit MPC3003 - 3503",                   group: "Ricoh Copier Parts",                   unitCost: 683.30,  qty: 5,  totalNZD: 3416.49,  days: 426  },
-      { code: "D0A44029",  desc: "Fusing Unit IM 430",                           group: "Ricoh Copier Parts",                   unitCost: 658.28,  qty: 5,  totalNZD: 3291.39,  days: 1042 },
-      { code: "D2423091",  desc: "Development Unit Black MPC3004 MPC6004",       group: "Ricoh Copier Parts",                   unitCost: 582.69,  qty: 4,  totalNZD: 2330.57,  days: 531  }
-    ],
-    "Vanuatu": [
-      // Values converted VUV×0.0141
-      { code: "418460",    desc: "Ricoh IM 550F",                                group: "Ricoh Copier Equipment",               unitCost: 2874.85, qty: 7,  totalNZD: 20123.94, days: 620  },
-      { code: "M0EB2320",  desc: "Cleaning Unit Assy ProC7500",                  group: "Ricoh Copier Parts",                   unitCost: 1674.45, qty: 3,  totalNZD: 5022.44,  days: 418  },
-      { code: "418120",    desc: "Ricoh M 2701",                                 group: "Ricoh Copier Equipment",               unitCost: 3842.48, qty: 3,  totalNZD: 3847.48,  days: 823  },
-      { code: "M0EB9510",  desc: "OPC Drum Dia 60 ProC7500",                     group: "Ricoh Copier Parts",                   unitCost: 581.16,  qty: 4,  totalNZD: 2324.65,  days: 392  },
-      { code: "D0BL5836",  desc: "PCB CTL Service MET IMC2500",                  group: "Ricoh Copier Parts",                   unitCost: 2057.50, qty: 1,  totalNZD: 2057.50,  days: 1076 },
-      { code: "918290",    desc: "Signature Series Copier IM C2500",             group: "Ricoh Copier Equipment",               unitCost: 495.19,  qty: 4,  totalNZD: 1980.79,  days: 479  },
-      { code: "D0BQ3002",  desc: "Development Unit Magenta IMC4500 - C6000",     group: "Ricoh Copier Parts",                   unitCost: 473.82,  qty: 4,  totalNZD: 1895.30,  days: 369  },
-      { code: "D0BQ3001",  desc: "Development Unit Cyan IMC4500 - C6000",        group: "Ricoh Copier Parts",                   unitCost: 442.02,  qty: 4,  totalNZD: 1768.09,  days: 369  },
-      { code: "D0BQ3003",  desc: "Development Unit Yellow IMC4500 - C60000",     group: "Ricoh Copier Parts",                   unitCost: 410.77,  qty: 4,  totalNZD: 1643.11,  days: 369  },
-      { code: "D0BK3003",  desc: "Development Unit Yellow IM C2000/2500",        group: "Ricoh Copier Parts",                   unitCost: 270.43,  qty: 6,  totalNZD: 1622.60,  days: 755  }
-    ],
-    "Tonga": [
-      // Values converted TOP×0.7191
-      { code: "918315",    desc: "Signature Series Ricoh IM C4500",              group: "Ricoh Copier Equipment",               unitCost: 4941.56, qty: 1,  totalNZD: 4941.56,  days: 1582 },
-      { code: "842616",    desc: "Ricoh Toner Type IM 460F",                     group: "Ricoh Copier Toners and Developers",   unitCost: 159.47,  qty: 10, totalNZD: 1594.69,  days: 383  },
-      { code: "916929",    desc: "Signature Series Ricoh MP C2503",              group: "Ricoh Copier Equipment",               unitCost: 537.89,  qty: 2,  totalNZD: 1075.49,  days: 406  },
-      { code: "418349",    desc: "Ricoh Paper Feed Unit PB3280",                 group: "Ricoh Copier Equipment",               unitCost: 900.34,  qty: 1,  totalNZD: 900.34,   days: 665  },
-      { code: "893568",    desc: "Ricoh Priport Ink Type DX2430 Black 500ml",    group: "Ricoh Priport Ink",                    unitCost: 38.19,   qty: 20, totalNZD: 763.73,   days: 379  },
-      { code: "D1764042",  desc: "Fuser Belt Unit MP C2003SP/C2503SP",           group: "Ricoh Copier Parts",                   unitCost: 714.67,  qty: 1,  totalNZD: 714.67,   days: 3038 },
-      { code: "D0BK3002",  desc: "Development Unit Magenta IM C2000/2500",       group: "Ricoh Copier Parts",                   unitCost: 345.55,  qty: 2,  totalNZD: 690.84,   days: 593  },
-      { code: "D0BK3001",  desc: "Development Unit C IMC2000-2500",              group: "Ricoh Copier Parts",                   unitCost: 345.55,  qty: 2,  totalNZD: 690.84,   days: 593  },
-      { code: "D0BK3003",  desc: "Development Unit Yellow IM C2000/2500",        group: "Ricoh Copier Parts",                   unitCost: 344.46,  qty: 2,  totalNZD: 688.70,   days: 593  },
-      { code: "916522",    desc: "Signature Series Ricoh MP C4503",              group: "Ricoh Copier Equipment",               unitCost: 524.46,  qty: 1,  totalNZD: 524.46,   days: 378  }
-    ]
-  },
-
-  // ── PRODUCT GROUP DRILL-DOWN ─────────────────────────────
-  // Source: Synchub live query 24 Mar 2026
-  // All values converted to NZD at entity FX rate
-  // Samoa: WST×0.6181 · Solomons: SBD×0.2119 · Vanuatu: VUV×0.0141 · Tonga: TOP×0.7191
-  productGroupDrill: {
-    "RSP": {
-      atRisk: [
-        { group: "Ricoh Copier Parts",                 valueNZD: 898.04,   lines: 8  },
-        { group: "IT Products",                        valueNZD: 672.87,   lines: 1  },
-        { group: "Ricoh Copier Toners and Developers", valueNZD: 222.10,   lines: 1  },
-        { group: "Ricoh Priport Ink",                  valueNZD: 96.91,    lines: 1  },
-        { group: "Ricoh Copier Equipment",             valueNZD: 33.81,    lines: 1  }
-      ],
-      slob: [
-        { group: "Ricoh Copier Parts",                 valueNZD: 33371.33, lines: 149 },
-        { group: "Ricoh Copier Equipment",             valueNZD: 2847.55,  lines: 4   },
-        { group: "Ricoh Copier Toners and Developers", valueNZD: 1783.69,  lines: 7   },
-        { group: "Ricoh Priport Master Roll",          valueNZD: 1437.42,  lines: 2   },
-        { group: "Ricoh Priport Ink",                  valueNZD: 878.14,   lines: 2   }
-      ]
-    },
-    "Samoa": {
-      // Synchub returned WST values — converted ×0.6181
-      atRisk: [
-        { group: "Ricoh Copier Equipment",             valueNZD: 7242.53,  lines: 2  },
-        { group: "Ricoh Copier Toners and Developers", valueNZD: 1588.56,  lines: 4  },
-        { group: "Ricoh Priport Master Roll",          valueNZD: 1489.61,  lines: 1  },
-        { group: "Ricoh Priport Ink",                  valueNZD: 1287.62,  lines: 1  },
-        { group: "Ricoh Copier Parts",                 valueNZD: 1267.89,  lines: 9  }
-      ],
-      slob: [
-        { group: "Ricoh Copier Parts",                 valueNZD: 14243.92, lines: 59 },
-        { group: "Ricoh Copier Equipment",             valueNZD: 8005.90,  lines: 9  },
-        { group: "Ricoh Copier Toners and Developers", valueNZD: 6110.53,  lines: 17 },
-        { group: "IT Products",                        valueNZD: 1703.80,  lines: 2  },
-        { group: "Ricoh Priport Master Roll",          valueNZD: 1593.11,  lines: 1  }
-      ]
-    },
-    "Solomon Islands": {
-      // Synchub returned SBD values — converted ×0.2119
-      atRisk: [
-        { group: "Ricoh Copier Parts",                 valueNZD: 13795.16, lines: 6  },
-        { group: "Ricoh Copier Toners and Developers", valueNZD: 2689.36,  lines: 3  },
-        { group: "Ricoh Copier Equipment",             valueNZD: 2075.34,  lines: 2  },
-        { group: "Digital Paper",                      valueNZD: 340.65,   lines: 3  },
-        { group: "Other Products",                     valueNZD: 25.83,    lines: 1  }
-      ],
-      slob: [
-        { group: "Ricoh Copier Equipment",             valueNZD: 125949.40, lines: 9  },
-        { group: "Ricoh Copier Parts",                 valueNZD: 27229.78,  lines: 47 },
-        { group: "Digital Paper",                      valueNZD: 3543.50,   lines: 1  },
-        { group: "Other Products",                     valueNZD: 2324.63,   lines: 3  },
-        { group: "Ricoh Communication Products",       valueNZD: 1207.81,   lines: 2  }
-      ]
-    },
-    "Vanuatu": {
-      // Synchub returned VUV values — converted ×0.0141
-      atRisk: [
-        { group: "Ricoh Copier Parts",                 valueNZD: 5390.36,  lines: 8  },
-        { group: "Ricoh Copier Equipment",             valueNZD: 282.28,   lines: 1  },
-        { group: "Ricoh Copier Toners and Developers", valueNZD: 142.07,   lines: 2  }
-      ],
-      slob: [
-        { group: "Ricoh Copier Equipment",             valueNZD: 31654.68, lines: 10 },
-        { group: "Ricoh Copier Parts",                 valueNZD: 24593.43, lines: 50 },
-        { group: "Ricoh Copier Toners and Developers", valueNZD: 3858.52,  lines: 17 },
-        { group: "Ricoh Priport Master Roll",          valueNZD: 417.64,   lines: 1  },
-        { group: "Ricoh Priport Ink",                  valueNZD: 119.39,   lines: 1  }
-      ]
-    },
-    "Tonga": {
-      // Synchub returned TOP values — converted ×0.7191
-      atRisk: [
-        { group: "Ricoh Copier Equipment",             valueNZD: 7491.67,  lines: 2  },
-        { group: "Ricoh Copier Parts",                 valueNZD: 2006.76,  lines: 3  }
-      ],
-      slob: [
-        { group: "Ricoh Copier Equipment",             valueNZD: 7668.86,  lines: 5  },
-        { group: "Ricoh Copier Parts",                 valueNZD: 7220.66,  lines: 23 },
-        { group: "Ricoh Copier Toners and Developers", valueNZD: 1897.14,  lines: 3  },
-        { group: "Ricoh Priport Ink",                  valueNZD: 795.21,   lines: 2  },
-        { group: "Ricoh Priport Master Roll",          valueNZD: 619.39,   lines: 2  }
-      ]
-    }
-  },
-
-  // ── TRANSFER OPPORTUNITIES ───────────────────────────────
-  // Source: Synchub live cross-entity query 24 Mar 2026
-  // Parts and toners only — machines excluded
-  // activeEntities: array of { entity, lastSaleDate } from live Synchub query
-  transferOpportunities: {
-    parts: [
-      { code: "D2423091", desc: "Development Unit Black MPC3004 MPC6004",
-        slobEntity: "Vanuatu", slobQty: 2, slobValueNZD: 958.42, slobDays: 620,
-        activeEntities: [
-          { entity: "RSP",             lastSaleDate: "27 Jan 2026" },
-          { entity: "Samoa",           lastSaleDate: "19 Mar 2026" },
-          { entity: "Tonga",           lastSaleDate: "12 Feb 2026" }
-        ]
-      },
-      { code: "D0A44029", desc: "Fusing Unit IM 430",
-        slobEntity: "Solomon Islands", slobQty: 5, slobValueNZD: 3291.35, slobDays: 1042,
-        activeEntities: [
-          { entity: "Samoa",           lastSaleDate: "17 Mar 2026" }
-        ]
-      },
-      { code: "D2423091", desc: "Development Unit Black MPC3004 MPC6004",
-        slobEntity: "Solomon Islands", slobQty: 4, slobValueNZD: 2330.57, slobDays: 531,
-        activeEntities: [
-          { entity: "RSP",             lastSaleDate: "27 Jan 2026" },
-          { entity: "Samoa",           lastSaleDate: "19 Mar 2026" },
-          { entity: "Tonga",           lastSaleDate: "12 Feb 2026" }
-        ]
-      },
-      { code: "D1863054", desc: "Dev Unit K MPC3003 - MPC6003",
-        slobEntity: "RSP", slobQty: 13, slobValueNZD: 2887.54, slobDays: 523,
-        activeEntities: [
-          { entity: "Solomon Islands", lastSaleDate: "7 Mar 2026" },
-          { entity: "Tonga",           lastSaleDate: "25 Jan 2026" }
-        ]
-      },
-      { code: "D1863054", desc: "Dev Unit K MPC3003 - MPC6003",
-        slobEntity: "Samoa", slobQty: 3, slobValueNZD: 1447.26, slobDays: 402,
-        activeEntities: [
-          { entity: "Solomon Islands", lastSaleDate: "7 Mar 2026" },
-          { entity: "Tonga",           lastSaleDate: "25 Jan 2026" }
-        ]
-      },
-      { code: "D1764042", desc: "Fuser Belt Unit MP C2003SP/C2503SP",
-        slobEntity: "Tonga", slobQty: 1, slobValueNZD: 714.67, slobDays: 3038,
-        activeEntities: [
-          { entity: "Solomon Islands", lastSaleDate: "20 Mar 2026" }
-        ]
-      },
-      { code: "AE020268", desc: "Pressure Roller MPC3003 6003",
-        slobEntity: "Tonga", slobQty: 1, slobValueNZD: 357.39, slobDays: 671,
-        activeEntities: [
-          { entity: "RSP",             lastSaleDate: "13 Mar 2026" }
-        ]
-      },
-      { code: "D3EW2796", desc: "Pully Rolling Short Ass\'y ProC9100",
-        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 107.99, slobDays: 731,
-        activeEntities: [
-          { entity: "RSP",             lastSaleDate: "9 Mar 2026" }
-        ]
-      },
-      { code: "D0CB6201", desc: "Transfer/Separation Unit IM C300F",
-        slobEntity: "Tonga", slobQty: 1, slobValueNZD: 115.40, slobDays: 736,
-        activeEntities: [
-          { entity: "Solomon Islands", lastSaleDate: "4 Feb 2026" }
-        ]
-      },
-      { code: "D1363407", desc: "Seal Development Roller Rear MPC6502",
-        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 33.64, slobDays: 1123,
-        activeEntities: [
-          { entity: "RSP",             lastSaleDate: "9 Mar 2026" }
-        ]
-      }
-    ],
-    toners: [
-      { code: "407337", desc: "Ricoh Toner Cartridge SP3600 SP4500S",
-        slobEntity: "Vanuatu", slobQty: 4, slobValueNZD: 1199.84, slobDays: 402,
-        activeEntities: [
-          { entity: "Tonga",           lastSaleDate: "25 Feb 2026" }
-        ]
-      },
-      { code: "842616", desc: "Ricoh Toner Type IM 460F",
-        slobEntity: "Tonga", slobQty: 10, slobValueNZD: 1594.69, slobDays: 383,
-        activeEntities: [
-          { entity: "RSP",             lastSaleDate: "10 Feb 2026" },
-          { entity: "Samoa",           lastSaleDate: "23 Mar 2026" },
-          { entity: "Vanuatu",         lastSaleDate: "23 Jan 2026" }
-        ]
-      },
-      { code: "841635", desc: "Ricoh Toner Black CW2200",
-        slobEntity: "Samoa", slobQty: 2, slobValueNZD: 403.85, slobDays: 419,
-        activeEntities: [
-          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
-        ]
-      },
-      { code: "406650", desc: "Ricoh Toner Black SP 6330S",
-        slobEntity: "Solomon Islands", slobQty: 1, slobValueNZD: 240.38, slobDays: 507,
-        activeEntities: [
-          { entity: "RSP",             lastSaleDate: "6 Feb 2026" }
-        ]
-      },
-      { code: "841635", desc: "Ricoh Toner Black CW2200",
-        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 203.44, slobDays: 3532,
-        activeEntities: [
-          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
-        ]
-      },
-      { code: "841638", desc: "Ricoh Toner Yellow CW2200",
-        slobEntity: "Samoa", slobQty: 2, slobValueNZD: 203.34, slobDays: 419,
-        activeEntities: [
-          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
-        ]
-      },
-      { code: "841637", desc: "Ricoh Toner Magenta CW2200",
-        slobEntity: "Samoa", slobQty: 2, slobValueNZD: 203.34, slobDays: 419,
-        activeEntities: [
-          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
-        ]
-      },
-      { code: "841637", desc: "Ricoh Toner Magenta CW2200",
-        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 98.95, slobDays: 3532,
-        activeEntities: [
-          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
-        ]
-      },
-      { code: "841638", desc: "Ricoh Toner Yellow CW2200",
-        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 98.95, slobDays: 3532,
-        activeEntities: [
-          { entity: "Solomon Islands", lastSaleDate: "18 Mar 2026" }
-        ]
-      },
-      { code: "842143", desc: "Ricoh Toner Type MP 305S",
-        slobEntity: "Vanuatu", slobQty: 5, slobValueNZD: 278.19, slobDays: 657,
-        activeEntities: [
-          { entity: "RSP",             lastSaleDate: "6 Feb 2026" }
-        ]
-      },
-      { code: "885450", desc: "Ricoh Toner Black Type 2320D",
-        slobEntity: "Vanuatu", slobQty: 1, slobValueNZD: 58.85, slobDays: 473,
-        activeEntities: [
-          { entity: "Samoa",           lastSaleDate: "12 Mar 2026" }
-        ]
-      },
-      { code: "842026", desc: "Ricoh Toner Type MP 301S",
-        slobEntity: "Samoa", slobQty: 7, slobValueNZD: 97.76, slobDays: 389,
-        activeEntities: [
-          { entity: "Vanuatu",         lastSaleDate: "21 Mar 2026" }
-        ]
-      },
-      { code: "885450", desc: "Ricoh Toner Black Type 2320D",
-        slobEntity: "Tonga", slobQty: 1, slobValueNZD: 57.99, slobDays: 454,
-        activeEntities: [
-          { entity: "Samoa",           lastSaleDate: "12 Mar 2026" }
-        ]
-      }
-    ]
+  mifSummary: {
+    "RSP":             { total:36,  topModels:[{name:"Ricoh IM C300F",count:10},{name:"Ricoh IM C3010",count:8},{name:"Ricoh M 2701",count:5}] },
+    "Samoa":           { total:566, topModels:[{name:"Ricoh IM 430F",count:56},{name:"Ricoh IM C300F",count:56},{name:"Ricoh IM C3000",count:41}] },
+    "Solomon Islands": { total:331, topModels:[{name:"Ricoh IM C300F",count:23},{name:"Ricoh M 2701",count:19},{name:"Ricoh IM C3010",count:17}] },
+    "Vanuatu":         { total:461, topModels:[{name:"Ricoh IM C300F",count:31},{name:"Ricoh IM C2500",count:30},{name:"Ricoh IM C3000",count:28}] },
+    "Tonga":           { total:369, topModels:[{name:"Ricoh IM 430F",count:27},{name:"Ricoh IM C3000",count:22},{name:"Ricoh IM C2500",count:19}] }
   }
 };
+function fmt(n,d=0){if(n===null||n===undefined)return"—";return"$"+Number(n).toLocaleString("en-NZ",{minimumFractionDigits:d,maximumFractionDigits:d})}
+function pct(p,t){if(!t||!p)return 0;return(p/t)*100}
+function pctFmt(p,t){if(!t||p===null)return"—";return pct(p,t).toFixed(1)+"%"}
 
-// ═══════════════════════════════════════════════════════════
-//  HELPERS
-// ═══════════════════════════════════════════════════════════
-function fmt(n, decimals = 0) {
-  if (n === null || n === undefined) return "—";
-  return "$" + Number(n).toLocaleString("en-NZ", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
-  });
-}
-function pct(part, total) {
-  if (!total || !part) return 0;
-  return (part / total) * 100;
-}
-function pctFmt(part, total) {
-  if (!total || part === null) return "—";
-  return pct(part, total).toFixed(1) + "%";
-}
-
-// ═══════════════════════════════════════════════════════════
-//  HEADER
-// ═══════════════════════════════════════════════════════════
-document.getElementById("asAtDate").textContent = "As at " + DATA.asAt;
-document.getElementById("weekLabel").textContent = DATA.week;
-
-// ═══════════════════════════════════════════════════════════
-//  KPI GRID
-// ═══════════════════════════════════════════════════════════
-function renderKPI() {
-  const grid   = document.getElementById("kpiGrid");
-  const snap   = DATA.inventorySnapshot;
-  const entities = DATA.entities;
-
-  let totalCurrent = 0;
-  let totalLines   = 0;
-  entities.forEach(e => {
-    if (snap[e].currentNZD) totalCurrent += snap[e].currentNZD;
-    if (snap[e].lines)      totalLines   += snap[e].lines;
-  });
-
-  entities.forEach(entity => {
-    const d    = snap[entity];
-    const card = document.createElement("div");
-    card.className = "kpi-card";
-    card.innerHTML = `
-      <div class="kpi-entity">${entity}</div>
-      <div class="kpi-value mono">${fmt(d.currentNZD)}</div>
-      <div class="kpi-sublabel">Current inventory (NZD)</div>
-      <div class="kpi-movement neutral">Δ Prior week N/A</div>
-      <div class="kpi-lines">${d.lines} product lines</div>
-    `;
+function renderKPI(){
+  const grid=document.getElementById("kpiGrid");
+  const snap=DATA.inventorySnapshot;
+  let totC=0,totP=0,totL=0;
+  DATA.entities.forEach(e=>{
+    const d=snap[e];totC+=d.currentNZD||0;if(d.previousWeekNZD)totP+=d.previousWeekNZD;totL+=d.lines||0;
+    const delta=d.previousWeekNZD?d.currentNZD-d.previousWeekNZD:null;
+    const tc=delta===null?"flat":delta>0?"up":"down";
+    const tl=delta===null?"Δ Prior week N/A":(delta>0?"▲ ":"▼ ")+fmt(Math.abs(delta));
+    const card=document.createElement("div");card.className="kpi-card";
+    card.innerHTML=`<div class="kpi-entity">${e}</div><div class="kpi-value mono">${fmt(d.currentNZD)}</div><div class="kpi-sublabel">Inventory at cost (NZD)</div><div style="margin-top:8px"><span class="trend-pill ${tc}">${tl}</span></div><div class="kpi-lines">${d.lines} product lines</div>`;
     grid.appendChild(card);
   });
-
-  const totalCard = document.createElement("div");
-  totalCard.className = "kpi-card total-card";
-  totalCard.innerHTML = `
-    <div class="kpi-entity" style="color:var(--ricoh-red)">Total — All Entities</div>
-    <div class="kpi-value total-val mono">${fmt(totalCurrent)}</div>
-    <div class="kpi-sublabel">5 entities combined (NZD)</div>
-    <div class="kpi-movement neutral">Δ Prior week N/A</div>
-    <div class="kpi-lines">${totalLines} product lines</div>
-  `;
-  grid.appendChild(totalCard);
+  const hasPrev=DATA.entities.some(e=>snap[e].previousWeekNZD);
+  const totDelta=hasPrev?totC-totP:null;
+  const totC2=totDelta===null?"flat":totDelta>0?"up":"down";
+  const totL2=totDelta===null?"Δ Prior week N/A":(totDelta>0?"▲ ":"▼ ")+fmt(Math.abs(totDelta));
+  const tc=document.createElement("div");tc.className="kpi-card total-card";
+  tc.innerHTML=`<div class="kpi-entity" style="color:var(--ricoh-red)">Total — All Entities</div><div class="kpi-value total-val mono">${fmt(totC)}</div><div class="kpi-sublabel">5 entities (NZD)</div><div style="margin-top:8px"><span class="trend-pill ${totC2}">${totL2}</span></div><div class="kpi-lines">${totL} product lines</div>`;
+  grid.appendChild(tc);
 }
-renderKPI();
 
-// ═══════════════════════════════════════════════════════════
-//  ALERT STRIP
-// ═══════════════════════════════════════════════════════════
-function renderAlerts() {
-  const strip  = document.getElementById("alertStrip");
-  const aged   = DATA.agedStock;
-  const bench  = aged.benchmarks;
-  const alerts = [];
-
-  DATA.entities.forEach(entity => {
-    const d = aged.entities[entity];
-    if (!d.totalNZD) return;
-    const freshPct = pct(d.fresh.costNZD, d.totalNZD) / 100;
-    const slowPct  = pct(d.slowMoving.costNZD, d.totalNZD) / 100;
-    const riskPct  = pct(d.atRisk.costNZD, d.totalNZD) / 100;
-    const slobPct  = pct(d.slob.costNZD, d.totalNZD) / 100;
-
-    if (freshPct < bench.fresh.warnBelow)
-      alerts.push({ entity, label: "Fresh stock below 70%", level: "alert" });
-    if (slowPct > bench.slowMoving.warnAbove)
-      alerts.push({ entity, label: "Slow-moving >15%", level: "warn" });
-    if (riskPct > bench.atRisk.warnAbove)
-      alerts.push({ entity, label: "At-risk >5%", level: "warn" });
-    if (slobPct > bench.slob.warnAbove)
-      alerts.push({ entity, label: "SLOB >7%", level: "alert" });
+function renderAlerts(){
+  const strip=document.getElementById("alertStrip");
+  const aged=DATA.agedStock;const bench=aged.benchmarks;const alerts=[];
+  DATA.entities.forEach(entity=>{
+    const d=aged.entities[entity];if(!d.totalNZD)return;
+    const fp=pct(d.fresh.costNZD,d.totalNZD)/100,sp=pct(d.slowMoving.costNZD,d.totalNZD)/100,rp=pct(d.atRisk.costNZD,d.totalNZD)/100,slp=pct(d.slob.costNZD,d.totalNZD)/100;
+    if(fp<bench.fresh.warnBelow)alerts.push({entity,label:`Fresh below 70% (${(fp*100).toFixed(1)}%)`,level:"alert"});
+    if(sp>bench.slowMoving.warnAbove)alerts.push({entity,label:`Slow-moving >15% (${(sp*100).toFixed(1)}%)`,level:"warn"});
+    if(rp>bench.atRisk.warnAbove)alerts.push({entity,label:`At-risk >5% (${(rp*100).toFixed(1)}%)`,level:"warn"});
+    if(slp>bench.slob.warnAbove)alerts.push({entity,label:`SLOB >7% (${(slp*100).toFixed(1)}%)`,level:"alert"});
   });
-
-  if (alerts.length === 0) {
-    strip.innerHTML = `<div style="font-size:12px;color:var(--green);display:flex;align-items:center;gap:6px;"><span>✓</span> All entities within benchmark thresholds</div>`;
-    return;
-  }
-  alerts.forEach(a => {
-    const badge = document.createElement("div");
-    badge.className = `alert-badge ${a.level}`;
-    badge.innerHTML = `<strong>${a.entity}</strong> — ${a.label}`;
-    strip.appendChild(badge);
-  });
+  if(!alerts.length){strip.innerHTML=`<div class="alert-badge ok">✓ All entities within benchmark thresholds</div>`;return;}
+  alerts.forEach(a=>{const b=document.createElement("div");b.className=`alert-badge ${a.level}`;b.innerHTML=`<strong>${a.entity}</strong> — ${a.label}`;strip.appendChild(b);});
 }
-renderAlerts();
 
-// ═══════════════════════════════════════════════════════════
-//  AGED STOCK TABLE
-// ═══════════════════════════════════════════════════════════
-function renderAgedTable() {
-  const table    = document.getElementById("agedTable");
-  const aged     = DATA.agedStock;
-  const bench    = aged.benchmarks;
-  const entities = DATA.entities;
-
-  // Aggregate totals across all five entities
-  const allTotals = { fresh: { costNZD: 0 }, slowMoving: { costNZD: 0 }, atRisk: { costNZD: 0 }, slob: { costNZD: 0 }, totalNZD: 0 };
-  entities.forEach(e => {
-    const d = aged.entities[e];
-    if (!d.totalNZD) return;
-    ["fresh","slowMoving","atRisk","slob"].forEach(k => allTotals[k].costNZD += d[k].costNZD || 0);
-    allTotals.totalNZD += d.totalNZD;
-  });
-
-  const thead = document.createElement("thead");
-  thead.innerHTML = `<tr>
-    <th>Bucket</th>
-    ${entities.map(e => `<th>${e}</th>`).join("")}
-    <th>Total</th>
-    <th style="min-width:130px">Benchmark</th>
-  </tr>`;
+function renderAgedTable(){
+  const table=document.getElementById("agedTable");
+  const aged=DATA.agedStock;const bench=aged.benchmarks;const entities=DATA.entities;
+  const allT={fresh:{costNZD:0},slowMoving:{costNZD:0},atRisk:{costNZD:0},slob:{costNZD:0},totalNZD:0};
+  entities.forEach(e=>{const d=aged.entities[e];["fresh","slowMoving","atRisk","slob"].forEach(k=>allT[k].costNZD+=d[k].costNZD||0);allT.totalNZD+=d.totalNZD||0;});
+  const thead=document.createElement("thead");
+  thead.innerHTML=`<tr><th>Bucket</th>${entities.map(e=>`<th>${e}</th>`).join("")}<th>Total</th><th style="min-width:130px">Benchmark</th></tr>`;
   table.appendChild(thead);
-
-  const tbody = document.createElement("tbody");
-
-  const buckets = [
-    { key: "fresh",      label: "Fresh",       sub: "< 6 months",   color: "#16a34a", bench: bench.fresh,
-      flagFn: p => p < bench.fresh.warnBelow ? "flag" : p < bench.fresh.min ? "warn" : "ok" },
-    { key: "slowMoving", label: "Slow Moving", sub: "6–9 months",   color: "#d97706", bench: bench.slowMoving,
-      flagFn: p => p > bench.slowMoving.warnAbove ? "flag" : "ok" },
-    { key: "atRisk",     label: "At Risk",     sub: "9–12 months",  color: "#f97316", bench: bench.atRisk,
-      flagFn: p => p > bench.atRisk.warnAbove ? "flag" : "ok" },
-    { key: "slob",       label: "SLOB",        sub: "> 12 months",  color: "#D7063B", bench: bench.slob,
-      flagFn: p => p > bench.slob.warnAbove ? "flag" : "ok" }
+  const buckets=[
+    {key:"fresh",label:"Fresh",sub:"< 6 months",color:"#16a34a",bench:bench.fresh,flagFn:p=>p<bench.fresh.warnBelow?"flag":p<bench.fresh.min?"warn":"ok"},
+    {key:"slowMoving",label:"Slow Moving",sub:"6–9 months",color:"#d97706",bench:bench.slowMoving,flagFn:p=>p>bench.slowMoving.warnAbove?"flag":"ok"},
+    {key:"atRisk",label:"At Risk",sub:"9–12 months",color:"#f97316",bench:bench.atRisk,flagFn:p=>p>bench.atRisk.warnAbove?"flag":"ok"},
+    {key:"slob",label:"SLOB",sub:"> 12 months",color:"#D7063B",bench:bench.slob,flagFn:p=>p>bench.slob.warnAbove?"flag":"ok"}
   ];
-
-  buckets.forEach(bucket => {
-    const tr = document.createElement("tr");
-    let cells = `<td>
-      <div class="row-label">
-        <span class="bucket-dot" style="background:${bucket.color}"></span>
-        <div>
-          <div>${bucket.label}</div>
-          <div style="font-size:10.5px;font-weight:400;color:var(--text-light)">${bucket.sub}</div>
-        </div>
-      </div>
-    </td>`;
-
-    entities.forEach(entity => {
-      const d = aged.entities[entity];
-      const val      = d[bucket.key].costNZD;
-      const p        = pct(val, d.totalNZD) / 100;
-      const flag     = bucket.flagFn(p);
-      const pClass   = flag === "flag" ? "pct-cell flag" : flag === "warn" ? "pct-cell warn" : "pct-cell";
-      cells += `<td>
-        <div class="mono" style="font-size:12.5px">${fmt(val)}</div>
-        <div class="${pClass}">${pctFmt(val, d.totalNZD)}</div>
-      </td>`;
+  const tbody=document.createElement("tbody");
+  buckets.forEach(bucket=>{
+    const tr=document.createElement("tr");
+    let cells=`<td><div style="display:flex;align-items:center;gap:8px"><span class="bucket-dot" style="background:${bucket.color}"></span><div><div>${bucket.label}</div><div style="font-size:10.5px;color:var(--text-light)">${bucket.sub}</div></div></div></td>`;
+    entities.forEach(entity=>{
+      const d=aged.entities[entity];const val=d[bucket.key].costNZD;const p=pct(val,d.totalNZD)/100;
+      const flag=bucket.flagFn(p);const pcls=flag==="flag"?"pct-cell flag":flag==="warn"?"pct-cell warn":"pct-cell";
+      cells+=`<td><div class="mono" style="font-size:12.5px">${fmt(val)}</div><div class="${pcls}">${pctFmt(val,d.totalNZD)}</div></td>`;
     });
-
-    const totVal  = allTotals[bucket.key].costNZD;
-    const totP    = pct(totVal, allTotals.totalNZD) / 100;
-    const totFlag = bucket.flagFn(totP);
-    const totPCls = totFlag === "flag" ? "pct-cell flag" : totFlag === "warn" ? "pct-cell warn" : "pct-cell";
-    cells += `<td>
-      <div class="mono" style="font-size:12.5px;font-weight:600">${fmt(totVal)}</div>
-      <div class="${totPCls}">${pctFmt(totVal, allTotals.totalNZD)}</div>
-    </td>`;
-    cells += `<td><span class="benchmark-pill bench-info">${bucket.bench.label}</span></td>`;
-
-    tr.innerHTML = cells;
-    tbody.appendChild(tr);
+    const tv=allT[bucket.key].costNZD;const tp=pct(tv,allT.totalNZD)/100;const tf=bucket.flagFn(tp);
+    const tpc=tf==="flag"?"pct-cell flag":tf==="warn"?"pct-cell warn":"pct-cell";
+    cells+=`<td><div class="mono" style="font-weight:600">${fmt(tv)}</div><div class="${tpc}">${pctFmt(tv,allT.totalNZD)}</div></td>`;
+    cells+=`<td><span class="benchmark-pill bench-info">${bucket.bench.label}</span></td>`;
+    tr.innerHTML=cells;tbody.appendChild(tr);
   });
-
-  // Total row
-  const totalTr = document.createElement("tr");
-  totalTr.className = "total-row";
-  let totalCells = `<td><div class="row-label"><strong>Total Inventory</strong></div></td>`;
-  entities.forEach(entity => {
-    const d = aged.entities[entity];
-    totalCells += `<td><div class="mono" style="font-weight:600">${fmt(d.totalNZD)}</div></td>`;
-  });
-  totalCells += `<td><div class="mono" style="font-weight:700">${fmt(allTotals.totalNZD)}</div></td><td></td>`;
-  totalTr.innerHTML = totalCells;
-  tbody.appendChild(totalTr);
-
-  table.appendChild(tbody);
-}
-renderAgedTable();
-
-// ═══════════════════════════════════════════════════════════
-//  SLOB WORK LIST
-// ═══════════════════════════════════════════════════════════
-function renderSlobWorkList() {
-  const tabBar    = document.getElementById("slobTabBar");
-  const tabPanels = document.getElementById("slobTabPanels");
-  const entities  = DATA.entities;
-
-  entities.forEach((entity, idx) => {
-    const btn = document.createElement("button");
-    btn.className = "tab-btn" + (idx === 0 ? " active" : "");
-    btn.textContent = entity;
-    btn.dataset.entity = entity;
-    btn.addEventListener("click", () => {
-      tabBar.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      tabPanels.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
-      document.getElementById("slob-panel-" + entity.replace(/\s/g, "_")).classList.add("active");
-    });
-    tabBar.appendChild(btn);
-
-    const panel = document.createElement("div");
-    panel.className = "tab-panel" + (idx === 0 ? " active" : "");
-    panel.id = "slob-panel-" + entity.replace(/\s/g, "_");
-
-    const rows = DATA.slobWorkList[entity];
-    if (!rows || rows.length === 0) {
-      panel.innerHTML = `<div class="empty-state">
-        <strong>No data available</strong>
-        ${entity === "Tonga" ? "Tonga SLOB work list pending Synchub query." : "No SLOB lines returned for this entity."}
-      </div>`;
-    } else {
-      const tbl = document.createElement("table");
-      tbl.innerHTML = `<thead><tr>
-        <th>SKU</th>
-        <th style="text-align:left">Description</th>
-        <th style="text-align:left">Product Group</th>
-        <th>Unit Cost</th>
-        <th>Qty</th>
-        <th>Total Value</th>
-        <th>Days Since Sale</th>
-        <th style="min-width:140px">MIF Coverage</th>
-      </tr></thead>`;
-      const tbody = document.createElement("tbody");
-      rows.forEach(r => {
-        const tr = document.createElement("tr");
-        if (r.days >= 730) tr.className = "slob-critical";
-
-        // MIF lookup
-        const mif = DATA.partToMifMap[r.code];
-        let mifCell = `<div class="mif-badge mif-unknown">Unknown</div>`;
-        if (mif) {
-          const entityCount = mif.mif[entity] ?? 0;
-          const totalCount  = Object.values(mif.mif).reduce((s, v) => s + v, 0);
-          const badgeClass  = entityCount > 0 ? "mif-covered" : (totalCount > 0 ? "mif-zero" : "mif-zero");
-          const badgeLabel  = entityCount > 0 ? `${entityCount} active` : (totalCount > 0 ? `0 here / ${totalCount} elsewhere` : "0 anywhere");
-          mifCell = `
-            <div class="mif-badge ${badgeClass}">${badgeLabel}</div>
-            <div class="mif-platform">${mif.fits}</div>
-            ${mif.mifNote ? `<div class="mif-note">${mif.mifNote}</div>` : ""}
-          `;
-        }
-
-        tr.innerHTML = `
-          <td><span class="mono" style="font-size:11.5px">${r.code}</span></td>
-          <td style="text-align:left;max-width:200px;white-space:normal;line-height:1.3">${r.desc}</td>
-          <td style="text-align:left"><span style="font-size:11px;color:var(--text-muted)">${r.group}</span></td>
-          <td><span class="mono">${fmt(r.unitCost, 2)}</span></td>
-          <td><span class="mono">${r.qty}</span></td>
-          <td><span class="mono" style="font-weight:600">${fmt(r.totalNZD)}</span></td>
-          <td><span class="mono ${r.days >= 730 ? 'pct-cell flag' : r.days >= 500 ? 'pct-cell warn' : 'pct-cell'}">${r.days}d</span></td>
-          <td>${mifCell}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-      tbl.appendChild(tbody);
-      const wrap = document.createElement("div");
-      wrap.style.overflowX = "auto";
-      wrap.appendChild(tbl);
-      panel.appendChild(wrap);
-
-      // Entity subtotal
-      const total = rows.reduce((s, r) => s + r.totalNZD, 0);
-      const note  = document.createElement("div");
-      note.style.cssText = "padding:10px 20px;font-size:11.5px;color:var(--text-muted);border-top:1px solid var(--border);display:flex;justify-content:space-between;";
-      note.innerHTML = `<span>Showing top ${rows.length} SLOB lines for ${entity}</span><span class="mono" style="font-weight:600">Subtotal: ${fmt(total)}</span>`;
-      panel.appendChild(note);
-    }
-
-    tabPanels.appendChild(panel);
-  });
-}
-renderSlobWorkList();
-
-// ═══════════════════════════════════════════════════════════
-//  PRODUCT GROUP DRILL-DOWN
-// ═══════════════════════════════════════════════════════════
-let drillActiveEntity = DATA.entities[0];
-let drillActiveBucket = "atRisk";
-
-function renderDrillPanel() {
-  const container = document.getElementById("drillPanel");
-  container.innerHTML = "";
-  const drill = DATA.productGroupDrill[drillActiveEntity];
-  const rows  = drill ? drill[drillActiveBucket] : [];
-
-  if (!rows || rows.length === 0) {
-    container.innerHTML = `<div class="empty-state">
-      <strong>No data available</strong>
-      ${drillActiveEntity === "Tonga" ? "Tonga product group data pending Synchub query." : "No product group data for this selection."}
-    </div>`;
-    return;
-  }
-
-  const totalVal = rows.reduce((s, r) => s + r.valueNZD, 0);
-  const tbl = document.createElement("table");
-  tbl.innerHTML = `<thead><tr>
-    <th>Product Group</th>
-    <th>Value (NZD)</th>
-    <th>Lines</th>
-    <th>% of Bucket</th>
-    <th style="min-width:160px">Share</th>
-  </tr></thead>`;
-  const tbody = document.createElement("tbody");
-  rows.forEach(r => {
-    const share = pct(r.valueNZD, totalVal);
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td style="text-align:left;font-weight:500">${r.group}</td>
-      <td><span class="mono">${fmt(r.valueNZD)}</span></td>
-      <td><span class="mono">${r.lines}</span></td>
-      <td><span class="mono">${share.toFixed(1)}%</span></td>
-      <td>
-        <div style="background:#f0f0ef;border-radius:3px;height:8px;width:100%;overflow:hidden;">
-          <div style="background:${drillActiveBucket === 'slob' ? 'var(--ricoh-red)' : '#f97316'};height:100%;width:${share}%;border-radius:3px;"></div>
-        </div>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-  const totalTr = document.createElement("tr");
-  totalTr.className = "total-row";
-  totalTr.innerHTML = `<td><strong>Total</strong></td><td><span class="mono" style="font-weight:700">${fmt(totalVal)}</span></td><td class="mono">${rows.reduce((s,r)=>s+r.lines,0)}</td><td></td><td></td>`;
-  tbody.appendChild(totalTr);
-  tbl.appendChild(tbody);
-  const wrap = document.createElement("div");
-  wrap.style.overflowX = "auto";
-  wrap.appendChild(tbl);
-  container.appendChild(wrap);
+  const totalTr=document.createElement("tr");totalTr.className="total-row";
+  let tc=`<td><strong>Total Inventory</strong></td>`;
+  entities.forEach(e=>{tc+=`<td><div class="mono" style="font-weight:600">${fmt(aged.entities[e].totalNZD)}</div></td>`;});
+  tc+=`<td><div class="mono" style="font-weight:700">${fmt(allT.totalNZD)}</div></td><td></td>`;
+  totalTr.innerHTML=tc;tbody.appendChild(totalTr);table.appendChild(tbody);
 }
 
-function initDrillDown() {
-  const entitySel = document.getElementById("drillEntitySelector");
-  DATA.entities.forEach(entity => {
-    const btn = document.createElement("button");
-    btn.className = "entity-btn" + (entity === drillActiveEntity ? " active" : "");
-    btn.textContent = entity;
-    btn.addEventListener("click", () => {
-      entitySel.querySelectorAll(".entity-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      drillActiveEntity = entity;
-      renderDrillPanel();
-    });
-    entitySel.appendChild(btn);
-  });
-
-  document.getElementById("drillTabBar").querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.getElementById("drillTabBar").querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      drillActiveBucket = btn.dataset.drill;
-      renderDrillPanel();
-    });
-  });
-
-  renderDrillPanel();
-}
-initDrillDown();
-
-// ═══════════════════════════════════════════════════════════
-//  TRANSFER OPPORTUNITIES — TABBED BY PRODUCT GROUP
-// ═══════════════════════════════════════════════════════════
-function renderTransferOpportunities() {
-  const tabBar    = document.getElementById("transferTabBar");
-  const panels    = document.getElementById("transferTabPanels");
-  let activeTab   = "parts";
-
-  const groups = [
-    { key: "parts",   label: "Ricoh Copier Parts" },
-    { key: "toners",  label: "Ricoh Copier Toners & Developers" }
-  ];
-
-  function buildTable(key) {
-    const rows = DATA.transferOpportunities[key];
-    const wrap = document.createElement("div");
-    wrap.style.overflowX = "auto";
-
-    if (!rows || rows.length === 0) {
-      wrap.innerHTML = `<div class="empty-state"><strong>No transfer opportunities identified</strong>No SKUs in this group are SLOB in one entity and active in another.</div>`;
-      return wrap;
-    }
-
-    const tbl = document.createElement("table");
-    tbl.innerHTML = `<thead><tr>
-      <th>SKU</th>
-      <th style="text-align:left">Description</th>
-      <th>Has SLOB Stock</th>
-      <th>Qty</th>
-      <th>Value (NZD)</th>
-      <th>Days Idle</th>
-      <th>Active In</th>
-      <th>Last Sold</th>
-    </tr></thead>`;
-
-    const tbody = document.createElement("tbody");
-    let grandTotal = 0;
-
-    rows.forEach(r => {
-      const tr = document.createElement("tr");
-      const activeTags = r.activeEntities.map(a =>
-        `<span class="entity-tag buyer" style="margin:1px 2px;display:inline-block">${a.entity}</span>`
-      ).join("");
-      const lastSaleDates = r.activeEntities.map(a =>
-        `<div style="font-size:11px;white-space:nowrap"><span style="color:var(--text-light)">${a.entity}:</span> <span class="mono">${a.lastSaleDate}</span></div>`
-      ).join("");
-      tr.innerHTML = `
-        <td><span class="mono" style="font-size:11.5px">${r.code}</span></td>
-        <td style="text-align:left;white-space:normal;line-height:1.3;max-width:180px">${r.desc}</td>
-        <td><span class="entity-tag">${r.slobEntity}</span></td>
-        <td><span class="mono">${r.slobQty}</span></td>
-        <td><span class="mono" style="font-weight:600">${fmt(r.slobValueNZD)}</span></td>
-        <td><span class="mono ${r.slobDays >= 730 ? 'pct-cell flag' : 'pct-cell warn'}">${r.slobDays}d</span></td>
-        <td>${activeTags}</td>
-        <td style="text-align:left">${lastSaleDates}</td>
-      `;
-      tbody.appendChild(tr);
-      grandTotal += r.slobValueNZD;
-    });
-
-    const totalTr = document.createElement("tr");
-    totalTr.className = "total-row";
-    totalTr.innerHTML = `
-      <td colspan="4"><strong>Total transferable value</strong></td>
-      <td><span class="mono" style="font-weight:700">${fmt(grandTotal)}</span></td>
-      <td colspan="3"></td>
-    `;
-    tbody.appendChild(totalTr);
-    tbl.appendChild(tbody);
-    wrap.appendChild(tbl);
-    return wrap;
-  }
-
-  // Build both panels upfront
-  groups.forEach((g, idx) => {
-    const panel = document.createElement("div");
-    panel.className = "tab-panel" + (idx === 0 ? " active" : "");
-    panel.id = "transfer-panel-" + g.key;
-    panel.appendChild(buildTable(g.key));
-    panels.appendChild(panel);
-  });
-
-  // Wire tab bar
-  tabBar.querySelectorAll(".tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      tabBar.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      panels.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
-      document.getElementById("transfer-panel-" + btn.dataset.transfer).classList.add("active");
-    });
+function renderMIF(){
+  const grid=document.getElementById("mifGrid");
+  DATA.entities.forEach(entity=>{
+    const d=DATA.mifSummary[entity];
+    const card=document.createElement("div");card.className="mif-card";
+    const rows=d.topModels.map(m=>`<div class="mif-model-row"><span class="mif-model-name">${m.name}</span><span class="mif-model-count">${m.count}</span></div>`).join("");
+    card.innerHTML=`<div class="mif-entity">${entity}</div><div class="mif-total">${d.total}</div><div class="mif-label">Active installed units</div><div>${rows}</div>`;
+    grid.appendChild(card);
   });
 }
-renderTransferOpportunities();
 
-// ═══════════════════════════════════════════════════════════
-//  FOOTER
-// ═══════════════════════════════════════════════════════════
-document.getElementById("dashFooter").textContent =
-  `Data source: Unleashed via Synchub · Live query 24 Mar 2026 · FX mid-market: VUV 0.0141 · SBD 0.2119 · WST 0.6181 · TOP 0.7191 · NZD 1.0000`;
+renderKPI();renderAlerts();renderAgedTable();renderMIF();
+document.getElementById("dashFooter").textContent=`Unleashed via Synchub · Salesforce Assets · 25 Mar 2026 · FX: VUV 0.0141 · SBD 0.2119 · WST 0.6181 · TOP 0.7191`;
 </script>
 </body>
 </html>
