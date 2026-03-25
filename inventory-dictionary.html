@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>RSP Inventory — Data Dictionary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--ricoh-red:#D7063B;--charcoal:#1e1f22;--body-bg:#f7f7f6;--surface:#ffffff;--border:#e4e4e2;--text-primary:#1a1a1a;--text-muted:#6b6b6b;--text-light:#9a9a9a;--amber:#d97706;--amber-bg:rgba(217,119,6,.10);--red-bg:rgba(215,6,59,.08);--green:#16a34a;--green-bg:rgba(22,163,74,.10);--font-sans:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;--radius:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04)}
+    body{font-family:var(--font-sans);background:var(--body-bg);color:var(--text-primary);min-height:100vh}
+    header{background:var(--charcoal);color:white;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .header-left{display:flex;align-items:center;gap:16px}.header-brand{font-size:18px;font-weight:700;letter-spacing:-.3px}.header-brand span{color:var(--ricoh-red)}.header-divider{width:1px;height:24px;background:rgba(255,255,255,.2)}.header-subtitle{font-size:13px;color:rgba(255,255,255,.6)}.header-right{display:flex;align-items:center;gap:20px}.header-meta{font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,.4)}.back-link{color:rgba(255,255,255,.6);text-decoration:none;font-size:13px}.back-link:hover{color:white}
+    .pill-nav{background:var(--charcoal);border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px}
+    .pill-btn{padding:8px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap}.pill-btn:hover{color:rgba(255,255,255,.85)}.pill-btn.active{color:white;border-bottom-color:var(--ricoh-red)}
+    main{max-width:1100px;margin:0 auto;padding:28px 24px 60px}
+    .section-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+    .section-gap{margin-bottom:32px}
+    /* META STRIP */
+    .meta-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+    @media(max-width:700px){.meta-strip{grid-template-columns:1fr}}
+    .meta-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow)}
+    .meta-label{font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+    .meta-value{font-family:var(--font-mono);font-size:12.5px;color:var(--text-primary);line-height:1.6}
+    /* CHANGELOG */
+    .changelog{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--ricoh-red);border-radius:var(--radius);padding:14px 18px;margin-bottom:28px;font-size:12.5px;line-height:1.6}
+    .changelog-entry{display:flex;gap:12px;margin-bottom:6px}.changelog-entry:last-child{margin-bottom:0}
+    .changelog-date{font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted);white-space:nowrap;min-width:90px}
+    /* DICT ENTRIES */
+    .dict-entry{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden}
+    .dict-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;user-select:none}
+    .dict-header:hover{background:#fafaf9}
+    .dict-metric-name{font-size:13.5px;font-weight:600;color:var(--text-primary)}
+    .dict-metric-type{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500;background:#f0f0ef;color:var(--text-muted)}
+    .dict-body{padding:0 20px 16px;display:none}
+    .dict-body.open{display:block}
+    .dict-row{display:grid;grid-template-columns:160px 1fr;gap:8px 20px;padding:8px 0;border-bottom:1px solid #f5f5f4;align-items:start}
+    .dict-row:last-child{border-bottom:none}
+    .dict-row-label{font-size:11.5px;font-weight:600;color:var(--text-muted);padding-top:1px}
+    .dict-row-value{font-size:12.5px;color:var(--text-primary);line-height:1.6}
+    .dict-row-value code{font-family:var(--font-mono);font-size:11.5px;background:#f5f5f4;padding:1px 5px;border-radius:3px;color:var(--ricoh-red)}
+    .caveat-pill{display:inline-block;background:var(--amber-bg);color:var(--amber);font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:4px;margin-top:4px}
+    .chevron{font-size:12px;color:var(--text-light);transition:transform .2s}
+    .dict-header.open .chevron{transform:rotate(180deg)}
+    .bench-tag{display:inline-block;font-family:var(--font-mono);font-size:11.5px;background:var(--green-bg);color:var(--green);padding:2px 8px;border-radius:4px;font-weight:500}
+    .dash-footer{text-align:center;font-size:11px;color:var(--text-light);font-family:var(--font-mono);padding-top:12px;border-top:1px solid var(--border);margin-top:8px}
+    @media(max-width:600px){main{padding:16px 12px 40px}header{padding:0 16px}.header-subtitle{display:none}.pill-nav{padding:0 12px;overflow-x:auto}.dict-row{grid-template-columns:1fr;gap:4px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
+    <div class="header-divider"></div>
+    <div class="header-subtitle">Inventory — Data Dictionary</div>
+  </div>
+  <div class="header-right">
+    <span class="header-meta">As at 25 Mar 2026</span>
+    <a href="index.html" class="back-link">← Scorecards</a>
+  </div>
+</header>
+<nav class="pill-nav">
+  <a href="inventory-dashboard.html"  class="pill-btn">Summary</a>
+  <a href="inventory-worklist.html"   class="pill-btn">Work List</a>
+  <a href="inventory-drilldown.html"  class="pill-btn">Drill-Down</a>
+  <a href="inventory-dictionary.html" class="pill-btn active">Data Dictionary</a>
+</nav>
+<main>
+
+  <div class="section-label">Data Sources &amp; Refresh</div>
+  <div class="meta-strip">
+    <div class="meta-card">
+      <div class="meta-label">Primary Source</div>
+      <div class="meta-value">Unleashed (5 accounts)<br/>via Synchub MCP<br/>Last queried: 25 Mar 2026</div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">MIF Source</div>
+      <div class="meta-value">Salesforce Assets<br/>Status: Active - Installed<br/>Last queried: 25 Mar 2026</div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-label">FX Rates (XE/Wise mid-market)</div>
+      <div class="meta-value">VUV × 0.0141<br/>SBD × 0.2119<br/>WST × 0.6181 · TOP × 0.7191</div>
+    </div>
+  </div>
+
+  <div class="section-label">Methodology Changelog</div>
+  <div class="changelog section-gap">
+    <div class="changelog-entry"><span class="changelog-date">25 Mar 2026</span><span>Stock age calculation changed from <strong>DaysSinceLastSale</strong> to <strong>FIFO receipt date</strong> (DeliveryDate from PurchaseOrderLine) to match Unleashed BI method. Validated: Samoa SLOB = WST 180,017 vs Unleashed BI WST 172,000 (4.7% variance — within 5% tolerance). Vanuatu and Tonga use latest receipt date as FIFO timed out on larger datasets.</span></div>
+    <div class="changelog-entry"><span class="changelog-date">25 Mar 2026</span><span>Tonga Unleashed account added to all queries. FX rate for TOP corrected from 0.8821 to 0.7191 (Wise 30-day average). FX conversion moved post-query — Synchub queries now return raw local currency only.</span></div>
+    <div class="changelog-entry"><span class="changelog-date">25 Mar 2026</span><span>MIF coverage column added to SLOB work list. Part-to-machine platform mapping added manually (validated by service team required). Stockout alert section added using DaysSinceLastSale ≤ 30 and QtyOnHand ≤ 0.</span></div>
+  </div>
+
+  <div class="section-label">Metric Definitions</div>
+  <div id="dictContainer"></div>
+
+  <div class="dash-footer">For reconciliation queries contact the inventory dashboard owner · Unleashed via Synchub · 25 Mar 2026</div>
+</main>
+<script>
+const METRICS = [
+  {
+    name:"Inventory Snapshot (NZD)",type:"Currency / KPI",
+    definition:"Total cost value of all stock on hand per entity, converted to NZD. This is the 'current week' figure shown in the KPI cards.",
+    calculation:"SUM(TotalCost) from Unleashed StockOnHand where QtyOnHand > 0 and TotalCost > 0 and IsDeleted = 0. TotalCost = QtyOnHand × AvgCost as stored by Unleashed.",
+    source:"Unleashed StockOnHand table via Synchub. FX applied in DATA object post-query.",
+    sourceFields:"StockOnHand.QtyOnHand · StockOnHand.TotalCost",
+    benchmark:"No benchmark. Directional only — movement tracked via previousWeekNZD (manually updated each refresh).",
+    caveats:"Products with no purchase order history are included (QtyOnHand > 0 and TotalCost > 0 is the only filter). Products with zero TotalCost despite positive QtyOnHand are excluded — these are typically items with no cost assigned in Unleashed and should be reviewed."
+  },
+  {
+    name:"Fresh Stock % of Inventory Value",type:"Percentage / Benchmark",
+    definition:"Percentage of total inventory value held in stock aged less than 180 days (6 months) by FIFO receipt date. The primary health indicator for inventory quality.",
+    calculation:"SUM(TotalCost for lines where FIFO age < 180 days) ÷ SUM(TotalCost for all lines with QtyOnHand > 0) × 100. FIFO age = 25 Mar 2026 minus the DeliveryDate of the earliest receipt batch covering current stock (see FIFO Receipt Date method below).",
+    source:"Unleashed StockOnHand + PurchaseOrderLine via Synchub.",
+    sourceFields:"StockOnHand.QtyOnHand · StockOnHand.TotalCost · PurchaseOrderLine.DeliveryDate · PurchaseOrderLine.ReceiptQuantity",
+    benchmark:"Target 75–85%. Below 70% flagged as creeping risk (amber). Industry standard for MPS inventory controllers.",
+    caveats:"Products with no PO receipt history are excluded from FIFO calculation and do not appear in aged buckets. This causes the aged stock total to be slightly lower than the snapshot total. Vanuatu and Tonga use MAX(DeliveryDate) not FIFO — Fresh stock is overstated for those entities."
+  },
+  {
+    name:"Slow Moving Stock % of Inventory Value",type:"Percentage / Benchmark",
+    definition:"Percentage of inventory value in stock aged 180–269 days (6–9 months) by FIFO receipt date.",
+    calculation:"SUM(TotalCost for lines where FIFO age ≥ 180 and < 270 days) ÷ total inventory value × 100.",
+    source:"Unleashed StockOnHand + PurchaseOrderLine via Synchub.",
+    sourceFields:"StockOnHand.TotalCost · PurchaseOrderLine.DeliveryDate",
+    benchmark:"Benchmark 8–15%. Above 15% flagged (amber). Indicates purchasing cadence may be too aggressive for sales velocity.",
+    caveats:"Same FIFO / receipt date caveats as Fresh Stock. Vanuatu and Tonga use latest receipt date."
+  },
+  {
+    name:"At Risk Stock % of Inventory Value",type:"Percentage / Benchmark",
+    definition:"Percentage of inventory value in stock aged 270–364 days (9–12 months) by FIFO receipt date. Requires active management — not yet SLOB but approaching it.",
+    calculation:"SUM(TotalCost for lines where FIFO age ≥ 270 and < 365 days) ÷ total inventory value × 100.",
+    source:"Unleashed StockOnHand + PurchaseOrderLine via Synchub.",
+    sourceFields:"StockOnHand.TotalCost · PurchaseOrderLine.DeliveryDate",
+    benchmark:"Benchmark <5%. Above 5% flagged (amber). Note: Solomon Islands At Risk is currently 32.4% — this is the most urgent figure on the dashboard and is driven by parts for platforms with low active MIF.",
+    caveats:"Same FIFO caveats. The shift from DaysSinceLastSale to FIFO receipt date caused Solomon Islands At Risk to increase from $18,927 to $173,339 NZD. The old method masked this through sporadic sales resetting the last-sale clock."
+  },
+  {
+    name:"SLOB Stock Value (NZD)",type:"Currency / Benchmark",
+    definition:"Total cost value of stock on hand where the age of the current batch is 365 days or more by FIFO receipt date. Stock Lying on Bottom — cash that is effectively tied up and at risk of write-off.",
+    calculation:"SUM(TotalCost for lines where FIFO age ≥ 365 days and QtyOnHand > 0 and TotalCost > 0). FIFO age = today minus DeliveryDate of first receipt batch covering current stock under FIFO assumption (oldest stock sold first). FX applied post-query.",
+    source:"Unleashed StockOnHand + PurchaseOrderLine via Synchub.",
+    sourceFields:"StockOnHand.QtyOnHand · StockOnHand.TotalCost · PurchaseOrderLine.DeliveryDate · PurchaseOrderLine.ReceiptQuantity",
+    benchmark:"Review if >7% of total inventory value. Flags red above this threshold. Samoa: 59.7% · Solomon Islands: 43.3% · Vanuatu: 57.9% · Tonga: 57.2% — all significantly above benchmark.",
+    caveats:"Validated against Unleashed BI for Samoa: SLOB = WST 180,017 vs Unleashed BI WST 172,000 (4.7% variance — within 5% tolerance). Vanuatu and Tonga use MAX(DeliveryDate) as FIFO timed out — SLOB is understated for those entities. True SLOB for Vanuatu and Tonga is likely higher."
+  },
+  {
+    name:"FIFO Receipt Date (Age Calculation Method)",type:"Methodology",
+    definition:"The method used to assign an age to each stock line on hand. Matches the Unleashed Business Intelligence calculation. Uses DeliveryDate from PurchaseOrderLine, not DaysSinceLastSale from StockOnHand.",
+    calculation:"For each product with QtyOnHand > 0: (1) retrieve all PurchaseOrderLine receipts ordered by DeliveryDate ascending with cumulative running total of ReceiptQuantity. (2) TotalQtySold = SUM(all receipts) minus current QtyOnHand. (3) Walk receipts oldest-first, subtracting TotalQtySold from each batch until exhausted. (4) DeliveryDate of the first batch with remaining stock is the FIFO age date. (5) Age = 25 Mar 2026 minus FIFO age date.",
+    source:"Unleashed PurchaseOrderLine.DeliveryDate via Synchub.",
+    sourceFields:"PurchaseOrderLine.DeliveryDate · PurchaseOrderLine.ReceiptQuantity · StockOnHand.QtyOnHand",
+    benchmark:"N/A — this is the calculation method, not a KPI.",
+    caveats:"Products with no PO receipt history (e.g. opening balance entries, manual adjustments) cannot have a FIFO age calculated and are excluded from aged stock totals. Vanuatu and Tonga use MAX(DeliveryDate) as a proxy because the full FIFO query timed out on larger datasets — this makes their aged stock appear younger than it is."
+  },
+  {
+    name:"Stockout Alert",type:"Operational Alert",
+    definition:"Products with zero stock on hand (QtyOnHand ≤ 0) that have been sold within the last 30 days. Indicates active customer demand against zero available inventory — a replenishment failure.",
+    calculation:"StockOnHand where QtyOnHand ≤ 0 AND DaysSinceLastSale ≤ 30 AND IsDeleted = 0. Joined to Product for description and group. Ordered by DaysSinceLastSale ascending (most recently sold first).",
+    source:"Unleashed StockOnHand + Product via Synchub.",
+    sourceFields:"StockOnHand.QtyOnHand · StockOnHand.DaysSinceLastSale · Product.ProductCode · Product.ProductDescription",
+    benchmark:"Zero tolerance — any stockout on an active SKU is a reorder flag. Items sold ≤ 3 days ago highlighted red; ≤ 7 days orange.",
+    caveats:"DaysSinceLastSale is used here (not FIFO receipt date) as it is the most relevant field for identifying demand. Note that DaysSinceLastSale is a pre-calculated field in Unleashed and reflects the last invoice date for that SKU, not a receipt or transfer date."
+  },
+  {
+    name:"MIF Coverage",type:"Contextual / Analytical",
+    definition:"The number of active-installed machines in each territory that use the same platform as a SLOB part. Zero MIF coverage indicates the part has no machine to be used in — a write-off candidate. Positive MIF coverage indicates the part is a legitimate (if aged) buffer stock.",
+    calculation:"Salesforce Assets where Status = 'Active - Installed' and Product2.Family = 'Ricoh Copier Equipment' and Sharepoint__c = [entity territory]. Grouped by Product2.ProductCode. Machine platform mapped to SLOB part manually via partToMifMap in the DATA object.",
+    source:"Salesforce Assets (Product2.ProductCode · Sharepoint__c) via Salesforce MCP.",
+    sourceFields:"Asset.Status · Asset.Product2.ProductCode · Asset.Product2.Name · Asset.Sharepoint__c",
+    benchmark:"Any SLOB part with zero MIF coverage across all five entities should be reviewed for write-off provision. Any part with MIF coverage but SLOB age > 730 days should be reviewed regardless.",
+    caveats:"Part-to-machine platform mapping (partToMifMap) is manually maintained. Validation by Sridhar (Service Manager) required to confirm accuracy. The mapping covers MPS consumables and parts only — IT products, communication products, and Priport items are not mapped. Salesforce Asset records must be kept current — disposed machines not updated in Salesforce will inflate MIF counts."
+  },
+  {
+    name:"Cross-Entity Transfer Opportunity",type:"Operational / Analytical",
+    definition:"A SKU that is SLOB (DaysSinceLastSale > 365) in one entity while another entity has actively sold the same SKU within the last 90 days. Indicates stock that could be transferred rather than written off.",
+    calculation:"Cross-entity Synchub query: find ProductCodes where (a) ProductGroup is 'Ricoh Copier Parts' or 'Ricoh Copier Toners and Developers', (b) one entity has DaysSinceLastSale > 365 and QtyOnHand > 0 and TotalCost > 0, (c) a different entity has DaysSinceLastSale < 90 and QtyOnHand > 0. Returns SLOB entity, qty, value, active entity, and active entity last sale date.",
+    source:"Unleashed StockOnHand across all 5 accounts via Synchub cross-entity query.",
+    sourceFields:"StockOnHand.ProductCode · StockOnHand.DaysSinceLastSale · StockOnHand.QtyOnHand · StockOnHand.TotalCost",
+    benchmark:"No formal benchmark. Prioritise by SLOB value descending. Any transfer candidate with SLOB age > 730 days is high priority.",
+    caveats:"Machines excluded — only Ricoh Copier Parts and Ricoh Copier Toners and Developers are included. Transfer viability depends on physical condition of stock, shipping cost, and whether the receiving entity has active customer demand (not just recent stock movement). Uses DaysSinceLastSale not FIFO receipt date for transfer identification — this is intentional as demand recency is more relevant than age for this use case."
+  },
+  {
+    name:"FX Rates",type:"Reference",
+    definition:"Mid-market exchange rates used to convert local currency inventory values to NZD for all cross-entity comparisons.",
+    calculation:"Applied in the DATA object as multiplication factors after Synchub queries return raw local currency values. All Synchub queries are instructed not to apply FX conversion.",
+    source:"XE.com and Wise mid-market rates as at 25 Mar 2026.",
+    sourceFields:"N/A — applied in dashboard DATA object, not sourced from any system",
+    benchmark:"N/A — rates should be updated each time the dashboard is refreshed. Last updated: 25 Mar 2026.",
+    caveats:"Mid-market rates differ from bank transfer rates. For management accounts reconciliation, confirm whether Minoo uses a different rate convention. Rates are: VUV × 0.0141 · SBD × 0.2119 · WST × 0.6181 · TOP × 0.7191 · NZD × 1.0000."
+  }
+];
+
+function fmt(s){return s.replace(/`([^`]+)`/g,'<code>$1</code>')}
+
+function buildDict(){
+  const container=document.getElementById("dictContainer");
+  METRICS.forEach((m,idx)=>{
+    const entry=document.createElement("div");entry.className="dict-entry";
+    const header=document.createElement("div");header.className="dict-header";
+    header.innerHTML=`<div><div class="dict-metric-name">${m.name}</div></div><div style="display:flex;align-items:center;gap:10px"><span class="dict-metric-type">${m.type}</span><span class="chevron">▼</span></div>`;
+    const body=document.createElement("div");body.className="dict-body"+(idx===0?" open":"");
+    if(idx===0)header.classList.add("open");
+    const rows=[
+      {label:"Definition",value:m.definition},
+      {label:"Calculation",value:m.calculation},
+      {label:"Source",value:m.source},
+      {label:"Source fields",value:`<code>${m.sourceFields.split(' · ').join('</code> · <code>')}</code>`},
+      {label:"Benchmark",value:`<span class="bench-tag">${m.benchmark}</span>`},
+      {label:"Caveats",value:`<span class="caveat-pill">⚠ Note</span> <span style="margin-top:4px;display:inline-block">${m.caveats}</span>`}
+    ];
+    rows.forEach(r=>{
+      body.innerHTML+=`<div class="dict-row"><div class="dict-row-label">${r.label}</div><div class="dict-row-value">${fmt(r.value)}</div></div>`;
+    });
+    header.addEventListener("click",()=>{
+      const isOpen=body.classList.contains("open");
+      body.classList.toggle("open");header.classList.toggle("open");
+    });
+    entry.appendChild(header);entry.appendChild(body);container.appendChild(entry);
+  });
+}
+buildDict();
+</script>
+</body>
+</html>

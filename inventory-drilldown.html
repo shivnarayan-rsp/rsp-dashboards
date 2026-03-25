@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>RSP Inventory — Drill-Down</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--ricoh-red:#D7063B;--charcoal:#1e1f22;--body-bg:#f7f7f6;--surface:#ffffff;--border:#e4e4e2;--text-primary:#1a1a1a;--text-muted:#6b6b6b;--text-light:#9a9a9a;--amber:#d97706;--amber-bg:rgba(217,119,6,.10);--red-bg:rgba(215,6,59,.08);--green:#16a34a;--green-bg:rgba(22,163,74,.10);--font-sans:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;--radius:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04)}
+    body{font-family:var(--font-sans);background:var(--body-bg);color:var(--text-primary);min-height:100vh}
+    header{background:var(--charcoal);color:white;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .header-left{display:flex;align-items:center;gap:16px}.header-brand{font-size:18px;font-weight:700;letter-spacing:-.3px}.header-brand span{color:var(--ricoh-red)}.header-divider{width:1px;height:24px;background:rgba(255,255,255,.2)}.header-subtitle{font-size:13px;color:rgba(255,255,255,.6)}.header-right{display:flex;align-items:center;gap:20px}.header-meta{font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,.4)}.back-link{color:rgba(255,255,255,.6);text-decoration:none;font-size:13px}.back-link:hover{color:white}
+    .pill-nav{background:var(--charcoal);border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px}
+    .pill-btn{padding:8px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap}.pill-btn:hover{color:rgba(255,255,255,.85)}.pill-btn.active{color:white;border-bottom-color:var(--ricoh-red)}
+    main{max-width:1400px;margin:0 auto;padding:28px 24px 60px}
+    .section-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+    .section-gap{margin-bottom:32px}
+    .table-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:28px}
+    .table-card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .table-card-title{font-size:13px;font-weight:600;color:var(--text-primary)}.table-card-sub{font-size:11.5px;color:var(--text-muted);margin-top:3px;line-height:1.4}
+    .entity-selector{display:flex;gap:8px;padding:14px 20px;border-bottom:1px solid var(--border);flex-wrap:wrap;background:#fafaf9}
+    .entity-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--border);background:var(--surface);cursor:pointer;color:var(--text-muted);transition:all .15s}.entity-btn:hover{border-color:var(--ricoh-red);color:var(--ricoh-red)}.entity-btn.active{background:var(--ricoh-red);border-color:var(--ricoh-red);color:white}
+    .tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 20px;background:#fafaf9;overflow-x:auto}
+    .tab-btn{padding:10px 16px;font-size:12.5px;font-weight:500;color:var(--text-muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:color .15s}.tab-btn:hover{color:var(--text-primary)}.tab-btn.active{color:var(--ricoh-red);border-bottom-color:var(--ricoh-red);font-weight:600}
+    table{width:100%;border-collapse:collapse;font-size:12.5px}
+    th{background:#f9f9f8;padding:9px 16px;text-align:right;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap}
+    th:first-child{text-align:left}td{padding:10px 16px;text-align:right;border-bottom:1px solid #f0f0ef;vertical-align:middle}td:first-child{text-align:left}tr:last-child td{border-bottom:none}tr.total-row td{background:#f9f9f8;font-weight:600;border-top:1px solid var(--border)}
+    .mono{font-family:var(--font-mono)}.empty-state{padding:32px 20px;text-align:center;color:var(--text-light);font-size:13px}
+    /* Stacked bar */
+    .aged-bar-wrap{padding:20px;display:flex;flex-direction:column;gap:14px}
+    .bar-entity{display:flex;align-items:center;gap:12px}
+    .bar-label{font-size:12px;font-weight:500;width:100px;flex-shrink:0;color:var(--text-muted)}
+    .bar-track{flex:1;height:20px;border-radius:4px;overflow:hidden;display:flex;background:#f0f0ef}
+    .bar-segment{height:100%;transition:width .3s}
+    .bar-total{font-family:var(--font-mono);font-size:11.5px;color:var(--text-muted);width:90px;text-align:right;flex-shrink:0}
+    .bar-legend{display:flex;gap:16px;flex-wrap:wrap;padding:0 20px 16px;font-size:11.5px}
+    .legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle}
+    .dash-footer{text-align:center;font-size:11px;color:var(--text-light);font-family:var(--font-mono);padding-top:12px;border-top:1px solid var(--border)}
+    @media(max-width:600px){main{padding:16px 12px 40px}header{padding:0 16px}.header-subtitle{display:none}.pill-nav{padding:0 12px;overflow-x:auto}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
+    <div class="header-divider"></div>
+    <div class="header-subtitle">Inventory — Drill-Down</div>
+  </div>
+  <div class="header-right">
+    <span class="header-meta">As at 25 Mar 2026</span>
+    <a href="index.html" class="back-link">← Scorecards</a>
+  </div>
+</header>
+<nav class="pill-nav">
+  <a href="inventory-dashboard.html"  class="pill-btn">Summary</a>
+  <a href="inventory-worklist.html"   class="pill-btn">Work List</a>
+  <a href="inventory-drilldown.html"  class="pill-btn active">Drill-Down</a>
+  <a href="inventory-dictionary.html" class="pill-btn">Data Dictionary</a>
+</nav>
+<main>
+
+  <!-- AGED MIX STACKED BAR -->
+  <div class="section-label">Aged Stock Mix — All Entities</div>
+  <div class="table-card section-gap">
+    <div class="table-card-header">
+      <div>
+        <div class="table-card-title">Inventory Age Mix by Entity</div>
+        <div class="table-card-sub">Proportional breakdown of fresh / slow moving / at risk / SLOB per entity · FIFO receipt date method</div>
+      </div>
+    </div>
+    <div class="bar-legend">
+      <span><span class="legend-dot" style="background:#16a34a"></span>Fresh &lt;6m</span>
+      <span><span class="legend-dot" style="background:#d97706"></span>Slow Moving 6–9m</span>
+      <span><span class="legend-dot" style="background:#f97316"></span>At Risk 9–12m</span>
+      <span><span class="legend-dot" style="background:#D7063B"></span>SLOB &gt;12m</span>
+    </div>
+    <div class="aged-bar-wrap" id="agedBarWrap"></div>
+  </div>
+
+  <!-- PRODUCT GROUP DRILL-DOWN -->
+  <div class="section-label">Product Group Drill-Down — At Risk &amp; SLOB</div>
+  <div class="table-card section-gap">
+    <div class="table-card-header">
+      <div>
+        <div class="table-card-title">Top 5 Product Groups by Bucket</div>
+        <div class="table-card-sub">Select entity and bucket · Value and share of that bucket per product group</div>
+      </div>
+    </div>
+    <div class="entity-selector" id="drillEntitySelector"></div>
+    <div class="tab-bar" id="drillTabBar">
+      <button class="tab-btn active" data-drill="atRisk">At Risk (9–12 months)</button>
+      <button class="tab-btn" data-drill="slob">SLOB (&gt;12 months)</button>
+    </div>
+    <div id="drillPanel"></div>
+  </div>
+
+  <!-- MIF COVERAGE ANALYSIS -->
+  <div class="section-label">MIF Coverage Analysis — SLOB Parts by Platform</div>
+  <div class="table-card section-gap">
+    <div class="table-card-header">
+      <div>
+        <div class="table-card-title">SLOB Parts vs Active Machine Platforms</div>
+        <div class="table-card-sub">How many active-installed machines exist across all entities for each SLOB part platform · Source: Salesforce Assets</div>
+      </div>
+    </div>
+    <div style="overflow-x:auto"><table id="mifTable"></table></div>
+  </div>
+
+  <div class="dash-footer">Unleashed via Synchub · Salesforce Assets · 25 Mar 2026</div>
+</main>
+<script>
+const DATA = {
+  entities: ["RSP","Samoa","Solomon Islands","Vanuatu","Tonga"],
+  agedStock: {
+    "RSP":             {fresh:231545.58,slowMoving:80241.62,atRisk:13791.32,slob:59913.11,total:385491.63},
+    "Samoa":           {fresh:50131.11, slowMoving:21732.61,atRisk:3340.12, slob:111268.41,total:186472.25},
+    "Solomon Islands": {fresh:104838.84,slowMoving:25100.01,atRisk:173338.84,slob:231201.64,total:534479.33},
+    "Vanuatu":         {fresh:141996.88,slowMoving:5172.68, atRisk:27959.19,slob:241050.48,total:416179.23},
+    "Tonga":           {fresh:95374.20, slowMoving:3564.79, atRisk:4636.20, slob:138654.33,total:242229.17}
+  },
+  productGroupDrill: {
+    "RSP":{
+      atRisk:[{group:"Ricoh Copier Parts",valueNZD:898.04,lines:8},{group:"IT Products",valueNZD:672.87,lines:1},{group:"Ricoh Copier Toners and Developers",valueNZD:222.10,lines:1},{group:"Ricoh Priport Ink",valueNZD:96.91,lines:1},{group:"Ricoh Copier Equipment",valueNZD:33.81,lines:1}],
+      slob:[{group:"Ricoh Copier Parts",valueNZD:33371.33,lines:149},{group:"Ricoh Copier Equipment",valueNZD:2847.55,lines:4},{group:"Ricoh Copier Toners and Developers",valueNZD:1783.69,lines:7},{group:"Ricoh Priport Master Roll",valueNZD:1437.42,lines:2},{group:"Ricoh Priport Ink",valueNZD:878.14,lines:2}]
+    },
+    "Samoa":{
+      atRisk:[{group:"Ricoh Copier Equipment",valueNZD:7242.53,lines:2},{group:"Ricoh Copier Toners and Developers",valueNZD:1588.56,lines:4},{group:"Ricoh Priport Master Roll",valueNZD:1489.61,lines:1},{group:"Ricoh Priport Ink",valueNZD:1287.62,lines:1},{group:"Ricoh Copier Parts",valueNZD:1267.89,lines:9}],
+      slob:[{group:"Ricoh Copier Parts",valueNZD:14243.92,lines:59},{group:"Ricoh Copier Equipment",valueNZD:8005.90,lines:9},{group:"Ricoh Copier Toners and Developers",valueNZD:6110.53,lines:17},{group:"IT Products",valueNZD:1703.80,lines:2},{group:"Ricoh Priport Master Roll",valueNZD:1593.11,lines:1}]
+    },
+    "Solomon Islands":{
+      atRisk:[{group:"Ricoh Copier Parts",valueNZD:13795.16,lines:6},{group:"Ricoh Copier Toners and Developers",valueNZD:2689.36,lines:3},{group:"Ricoh Copier Equipment",valueNZD:2075.34,lines:2},{group:"Digital Paper",valueNZD:340.65,lines:3},{group:"Other Products",valueNZD:25.83,lines:1}],
+      slob:[{group:"Ricoh Copier Equipment",valueNZD:125949.40,lines:9},{group:"Ricoh Copier Parts",valueNZD:27229.78,lines:47},{group:"Digital Paper",valueNZD:3543.50,lines:1},{group:"Other Products",valueNZD:2324.63,lines:3},{group:"Ricoh Communication Products",valueNZD:1207.81,lines:2}]
+    },
+    "Vanuatu":{
+      atRisk:[{group:"Ricoh Copier Parts",valueNZD:5390.36,lines:8},{group:"Ricoh Copier Equipment",valueNZD:282.28,lines:1},{group:"Ricoh Copier Toners and Developers",valueNZD:142.07,lines:2}],
+      slob:[{group:"Ricoh Copier Equipment",valueNZD:31654.68,lines:10},{group:"Ricoh Copier Parts",valueNZD:24593.43,lines:50},{group:"Ricoh Copier Toners and Developers",valueNZD:3858.52,lines:17},{group:"Ricoh Priport Master Roll",valueNZD:417.64,lines:1},{group:"Ricoh Priport Ink",valueNZD:119.39,lines:1}]
+    },
+    "Tonga":{
+      atRisk:[{group:"Ricoh Copier Equipment",valueNZD:7491.67,lines:2},{group:"Ricoh Copier Parts",valueNZD:2006.76,lines:3}],
+      slob:[{group:"Ricoh Copier Equipment",valueNZD:7668.86,lines:5},{group:"Ricoh Copier Parts",valueNZD:7220.66,lines:23},{group:"Ricoh Copier Toners and Developers",valueNZD:1897.14,lines:3},{group:"Ricoh Priport Ink",valueNZD:795.21,lines:2},{group:"Ricoh Priport Master Roll",valueNZD:619.39,lines:2}]
+    }
+  },
+  mifPlatforms: [
+    {platform:"MPC3003/MPC3503",parts:["D1863054","D1464062","AE020268"],totalMIF:0,note:"Platform end-of-life — zero active MIF across all entities",writeoff:true},
+    {platform:"MPC3004/MPC6004",parts:["D2423091"],totalMIF:15,byEntity:{"Vanuatu":15},note:"15 active M 2701 units in Vanuatu use same engine platform"},
+    {platform:"MP C2003SP/C2503SP",parts:["D1764042"],totalMIF:24,byEntity:{"Samoa":3,"Solomon Islands":7,"Vanuatu":2,"Tonga":7,"RSP":5},note:"Well-distributed across all entities — transfer candidates"},
+    {platform:"IM C300F",parts:["D0C94038","D0CB6201"],totalMIF:89,byEntity:{"RSP":10,"Samoa":56,"Solomon Islands":23},note:"89 active IM C300F across RSP, Samoa, Solomons — transfer candidates"},
+    {platform:"ProC7500/ProC9100",parts:["M0EB2320","M0EB9510","D3EW2796"],totalMIF:0,note:"Production print platforms not in Pacific MIF",writeoff:true},
+    {platform:"IM C4500/IM C6000",parts:["D0BQ3001","D0BQ3002","D0BQ3003"],totalMIF:2,byEntity:{"Vanuatu":2},note:"2 active IM C4500 units in Vanuatu only"},
+    {platform:"IM C2000/IM C2500",parts:["D0BK3001","D0BK3002","D0BK3003","D0BL5836"],totalMIF:3,byEntity:{"Vanuatu":3},note:"3 active IM C2500 units in Vanuatu only"},
+    {platform:"MPC2504",parts:["D2385686"],totalMIF:0,note:"MPC2504 not in active MIF",writeoff:true},
+    {platform:"MP501 / MPC2050",parts:["M2813030","D0392040"],totalMIF:0,note:"Legacy platforms — zero active MIF",writeoff:true}
+  ]
+};
+
+function fmt(n,d=0){if(n===null||n===undefined)return"—";return"$"+Number(n).toLocaleString("en-NZ",{minimumFractionDigits:d,maximumFractionDigits:d})}
+function pct(p,t){if(!t||!p)return 0;return(p/t)*100}
+
+// ── STACKED BARS ──────────────────────────────────────────────────────
+function renderBars(){
+  const wrap=document.getElementById("agedBarWrap");
+  DATA.entities.forEach(entity=>{
+    const d=DATA.agedStock[entity];const t=d.total;
+    const row=document.createElement("div");row.className="bar-entity";
+    const freshPct=pct(d.fresh,t);const slowPct=pct(d.slowMoving,t);const riskPct=pct(d.atRisk,t);const slobPct=pct(d.slob,t);
+    row.innerHTML=`
+      <div class="bar-label">${entity}</div>
+      <div class="bar-track">
+        <div class="bar-segment" style="width:${freshPct.toFixed(1)}%;background:#16a34a" title="Fresh ${freshPct.toFixed(1)}%"></div>
+        <div class="bar-segment" style="width:${slowPct.toFixed(1)}%;background:#d97706" title="Slow Moving ${slowPct.toFixed(1)}%"></div>
+        <div class="bar-segment" style="width:${riskPct.toFixed(1)}%;background:#f97316" title="At Risk ${riskPct.toFixed(1)}%"></div>
+        <div class="bar-segment" style="width:${slobPct.toFixed(1)}%;background:#D7063B" title="SLOB ${slobPct.toFixed(1)}%"></div>
+      </div>
+      <div class="bar-total">${fmt(t)}</div>`;
+    wrap.appendChild(row);
+  });
+}
+renderBars();
+
+// ── PRODUCT GROUP DRILL ──────────────────────────────────────────────
+let drillEntity=DATA.entities[0];let drillBucket="atRisk";
+function renderDrillPanel(){
+  const container=document.getElementById("drillPanel");container.innerHTML="";
+  const rows=(DATA.productGroupDrill[drillEntity]||{})[drillBucket]||[];
+  if(!rows.length){container.innerHTML=`<div class="empty-state">No product group data for this selection.</div>`;return;}
+  const total=rows.reduce((s,r)=>s+r.valueNZD,0);
+  const tbl=document.createElement("table");
+  tbl.innerHTML=`<thead><tr><th>Product Group</th><th>Value (NZD)</th><th>Lines</th><th>% of Bucket</th><th style="min-width:160px">Share</th></tr></thead>`;
+  const tbody=document.createElement("tbody");
+  rows.forEach(r=>{
+    const share=pct(r.valueNZD,total);const tr=document.createElement("tr");
+    tr.innerHTML=`<td style="font-weight:500">${r.group}</td><td><span class="mono">${fmt(r.valueNZD)}</span></td><td><span class="mono">${r.lines}</span></td><td><span class="mono">${share.toFixed(1)}%</span></td><td><div style="background:#f0f0ef;border-radius:3px;height:8px;width:100%;overflow:hidden"><div style="background:${drillBucket==="slob"?"var(--ricoh-red)":"#f97316"};height:100%;width:${share}%;border-radius:3px"></div></div></td>`;
+    tbody.appendChild(tr);
+  });
+  const totalTr=document.createElement("tr");totalTr.className="total-row";totalTr.innerHTML=`<td><strong>Total</strong></td><td><span class="mono" style="font-weight:700">${fmt(total)}</span></td><td class="mono">${rows.reduce((s,r)=>s+r.lines,0)}</td><td></td><td></td>`;
+  tbody.appendChild(totalTr);tbl.appendChild(tbody);
+  const wrap=document.createElement("div");wrap.style.overflowX="auto";wrap.appendChild(tbl);container.appendChild(wrap);
+}
+function initDrill(){
+  const sel=document.getElementById("drillEntitySelector");
+  DATA.entities.forEach(entity=>{
+    const btn=document.createElement("button");btn.className="entity-btn"+(entity===drillEntity?" active":"");btn.textContent=entity;
+    btn.addEventListener("click",()=>{sel.querySelectorAll(".entity-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");drillEntity=entity;renderDrillPanel();});
+    sel.appendChild(btn);
+  });
+  document.getElementById("drillTabBar").querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.addEventListener("click",()=>{document.getElementById("drillTabBar").querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");drillBucket=btn.dataset.drill;renderDrillPanel();});
+  });
+  renderDrillPanel();
+}
+initDrill();
+
+// ── MIF COVERAGE TABLE ────────────────────────────────────────────────
+function renderMifTable(){
+  const table=document.getElementById("mifTable");
+  const thead=document.createElement("thead");
+  thead.innerHTML=`<tr><th>Platform</th><th style="text-align:left">SLOB Parts</th><th>Total MIF</th><th style="text-align:left">By Entity</th><th style="text-align:left">Notes</th></tr>`;
+  table.appendChild(thead);
+  const tbody=document.createElement("tbody");
+  DATA.mifPlatforms.forEach(p=>{
+    const tr=document.createElement("tr");
+    const byE=p.byEntity?Object.entries(p.byEntity).map(([e,c])=>`<span style="font-size:11px;color:var(--text-muted)">${e}:</span> <span class="mono">${c}</span>`).join(" · "):"—";
+    const mifBadge=p.totalMIF===0?`<span style="background:var(--red-bg);color:var(--ricoh-red);padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600">0 active</span>`:`<span style="background:var(--green-bg);color:var(--green);padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600">${p.totalMIF} active</span>`;
+    tr.innerHTML=`<td style="font-weight:500;white-space:nowrap">${p.platform}</td><td style="text-align:left;font-size:11.5px;color:var(--text-muted)">${p.parts.join(", ")}</td><td>${mifBadge}</td><td style="text-align:left;font-size:11px">${byE}</td><td style="text-align:left;font-size:11.5px;color:${p.writeoff?"var(--ricoh-red)":"var(--text-muted)"}">${p.note}</td>`;
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+}
+renderMifTable();
+</script>
+</body>
+</html>
