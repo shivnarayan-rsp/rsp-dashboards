@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RSP Orders Dashboard</title>
+<title>RSP Operations Dashboard</title>
 <style>
   :root {
     --bg:#f8f7f4;--surface:#ffffff;--surface-2:#f1efe8;
@@ -122,7 +122,7 @@
     </div>
     <div>
       <div class="h1">RSP Operations Dashboard</div>
-      <div class="hsub">Open Unleashed orders — all Pacific Island entities · Values in NZD</div>
+      <div class="hsub">Open sales orders — all Pacific Island entities · Values in NZD</div>
     </div>
   </div>
   <div class="hr2">
@@ -192,7 +192,140 @@
 <script>
 const FX={RSP:1,Samoa:0.6197,Solomons:0.2119,Vanuatu:0.01370,Tonga:0.6904};
 const CCY={RSP:'NZD',Samoa:'WST',Solomons:'SBD',Vanuatu:'VUV',Tonga:'TOP'};
-const BASE='https://au.unleashedsoftware.com/v2/SalesOrder?orderNumber=';
+const BASE='https://au.unleashedsoftware.com/v2/SalesOrder/Update/';
+
+const GUIDS={
+  // RSP
+  "RSPSO-00126763":"03e0343c-bee5-4f65-b1c9-68f4ddbdfc89",
+  "RSPSO-00126780":"0b143da3-18d8-424f-a400-4390314b0b1a",
+  "RSPSO-00126756":"12e7af69-c9b2-49c3-8257-016aaf12043c",
+  "RSPSO-00126607":"1f4e89ac-cbad-447c-b073-d6c707a13cd4",
+  "RSPSO-00126761":"200eb621-bf46-48b4-ae67-07029c76bd52",
+  "RSPSO-00126775":"31437349-c60d-4085-b629-438cb0237eda",
+  "RSPSO-00126717":"3462288f-7ff6-49a6-954a-386cd7273053",
+  "RSPSO-00126777":"36aaa6d9-ec73-4b5c-a627-55c02d578018",
+  "RSPSO-00126747":"3b958efc-395a-47fa-8445-e26d229e20e1",
+  "RSPSO-00126708":"4c64afae-d1f4-4d32-a8e1-12ca1994927d",
+  "RSPSO-00126767":"4faec6c4-f970-4718-8b96-d9c7804dd168",
+  "RSPSO-00126783":"528355b8-a083-45ec-8515-d28f7951a1ab",
+  "RSPSO-00126766":"555493bb-5497-479b-ace7-2b7cb852d3ee",
+  "RSPSO-00126719":"5740cc3b-a468-4177-8fbb-64a089138313",
+  "RSPSO-00126748":"57c2240b-e3d3-453e-bdcc-4bed03b7c091",
+  "RSPSO-00126714":"5f46ecaa-f11a-40f6-aa96-00068a1cbab6",
+  "RSPSO-00126620":"625d6735-2a75-4406-899f-0d65f2032128",
+  "RSPSO-00126475":"6a24a1ab-4b8f-438b-8fce-e9dc37080237",
+  "RSPSO-00126715":"6b02eba5-c8bc-4a41-8132-25d2108bb28a",
+  "RSPSO-00126782":"6bfc947e-ea82-41a6-a8f9-088fd5194b33",
+  "RSPSO-00126778":"7cd501ee-ed31-44f3-911e-6aab8de37bf0",
+  "RSPSO-00126769":"847597f2-4de9-45cd-b77a-3fd4e27052c9",
+  "RSPSO-00126746":"8e48c06d-db6c-4e97-a1d8-86b61226c1b3",
+  "RSPSO-00126697":"9509925a-0b9a-465e-aed9-0f0157ad956d",
+  "RSPSO-00126740":"9a8eeb76-1ed7-406f-ab93-d56241cfdb5b",
+  "RSPSO-00126741":"a524404d-2a2f-4dff-b307-883b1bbe0829",
+  "RSPSO-00126774":"aafcd384-c4c1-4b75-8ae7-786b7feec094",
+  "RSPSO-00126776":"b8bd245a-1a8c-4c12-b701-78d8ff23268a",
+  "RSPSO-00126666":"b93d459c-da74-407a-b22c-5521fe855eb2",
+  "RSPSO-00126725":"be7520cc-4120-4e84-9ef2-a4ed7ca226ae",
+  "RSPSO-00126779":"bf679e8c-07df-4be8-aac5-5aa0972b14e4",
+  "RSPSO-00126781":"c30eb27a-4ec5-432c-8c4b-2da0443f3de8",
+  "RSPSO-00126765":"caaea663-36b8-40f9-b495-a46c44e2aec4",
+  "RSPSO-00126755":"d19e427d-a2e1-4e5a-aa0f-30f22461f9e7",
+  "RSPSO-00126659":"ded5192a-16ce-4219-8c93-a98280026838",
+  "RSPSO-00126700":"e25423b4-dd16-4436-a83e-bd2cd09ddb89",
+  "RSPSO-00126617":"e498fa15-5632-4a78-974b-0823473f2572",
+  "RSPSO-00126718":"f6d859d7-4614-451f-819a-0eb2e9afd4de",
+  "RSPSO-00126730":"f700cea1-ad56-40aa-972d-820a5ec2cc24",
+  // Samoa
+  "RSSO-00032782":"151cd324-90e3-4297-b0b0-bc83c2dbbd29",
+  "RSSO-00032917":"23dd320b-ca67-4885-afbe-eb33d154be91",
+  "RSSO-00032849":"3c8339d6-ce6b-484c-b078-a8b945caddd3",
+  "RSSO-00032723":"3cbe95d3-3c42-4804-9230-1b294199b309",
+  "RSSO-00033010":"3f944eda-2248-4312-aeaf-f182f462eb1a",
+  "RSSO-00032869":"4554b259-e470-48d3-b880-bbaf23a31af1",
+  "RSSO-00032946":"4ca1d0fb-3774-40b1-b823-ae314194f368",
+  "RSSO-00032743":"70b05e14-d5da-4739-a5e1-377054748d63",
+  "RSSO-00032858":"7c17eccf-674f-49c5-88ff-57b9b87ffc53",
+  "RSSO-00032962":"820b6416-11c4-49e6-bb03-ab77065b742e",
+  "RSSO-00032830":"8260f6b1-24a2-4b12-86bb-a5e85d45368b",
+  "RSSO-00032947":"84d5551a-0baa-47d8-9751-9927ef4adc84",
+  "RSSO-00030811":"a4091919-f014-4b5e-b9b4-ebfae2437894",
+  "RSSO-00032920":"aab96c27-3ad4-4317-b82a-9c64d43f9d9c",
+  "RSSO-00032816":"b2bbeef5-510e-4c0e-ab5d-8dec85175aaf",
+  "RSSO-00032912":"c1504b83-7ba8-4566-8dcb-ca8ab7814575",
+  "RSSO-00033002":"c1fe73a8-7731-4439-8a5a-af78c7e89a2c",
+  "RSSO-00032932":"c43ce233-6b6c-4e97-89fb-781973bb85b8",
+  // Solomons
+  "RSISO-00020173":"02924104-7b27-4ef9-9ff7-34c19feaeda2",
+  "RSISO-00020136":"02fb986f-f5db-4e1f-8151-6946a3470284",
+  "RSISO-00020181":"12e1a9c3-5e16-457f-887f-d1e4aa4eb454",
+  "RSISO-00020161":"36420bd1-24d3-444e-9262-275c63701403",
+  "RSISO-00020169":"4dae665c-6f51-4e37-8c19-b33658bb470f",
+  "RSISO-00020138":"503cb274-896d-484d-9fd9-8b365530589c",
+  "RSISO-00020142":"5a0059a7-7889-4bf5-87fb-50deb12d448a",
+  "RSISO-00020141":"5c005dc3-a0ca-4495-8827-04bacb3632d5",
+  "RSISO-00020153":"65a16d4e-7f09-4a17-9f7c-e80ad0ed988b",
+  "RSISO-00020186":"6a079d52-cd6a-456a-b6bf-12a845a3db8c",
+  "RSISO-00020158":"77bb10da-30ad-4bb9-b5cd-37bbc1cefdde",
+  "RSISO-00020062":"8f608929-7675-4d79-a8bb-0518278217b2",
+  "RSISO-00020177":"953711b0-1645-4754-a97d-d44f7c19bd37",
+  "RSISO-00019799":"ae6d6596-7991-444c-9cda-4516d0776405",
+  "RSISO-00019786":"c18da463-efa3-45fb-8400-ff361cb3494d",
+  "RSISO-00020159":"cb19f625-4864-4157-b0c9-514d7322d78f",
+  "RSISO-00020176":"d76733c0-aa4f-448a-948f-fe867cd4b206",
+  "RSISO-00020183":"f0939980-a285-4892-9c27-a30fc1efa0e8",
+  "RSISO-00020102":"f6261a2b-b036-4da5-9e24-38e0206a072b",
+  // Vanuatu
+  "RVSO-00032353":"01eca2db-6122-4980-9198-7ae5d22253c2",
+  "RVSO-00034683":"0459ced4-90fe-4ab5-a0ea-1209943ea7b8",
+  "RVSO-00034679":"05454ef3-28d9-4191-b7a6-9efa647288ab",
+  "RVSO-00034121":"0b91d2f6-a67f-4644-b4e8-c6c20993deb8",
+  "RVSO-00034211":"252a4b90-face-4559-a600-a61f82628433",
+  "RVSO-00034675":"2871b5d2-3264-4498-b245-77fa708407be",
+  "RVSO-00034460":"29d31eec-2a59-4c8a-8d26-ec04dadb6c47",
+  "RVSO-00034615":"31b8e840-782c-4bed-b160-0cdad24a2a4f",
+  "RVSO-00034622":"396f3820-c211-4f64-a4a1-852d375fc534",
+  "RVSO-00034611":"460d0d87-7c4d-4ecd-88eb-9b54a5949c41",
+  "RVSO-00034248":"46fa3465-9621-42b3-969e-e77470ac8909",
+  "RVSO-00034313":"4f9335d8-a603-47d5-b33a-3711a67b20d3",
+  "RVSO-00034477":"51478aab-14eb-4744-ba68-1587a3a01b09",
+  "RVSO-00034660":"67c33778-a1ec-4ca2-bd67-941f8075aa6c",
+  "RVSO-00034268":"68278ee3-c763-4d5f-a214-a78f650c1dbe",
+  "RVSO-00034601":"6e3f4633-e8b6-4273-bed9-d9989c2ffc68",
+  "RVSO-00034215":"7dfae008-d288-474a-896d-ab7c4211d003",
+  "RVSO-00034591":"7fb08b86-c9ba-4dbc-b935-a8f33ebc4b47",
+  "RVSO-00034629":"81726904-1beb-4d9f-ac2b-55da41898212",
+  "RVSO-00034634":"8abffc72-658b-4156-9a32-033acbb472a2",
+  "RVSO-00034678":"a24b2db4-3a34-4f8b-842e-9732f441a977",
+  "RVSO-00034687":"a456c798-35fe-472b-917c-0fe106c8bb82",
+  "RVSO-00033516":"a7c8d493-05d1-4e45-802b-f56cb99a84f9",
+  "RVSO-00034478":"a9f07b33-4305-4153-bd3b-4c6af2a029a9",
+  "RVSO-00034688":"aab04201-571e-4aaf-a4c7-26e9c0fed972",
+  "RVSO-00034676":"aac498a8-e3d0-450d-87ad-d522b2282c18",
+  "RVSO-00034685":"b0fbf87e-669e-4cc6-96d7-d0082c1cf479",
+  "RVSO-00034550":"b3de274c-f9a7-45e5-8840-97df505c937b",
+  "RVSO-00033242":"bf07b8ca-330b-4533-a757-e1ca6aa53294",
+  "RVSO-00034546":"bf7701f2-87e1-4824-8f61-cd3b7d82f23a",
+  "RVSO-00034613":"c1a3d5be-ab07-4b62-8e84-b5d679f2b195",
+  "RVSO-00034637":"ce2b520a-7ccc-423d-8bd3-cce7034ac55d",
+  "RVSO-00034607":"d3aa252e-3296-402b-ba21-19f9eee6ff3e",
+  "RVSO-00034569":"e0b174e4-6c99-40ee-a746-967423b06a5f",
+  "RVSO-00034625":"f7e01ceb-ae9b-4b0c-90a3-919de1c24752",
+  "RVSO-00034646":"fa2ce51d-59e5-4471-a4fd-c70d688fd2ca",
+  "RVSO-00034123":"ffff3b5b-dbc2-4333-b354-5aba258394f3",
+  // Tonga
+  "RTSO-00026358":"03499fe7-e848-4a78-8265-73525f90dd26",
+  "RTSO-00026366":"1761ddbf-c2a6-443f-8f04-510873cb982f",
+  "RTSO-00026337":"19aeaa8c-51e2-41b3-8bbf-dc3264d8cb1e",
+  "RTSO-00026376":"77978052-5d8d-4e30-b201-20795a958ed8",
+  "RTSO-00026382":"807827e2-442e-4543-830c-d9efda767fda",
+  "RTSO-00026306":"a1010af4-bc05-4696-b32d-9bb20b464576",
+  "RTSO-00026380":"a3d33e17-750e-4862-aaa7-b92745cb6c62",
+  "RTSO-00026355":"a599f7f0-8476-4a79-b370-349c6dc3a06b",
+  "RTSO-00026350":"c3ada769-1f7f-4e2b-85ec-380bb2ffc472",
+  "RTSO-00026378":"c7cdc699-0298-4a60-9bfc-66453d6e1810",
+  "RTSO-00026282":"d2e399e7-dae8-41ab-a892-75c3be050d15",
+  "RTSO-00026247":"d6667300-f456-4916-ad98-dce0ccb3a419",
+};
 
 
 const D=[
@@ -407,8 +540,12 @@ function renderKPITiles(kpi){
 }
 
 function orderLink(orderNum){
+  const guid=GUIDS[orderNum];
   const arrow=`<svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 10L10 2M5 2h5v5"/></svg>`;
-  return`<a class="order-link" href="${BASE}${encodeURIComponent(orderNum)}" target="_blank" rel="noopener" title="Open in Unleashed">${orderNum}${arrow}</a>`;
+  if(guid){
+    return`<a class="order-link" href="${BASE}${guid}" target="_blank" rel="noopener" title="Open in Unleashed">${orderNum}${arrow}</a>`;
+  }
+  return`<span style="font-family:monospace;font-size:11px;color:var(--text-muted)">${orderNum}</span>`;
 }
 
 function renderTable(data){
