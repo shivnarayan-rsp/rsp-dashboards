@@ -156,6 +156,7 @@
     <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
     <a href="leaderboard.html" class="nav-pill active">Leaderboard</a>
     <a href="cases-open.html" class="nav-pill">Open Cases</a>
+    <a href="conversations.html" class="nav-pill">Conversations</a>
     <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
   </div>
 
@@ -168,7 +169,7 @@
   <div class="panel-card" style="margin-bottom:32px;">
     <div class="panel-header">
       <span class="panel-title">Ranked by cases closed</span>
-      <span class="panel-sub" id="leaderboardPeriod"></span>
+      <span class="panel-sub" id="leaderboardPeriod">Ranked by quality score (FTF 60% · Callback 40%)</span>
     </div>
     <table id="leaderboardTable">
       <thead>
@@ -270,39 +271,39 @@
 //  Last refreshed: 23 March 2026
 // ─────────────────────────────────────────────
 const DATA = {
-  asOf: "23 Mar 2026",
-  period: "Jan – Mar 2026",
+  asOf: "26 Mar 2026",
+  period: "Jan – 26 Mar 2026",
 
   // Technician leaderboard
   // fields: name, territory, casesClosed, avgDays, ftfCount, callbacks
   technicians: [
-    { name: "Florencio Jr. Familar",  territory: "Vanuatu",  cases: 112, avgDays: 1.7,  ftf: 93, callbacks: 25 },
-    { name: "Arturo Regis",           territory: "Samoa",    cases: 103, avgDays: 3.9,  ftf: 85, callbacks: 32 },
-    { name: "Ramiro Cataquis",        territory: "Samoa",    cases: 93,  avgDays: 7.0,  ftf: 72, callbacks: 29 },
-    { name: "Victor Geonzon",         territory: "Solomons", cases: 68,  avgDays: 12.1, ftf: 51, callbacks: 14 },
-    { name: "John Cid",               territory: "Tonga",    cases: 47,  avgDays: 10.7, ftf: 37, callbacks: 12 },
-    { name: "Junriel Andoy",          territory: "Vanuatu",  cases: 26,  avgDays: 9.6,  ftf: 23, callbacks: 12 },
-    { name: "Samson Ragaruma",        territory: "Solomons", cases: 10,  avgDays: 30.1, ftf: 4,  callbacks: 2  },
+    { name: "Florencio Jr. Familar",  territory: "Vanuatu",  cases: 114, avgDays: 1.7,  ftf: 95, callbacks: 25 },
+    { name: "Arturo Regis",           territory: "Samoa",    cases: 108, avgDays: 4.1,  ftf: 90, callbacks: 32 },
+    { name: "Ramiro Cataquis",        territory: "Samoa",    cases: 95,  avgDays: 6.8,  ftf: 74, callbacks: 29 },
+    { name: "Victor Geonzon",         territory: "Solomons", cases: 73,  avgDays: 11.4, ftf: 53, callbacks: 17 },
+    { name: "John Cid",               territory: "Tonga",    cases: 48,  avgDays: 10.6, ftf: 38, callbacks: 12 },
+    { name: "Junriel Andoy",          territory: "Vanuatu",  cases: 30,  avgDays: 8.6,  ftf: 26, callbacks: 14 },
+    { name: "Samson Ragaruma",        territory: "Solomons", cases: 11,  avgDays: 27.9, ftf: 4,  callbacks: 2  },
     { name: "Aisea Fakaosi",          territory: "Tonga",    cases: 10,  avgDays: 9.6,  ftf: 7,  callbacks: 0  },
-    { name: "Sridhar Bhattacharjee",  territory: "NZ",       cases: 8,   avgDays: 19.4, ftf: 8,  callbacks: 3  }
+    { name: "Sridhar Bhattacharjee",  territory: "NZ",       cases: 14,  avgDays: 19.4, ftf: 12, callbacks: 4  }
   ],
 
   // SLA violations on open service calls by territory
   // fields: territory, openCases, withViolation
   slaViolations: [
-    { territory: "NZ",       open: 10, violations: 7  },
-    { territory: "Vanuatu",  open: 13, violations: 9  },
-    { territory: "Solomons", open: 10, violations: 10 },
-    { territory: "Tonga",    open: 9,  violations: 9  },
-    { territory: "Samoa",    open: 8,  violations: 7  }
+    { territory: "NZ",       open: 4,  violations: 3  },
+    { territory: "Vanuatu",  open: 9,  violations: 7  },
+    { territory: "Solomons", open: 9,  violations: 8  },
+    { territory: "Tonga",    open: 12, violations: 10 },
+    { territory: "Samoa",    open: 8,  violations: 6  }
   ],
 
   // Callback rate by territory - March 2026
   // fields: territory, totalClosed, callbacks
   callbackByTerritory: [
-    { territory: "Samoa",    total: 55, callbacks: 20 },
-    { territory: "Vanuatu",  total: 37, callbacks: 12 },
-    { territory: "Solomons", total: 28, callbacks: 7  },
+    { territory: "Samoa",    total: 57, callbacks: 20 },
+    { territory: "Vanuatu",  total: 42, callbacks: 14 },
+    { territory: "Solomons", total: 33, callbacks: 10 },
     { territory: "Tonga",    total: 14, callbacks: 5  }
   ],
 
@@ -373,7 +374,12 @@ document.getElementById("kpiSummary").innerHTML = `
   </div>`;
 
 // ── LEADERBOARD TABLE ─────────────────────────
-const sorted = [...DATA.technicians].sort((a,b) => b.cases - a.cases);
+// Rank by quality score: FTF rate weighted most heavily, then callback rate inverted
+const sorted = [...DATA.technicians].sort((a,b) => {
+  const scoreA = (a.ftf/a.cases*100)*0.6 + Math.max(0,(100-a.callbacks/a.cases*100))*0.4;
+  const scoreB = (b.ftf/b.cases*100)*0.6 + Math.max(0,(100-b.callbacks/b.cases*100))*0.4;
+  return scoreB - scoreA;
+});
 
 function daysCls(d) {
   if (d <= 5)  return "good-text";
