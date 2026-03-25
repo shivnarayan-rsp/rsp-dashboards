@@ -3,128 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RSP — Service Dashboard</title>
+<title>RSP — Tech Conversations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --red:#D7063B; --red-dark:#a8002d; --red-light:#f5e0e6;
-    --charcoal:#1a1a1a; --dark:#2a2a2a; --mid:#444; --muted:#888;
-    --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
-    --green:#1a6e2e; --green-bg:#e6f4ea;
-    --amber:#8a5200; --amber-bg:#fef3dc;
-    --danger:#c0392b; --danger-bg:#fdecea;
-    --blue:#0057b8; --blue-bg:#e8f0fb;
-    --gray:#555; --gray-bg:#efefef;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+:root {
+  --red:#D7063B; --charcoal:#1a1a1a; --mid:#444; --muted:#888;
+  --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
+  --green:#1a6e2e; --green-bg:#e6f4ea;
+  --amber:#8a5200; --amber-bg:#fef3dc;
+  --danger:#c0392b; --danger-bg:#fdecea;
+  --blue:#0057b8; --blue-bg:#e8f0fb;
+  --cat-a-bg:#e6f4ea; --cat-a:#1a6e2e;
+  --cat-b-bg:#e8f0fb; --cat-b:#0057b8;
+  --cat-c-bg:#fef3dc; --cat-c:#8a5200;
+  --cat-d-bg:#fdecea; --cat-d:#c0392b;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-  /* HEADER */
-  header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-  .wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
-  .header-center{display:flex;align-items:center;gap:16px;}
-  .header-divider{width:1px;height:22px;background:#444;}
-  .header-title{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em;}
-  .header-right{display:flex;align-items:center;gap:16px;}
-  .live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:#aaa;font-family:'DM Mono',monospace;letter-spacing:.05em;}
-  .live-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite;}
-  .as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
-  .back-link{font-size:11px;color:#666;text-decoration:none;letter-spacing:.03em;transition:color .15s;}
-  .back-link:hover{color:#aaa;}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.header-center{display:flex;align-items:center;gap:16px;}
+.wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
+.hd{width:1px;height:22px;background:#444;}
+.header-title{font-size:13px;color:#aaa;letter-spacing:.03em;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+.back-link{font-size:11px;color:#666;text-decoration:none;transition:color .15s;}
+.back-link:hover{color:#aaa;}
 
-  /* LAYOUT */
-  main{max-width:1200px;margin:0 auto;padding:32px 24px 64px;}
+main{max-width:1300px;margin:0 auto;padding:28px 24px 80px;}
 
-  /* SECTION LABEL */
-  .section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
-  .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.nav-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;letter-spacing:.02em;}
+.nav-pill:hover{border-color:var(--red);color:var(--red);}
+.nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
 
-  /* KPI GRID */
-  .kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:32px;}
-  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px 20px;position:relative;overflow:hidden;transition:box-shadow .15s;animation:fadeUp .4s ease both;}
-  .kpi-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07);}
-  .kpi-card.accent::before,.kpi-card.alert::before,.kpi-card.good::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-  .kpi-card.accent::before{background:var(--red);}
-  .kpi-card.alert::before{background:var(--red);}
-  .kpi-card.good::before{background:var(--green);}
-  .kpi-card:nth-child(1){animation-delay:.05s;}.kpi-card:nth-child(2){animation-delay:.1s;}.kpi-card:nth-child(3){animation-delay:.15s;}.kpi-card:nth-child(4){animation-delay:.2s;}
-  .kpi-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
-  .kpi-value{font-size:32px;font-weight:300;color:var(--charcoal);line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;}
-  .kpi-value.alert{color:var(--danger);}.kpi-value.good{color:var(--green);}.kpi-value.muted{color:var(--mid);}
-  .kpi-sub{font-size:11px;color:var(--muted);line-height:1.4;}
-  .kpi-trend{font-size:11px;margin-top:5px;font-weight:500;}
-  .trend-good{color:var(--green);}.trend-bad{color:var(--danger);}
-  .progress-bar{height:4px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden;}
-  .progress-fill{height:100%;border-radius:2px;}
-  .fill-green{background:var(--green);}.fill-muted{background:var(--muted);}
+/* MONTH SELECTOR */
+.month-bar{display:flex;align-items:center;gap:12px;margin-bottom:28px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:6px;}
+.month-bar label{font-size:12px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.month-bar select{height:32px;padding:0 10px;font-size:13px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--charcoal);cursor:pointer;}
+.month-bar select:focus{outline:none;border-color:var(--red);}
+.unsaved-badge{font-size:11px;color:var(--amber);font-family:'DM Mono',monospace;display:none;}
+.unsaved-badge.show{display:block;}
+.save-all-btn{margin-left:auto;height:32px;padding:0 16px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;background:var(--red);color:#fff;border:none;border-radius:4px;cursor:pointer;transition:opacity .15s;}
+.save-all-btn:hover{opacity:.85;}
+.saved-msg{font-size:11px;color:var(--green);font-family:'DM Mono',monospace;display:none;}
+.saved-msg.show{display:block;}
 
-  /* DIVIDER */
-  hr.divider{border:none;border-top:1px solid var(--border);margin:28px 0;}
+/* SECTION LABEL */
+.section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
-  /* TABS */
-  .tab-container{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:32px;}
-  .tab-bar{display:flex;border-bottom:1px solid var(--border);background:var(--surface2);padding:0 4px;gap:2px;}
-  .tab-btn{padding:12px 18px;font-size:11px;font-weight:500;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s;letter-spacing:.07em;font-family:'DM Sans',sans-serif;text-transform:uppercase;}
-  .tab-btn:hover{color:var(--charcoal);}
-  .tab-btn.active{color:var(--red);border-bottom-color:var(--red);font-weight:600;}
-  .tab-panel{display:none;}.tab-panel.active{display:block;}
+/* TECH CARDS */
+.tech-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;}
+.tech-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.tech-card-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--surface2);}
+.tech-name-block{display:flex;align-items:center;gap:12px;}
+.tech-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.tech-name{font-size:14px;font-weight:500;}
+.tech-territory{font-size:11px;color:var(--muted);}
+.tech-score-block{text-align:right;}
+.total-score{font-size:28px;font-weight:300;font-variant-numeric:tabular-nums;line-height:1;}
+.total-score-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.cat-badge{display:inline-block;padding:3px 10px;border-radius:3px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-top:4px;}
+.cat-A{background:var(--cat-a-bg);color:var(--cat-a);}
+.cat-B{background:var(--cat-b-bg);color:var(--cat-b);}
+.cat-C{background:var(--cat-c-bg);color:var(--cat-c);}
+.cat-D{background:var(--cat-d-bg);color:var(--cat-d);}
 
-  /* TABLE */
-  table{width:100%;border-collapse:collapse;}
-  th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);white-space:nowrap;}
-  th.right{text-align:right;}
-  td{padding:10px 16px;font-size:13px;color:var(--charcoal);border-bottom:1px solid #f0f0f0;vertical-align:middle;}
-  tr:last-child td{border-bottom:none;}
-  td.indent{padding-left:32px;}
-  td.count{text-align:right;font-family:'DM Mono',monospace;font-weight:500;font-size:13px;}
-  td.pct{text-align:right;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;}
-  td.danger{color:var(--danger);font-weight:500;}
-  .tr-territory td{background:var(--surface2);font-weight:600;font-size:12px;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;padding:8px 16px;border-bottom:1px solid var(--border);}
-  .tr-territory .terr-count{font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;font-family:'DM Mono',monospace;font-size:11px;margin-left:8px;}
-  .total-row td{font-weight:600;border-top:1px solid var(--border);background:var(--surface2);}
+/* KPI GRID IN CARD */
+.kpi-section{padding:16px 20px;border-bottom:1px solid #f0f0f0;}
+.kpi-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;}
+.kpi-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f5f5f5;}
+.kpi-row:last-child{border-bottom:none;}
+.kpi-row-name{font-size:12px;color:var(--mid);}
+.kpi-row-value{font-size:12px;font-family:'DM Mono',monospace;color:var(--charcoal);text-align:right;min-width:60px;}
+.kpi-row-score{font-size:12px;font-family:'DM Mono',monospace;font-weight:500;text-align:right;min-width:50px;}
+.score-full{color:var(--green);}
+.score-good{color:var(--green);}
+.score-warn{color:var(--amber);}
+.score-bad{color:var(--danger);}
+.score-na{color:var(--muted);}
 
-  /* BADGE */
-  .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;white-space:nowrap;letter-spacing:.02em;}
-  .b-New{background:var(--blue-bg);color:var(--blue);}
-  .b-WOI{background:var(--green-bg);color:var(--green);}
-  .b-Invoice{background:var(--amber-bg);color:var(--amber);}
-  .b-Waiting{background:var(--gray-bg);color:var(--gray);}
-  .b-Escalated,.b-Stop{background:var(--danger-bg);color:var(--danger);}
+/* MANUAL INPUTS */
+.manual-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px 20px;border-bottom:1px solid #f0f0f0;}
+.manual-item{display:flex;flex-direction:column;gap:4px;}
+.manual-label{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;align-items:center;}
+.manual-label span{font-family:'DM Mono',monospace;font-size:11px;}
+.manual-slider{width:100%;height:4px;accent-color:var(--red);cursor:pointer;}
+.manual-score-display{font-size:11px;font-family:'DM Mono',monospace;color:var(--charcoal);}
 
-  /* INLINE BAR */
-  .bar-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;width:100px;}
-  .bar-fill{height:100%;border-radius:3px;background:var(--red);}
-  .bar-fill.muted{background:var(--muted);}
+/* CONVERSATION SECTION */
+.convo-section{padding:14px 20px;}
+.convo-row{margin-bottom:10px;}
+.convo-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:5px;}
+.convo-input{width:100%;padding:8px 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--charcoal);resize:vertical;min-height:52px;transition:border-color .15s;line-height:1.5;}
+.convo-input:focus{outline:none;border-color:var(--red);}
+.convo-input::placeholder{color:var(--muted);}
 
-  /* OVER 72h GRID */
-  .overage-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--border);}
-  .overage-cell{background:var(--surface);padding:18px 20px;}
-  .overage-name{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;}
-  .overage-nums{display:flex;align-items:baseline;gap:6px;margin-bottom:6px;}
-  .overage-big{font-size:28px;font-weight:300;color:var(--danger);font-variant-numeric:tabular-nums;line-height:1;}
-  .overage-of{font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;}
-  .overage-pct{font-size:11px;font-weight:500;color:var(--danger);margin-bottom:6px;}
-  .overage-bar-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
-  .overage-bar-fill{height:100%;background:var(--red);border-radius:2px;}
-  .overage-total-row{padding:14px 20px;background:var(--surface2);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-  .overage-total-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
-  .overage-total-val{font-size:13px;font-weight:600;color:var(--danger);font-family:'DM Mono',monospace;}
+/* COACHING PROMPTS */
+.coaching-box{background:#fffbf0;border:1px solid #fde68a;border-radius:4px;padding:10px 12px;margin-bottom:10px;}
+.coaching-box-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:6px;}
+.coaching-item{font-size:12px;color:var(--charcoal);line-height:1.5;padding:2px 0;}
+.coaching-item::before{content:'→ ';color:var(--amber);}
 
-  /* FOOTER */
-  footer{text-align:center;padding:24px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;letter-spacing:.04em;}
+/* SUMMARY TABLE */
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:32px;}
+.summary-header{padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.summary-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);white-space:nowrap;}
+th.right{text-align:right;}
+td{padding:9px 12px;font-size:13px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+.rank-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:600;font-family:'DM Mono',monospace;}
+.r1{background:#fff8e1;color:#b8860b;}.r2{background:#f0f0f0;color:#666;}.r3{background:#fdf0e8;color:#a0522d;}.rn{background:var(--surface2);color:var(--muted);}
+.terr-pill{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:500;}
+.t-NZ{background:#e8f0fb;color:#0057b8;}.t-Vanuatu{background:#e6f4ea;color:#1a6e2e;}
+.t-Solomons{background:#fef3dc;color:#8a5200;}.t-Tonga{background:#fdecea;color:#c0392b;}
+.t-Samoa{background:#f3e8fb;color:#6b21a8;}
+.metric-good{color:var(--green);font-weight:500;}
+.metric-warn{color:var(--amber);font-weight:500;}
+.metric-bad{color:var(--danger);font-weight:500;}
+td.right{text-align:right;}
+td.mono{font-family:'DM Mono',monospace;font-size:12px;}
 
-  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
 
-  .clickable-row{cursor:pointer;}
-  .clickable-row:hover td{background:#f0f4ff;}
-  .row-link{color:inherit;text-decoration:none;}
-  .row-link:hover{text-decoration:underline;}
-
-  @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.overage-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-  @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-title{display:none;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:1000px){.tech-grid{grid-template-columns:1fr;}}
+@media(max-width:600px){main{padding:12px 10px 48px;}header{padding:0 16px;}.header-title{display:none;}.manual-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -132,362 +141,442 @@
 <header>
   <div class="header-center">
     <span class="wordmark">Ricoh</span>
-    <div class="header-divider"></div>
-    <span class="header-title">South Pacific — Service Dashboard</span>
+    <div class="hd"></div>
+    <span class="header-title">South Pacific — Tech Conversations</span>
   </div>
   <div class="header-right">
-    <span class="live-badge"><span class="live-dot"></span>LIVE</span>
     <span class="as-of" id="asOf"></span>
     <a href="index.html" class="back-link">← Scorecards</a>
   </div>
 </header>
 
 <main>
-  <div style="display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;">
-    <a href="service-dashboard.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;background:var(--charcoal);border:1px solid var(--charcoal);color:#fff;text-decoration:none;letter-spacing:.02em;">Service Dashboard</a>
-    <a href="leaderboard.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;letter-spacing:.02em;">Leaderboard</a>
-    <a href="cases-open.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;letter-spacing:.02em;">Open Cases</a>
-    <a href="data-dictionary.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;letter-spacing:.02em;">Data Dictionary</a>
+  <div class="nav-pills">
+    <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
+    <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
+    <a href="cases-open.html" class="nav-pill">Open Cases</a>
+    <a href="conversations.html" class="nav-pill active">Conversations</a>
+    <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
   </div>
 
-  <div class="section-label">Open cases snapshot</div>
-  <div class="kpi-grid" id="kpiSnapshot"></div>
+  <div class="month-bar">
+    <label>Month</label>
+    <select id="monthSelect" onchange="loadMonth()">
+      <option value="2026-03">March 2026</option>
+      <option value="2026-02">February 2026</option>
+      <option value="2026-01">January 2026</option>
+    </select>
+    <span class="unsaved-badge" id="unsavedBadge">Unsaved changes</span>
+    <span class="saved-msg" id="savedMsg">Saved</span>
+    <button class="save-all-btn" onclick="saveAll()">Save all scores &amp; notes</button>
+  </div>
 
-  <hr class="divider">
-
-  <div class="section-label">Service call performance — closed cases</div>
-  <div class="kpi-grid" id="kpiPerformance"></div>
-
-  <hr class="divider">
-
-  <div class="section-label">Territory breakdown</div>
-  <div class="tab-container">
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('status',this)">By Status</button>
-      <button class="tab-btn" onclick="switchTab('worktype',this)">By Work Type</button>
-      <button class="tab-btn" onclick="switchTab('overage',this)">Over 72 Hours</button>
+  <div class="section-label">Score summary — ranked by total</div>
+  <div class="summary-card">
+    <div class="summary-header">
+      <span class="summary-title" id="summaryTitle">March 2026</span>
+      <span style="font-size:11px;color:var(--muted)">Scores auto-calculate from Salesforce data + manual inputs below</span>
     </div>
-    <div id="tab-status" class="tab-panel active"></div>
-    <div id="tab-worktype" class="tab-panel"></div>
-    <div id="tab-overage" class="tab-panel"></div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40px"></th>
+          <th>Technician</th>
+          <th>Territory</th>
+          <th class="right">FTF /15</th>
+          <th class="right">CB Rate /10</th>
+          <th class="right">Calls/day /10</th>
+          <th class="right">Manual /65</th>
+          <th class="right">Total /100</th>
+          <th class="right">Category</th>
+        </tr>
+      </thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
   </div>
+
+  <div class="section-label">Weekly conversations</div>
+  <div class="tech-grid" id="techGrid"></div>
 </main>
 
 <footer id="footer"></footer>
 
 <script>
-// ─────────────────────────────────────────────
-//  DATA — update this block on each refresh
-//  Last refreshed: 23 March 2026
-// ─────────────────────────────────────────────
-const DATA = {
-  asOf: "23 Mar 2026",
+// ─────────────────────────────────────────────────────────
+//  SALESFORCE DATA (refreshed 26 March 2026)
+//  YTD = Jan–Mar 2026, working days = 60
+// ─────────────────────────────────────────────────────────
+const ASOF = "26 Mar 2026";
+const WORKING_DAYS = 60;
 
-  territories: {
-    "0Hh7F0000000O5fSAE": "New Zealand",
-    "0Hh7F0000000O5uSAE": "Vanuatu",
-    "0Hh7F0000000O5kSAE": "Solomon Islands",
-    "0Hh7F0000000O5pSAE": "Tonga",
-    "0Hh7F0000000O5bSAE": "Samoa",
-    "null": "No territory"
-  },
+// [name, territory, ytdCases, avgDays*10, ftfCount, callbacks, marClosed, marCB, marSLAViol]
+const SF_DATA = [
+  ["Florencio Jr. Familar", "Vanuatu",  114, 17,  95, 25, 19, 3,  16],
+  ["Arturo Regis",          "Samoa",    108, 41,  90, 32, 28, 8,  23],
+  ["Ramiro Cataquis",       "Samoa",     95, 68,  74, 29, 29, 12, 22],
+  ["Victor Geonzon",        "Solomons",  73, 114, 53, 17, 25, 9,  22],
+  ["John Cid",              "Tonga",     48, 106, 38, 12, 14, 5,  9 ],
+  ["Junriel Andoy",         "Vanuatu",   30, 86,  26, 14, 23, 11, 17],
+  ["Samson Ragaruma",       "Solomons",  11, 279,  4,  2,  8, 1,  7 ],
+  ["Aisea Fakaosi",         "Tonga",     10, 96,   7,  0,  0, 0,  0 ],
+];
 
-  workTypes: {
-    "08q7F0000000RDlQAM": "Service Call",
-    "08q7F0000000RDjQAM": "Asset Decommission",
-    "08q7F0000004gQRQAY": "Toner Delivery",
-    "08q7F0000000RDiQAM": "Asset Maintenance Service",
-    "08q7F0000000RDnQAM": "Parts Robbing",
-    "08q7F0000000RDkQAM": "Asset Installation",
-    "08q7F0000004gT6QAI": "Parts Fitting",
-    "08q7F0000000RDsQAM": "Asset Run Up",
-    "08q7F000000Y4WiQAK": "IT & Network Support",
-    "08q7F000000Y4VfQAK": "Fusing Unit Rebuild",
-    "08q7F000000Y4VuQAK": "Relief Machine Run Up",
-    "08q7F0000000RDmQAM": "Asset Assessment",
-    "08qMp000000JMfxIAG": "Paper Delivery",
-    "08q7F0000000RDqQAM": "Asset Disposal",
-    "08q7F0000000RDtQAM": "Asset Refurbish",
-    "08q7F000000Y4RTQA0": "Asset Rundown and Assessment",
-    "08q7F000000Y4VvQAK": "Relief Machine Installation",
-    "null": "No work type"
-  },
+// KPI framework from Sridhar's spreadsheet
+// [id, label, weight, target description, type: 'sf'|'manual']
+const KPIS = [
+  { id:'ftf',      label:'First Time Fix Rate',       weight:15, target:'≥ 85%',    type:'sf',     sfKey:'ftfRate'    },
+  { id:'resptime', label:'Avg Response Time',          weight:10, target:'≤ 4 hours', type:'manual', max:10             },
+  { id:'callsday', label:'Calls Closed per Day',       weight:10, target:'≥ 5/day',  type:'sf',     sfKey:'callsDay'   },
+  { id:'repeatcall',label:'Repeat Call Rate',          weight:10, target:'≤ 5%',     type:'sf',     sfKey:'cbRate'     },
+  { id:'audit',    label:'Job Audit Quality Score',    weight:10, target:'≥ 90%',    type:'manual', max:10             },
+  { id:'csat',     label:'CSAT Score',                 weight:15, target:'≥ 4.5/5',  type:'manual', max:15             },
+  { id:'report',   label:'Report Submission',          weight:10, target:'100%',     type:'manual', max:10             },
+  { id:'pm',       label:'PM Completion Compliance',   weight:10, target:'100%',     type:'manual', max:10             },
+  { id:'safety',   label:'Safety SOP Adherence',       weight:10, target:'100%',     type:'manual', max:10             },
+];
 
-  // Open cases total per territory
-  openByTerritory: [
-    { id: "0Hh7F0000000O5fSAE", count: 39 },
-    { id: "0Hh7F0000000O5uSAE", count: 32 },
-    { id: "0Hh7F0000000O5kSAE", count: 20 },
-    { id: "0Hh7F0000000O5bSAE", count: 18 },
-    { id: "0Hh7F0000000O5pSAE", count: 13 },
-    { id: "null",               count: 9  }
-  ],
+// Category thresholds (from spreadsheet)
+function category(score) {
+  if (score >= 90) return 'A';
+  if (score >= 75) return 'B';
+  if (score >= 60) return 'C';
+  return 'D';
+}
 
-  // Open >72h per territory (cases created before 20 Mar 2026)
-  over72ByTerritory: [
-    { id: "0Hh7F0000000O5fSAE", count: 38 },
-    { id: "0Hh7F0000000O5uSAE", count: 21 },
-    { id: "0Hh7F0000000O5bSAE", count: 14 },
-    { id: "0Hh7F0000000O5kSAE", count: 14 },
-    { id: "0Hh7F0000000O5pSAE", count: 13 },
-    { id: "null",               count: 8  }
-  ],
-
-  // Status breakdown: [territoryId, status, count]
-  byStatus: [
-    ["null",               "New",                               9],
-    ["0Hh7F0000000O5bSAE","Processing Invoice",                4],
-    ["0Hh7F0000000O5bSAE","Waiting on Parts Delivery",         4],
-    ["0Hh7F0000000O5bSAE","Work Order Issued",                 3],
-    ["0Hh7F0000000O5bSAE","Waiting on Parts Request Approval", 3],
-    ["0Hh7F0000000O5bSAE","Waiting on Customer",               2],
-    ["0Hh7F0000000O5bSAE","Waiting on Quotation Approval",     2],
-    ["0Hh7F0000000O5fSAE","Processing Invoice",               16],
-    ["0Hh7F0000000O5fSAE","Work Order Issued",                14],
-    ["0Hh7F0000000O5fSAE","New",                               7],
-    ["0Hh7F0000000O5fSAE","Waiting on Quotation Approval",     1],
-    ["0Hh7F0000000O5fSAE","Stop Credit",                       1],
-    ["0Hh7F0000000O5kSAE","Work Order Issued",                 9],
-    ["0Hh7F0000000O5kSAE","Stop Credit",                       4],
-    ["0Hh7F0000000O5kSAE","Processing Invoice",                3],
-    ["0Hh7F0000000O5kSAE","Waiting on Parts Delivery",         2],
-    ["0Hh7F0000000O5kSAE","Waiting on Customer",               1],
-    ["0Hh7F0000000O5kSAE","Waiting on Quotation Approval",     1],
-    ["0Hh7F0000000O5pSAE","Processing Invoice",                3],
-    ["0Hh7F0000000O5pSAE","Waiting on Parts Request Approval", 3],
-    ["0Hh7F0000000O5pSAE","Work Order Issued",                 2],
-    ["0Hh7F0000000O5pSAE","Waiting on Quotation Approval",     2],
-    ["0Hh7F0000000O5pSAE","Escalated",                         1],
-    ["0Hh7F0000000O5pSAE","Waiting on Parts Delivery",         1],
-    ["0Hh7F0000000O5pSAE","Waiting on Customer",               1],
-    ["0Hh7F0000000O5uSAE","Waiting on Parts Delivery",         8],
-    ["0Hh7F0000000O5uSAE","Waiting on Quotation Approval",     7],
-    ["0Hh7F0000000O5uSAE","Work Order Issued",                 5],
-    ["0Hh7F0000000O5uSAE","Waiting on Customer",               5],
-    ["0Hh7F0000000O5uSAE","Processing Invoice",                3],
-    ["0Hh7F0000000O5uSAE","New",                               2],
-    ["0Hh7F0000000O5uSAE","Waiting on Parts Request Approval", 2]
-  ],
-
-  // Work type breakdown: [territoryId, workTypeId, count]
-  byWorkType: [
-    ["null",               "null",                  9],
-    ["0Hh7F0000000O5bSAE","08q7F0000000RDlQAM",    8],
-    ["0Hh7F0000000O5bSAE","08q7F0000000RDqQAM",    4],
-    ["0Hh7F0000000O5bSAE","08q7F0000000RDiQAM",    2],
-    ["0Hh7F0000000O5bSAE","08q7F0000000RDkQAM",    1],
-    ["0Hh7F0000000O5bSAE","08q7F000000Y4WiQAK",    1],
-    ["0Hh7F0000000O5bSAE","08q7F0000000RDnQAM",    1],
-    ["0Hh7F0000000O5bSAE","08q7F0000000RDmQAM",    1],
-    ["0Hh7F0000000O5fSAE","08q7F0000000RDlQAM",   10],
-    ["0Hh7F0000000O5fSAE","08q7F0000004gT6QAI",    7],
-    ["0Hh7F0000000O5fSAE","null",                  5],
-    ["0Hh7F0000000O5fSAE","08q7F0000000RDkQAM",    4],
-    ["0Hh7F0000000O5fSAE","08q7F0000004gQRQAY",    4],
-    ["0Hh7F0000000O5fSAE","08q7F0000000RDiQAM",    4],
-    ["0Hh7F0000000O5fSAE","08q7F0000000RDsQAM",    2],
-    ["0Hh7F0000000O5fSAE","08q7F000000Y4WiQAK",    2],
-    ["0Hh7F0000000O5fSAE","08q7F000000Y4VfQAK",    1],
-    ["0Hh7F0000000O5kSAE","08q7F0000000RDlQAM",   10],
-    ["0Hh7F0000000O5kSAE","08q7F0000004gQRQAY",    5],
-    ["0Hh7F0000000O5kSAE","08q7F000000Y4RTQA0",    2],
-    ["0Hh7F0000000O5kSAE","08q7F0000000RDjQAM",    1],
-    ["0Hh7F0000000O5kSAE","08q7F0000000RDnQAM",    1],
-    ["0Hh7F0000000O5kSAE","08q7F000000Y4VvQAK",    1],
-    ["0Hh7F0000000O5pSAE","08q7F0000000RDlQAM",    9],
-    ["0Hh7F0000000O5pSAE","08q7F0000004gQRQAY",    3],
-    ["0Hh7F0000000O5pSAE","08q7F0000004gT6QAI",    1],
-    ["0Hh7F0000000O5uSAE","08q7F0000000RDlQAM",   13],
-    ["0Hh7F0000000O5uSAE","08q7F0000004gQRQAY",    9],
-    ["0Hh7F0000000O5uSAE","08q7F0000000RDnQAM",    4],
-    ["0Hh7F0000000O5uSAE","08q7F0000004gT6QAI",    2],
-    ["0Hh7F0000000O5uSAE","08q7F0000000RDmQAM",    1],
-    ["0Hh7F0000000O5uSAE","08q7F0000000RDtQAM",    1],
-    ["0Hh7F0000000O5uSAE","null",                  1],
-    ["0Hh7F0000000O5uSAE","08q7F0000000RDiQAM",    1]
-  ],
-
-  performance: {
-    mar: { count: 134, avgDays: 7.64, ftf: 104 },
-    feb: { count: 241, avgDays: 8.28, ftf: 174 }
-  }
+// Avatar colours per territory
+const AVATAR_COLORS = {
+  'Vanuatu':  {bg:'#e6f4ea',fg:'#1a6e2e'},
+  'Samoa':    {bg:'#f3e8fb',fg:'#6b21a8'},
+  'Solomons': {bg:'#fef3dc',fg:'#8a5200'},
+  'Tonga':    {bg:'#fdecea',fg:'#c0392b'},
+  'NZ':       {bg:'#e8f0fb',fg:'#0057b8'},
 };
-// ─────────────────────────────────────────────
-//  END DATA — do not edit below this line
-// ─────────────────────────────────────────────
 
-// ── HELPERS ──────────────────────────────────
+function initials(name) {
+  return name.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
+}
 
-const terrName = id => DATA.territories[id] || id;
-const wtName   = id => DATA.workTypes[id]   || id;
-const isNull   = id => id === "null";
-const pct      = (n, d) => d ? Math.round(n / d * 100) + "%" : "—";
-const fmt1     = n => n.toFixed(1);
+// ─────────────────────────────────────────────────────────
+//  COMPUTE SF SCORES
+// ─────────────────────────────────────────────────────────
+function computeSFScores(row) {
+  const [name, terr, ytd, avgD10, ftfCnt, cbCnt, marClosed, marCB, marSLA] = row;
+  const ftfRate  = ytd > 0 ? (ftfCnt/ytd*100) : 0;
+  const cbRate   = ytd > 0 ? (cbCnt/ytd*100)  : 0;
+  const callsDay = +(ytd/WORKING_DAYS).toFixed(1);
 
-const totalOpen    = DATA.openByTerritory.reduce((s,t) => s+t.count, 0);
-const totalOver72  = DATA.over72ByTerritory.reduce((s,t) => s+t.count, 0);
-const escalated    = DATA.byStatus.find(r => r[1] === "Escalated");
-const escalatedTerr = escalated ? terrName(escalated[0]) : "None";
-const escalatedN   = escalated ? escalated[2] : 0;
+  // FTF score /15 — linear, floor 0
+  const ftfScore = Math.min(15, Math.max(0, +(ftfRate/85*15).toFixed(1)));
+  // Repeat call score /10 — target <=5%, above 5% start losing points
+  const cbScore  = cbRate <= 5 ? 10 : Math.max(0, +(10 - (cbRate-5)*0.5).toFixed(1));
+  // Calls/day score /10
+  const cpdScore = Math.min(10, Math.max(0, +(callsDay/5*10).toFixed(1)));
 
-
-// ── CASES LINK HELPER ────────────────────────
-// Builds a URL to cases-open.html with pre-set filters
-function casesUrl(territory, status, worktype) {
-  // Map full territory names (used in service dashboard) to short names (used in cases-open dropdown)
-  const terrMap = {
-    "New Zealand":    "NZ",
-    "Solomon Islands":"Solomons",
-    "No territory":   "Unassigned",
-    "Vanuatu":        "Vanuatu",
-    "Tonga":          "Tonga",
-    "Samoa":          "Samoa"
+  return {
+    name, terr, ytd, ftfRate:+ftfRate.toFixed(1), cbRate:+cbRate.toFixed(1),
+    callsDay, marClosed, marCB, marSLA,
+    avgDays:+(avgD10/10).toFixed(1),
+    ftfScore, cbScore, cpdScore,
+    sfTotal: +(ftfScore + cbScore + cpdScore).toFixed(1)
   };
-  const params = new URLSearchParams();
-  const mappedTerr = terrMap[territory] || territory;
-  if (mappedTerr && mappedTerr !== "null") params.set('territory', mappedTerr);
-  if (status)    params.set('status', status);
-  if (worktype)  params.set('worktype', worktype);
-  return 'cases-open.html?' + params.toString();
 }
 
-// ── BADGE CLASS ──────────────────────────────
-function badgeClass(status) {
-  if (status === "New") return "b-New";
-  if (status === "Work Order Issued") return "b-WOI";
-  if (status === "Processing Invoice") return "b-Invoice";
-  if (status === "Escalated" || status === "Stop Credit") return "b-Escalated";
-  return "b-Waiting";
+const TECHS = SF_DATA.map(computeSFScores);
+
+// ─────────────────────────────────────────────────────────
+//  STORAGE — browser localStorage per month
+// ─────────────────────────────────────────────────────────
+function storageKey(month) { return `rsp_conv_${month}`; }
+
+function loadData(month) {
+  const raw = localStorage.getItem(storageKey(month));
+  return raw ? JSON.parse(raw) : {};
 }
 
-// ── KPI CARDS ────────────────────────────────
-function kpiCard(cls, label, value, valueCls, sub, trend, trendCls, bar) {
-  return `<div class="kpi-card ${cls}">
-    <div class="kpi-label">${label}</div>
-    <div class="kpi-value ${valueCls}">${value}</div>
-    <div class="kpi-sub">${sub}</div>
-    ${trend ? `<div class="kpi-trend ${trendCls}">${trend}</div>` : ""}
-    ${bar !== undefined ? `<div class="progress-bar"><div class="progress-fill ${bar.cls}" style="width:${bar.w}%"></div></div>` : ""}
-  </div>`;
+function saveData(month, data) {
+  localStorage.setItem(storageKey(month), JSON.stringify(data));
 }
 
-document.getElementById("kpiSnapshot").innerHTML = [
-  kpiCard("accent","Total open cases", totalOpen, "", "Across 5 territories", "", ""),
-  kpiCard("alert", "Open &gt;72 hours", totalOver72, "alert", `${Math.round(totalOver72/totalOpen*100)}% of all open cases`, "", ""),
-  kpiCard("",      "Highest load", "NZ", "muted", `37 open · 36 over 72h`, "", ""),
-  kpiCard("alert", "Escalated", escalatedN, escalatedN ? "alert" : "", escalatedTerr, "", "")
-].join("");
+// ─────────────────────────────────────────────────────────
+//  SCORE COLOUR HELPERS
+// ─────────────────────────────────────────────────────────
+function scoreCls(score, max) {
+  const pct = score/max*100;
+  if (pct >= 90) return 'score-full';
+  if (pct >= 70) return 'score-good';
+  if (pct >= 50) return 'score-warn';
+  return 'score-bad';
+}
 
-const { mar, feb } = DATA.performance;
-const marFTFpct  = mar.ftf  / mar.count  * 100;
-const febFTFpct  = feb.ftf  / feb.count  * 100;
-const daysDelta  = (mar.avgDays - feb.avgDays).toFixed(1);
-const ftfDelta   = (marFTFpct - febFTFpct).toFixed(1);
+function metricCls(val, target, lowerBetter) {
+  if (lowerBetter) return val <= target ? 'metric-good' : val <= target*1.5 ? 'metric-warn' : 'metric-bad';
+  return val >= target ? 'metric-good' : val >= target*0.8 ? 'metric-warn' : 'metric-bad';
+}
 
-document.getElementById("kpiPerformance").innerHTML = [
-  kpiCard("good",  "Avg days to close — Mar MTD", fmt1(mar.avgDays), "good",  `${mar.count} closed service calls`, `▼ ${Math.abs(daysDelta)} days vs Feb`, "trend-good"),
-  kpiCard("",      "Avg days to close — Feb",      fmt1(feb.avgDays), "muted", `${feb.count} closed service calls`, "", ""),
-  kpiCard("good",  "First time fix — Mar MTD",     fmt1(marFTFpct)+"%", "good", `${mar.ftf} of ${mar.count} cases`, `▲ ${Math.abs(ftfDelta)}pp vs Feb`, "trend-good", {cls:"fill-green", w:marFTFpct}),
-  kpiCard("",      "First time fix — Feb",          fmt1(febFTFpct)+"%", "muted", `${feb.ftf} of ${feb.count} cases`, "", "", {cls:"fill-muted", w:febFTFpct})
-].join("");
+// ─────────────────────────────────────────────────────────
+//  COACHING PROMPTS (generated from data)
+// ─────────────────────────────────────────────────────────
+function coachingPrompts(tech, month) {
+  const prompts = [];
+  if (tech.ftfRate < 85) prompts.push(`FTF at ${tech.ftfRate}% — target 85%. What's causing return visits? Review last 5 callback cases together.`);
+  if (tech.cbRate > 15)  prompts.push(`Callback rate ${tech.cbRate}% is high (target ≤5%). Are parts being ordered first visit? Is diagnosis complete before leaving site?`);
+  if (tech.cbRate > 30)  prompts.push(`Callback rate above 30% — this needs urgent attention. Escalate to joint site visit review.`);
+  if (tech.callsDay < 3) prompts.push(`Only ${tech.callsDay} calls/day vs target of 5. Review scheduling and travel routing.`);
+  if (tech.marSLA > tech.marClosed * 0.7) prompts.push(`${tech.marSLA} of ${tech.marClosed} Mar cases had SLA violations (${Math.round(tech.marSLA/tech.marClosed*100)}%). Check if cases are being acknowledged and updated promptly.`);
+  if (tech.avgDays > 10) prompts.push(`Avg ${tech.avgDays} days to close — above 10d. Are cases being left open after work is done?`);
+  if (prompts.length === 0) prompts.push(`Performance is strong across all Salesforce metrics. Focus conversation on CSAT, PM compliance, and professional development.`);
+  return prompts;
+}
 
-// ── TERRITORY TABLE (shared structure) ───────
-function buildTerritoryTable(headers, rowsFn) {
-  const terrOrder = DATA.openByTerritory.map(t => t.id);
-  let rows = "";
-  for (const tid of terrOrder) {
-    const total = DATA.openByTerritory.find(t => t.id === tid).count;
-    const name  = isNull(tid)
-      ? `<span style="font-style:italic;font-weight:400;color:var(--muted)">No territory assigned</span>`
-      : terrName(tid);
-    rows += `<tr class="tr-territory"><td>${name}<span class="terr-count">${total} total</span></td>${"<td></td>".repeat(headers.length - 1)}</tr>`;
-    rows += rowsFn(tid, total);
+// ─────────────────────────────────────────────────────────
+//  RENDER SUMMARY TABLE
+// ─────────────────────────────────────────────────────────
+function renderSummary(month) {
+  const data = loadData(month);
+  const rows = TECHS.map(t => {
+    const td = data[t.name] || {};
+    const manualTotal = ['resptime','audit','csat','report','pm','safety']
+      .reduce((s,k) => s + (+(td[k]||0)), 0);
+    const total = +(t.sfTotal + manualTotal).toFixed(1);
+    const cat = category(total);
+    return {...t, manualTotal, total, cat};
+  }).sort((a,b) => b.total - a.total);
+
+  const monthLabel = document.getElementById('monthSelect').options[document.getElementById('monthSelect').selectedIndex].text;
+  document.getElementById('summaryTitle').textContent = monthLabel;
+
+  document.getElementById('summaryBody').innerHTML = rows.map((t,i) => {
+    const rankCls = i===0?'r1':i===1?'r2':i===2?'r3':'rn';
+    const col = AVATAR_COLORS[t.terr] || {bg:'#f0f0f0',fg:'#666'};
+    return `<tr>
+      <td style="text-align:center"><span class="rank-badge ${rankCls}">${i+1}</span></td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:28px;height:28px;border-radius:50%;background:${col.bg};color:${col.fg};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0">${initials(t.name)}</div>
+          <span style="font-weight:500;font-size:13px">${t.name}</span>
+        </div>
+      </td>
+      <td><span class="terr-pill t-${t.terr.replace(' ','')}">${t.terr}</span></td>
+      <td class="right mono ${metricCls(t.ftfRate,85,false)}">${t.ftfScore}</td>
+      <td class="right mono ${metricCls(t.cbRate,5,true)}">${t.cbScore}</td>
+      <td class="right mono ${metricCls(t.callsDay,5,false)}">${t.cpdScore}</td>
+      <td class="right mono">${t.manualTotal}</td>
+      <td class="right mono" style="font-weight:600;font-size:15px">${total}</td>
+      <td class="right"><span class="cat-badge cat-${cat}">${cat} — ${cat==='A'?'High Performer':cat==='B'?'On Track':cat==='C'?'Needs Focus':'At Risk'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────
+//  RENDER TECH CARDS
+// ─────────────────────────────────────────────────────────
+function renderCards(month) {
+  const data = loadData(month);
+  const manualKPIs = KPIS.filter(k => k.type === 'manual');
+
+  document.getElementById('techGrid').innerHTML = TECHS.map(tech => {
+    const td = data[tech.name] || {};
+    const col = AVATAR_COLORS[tech.terr] || {bg:'#f0f0f0',fg:'#666'};
+    const prompts = coachingPrompts(tech, month);
+
+    const manualTotal = manualKPIs.reduce((s,k) => s + (+(td[k.id]||0)), 0);
+    const total = +(tech.sfTotal + manualTotal).toFixed(1);
+    const cat = category(total);
+
+    // SF KPI rows
+    const sfRows = `
+      <div class="kpi-row">
+        <span class="kpi-row-name">First Time Fix Rate <span style="color:var(--muted);font-size:10px">(target ≥85%)</span></span>
+        <span class="kpi-row-value ${metricCls(tech.ftfRate,85,false)}">${tech.ftfRate}%</span>
+        <span class="kpi-row-score ${scoreCls(tech.ftfScore,15)}">${tech.ftfScore}/15</span>
+      </div>
+      <div class="kpi-row">
+        <span class="kpi-row-name">Callback / Repeat Call Rate <span style="color:var(--muted);font-size:10px">(target ≤5%)</span></span>
+        <span class="kpi-row-value ${metricCls(tech.cbRate,5,true)}">${tech.cbRate}%</span>
+        <span class="kpi-row-score ${scoreCls(tech.cbScore,10)}">${tech.cbScore}/10</span>
+      </div>
+      <div class="kpi-row">
+        <span class="kpi-row-name">Calls Closed per Day <span style="color:var(--muted);font-size:10px">(target ≥5)</span></span>
+        <span class="kpi-row-value ${metricCls(tech.callsDay,5,false)}">${tech.callsDay}/day</span>
+        <span class="kpi-row-score ${scoreCls(tech.cpdScore,10)}">${tech.cpdScore}/10</span>
+      </div>
+      <div class="kpi-row" style="background:#fafafa;padding:4px 0;border-radius:3px;margin-top:2px">
+        <span class="kpi-row-name" style="font-size:11px;color:var(--muted)">YTD: ${tech.ytd} cases · avg ${tech.avgDays}d to close · ${tech.marClosed} Mar closed</span>
+        <span></span>
+        <span class="kpi-row-score" style="color:var(--muted);font-size:11px">${tech.sfTotal}/35</span>
+      </div>`;
+
+    // Manual score sliders
+    const sliders = manualKPIs.map(k => {
+      const val = +(td[k.id] || 0);
+      return `<div class="manual-item">
+        <div class="manual-label">
+          <span>${k.label}</span>
+          <span style="font-size:10px;color:var(--muted)">${k.target}</span>
+        </div>
+        <input type="range" class="manual-slider" min="0" max="${k.weight}" step="0.5" value="${val}"
+          data-tech="${tech.name}" data-kpi="${k.id}" data-max="${k.weight}"
+          oninput="onSliderChange(this)">
+        <div class="manual-label">
+          <span style="font-size:10px;color:var(--muted)">${k.weight}pts max</span>
+          <span class="manual-score-display" id="slider_${tech.name.replace(/[^a-zA-Z]/g,'_')}_${k.id}">${val}/${k.weight}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Coaching prompts
+    const promptsHtml = prompts.length ? `
+      <div class="coaching-box">
+        <div class="coaching-box-title">Coaching focus points</div>
+        ${prompts.map(p => `<div class="coaching-item">${p}</div>`).join('')}
+      </div>` : '';
+
+    return `<div class="tech-card">
+      <div class="tech-card-header">
+        <div class="tech-name-block">
+          <div class="tech-avatar" style="background:${col.bg};color:${col.fg}">${initials(tech.name)}</div>
+          <div>
+            <div class="tech-name">${tech.name}</div>
+            <div class="tech-territory">${tech.terr} · ${tech.ytd} cases YTD</div>
+          </div>
+        </div>
+        <div class="tech-score-block">
+          <div class="total-score" id="totalscore_${tech.name.replace(/[^a-zA-Z]/g,'_')}">${total}</div>
+          <div class="total-score-label">/ 100</div>
+          <div><span class="cat-badge cat-${cat}" id="catbadge_${tech.name.replace(/[^a-zA-Z]/g,'_')}">${cat}</span></div>
+        </div>
+      </div>
+
+      <div class="kpi-section">
+        <div class="kpi-section-title">Salesforce metrics — auto-calculated (35 pts)</div>
+        ${sfRows}
+      </div>
+
+      <div class="manual-grid">
+        <div style="grid-column:1/-1">
+          <div class="kpi-section-title" style="margin-bottom:10px">Manual scores — enter after review (65 pts)</div>
+        </div>
+        ${sliders}
+      </div>
+
+      <div class="convo-section">
+        ${promptsHtml}
+        <div class="convo-row">
+          <div class="convo-label">Conversation notes</div>
+          <textarea class="convo-input" rows="2" placeholder="What was discussed in this week's 1:1…"
+            data-tech="${tech.name}" data-field="notes"
+            oninput="onTextChange(this)">${td.notes||''}</textarea>
+        </div>
+        <div class="convo-row">
+          <div class="convo-label">Commitment made by technician</div>
+          <textarea class="convo-input" rows="2" placeholder="What did they commit to doing differently…"
+            data-tech="${tech.name}" data-field="commitment"
+            oninput="onTextChange(this)">${td.commitment||''}</textarea>
+        </div>
+        <div class="convo-row">
+          <div class="convo-label">Last week's commitment — was it kept?</div>
+          <textarea class="convo-input" rows="1" placeholder="Yes / Partially / No — and what happened…"
+            data-tech="${tech.name}" data-field="followup"
+            oninput="onTextChange(this)">${td.followup||''}</textarea>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────
+//  EVENT HANDLERS
+// ─────────────────────────────────────────────────────────
+let _dirty = false;
+let _pendingData = {};
+
+function currentMonth() { return document.getElementById('monthSelect').value; }
+
+function onSliderChange(el) {
+  const tech = el.dataset.tech;
+  const kpi  = el.dataset.kpi;
+  const max  = +el.dataset.max;
+  const val  = +el.value;
+  const dispId = `slider_${tech.replace(/[^a-zA-Z]/g,'_')}_${kpi}`;
+  document.getElementById(dispId).textContent = `${val}/${max}`;
+
+  if (!_pendingData[tech]) _pendingData[tech] = {};
+  _pendingData[tech][kpi] = val;
+  updateTotalScore(tech);
+  markDirty();
+}
+
+function onTextChange(el) {
+  const tech  = el.dataset.tech;
+  const field = el.dataset.field;
+  if (!_pendingData[tech]) _pendingData[tech] = {};
+  _pendingData[tech][field] = el.value;
+  markDirty();
+}
+
+function updateTotalScore(techName) {
+  const tech = TECHS.find(t => t.name === techName);
+  if (!tech) return;
+  const manualKPIs = KPIS.filter(k => k.type === 'manual');
+  const manualTotal = manualKPIs.reduce((s,k) => {
+    const val = _pendingData[techName]?.[k.id] ?? 0;
+    return s + +val;
+  }, 0);
+  const total = +(tech.sfTotal + manualTotal).toFixed(1);
+  const cat = category(total);
+  const safeId = techName.replace(/[^a-zA-Z]/g,'_');
+  const scoreEl = document.getElementById(`totalscore_${safeId}`);
+  const catEl   = document.getElementById(`catbadge_${safeId}`);
+  if (scoreEl) scoreEl.textContent = total;
+  if (catEl) {
+    catEl.className = `cat-badge cat-${cat}`;
+    catEl.textContent = cat;
   }
-  const ths = headers.map((h,i) => `<th${i>0?' class="right"':''}>${h}</th>`).join("");
-  return `<table><thead><tr>${ths}</tr></thead><tbody>${rows}</tbody></table>`;
 }
 
-// ── STATUS TAB ───────────────────────────────
-document.getElementById("tab-status").innerHTML = buildTerritoryTable(
-  ["Territory / Status", "Cases", "Share", ""],
-  (tid, total) => {
-    const rows = DATA.byStatus.filter(r => r[0] === tid);
-    const max  = Math.max(...rows.map(r => r[2]));
-    return rows.map(([,status,count]) => {
-      const terr = terrName(tid);
-      const url  = casesUrl(terr, status, "");
-      const isNull_ = isNull(tid);
-      return `
-      <tr class="clickable-row" onclick="window.location='${url}'">
-        <td class="indent"><a href="${url}" class="row-link"><span class="badge ${badgeClass(status)}">${status}</span></a></td>
-        <td class="count">${count}</td>
-        <td class="pct">${pct(count, total)}</td>
-        <td><div class="bar-bg"><div class="bar-fill" style="width:${Math.round(count/max*100)}%"></div></div></td>
-      </tr>`;
-    }).join("");
-  }
-);
-
-// ── WORK TYPE TAB ────────────────────────────
-document.getElementById("tab-worktype").innerHTML = buildTerritoryTable(
-  ["Territory / Work Type", "Cases", "Share", ""],
-  (tid, total) => {
-    const rows = DATA.byWorkType.filter(r => r[0] === tid);
-    const max  = Math.max(...rows.map(r => r[2]));
-    return rows.map(([,wtId,count]) => {
-      const isNullWt = wtId === "null";
-      const terr = terrName(tid);
-      const url  = casesUrl(terr, "", isNullWt ? "" : wtName(wtId));
-      const label = isNullWt
-        ? `<span style="color:var(--muted);font-style:italic">${wtName(wtId)}</span>`
-        : `<a href="${url}" class="row-link">${wtName(wtId)}</a>`;
-      return `
-        <tr class="${isNullWt?'':'clickable-row'}" ${isNullWt?'':'onclick="window.location=\''+url+'\'"'}>
-          <td class="indent">${label}</td>
-          <td class="count" ${isNullWt?'style="color:var(--muted)"':''}>${count}</td>
-          <td class="pct">${pct(count, total)}</td>
-          <td><div class="bar-bg"><div class="bar-fill${isNullWt?' muted':''}" style="width:${Math.round(count/max*100)}%"></div></div></td>
-        </tr>`;
-    }).join("");
-  }
-);
-
-// ── OVER 72H TAB ─────────────────────────────
-const terrOrder72 = [...DATA.over72ByTerritory].sort((a,b) => b.count - a.count);
-const cells = terrOrder72.map(({ id, count }) => {
-  const total = (DATA.openByTerritory.find(t => t.id === id) || {count:0}).count;
-  const p = total ? Math.round(count / total * 100) : 0;
-  const name = isNull(id)
-    ? `<span style="font-style:italic">${terrName(id)}</span>`
-    : terrName(id);
-  const o72url = isNull(id) ? 'cases-open.html?age=72' : 'cases-open.html?territory=' + encodeURIComponent(terrName(id)) + '&age=72';
-  return `<div class="overage-cell" style="cursor:pointer" onclick="window.location='${o72url}'" title="View in Open Cases">
-    <div class="overage-name">${name}</div>
-    <div class="overage-nums"><span class="overage-big">${count}</span><span class="overage-of">/ ${total}</span></div>
-    <div class="overage-pct">${p}% of territory</div>
-    <div class="overage-bar-bg"><div class="overage-bar-fill" style="width:${p}%"></div></div>
-  </div>`;
-}).join("");
-
-document.getElementById("tab-overage").innerHTML = `
-  <div class="overage-grid">${cells}</div>
-  <div class="overage-total-row">
-    <span class="overage-total-label">Total open &gt;72 hours</span>
-    <span class="overage-total-val">${totalOver72} of ${totalOpen} &nbsp;·&nbsp; ${pct(totalOver72, totalOpen)}</span>
-  </div>`;
-
-// ── FOOTER / DATE ─────────────────────────────
-document.getElementById("asOf").textContent = DATA.asOf;
-document.getElementById("footer").textContent =
-  `Ricoh South Pacific · Data from Salesforce · ${DATA.asOf}`;
-
-// ── TAB SWITCHER ──────────────────────────────
-function switchTab(name, btn) {
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
-  document.getElementById("tab-" + name).classList.add("active");
-  btn.classList.add("active");
+function markDirty() {
+  _dirty = true;
+  document.getElementById('unsavedBadge').classList.add('show');
+  document.getElementById('savedMsg').classList.remove('show');
 }
+
+function saveAll() {
+  const month = currentMonth();
+  const existing = loadData(month);
+  const merged = {...existing};
+  for (const [tech, vals] of Object.entries(_pendingData)) {
+    merged[tech] = {...(merged[tech]||{}), ...vals};
+  }
+  saveData(month, merged);
+  _dirty = false;
+  _pendingData = {};
+  document.getElementById('unsavedBadge').classList.remove('show');
+  document.getElementById('savedMsg').classList.add('show');
+  setTimeout(() => document.getElementById('savedMsg').classList.remove('show'), 2500);
+  renderSummary(month);
+}
+
+function loadMonth() {
+  if (_dirty && !confirm('You have unsaved changes. Continue without saving?')) {
+    document.getElementById('monthSelect').value = currentMonth();
+    return;
+  }
+  _dirty = false;
+  _pendingData = {};
+  const month = currentMonth();
+  renderCards(month);
+  renderSummary(month);
+}
+
+// ─────────────────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────────────────
+document.getElementById('asOf').textContent = ASOF;
+document.getElementById('footer').textContent = `Ricoh South Pacific · Tech Conversations · Data from Salesforce · ${ASOF}`;
+
+const initMonth = currentMonth();
+renderSummary(initMonth);
+renderCards(initMonth);
 </script>
 </body>
 </html>
