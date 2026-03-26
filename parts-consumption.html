@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP — Parts & Revenue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--red:#D7063B;--charcoal:#1a1a1a;--mid:#444;--muted:#888;--border:#e5e5e5;--bg:#f7f7f6;--surface:#fff;--surface2:#f2f2f1;--green:#1a6e2e;--green-bg:#e6f4ea;--amber:#8a5200;--amber-bg:#fef3dc;--danger:#c0392b;--danger-bg:#fdecea;--blue:#0057b8;--blue-bg:#e8f0fb;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
+.hd{width:1px;height:22px;background:#444;margin:0 16px;}
+.header-title{font-size:13px;color:#aaa;}
+.as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+.back-link{font-size:11px;color:#666;text-decoration:none;}
+.back-link:hover{color:#aaa;}
+main{max-width:1200px;margin:0 auto;padding:28px 24px 64px;}
+.nav-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;}
+.nav-pill:hover{border-color:var(--red);color:var(--red);}
+.nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+.section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* EXPLAINER */
+.explainer{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 20px;margin-bottom:24px;}
+.explainer p{font-size:12px;color:var(--mid);line-height:1.6;}
+.type-tags{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;}
+.type-tag{padding:6px 14px;border-radius:4px;font-size:12px;font-weight:500;}
+.tag-sla{background:var(--danger-bg);color:var(--danger);}
+.tag-tm{background:var(--green-bg);color:var(--green);}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:28px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-card.red::before{background:var(--danger);}
+.kpi-card.green::before{background:var(--green);}
+.kpi-card.amber::before{background:var(--amber);}
+.kpi-card.blue::before{background:var(--blue);}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
+.kpi-value{font-size:24px;font-weight:300;line-height:1;}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+
+/* MONTH CHART */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px 24px;margin-bottom:28px;}
+.chart-title{font-size:12px;font-weight:600;margin-bottom:16px;}
+.dual-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.dual-label{font-size:12px;font-family:'DM Mono',monospace;width:50px;flex-shrink:0;color:var(--mid);}
+.dual-bars{flex:1;display:flex;flex-direction:column;gap:3px;}
+.dual-bar-track{height:14px;background:#f5f5f5;border-radius:3px;overflow:hidden;position:relative;}
+.bar-fill-sla{height:100%;background:var(--danger);border-radius:3px;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;color:rgba(255,255,255,.9);}
+.bar-fill-tm{height:100%;background:var(--green);border-radius:3px;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;color:rgba(255,255,255,.9);}
+.dual-totals{font-size:11px;font-family:'DM Mono',monospace;width:120px;flex-shrink:0;text-align:right;}
+.chart-legend{display:flex;gap:16px;margin-top:12px;}
+.chart-leg-item{display:flex;align-items:center;gap:6px;font-size:11px;}
+.leg-dot{width:10px;height:10px;border-radius:2px;}
+
+/* TERRITORY TABLE */
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:28px;}
+.table-header{padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);}
+.table-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);}
+th.right{text-align:right;}
+td{padding:9px 12px;font-size:13px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+td.right{text-align:right;}
+td.mono{font-family:'DM Mono',monospace;font-size:12px;}
+.sla-val{color:var(--danger);font-weight:500;}
+.tm-val{color:var(--green);font-weight:500;}
+.ratio-good{color:var(--green);font-weight:500;}
+.ratio-warn{color:var(--amber);font-weight:500;}
+.ratio-bad{color:var(--danger);font-weight:500;}
+.terr-pill{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:500;}
+.t-NZ{background:#e8f0fb;color:#0057b8;}.t-Vanuatu{background:#e6f4ea;color:#1a6e2e;}
+.t-Solomons{background:#fef3dc;color:#8a5200;}.t-Tonga{background:#fdecea;color:#c0392b;}
+.t-Samoa{background:#f3e8fb;color:#6b21a8;}
+.asset-link{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);text-decoration:none;}
+.asset-link:hover{text-decoration:underline;}
+footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
+@media(max-width:800px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center">
+    <span class="wordmark">Ricoh</span><div class="hd"></div>
+    <span class="header-title">South Pacific — Parts & Revenue</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="as-of">26 Mar 2026</span>
+    <a href="service-dashboard.html" class="back-link">← Dashboard</a>
+  </div>
+</header>
+<main>
+  <div class="nav-pills">
+    <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
+    <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
+    <a href="cases-open.html" class="nav-pill">Open Cases</a>
+    <a href="conversations.html" class="nav-pill">Conversations</a>
+    <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
+  </div>
+
+  <div class="explainer">
+    <p>Parts and revenue are tracked via <strong>Product Requests</strong> in Salesforce. There are two types. <strong>Product Request (SLA)</strong> records represent parts consumption on SLA-covered machines — this is a cost to RSP. <strong>Service Quote (T&M)</strong> records are time-and-materials jobs where parts are charged to the customer — this is revenue. When approved, both create an Order: SLA orders are at $0 value, T&M orders are at RRP.</p>
+    <p style="margin-top:8px">The objective is to <strong>reduce SLA parts spend</strong> (manage asset reliability, reduce repeat failures) and <strong>increase T&M revenue</strong> (convert more out-of-contract work into billable jobs).</p>
+    <div class="type-tags">
+      <div class="type-tag tag-sla">Product Request (SLA) — parts cost to RSP · want to reduce</div>
+      <div class="type-tag tag-tm">Service Quote (T&M) — revenue from customer · want to increase</div>
+    </div>
+  </div>
+
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="section-label">Monthly trend — SLA parts spend vs T&M revenue</div>
+  <div class="chart-card">
+    <div class="chart-title">NZD by month — Product Requests (SLA) vs Service Quotes (T&M)</div>
+    <div id="monthChart"></div>
+    <div class="chart-legend">
+      <div class="chart-leg-item"><div class="leg-dot" style="background:var(--danger)"></div>SLA parts spend (cost to RSP)</div>
+      <div class="chart-leg-item"><div class="leg-dot" style="background:var(--green)"></div>T&M revenue (customer pays)</div>
+    </div>
+  </div>
+
+  <div class="section-label">Top parts-consuming assets (SLA) — ProductConsumed YTD</div>
+  <div class="table-card">
+    <div class="table-header"><span class="table-title">Assets by SLA parts cost — unit price × qty consumed</span></div>
+    <table>
+      <thead><tr>
+        <th>Serial number</th>
+        <th>Asset</th>
+        <th>Territory</th>
+        <th class="right">Parts cost YTD (NZD)</th>
+      </tr></thead>
+      <tbody id="assetTable"></tbody>
+    </table>
+  </div>
+
+  <div class="section-label">Product Request summary — counts and values</div>
+  <div class="table-card">
+    <div class="table-header"><span class="table-title">Monthly breakdown</span></div>
+    <table>
+      <thead><tr>
+        <th>Month</th>
+        <th>Type</th>
+        <th class="right">Count</th>
+        <th class="right">Total value (NZD)</th>
+        <th class="right">Avg per request</th>
+      </tr></thead>
+      <tbody id="prTable"></tbody>
+    </table>
+  </div>
+</main>
+<footer>Ricoh South Pacific · Parts & Revenue · Product Request data · 2026 YTD · 26 Mar 2026</footer>
+
+<script>
+const SF = "https://clearedgepacific.my.salesforce.com/";
+
+// PR_MONTHLY=Service Quote:1:11:25993|Product Request:1:30:33806|Service Quote:2:31:106931|Product Request:2:50:78548|Service Quote:3:31:81259|Product Request:3:44:64213
+const PR = [
+  {type:'Product Request', mo:1, cnt:30, amt:33806},
+  {type:'Service Quote',   mo:1, cnt:11, amt:25993},
+  {type:'Product Request', mo:2, cnt:50, amt:78548},
+  {type:'Service Quote',   mo:2, cnt:31, amt:106931},
+  {type:'Product Request', mo:3, cnt:44, amt:64213},
+  {type:'Service Quote',   mo:3, cnt:31, amt:81259},
+];
+const MONTHS = {1:'January',2:'February',3:'March'};
+
+// PC_ASSETS from Salesforce
+const ASSETS = [
+  ["9135R110133","Ricoh IM C2010 - 9135R110133","Vanuatu",746789,"02iMp00000CnB3RIAV"],
+  ["9263P800171","Ricoh IM 460 - 9263P800171","Vanuatu",593146,"02iMp00000D12jRIAR"],
+  ["4462R220003","Ricoh IM 6000 - 4462R220003","Solomons",229766,"02i7F000000WV12QAG"],
+  ["3120MA20353","Ricoh IM C4500 - 3120MA20353","Vanuatu",142524,"02i7F00000FlnbJQAR"],
+  ["3098RC20298","Ricoh IM C2500 - 3098RC20298","Vanuatu",109272,"02i7F000009UvZQQA0"],
+  ["3923P452807","Ricoh IM C300F - 3923P452807","Vanuatu",92611,"02iGA00000ZMoNMYA1"],
+  ["9174R820071","Ricoh IM C4510 - 9174R820071","Vanuatu",63862,"02iMp00000A8rcTIAR"],
+  ["3925P250037","Ricoh IM C300F - 3925P250037","Vanuatu",60611,"02iMp00000BuZxdIAF"],
+  ["3129M920905","Ricoh IM C4500 - 3129M920905","Vanuatu",58042,"02i7F000009VH3KQAW"],
+  ["3359P102092","Ricoh IM 430F - 3359P102092","Vanuatu",51662,"02i7F00000FlkJWQAZ"],
+  ["G988X370920","Ricoh MP 501 - G988X370920","Vanuatu",51202,"02i7F000009Nu9CQAS"],
+  ["E154M850002","Sig Ricoh MP C3003 - E154M850002","Vanuatu",48908,"02iGA00000hKAKdYAO"],
+  ["C386PC00385","Ricoh MP 5055 - C386PC00385","Solomons",41648,"02i7F000009NtySQAS"],
+  ["C507P502343","Ricoh MP C307 - C507P502343","Vanuatu",35453,"02i7F000009Ntz9QAC"],
+];
+
+function fmt(n){return 'NZD '+n.toLocaleString();}
+
+// KPI cards
+function renderKPIs(){
+  const slaTot = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.amt,0);
+  const tmTot  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.amt,0);
+  const ratio  = (tmTot/slaTot).toFixed(2);
+  const slaCnt = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.cnt,0);
+  const tmCnt  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.cnt,0);
+
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi-card red"><div class="kpi-label">SLA parts spend — YTD</div>
+      <div class="kpi-value" style="color:var(--danger)">NZD ${(slaTot/1000).toFixed(0)}k</div>
+      <div class="kpi-sub">${slaCnt} product requests · cost to RSP</div></div>
+    <div class="kpi-card green"><div class="kpi-label">T&M revenue — YTD</div>
+      <div class="kpi-value" style="color:var(--green)">NZD ${(tmTot/1000).toFixed(0)}k</div>
+      <div class="kpi-sub">${tmCnt} service quotes · customer pays</div></div>
+    <div class="kpi-card ${parseFloat(ratio)>=1?'green':'amber'}"><div class="kpi-label">T&M / SLA ratio</div>
+      <div class="kpi-value">${ratio}×</div>
+      <div class="kpi-sub">Target &gt;1.0× — T&M exceeding SLA spend</div></div>
+    <div class="kpi-card amber"><div class="kpi-label">Vanuatu parts spend</div>
+      <div class="kpi-value" style="color:var(--amber)">~NZD 1.9M</div>
+      <div class="kpi-sub">Top 2 assets alone account for NZD 1.34M YTD</div></div>`;
+}
+
+// Month chart
+function renderMonthChart(){
+  const maxAmt = Math.max(...PR.map(r=>r.amt));
+  const rows = [1,2,3].map(mo => {
+    const sla = PR.find(r=>r.type==='Product Request'&&r.mo===mo) || {amt:0};
+    const tm  = PR.find(r=>r.type==='Service Quote'&&r.mo===mo)   || {amt:0};
+    const slaPct = Math.round(sla.amt/maxAmt*100);
+    const tmPct  = Math.round(tm.amt/maxAmt*100);
+    return `<div class="dual-bar-row">
+      <div class="dual-label">${MONTHS[mo].substring(0,3)}</div>
+      <div class="dual-bars">
+        <div class="dual-bar-track"><div class="bar-fill-sla" style="width:${slaPct}%">${slaPct>15?'NZD '+(sla.amt/1000).toFixed(0)+'k':''}</div></div>
+        <div class="dual-bar-track"><div class="bar-fill-tm"  style="width:${tmPct}%">${tmPct>15?'NZD '+(tm.amt/1000).toFixed(0)+'k':''}</div></div>
+      </div>
+      <div class="dual-totals">
+        <span style="color:var(--danger);font-size:10px">SLA: NZD ${(sla.amt/1000).toFixed(0)}k</span><br>
+        <span style="color:var(--green);font-size:10px">T&M: NZD ${(tm.amt/1000).toFixed(0)}k</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('monthChart').innerHTML = rows;
+}
+
+// Asset table
+function renderAssetTable(){
+  const maxCost = ASSETS[0][3];
+  document.getElementById('assetTable').innerHTML = ASSETS.map(([sn,name,terr,cost,assetId]) => {
+    const pct = Math.round(cost/maxCost*100);
+    const link = `<a href="${SF}${assetId}" target="_blank" class="asset-link">${sn}</a>`;
+    return `<tr>
+      <td>${link}</td>
+      <td style="font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</td>
+      <td><span class="terr-pill t-${terr}">${terr}</span></td>
+      <td class="right"><span class="sla-val">NZD ${cost.toLocaleString()}</span>
+        <div style="height:4px;background:#f0f0f0;border-radius:2px;margin-top:3px;width:100px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:4px;background:var(--danger);border-radius:2px;width:${pct}%"></div></div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// PR table
+function renderPRTable(){
+  const rows = PR.map(r => {
+    const avg = Math.round(r.amt/r.cnt);
+    const isSLA = r.type === 'Product Request';
+    return `<tr>
+      <td>${MONTHS[r.mo]}</td>
+      <td><span class="type-tag ${isSLA?'tag-sla':'tag-tm'}" style="padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;background:${isSLA?'var(--danger-bg)':'var(--green-bg)'};color:${isSLA?'var(--danger)':'var(--green)'}">${r.type}</span></td>
+      <td class="right mono">${r.cnt}</td>
+      <td class="right ${isSLA?'sla-val':'tm-val'}">NZD ${r.amt.toLocaleString()}</td>
+      <td class="right mono">NZD ${avg.toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+  // Totals
+  const slaTot = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.amt,0);
+  const tmTot  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.amt,0);
+  const slaCnt = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.cnt,0);
+  const tmCnt  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.cnt,0);
+  document.getElementById('prTable').innerHTML = rows + `
+    <tr style="background:var(--surface2);font-weight:600">
+      <td colspan="2">YTD Total — SLA</td>
+      <td class="right mono">${slaCnt}</td>
+      <td class="right sla-val">NZD ${slaTot.toLocaleString()}</td>
+      <td class="right mono">NZD ${Math.round(slaTot/slaCnt).toLocaleString()}</td>
+    </tr>
+    <tr style="background:var(--surface2);font-weight:600">
+      <td colspan="2">YTD Total — T&M</td>
+      <td class="right mono">${tmCnt}</td>
+      <td class="right tm-val">NZD ${tmTot.toLocaleString()}</td>
+      <td class="right mono">NZD ${Math.round(tmTot/tmCnt).toLocaleString()}</td>
+    </tr>`;
+}
+
+renderKPIs();
+renderMonthChart();
+renderAssetTable();
+renderPRTable();
+</script>
+</body>
+</html>

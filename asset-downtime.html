@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP — Asset Downtime</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--red:#D7063B;--charcoal:#1a1a1a;--mid:#444;--muted:#888;--border:#e5e5e5;--bg:#f7f7f6;--surface:#fff;--surface2:#f2f2f1;--green:#1a6e2e;--green-bg:#e6f4ea;--amber:#8a5200;--amber-bg:#fef3dc;--danger:#c0392b;--danger-bg:#fdecea;--blue:#0057b8;--blue-bg:#e8f0fb;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
+.hd{width:1px;height:22px;background:#444;margin:0 16px;}
+.header-title{font-size:13px;color:#aaa;}
+.as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+.back-link{font-size:11px;color:#666;text-decoration:none;}
+.back-link:hover{color:#aaa;}
+main{max-width:1400px;margin:0 auto;padding:28px 24px 64px;}
+.nav-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;}
+.nav-pill:hover{border-color:var(--red);color:var(--red);}
+.nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:28px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;position:relative;overflow:hidden;}
+.kpi-card.tech::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--danger);}
+.kpi-card.ext::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--amber);}
+.kpi-card.total::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--charcoal);}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
+.kpi-value{font-size:26px;font-weight:300;line-height:1;}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+.legend{display:flex;gap:20px;margin-bottom:18px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.dot-tech{background:var(--danger);}
+.dot-ext{background:var(--amber);}
+.filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+.filter-bar select{height:32px;padding:0 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--charcoal);outline:none;cursor:pointer;}
+.filter-bar select:focus{border-color:var(--red);}
+.result-count{font-size:12px;color:var(--muted);margin-left:auto;font-family:'DM Mono',monospace;}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);white-space:nowrap;cursor:pointer;user-select:none;}
+th:hover{color:var(--charcoal);}
+th.sorted-asc::after{content:' ↑';color:var(--red);}
+th.sorted-desc::after{content:' ↓';color:var(--red);}
+td{padding:9px 12px;font-size:13px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafafa;}
+.case-link,.asset-link{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--red);text-decoration:none;}
+.case-link:hover,.asset-link:hover{text-decoration:underline;}
+.badge-tech{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;background:var(--danger-bg);color:var(--danger);}
+.badge-ext{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;background:var(--amber-bg);color:var(--amber);}
+.terr-pill{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:500;}
+.t-NZ{background:#e8f0fb;color:#0057b8;}.t-Vanuatu{background:#e6f4ea;color:#1a6e2e;}
+.t-Solomons{background:#fef3dc;color:#8a5200;}.t-Tonga{background:#fdecea;color:#c0392b;}
+.t-Samoa{background:#f3e8fb;color:#6b21a8;}.t-Unknown{background:#f0f0f0;color:#666;}
+.age-bar{height:6px;border-radius:3px;background:#f0f0f0;width:100px;display:inline-block;vertical-align:middle;}
+.age-fill{height:6px;border-radius:3px;}
+.age-crit{background:var(--danger);}
+.age-warn{background:var(--amber);}
+.age-ok{background:var(--green);}
+.status-cell{font-size:11px;color:var(--mid);}
+.tech-cell{font-size:11px;color:var(--muted);}
+footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
+@media(max-width:900px){.kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));}}
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center">
+    <span class="wordmark">Ricoh</span><div class="hd"></div>
+    <span class="header-title">South Pacific — Asset Downtime</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="as-of">26 Mar 2026</span>
+    <a href="service-dashboard.html" class="back-link">← Dashboard</a>
+  </div>
+</header>
+<main>
+  <div class="nav-pills">
+    <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
+    <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
+    <a href="cases-open.html" class="nav-pill">Open Cases</a>
+    <a href="conversations.html" class="nav-pill">Conversations</a>
+    <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
+  </div>
+
+  <div class="kpi-strip" id="kpiStrip"></div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot dot-tech"></div><strong>Tech / Ops delay</strong> — New, Work Order Issued, Doing. Action not yet taken by technician or service controller.</div>
+    <div class="legend-item"><div class="legend-dot dot-ext"></div><strong>External / Blocked</strong> — Waiting on Parts, Waiting on Quotation, Waiting on Customer, Stop Credit, Processing Invoice. Blocked outside tech's control.</div>
+  </div>
+
+  <div class="filter-bar">
+    <select id="filterTerritory" onchange="render()">
+      <option value="">All territories</option>
+      <option>NZ</option><option>Vanuatu</option><option>Solomons</option>
+      <option>Tonga</option><option>Samoa</option>
+    </select>
+    <select id="filterBucket" onchange="render()">
+      <option value="">All delay types</option>
+      <option value="TECH">Tech / Ops delay</option>
+      <option value="EXT">External / Blocked</option>
+    </select>
+    <select id="filterAge" onchange="render()">
+      <option value="">All ages</option>
+      <option value="720">Over 30 days</option>
+      <option value="168">Over 7 days</option>
+      <option value="72">Over 72 hours</option>
+    </select>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th onclick="sortBy(0)" data-col="0">Case #</th>
+        <th onclick="sortBy(1)" data-col="1">Asset</th>
+        <th onclick="sortBy(2)" data-col="2">Serial</th>
+        <th onclick="sortBy(3)" data-col="3">Account</th>
+        <th onclick="sortBy(4)" data-col="4">Territory</th>
+        <th onclick="sortBy(5)" data-col="5">Status</th>
+        <th onclick="sortBy(6)" data-col="6">Delay type</th>
+        <th onclick="sortBy(7)" data-col="7">Hours open</th>
+        <th onclick="sortBy(8)" data-col="8">Technician</th>
+      </tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</main>
+<footer>Ricoh South Pacific · Asset Downtime · Open Service Call cases with asset · 26 Mar 2026</footer>
+
+<script>
+const SF = "https://clearedgepacific.my.salesforce.com/";
+// [caseId, caseNum, account, territory, status, bucket, hours, assetId, serial, assetName, tech]
+const CASES = [
+  ["500GA00001TFoTtYAL","00058541","Mangawhai Memo","NZ","Processing Invoice","EXT",18196,"02i7F000009UqoyQAC","D287X240044","Ricoh Priport DD 5450",""],
+  ["500GA00001SiLmRYAV","00060802","Alpine Print Limited","NZ","Processing Invoice","EXT",16438,"02i7F00000MunFlQAJ","G367F120073","Ricoh Pro C7100SX","Sridhar Bhattacharjee"],
+  ["500GA00001W4HPjYAN","00063593","Alpine Print Limited","NZ","Processing Invoice","EXT",14090,"02i7F00000MunFlQAJ","G367F120073","Ricoh Pro C7100SX","Sridhar Bhattacharjee"],
+  ["500Mp00000gt8rOIAQ","00075521","Ministry of Police","Tonga","Waiting on Customer","EXT",2709,"02iGA00000hKw1MYAS","E174M850313","Sig Ricoh MP C4503","John Cid"],
+  ["500Mp00000ilayAIAQ","00076065","Laura Homes Limited","NZ","Processing Invoice","EXT",1731,"02iMp00000Cq0mbIAB","G696M550109","Ricoh MP C3004SP","Sridhar Bhattacharjee"],
+  ["500Mp00000jgV5VIAU","00076526","Sun Productions Printers","Vanuatu","Waiting on Parts Delivery","EXT",1322,"02i7F000000x4xKQAQ","C878FB20018","Ricoh Pro C7200SX","Florencio Jr. Familar"],
+  ["500Mp00000ke8KfIAI","00077035","Prime Minister's Office Tonga","Tonga","Waiting on Parts Delivery","EXT",886,"02i7F00000FlilSQAR","3120M520265","Ricoh IM C4500","John Cid"],
+  ["500Mp00000l24B1IAI","00077254","RSE Limited","Solomons","Waiting on Parts Delivery","EXT",716,"02i7F000009Unz0QAC","G988X993746","Ricoh MP 501","Victor Geonzon"],
+  ["500Mp00000l3oy9IAA","00077266","CCCS Treasurer's Office","Samoa","Waiting on Parts Delivery","EXT",700,"02iGA00000ZMkDaYAL","9193RB30105","Ricoh IM C6010","Arturo Regis"],
+  ["500Mp00000lNAtGIAW","00077429","Conservation Intl Pacific","Samoa","Waiting on Parts Delivery","EXT",550,"02i7F00000JxECZQA3","3082R120591","Ricoh IM C2000","Ramiro Cataquis (2)"],
+  ["500Mp00000lT7ntIAC","00077473","Federal Pacific Insurance Tonga","Tonga","Waiting on Parts Request Approval","EXT",508,"02iMp000009Dtr7IAC","A0B4PC02633","Ricoh IM C320F","John Cid"],
+  ["500Mp00000ldjWyIAI","00077563","Office of the Regulator Samoa","Samoa","Waiting on Customer","EXT",410,"02i7F00000FliX3QAJ","C380P600080","Ricoh MP 5055","Arturo Regis"],
+  ["500Mp00000lgXnjIAE","00077588","Free Wesleyan Church Tonga","Tonga","Waiting on Quotation Approval","EXT",388,"02i7F00000ILXWfQAP","5451PC00251","Ricoh M C250","John Cid"],
+  ["500Mp00000lhPY5IAM","00077611","Univ South Pacific Solomons","Solomons","Waiting on Parts Request Approval","EXT",384,"02iGA00000hKN0rYAG","E215R980096","Sig Ricoh MP C2503","Victor Geonzon"],
+  ["500Mp00000lkF7iIAE","00077637","Ministry of Works Samoa","Samoa","Waiting on Parts Delivery","EXT",362,"02i7F00000MIarxQAD","3122M220015","Ricoh IM C4500","Arturo Regis"],
+  ["500Mp00000lkvZpIAI","00077646","Sun Productions Printers","Vanuatu","Waiting on Parts Delivery","EXT",359,"02i7F000000x4xKQAQ","C878FB20018","Ricoh Pro C7200SX","Junriel Andoy"],
+  ["500Mp00000loCe2IAE","00077664","VanCare Insurance Vanuatu","Vanuatu","Waiting on Quotation Approval","EXT",337,"02iGA00000hKNBnYAO","3203X159900","Ricoh IM 550F",""],
+  ["500Mp00000lrganIAA","00077694","Bmobile Solomon Islands","Solomons","Stop Credit","EXT",314,"02i7F000000x1hZQAQ","C386PC00381","Ricoh MP 5055","Victor Geonzon"],
+  ["500Mp00000lrkUhIAI","00077696","Bmobile Solomon Islands","Solomons","Stop Credit","EXT",314,"02i7F000009Nu95QAC","G716MA50046","Ricoh MP C4504","Victor Geonzon"],
+  ["500Mp00000ls4RmIAI","00077703","Bank South Pacific Solomons","Solomons","Waiting on Customer","EXT",313,"02i7F000000xJhtQAE","G988X790843","Ricoh MP 501","Samson Ragaruma"],
+  ["500Mp00000lybCyIAI","00077742","Church of Jesus Christ Tonga","Tonga","Waiting on Parts Request Approval","EXT",242,"02i7F000009Uq0dQAC","C758MA10054","Ricoh MP C6004","John Cid"],
+  ["500Mp00000lzC2oIAE","00077749","MAKA Community High School","Solomons","Work Order Issued","TECH",240,"02iGA00000e50wRYAQ","3283Z630050","Ricoh M 2701","Samson Ragaruma"],
+  ["500Mp00000lyqKBIAY","00077751","Ministry of Infrastructure Tonga","Tonga","Processing Invoice","EXT",239,"02i7F000009V0gPQAS","3129M520255","Ricoh IM C4500","John Cid"],
+  ["500Mp00000lzDIMIA2","00077758","Jejevo Primary School","Solomons","Work Order Issued","TECH",238,"02i7F000000WWZbQAO","3282Z130009","Ricoh M 2701","Samson Ragaruma"],
+  ["500Mp00000m048BIAQ","00077765","Solomon Water","Solomons","Waiting on Parts Delivery","EXT",235,"02i7F000009Uj7NQAS","3098RC20297","Ricoh IM C2500","Victor Geonzon"],
+  ["500Mp00000m6UiwIAE","00077798","Tonga Health Promotion Foundation","Tonga","Waiting on Quotation Approval","EXT",196,"02i7F000000WTsWQAW","3102RA90220","Ricoh IM C3000","John Cid"],
+  ["500Mp00000m7iglIAA","00077829","South Malekula Secondary School","Vanuatu","Waiting on Quotation Approval","EXT",190,"02i7F00000Iz35uQAB","3080RC21090","Ricoh IM C2000",""],
+  ["500Mp00000m8W8mIAE","00077840","Vanuatu Police Training College","Vanuatu","Waiting on Quotation Approval","EXT",188,"02i7F000009UxCfQAK","3128MB20553","Ricoh IM C4500",""],
+  ["500Mp00000mAuLaIAK","00077853","Maali Company Samoa","Samoa","Waiting on Parts Delivery","EXT",170,"02i7F00000HxnW5QAJ","3091R320254","Ricoh IM C2500","Ramiro Cataquis (2)"],
+  ["500Mp00000mCmrgIAC","00077892","Vanuatu National Provident Fund","Vanuatu","Waiting on Parts Delivery","EXT",163,"02i7F000000FYbDQAW","C509P103848","Ricoh MP C307","Junriel Andoy"],
+  ["500Mp00000mEhG1IAK","00077901","Church of Jesus Christ Tonga","Tonga","Work Order Issued","TECH",147,"02i7F00000JvUBeQAN","3111R220016","Ricoh IM C3500","John Cid"],
+  ["500Mp00000mM7vGIAS","00077935","Ministry of Finance Samoa","Samoa","Waiting on Quotation Approval","EXT",75,"02i7F000000Gr0IQAS","3149MB20060","Ricoh IM C6000","Arturo Regis"],
+  ["500Mp00000mNAXkIAO","00077957","Sarakata English School","Vanuatu","Waiting on Quotation Approval","EXT",71,"02i7F00000MKN9gQAH","3121M420072","Ricoh IM C4500",""],
+  ["500Mp00000mUXG1IAO","00078013","Ministry Commerce Tonga","Tonga","Waiting on Quotation Approval","EXT",28,"02i7F00000Hzgb0QAB","3121M220072","Ricoh IM C4500","John Cid"],
+  ["500Mp00000mUkHvIAK","00078014","Bank South Pacific Tonga","Tonga","Work Order Issued","TECH",28,"02i7F00000HzgZMQAZ","C400PA00015","Ricoh MP 6055","John Cid"],
+  ["500Mp00000mUouzIAC","00078015","Friendly Island Bookshop","Tonga","Work Order Issued","TECH",28,"02iGA00000hKrraYAC","E185MA50180","Sig Ricoh MP C5503","John Cid"],
+  ["500Mp00000mUl7XIAS","00078016","Magic Signs","Tonga","Work Order Issued","TECH",28,"02iGA00000hKw27YAC","E175M650025","Sig Ricoh MP C4503","John Cid"],
+  ["500Mp00000mZASJIA4","00078046","Enosa Medical Clinic","Samoa","Work Order Issued","TECH",3,"02i7F00000OdgoRQAR","5822PC01243","Ricoh M C251FW","Arturo Regis"],
+  ["500Mp00000mZbXKIA0","00078056","Solomon Rice Company","Solomons","Work Order Issued","TECH",1,"02iGA00000hKSiQYAW","9134R310016","Ricoh IM C2010","Victor Geonzon"],
+  ["500Mp00000mZtyrIAC","00078059","Digicel Vanuatu","Vanuatu","Work Order Issued","TECH",1,"02i7F00000ObqJ9QAJ","3082RB20146","Ricoh IM C2000","Florencio Jr. Familar"],
+  ["500Mp00000mZjJiIAK","00078060","Development Bank Samoa","Samoa","Work Order Issued","TECH",0,"02i7F000000WUTqQAO","3923P352601","Ricoh IM C300F","Arturo Regis"],
+  ["500Mp00000mZPsvIAG","00078062","Warwick Le Lagon Vanuatu","Vanuatu","Work Order Issued","TECH",0,"02i7F000009VOTtQAO","G989X315644","Ricoh MP 501","Junriel Andoy"],
+];
+
+let sortCol=7, sortDir=-1;
+
+function getRows() {
+  const terr = document.getElementById('filterTerritory').value;
+  const bucket = document.getElementById('filterBucket').value;
+  const age = +document.getElementById('filterAge').value || 0;
+  return CASES.filter(c => {
+    if (terr && c[3] !== terr) return false;
+    if (bucket && c[5] !== bucket) return false;
+    if (age && c[6] < age) return false;
+    return true;
+  }).sort((a,b) => {
+    let av=a[sortCol], bv=b[sortCol];
+    if (typeof av==='string') av=av.toLowerCase();
+    if (typeof bv==='string') bv=bv.toLowerCase();
+    return av<bv?-sortDir:av>bv?sortDir:0;
+  });
+}
+
+function renderKPIs() {
+  const total = CASES.length;
+  const tech = CASES.filter(c=>c[5]==='TECH').length;
+  const ext  = CASES.filter(c=>c[5]==='EXT').length;
+  const maxH = Math.max(...CASES.map(c=>c[6]));
+  document.getElementById('kpiStrip').innerHTML = `
+    <div class="kpi-card total"><div class="kpi-label">Open cases with asset</div><div class="kpi-value">${total}</div><div class="kpi-sub">Service Call work type</div></div>
+    <div class="kpi-card tech"><div class="kpi-label">Tech / Ops delay</div><div class="kpi-value" style="color:var(--danger)">${tech}</div><div class="kpi-sub">${Math.round(tech/total*100)}% of open — action needed</div></div>
+    <div class="kpi-card ext"><div class="kpi-label">External / Blocked</div><div class="kpi-value" style="color:var(--amber)">${ext}</div><div class="kpi-sub">${Math.round(ext/total*100)}% of open — waiting on parts/customer</div></div>
+    <div class="kpi-card"><div class="kpi-label">Longest open case</div><div class="kpi-value" style="color:var(--danger)">${Math.round(maxH/24)}d</div><div class="kpi-sub">${maxH.toLocaleString()}h total downtime</div></div>`;
+}
+
+function ageBar(h) {
+  const maxH = 18196;
+  const pct = Math.min(100, Math.round(h/maxH*100));
+  const cls = h > 720 ? 'age-crit' : h > 168 ? 'age-warn' : 'age-ok';
+  return `<div class="age-bar"><div class="age-fill ${cls}" style="width:${pct}%"></div></div>`;
+}
+
+function render() {
+  const rows = getRows();
+  document.getElementById('resultCount').textContent = `${rows.length} of ${CASES.length} cases`;
+  document.querySelectorAll('th').forEach(th => {
+    th.classList.remove('sorted-asc','sorted-desc');
+    if (+th.dataset.col===sortCol) th.classList.add(sortDir===1?'sorted-asc':'sorted-desc');
+  });
+  document.getElementById('tableBody').innerHTML = rows.map(c => {
+    const [cId,cNum,acct,terr,status,bucket,hours,assetId,serial,assetName,tech] = c;
+    const bBadge = bucket==='TECH'
+      ? `<span class="badge-tech">Tech delay</span>`
+      : `<span class="badge-ext">External</span>`;
+    const hDisp = hours >= 24 ? `${Math.round(hours/24)}d` : `${hours}h`;
+    const hCls  = hours > 720 ? 'style="color:var(--danger);font-weight:500"' : hours > 168 ? 'style="color:var(--amber);font-weight:500"' : '';
+    const assetLink = assetId ? `<a href="${SF}${assetId}" target="_blank" class="asset-link">${serial||'—'}</a>` : `<span style="color:var(--muted);font-size:11px">${serial||'—'}</span>`;
+    return `<tr>
+      <td><a href="${SF}${cId}" target="_blank" class="case-link">${cNum}</a></td>
+      <td style="font-size:12px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${assetName}">${assetName||'—'}</td>
+      <td>${assetLink}</td>
+      <td style="font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${acct}">${acct}</td>
+      <td><span class="terr-pill t-${terr}">${terr}</span></td>
+      <td class="status-cell">${status}</td>
+      <td>${bBadge}</td>
+      <td ${hCls} style="font-family:'DM Mono',monospace;font-size:12px">${hDisp} ${ageBar(hours)}</td>
+      <td class="tech-cell">${tech||'—'}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">No cases match filters.</td></tr>';
+}
+
+renderKPIs();
+render();
+function sortBy(col){if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=col===7?-1:1;}render();}
+</script>
+</body>
+</html>

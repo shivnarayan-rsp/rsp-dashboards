@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP — Case Origin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--red:#D7063B;--charcoal:#1a1a1a;--mid:#444;--muted:#888;--border:#e5e5e5;--bg:#f7f7f6;--surface:#fff;--surface2:#f2f2f1;--green:#1a6e2e;--green-bg:#e6f4ea;--amber:#8a5200;--amber-bg:#fef3dc;--danger:#c0392b;--danger-bg:#fdecea;--blue:#0057b8;--blue-bg:#e8f0fb;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
+.hd{width:1px;height:22px;background:#444;margin:0 16px;}
+.header-title{font-size:13px;color:#aaa;}
+.as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+.back-link{font-size:11px;color:#666;text-decoration:none;}
+.back-link:hover{color:#aaa;}
+main{max-width:1200px;margin:0 auto;padding:28px 24px 64px;}
+.nav-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;}
+.nav-pill:hover{border-color:var(--red);color:var(--red);}
+.nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+.section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* EXPLAINER CARD */
+.explainer{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px 24px;margin-bottom:28px;}
+.explainer h2{font-size:14px;font-weight:600;margin-bottom:10px;}
+.explainer p{font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:8px;}
+.origin-legend{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;}
+.origin-group{padding:12px 14px;border-radius:4px;}
+.origin-group.objective{background:var(--green-bg);border:1px solid #b7dfbe;}
+.origin-group.manipulable{background:var(--danger-bg);border:1px solid #f5bcb7;}
+.origin-group-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.og-obj{color:var(--green);}
+.og-man{color:var(--danger);}
+.origin-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;margin:2px;font-family:'DM Mono',monospace;}
+.tag-obj{background:var(--green-bg);color:var(--green);}
+.tag-man{background:var(--danger-bg);color:var(--danger);}
+.tag-int{background:var(--amber-bg);color:var(--amber);}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:28px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;}
+.kpi-card.good::before{content:'';display:block;height:3px;background:var(--green);border-radius:3px 3px 0 0;margin:-16px -18px 12px;}
+.kpi-card.bad::before{content:'';display:block;height:3px;background:var(--danger);border-radius:3px 3px 0 0;margin:-16px -18px 12px;}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
+.kpi-value{font-size:26px;font-weight:300;line-height:1;}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+.kv-good{color:var(--green);}
+.kv-bad{color:var(--danger);}
+
+/* MONTH CHART */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px 24px;margin-bottom:28px;}
+.chart-title{font-size:12px;font-weight:600;margin-bottom:16px;}
+.month-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.month-label{font-size:12px;font-family:'DM Mono',monospace;width:60px;flex-shrink:0;color:var(--mid);}
+.bar-track{flex:1;height:28px;background:#f5f5f5;border-radius:4px;overflow:hidden;display:flex;}
+.bar-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:rgba(255,255,255,.9);transition:width .3s;min-width:0;overflow:hidden;}
+.seg-obj{background:#1a6e2e;}
+.seg-int{background:#8a5200;}
+.seg-man{background:#c0392b;}
+.month-pct{font-size:11px;font-family:'DM Mono',monospace;width:80px;flex-shrink:0;text-align:right;}
+.pct-good{color:var(--green);font-weight:500;}
+.pct-bad{color:var(--danger);font-weight:500;}
+.chart-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap;}
+.chart-leg-item{display:flex;align-items:center;gap:6px;font-size:11px;}
+.leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+
+/* BREAKDOWN TABLE */
+.breakdown-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:28px;}
+.breakdown-header{padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);}
+.breakdown-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);}
+th.right{text-align:right;}
+td{padding:9px 12px;font-size:13px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+td.right{text-align:right;}
+td.mono{font-family:'DM Mono',monospace;font-size:12px;}
+.bar-bg{background:#f0f0f0;border-radius:3px;height:6px;width:100px;display:inline-block;vertical-align:middle;}
+.bar-fill{height:6px;border-radius:3px;}
+.fill-obj{background:var(--green);}
+.fill-man{background:var(--danger);}
+.fill-int{background:var(--amber);}
+
+/* INSIGHT BOX */
+.insight{background:#fffbf0;border:1px solid #fde68a;border-radius:4px;padding:14px 16px;margin-bottom:20px;}
+.insight-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:8px;}
+.insight-item{font-size:12px;color:var(--charcoal);line-height:1.5;padding:2px 0;}
+.insight-item::before{content:'→ ';color:var(--amber);}
+footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
+@media(max-width:700px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.origin-legend{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center">
+    <span class="wordmark">Ricoh</span><div class="hd"></div>
+    <span class="header-title">South Pacific — Case Origin</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="as-of">26 Mar 2026</span>
+    <a href="service-dashboard.html" class="back-link">← Dashboard</a>
+  </div>
+</header>
+<main>
+  <div class="nav-pills">
+    <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
+    <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
+    <a href="cases-open.html" class="nav-pill">Open Cases</a>
+    <a href="conversations.html" class="nav-pill">Conversations</a>
+    <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
+  </div>
+
+  <div class="explainer">
+    <h2>Why case origin matters</h2>
+    <p>When a technician creates a case themselves — or a service controller creates it on behalf of a phone call — they control the timestamp. This means the clock starts when they decide to log it, not when the customer actually had a problem. Over time this inflates response time performance and masks real downtime.</p>
+    <p>The goal is to increase the proportion of cases created by the customer directly (Email, Web/Portal) or by automated systems (@remote meter alerts, 3manager alerts). These origins are <strong>objective</strong> — the timestamp cannot be manipulated.</p>
+    <div class="origin-legend">
+      <div class="origin-group objective">
+        <div class="origin-group-title og-obj">Objective origins — timestamp cannot be manipulated</div>
+        <span class="origin-tag tag-obj">Email</span>
+        <span class="origin-tag tag-obj">@remote</span>
+        <span class="origin-tag tag-obj">3manager</span>
+        <span class="origin-tag tag-obj">Web/Portal</span>
+        <div style="font-size:11px;color:var(--green);margin-top:6px">Customer or system creates the case. Timestamp is when the problem was reported, not when the tech decided to log it.</div>
+      </div>
+      <div class="origin-group manipulable">
+        <div class="origin-group-title og-man">Controllable origins — timestamp is set by RSP staff</div>
+        <span class="origin-tag tag-man">Phone</span>
+        <span class="origin-tag tag-man">Internal</span>
+        <span class="origin-tag tag-man">Technician</span>
+        <div style="font-size:11px;color:var(--danger);margin-top:6px">SC or technician creates the case. The longer they wait to log it, the better the response time looks on paper. Not necessarily manipulation, but creates an incentive problem.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="insight" id="insightBox"></div>
+
+  <div class="section-label">Month-on-month origin mix — 2026 YTD</div>
+  <div class="chart-card">
+    <div class="chart-title">Share of objective vs controllable origins by month (% of total cases)</div>
+    <div id="monthChart"></div>
+    <div class="chart-legend">
+      <div class="chart-leg-item"><div class="leg-dot" style="background:#1a6e2e"></div>Objective (Email, @remote, 3manager)</div>
+      <div class="chart-leg-item"><div class="leg-dot" style="background:#8a5200"></div>Internal</div>
+      <div class="chart-leg-item"><div class="leg-dot" style="background:#c0392b"></div>Phone + Technician</div>
+    </div>
+  </div>
+
+  <div class="section-label">Origin breakdown by month</div>
+  <div class="breakdown-card">
+    <div class="breakdown-header"><span class="breakdown-title">All origins — 2026 YTD</span></div>
+    <table>
+      <thead><tr>
+        <th>Origin</th>
+        <th>Type</th>
+        <th class="right">Jan</th>
+        <th class="right">Feb</th>
+        <th class="right">Mar MTD</th>
+        <th class="right">YTD total</th>
+        <th>YTD share</th>
+      </tr></thead>
+      <tbody id="originTable"></tbody>
+    </table>
+  </div>
+
+  <div class="section-label">Target and trajectory</div>
+  <div class="chart-card">
+    <div class="chart-title">Objective origin % — trajectory vs target</div>
+    <div id="targetChart"></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:12px">
+      Target: &gt;50% objective origins by end of 2026. Current run rate puts YTD at ~29%. 
+      Key levers: enable @remote on more assets (746 registered, but only 4 cases YTD via @remote), 
+      encourage customers to email rather than call, reduce technician self-logging.
+    </div>
+  </div>
+</main>
+<footer>Ricoh South Pacific · Case Origin · All Cases YTD 2026 · 26 Mar 2026</footer>
+
+<script>
+// Data from Salesforce: ORIGINS=3:Email:177|3:3manager:1|3:Internal:198|3:@remote:2|3:Technician:50|3:Phone:244|2:3manager:1|2:Email:235|2:Technician:59|2:Phone:239|2:Internal:270|1:Email:160|1:Internal:140|1:@remote:2|1:Phone:200|1:Technician:69
+const RAW = {
+  1: {Email:160, Internal:140, '@remote':2, Phone:200, Technician:69, '3manager':0},
+  2: {Email:235, Internal:270, Phone:239, Technician:59, '@remote':0, '3manager':1},
+  3: {Email:177, Internal:198, Phone:244, Technician:50, '@remote':2, '3manager':1},
+};
+const MONTHS = {1:'January',2:'February',3:'March MTD'};
+const ORIGINS = ['Email','Phone','Internal','Technician','@remote','3manager'];
+const OBJECTIVE = new Set(['Email','@remote','3manager']);
+const INTERNAL_SET = new Set(['Internal']);
+
+function objCount(mo) { return Object.entries(RAW[mo]).filter(([k])=>OBJECTIVE.has(k)).reduce((s,[,v])=>s+v,0); }
+function manCount(mo) { return Object.entries(RAW[mo]).filter(([k])=>!OBJECTIVE.has(k)&&!INTERNAL_SET.has(k)).reduce((s,[,v])=>s+v,0); }
+function intCount(mo) { return RAW[mo]['Internal']||0; }
+function totalCount(mo) { return Object.values(RAW[mo]).reduce((s,v)=>s+v,0); }
+
+// KPI cards
+function renderKPIs() {
+  const ytdTotals = {};
+  ORIGINS.forEach(o => { ytdTotals[o] = (RAW[1][o]||0)+(RAW[2][o]||0)+(RAW[3][o]||0); });
+  const ytdTotal = Object.values(ytdTotals).reduce((s,v)=>s+v,0);
+  const ytdObj = ORIGINS.filter(o=>OBJECTIVE.has(o)).reduce((s,o)=>s+ytdTotals[o],0);
+  const ytdObjPct = Math.round(ytdObj/ytdTotal*100);
+
+  // March objective %
+  const marTotal = totalCount(3);
+  const marObj = objCount(3);
+  const marObjPct = Math.round(marObj/marTotal*100);
+
+  // Tech self-logging %
+  const ytdTech = ytdTotals['Technician']||0;
+  const ytdTechPct = Math.round(ytdTech/ytdTotal*100);
+
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi-card ${ytdObjPct>=50?'good':'bad'}">
+      <div class="kpi-label">Objective origins — YTD</div>
+      <div class="kpi-value ${ytdObjPct>=50?'kv-good':'kv-bad'}">${ytdObjPct}%</div>
+      <div class="kpi-sub">${ytdObj} of ${ytdTotal} cases · Target &gt;50%</div>
+    </div>
+    <div class="kpi-card ${marObjPct>=50?'good':'bad'}">
+      <div class="kpi-label">Objective origins — March</div>
+      <div class="kpi-value ${marObjPct>=50?'kv-good':'kv-bad'}">${marObjPct}%</div>
+      <div class="kpi-sub">${marObj} of ${marTotal} March cases</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">@remote + 3manager alerts</div>
+      <div class="kpi-value" style="color:var(--amber)">6</div>
+      <div class="kpi-sub">YTD — 746 assets registered. Huge untapped upside.</div>
+    </div>
+    <div class="kpi-card ${ytdTechPct<=10?'good':'bad'}">
+      <div class="kpi-label">Tech self-logged cases</div>
+      <div class="kpi-value ${ytdTechPct<=10?'kv-good':'kv-bad'}">${ytdTechPct}%</div>
+      <div class="kpi-sub">${ytdTech} cases · Target &lt;10%</div>
+    </div>`;
+}
+
+// Insights
+function renderInsights() {
+  document.getElementById('insightBox').innerHTML = `
+    <div class="insight-title">Key findings</div>
+    <div class="insight-item">Only 29% of YTD cases were created via objective origins (Email, @remote, 3manager). Phone and Internal account for 55% — these timestamps are set by RSP staff.</div>
+    <div class="insight-item">@remote has 746 assets registered but generated only 4 cases YTD. This suggests the automated alerting is either not configured, not triggering, or being manually overridden. Worth investigating with Vijendra.</div>
+    <div class="insight-item">178 cases were logged by technicians directly (12% YTD). If a tech arrives on-site and then creates the case, response time looks like 0 hours. This needs to be tracked and discussed in conversations.</div>
+    <div class="insight-item">Internal-origin cases (41% YTD) are typically service controller-created — often valid, but the timestamp question still applies. The goal is to encourage customers to email directly.</div>
+    <div class="insight-item">Target path to &gt;50% objective: activate @remote alerting fully, promote customer email portal, monitor tech self-logging in monthly conversations.</div>`;
+}
+
+// Month chart (stacked horizontal bar)
+function renderMonthChart() {
+  const rows = [1,2,3].map(mo => {
+    const total = totalCount(mo);
+    const obj = objCount(mo);
+    const int_ = intCount(mo);
+    const man = manCount(mo);
+    const objPct = Math.round(obj/total*100);
+    const intPct = Math.round(int_/total*100);
+    const manPct = 100 - objPct - intPct;
+    const pctCls = objPct >= 50 ? 'pct-good' : 'pct-bad';
+    return `<div class="month-row">
+      <div class="month-label">${MONTHS[mo].substring(0,3)}</div>
+      <div class="bar-track">
+        <div class="bar-seg seg-obj" style="width:${objPct}%" title="Objective ${obj}">${objPct>8?objPct+'%':''}</div>
+        <div class="bar-seg seg-int" style="width:${intPct}%" title="Internal ${int_}">${intPct>8?intPct+'%':''}</div>
+        <div class="bar-seg seg-man" style="width:${manPct}%" title="Phone+Tech ${man}">${manPct>8?manPct+'%':''}</div>
+      </div>
+      <div class="month-pct">
+        <span class="${pctCls}">${objPct}%</span>
+        <span style="color:var(--muted);font-size:10px"> obj</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('monthChart').innerHTML = rows;
+}
+
+// Origin table
+function renderTable() {
+  const ytdTotals = {};
+  ORIGINS.forEach(o => { ytdTotals[o] = (RAW[1][o]||0)+(RAW[2][o]||0)+(RAW[3][o]||0); });
+  const ytdTotal = Object.values(ytdTotals).reduce((s,v)=>s+v,0);
+  const sorted = [...ORIGINS].sort((a,b) => ytdTotals[b] - ytdTotals[a]);
+
+  document.getElementById('originTable').innerHTML = sorted.map(o => {
+    const isObj = OBJECTIVE.has(o);
+    const isInt = INTERNAL_SET.has(o);
+    const typeTag = isObj
+      ? `<span class="origin-tag tag-obj">Objective</span>`
+      : isInt
+        ? `<span class="origin-tag tag-int">Internal / SC</span>`
+        : `<span class="origin-tag tag-man">Controllable</span>`;
+    const ytd = ytdTotals[o];
+    const pct = Math.round(ytd/ytdTotal*100);
+    const fillCls = isObj ? 'fill-obj' : isInt ? 'fill-int' : 'fill-man';
+    return `<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500">${o}</td>
+      <td>${typeTag}</td>
+      <td class="right mono">${RAW[1][o]||0}</td>
+      <td class="right mono">${RAW[2][o]||0}</td>
+      <td class="right mono">${RAW[3][o]||0}</td>
+      <td class="right mono" style="font-weight:600">${ytd}</td>
+      <td style="min-width:120px"><div class="bar-bg"><div class="bar-fill ${fillCls}" style="width:${pct}%"></div></div> <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">${pct}%</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// Target chart - simple text-based trajectory
+function renderTargetChart() {
+  const months = [
+    {mo:'Jan', pct: Math.round(objCount(1)/totalCount(1)*100), target:30},
+    {mo:'Feb', pct: Math.round(objCount(2)/totalCount(2)*100), target:35},
+    {mo:'Mar', pct: Math.round(objCount(3)/totalCount(3)*100), target:40},
+    {mo:'Apr', pct: null, target:43},
+    {mo:'May', pct: null, target:45},
+    {mo:'Jun', pct: null, target:47},
+    {mo:'Dec', pct: null, target:50},
+  ];
+  const maxPct = 60;
+  document.getElementById('targetChart').innerHTML = months.map(m => {
+    const actual = m.pct !== null ? `<div class="bar-seg seg-obj" style="width:${m.pct/maxPct*100}%;background:#1a6e2e" title="${m.pct}%">&nbsp;</div>` : '';
+    const target_w = m.target/maxPct*100;
+    const target_line = `<div style="position:absolute;left:${target_w}%;top:0;bottom:0;width:2px;background:#ccc;opacity:.6"></div>`;
+    return `<div class="month-row" style="position:relative">
+      <div class="month-label">${m.mo}</div>
+      <div class="bar-track" style="position:relative">
+        ${actual}
+        ${target_line}
+        ${m.pct===null?`<span style="font-size:10px;color:var(--muted);padding:0 8px;line-height:28px">Forecast target: ${m.target}%</span>`:''}
+      </div>
+      <div class="month-pct">${m.pct!==null?`<span class="${m.pct>=m.target?'pct-good':'pct-bad'}">${m.pct}%</span>`:`<span style="color:var(--muted)">${m.target}%↑</span>`}</div>
+    </div>`;
+  }).join('');
+}
+
+renderKPIs();
+renderInsights();
+renderMonthChart();
+renderTable();
+renderTargetChart();
+</script>
+</body>
+</html>

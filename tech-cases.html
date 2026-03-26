@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP — Tech Case Detail</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--red:#D7063B;--charcoal:#1a1a1a;--mid:#444;--muted:#888;--border:#e5e5e5;--bg:#f7f7f6;--surface:#fff;--surface2:#f2f2f1;--green:#1a6e2e;--green-bg:#e6f4ea;--amber:#8a5200;--amber-bg:#fef3dc;--danger:#c0392b;--danger-bg:#fdecea;--blue:#0057b8;--blue-bg:#e8f0fb;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.header-center{display:flex;align-items:center;gap:16px;}
+.wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
+.hd{width:1px;height:22px;background:#444;}
+.header-title{font-size:13px;color:#aaa;letter-spacing:.03em;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.back-link{font-size:11px;color:#666;text-decoration:none;transition:color .15s;}
+.back-link:hover{color:#aaa;}
+main{max-width:1400px;margin:0 auto;padding:28px 24px 64px;}
+.nav-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;letter-spacing:.02em;}
+.nav-pill:hover{border-color:var(--red);color:var(--red);}
+.nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+.section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+/* TECH SELECTOR */
+.tech-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding:14px 18px;background:var(--surface);border:1px solid var(--border);border-radius:6px;flex-wrap:wrap;}
+.tech-bar label{font-size:12px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;}
+.tech-bar select{height:32px;padding:0 10px;font-size:13px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--charcoal);cursor:pointer;}
+.tech-bar select:focus{outline:none;border-color:var(--red);}
+/* KPI STRIP */
+.kpi-strip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;position:relative;overflow:hidden;}
+.kpi-card.good::before,.kpi-card.bad::before,.kpi-card.warn::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-card.good::before{background:var(--green);}
+.kpi-card.bad::before{background:var(--danger);}
+.kpi-card.warn::before{background:var(--amber);}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
+.kpi-value{font-size:22px;font-weight:300;line-height:1;font-variant-numeric:tabular-nums;}
+.kpi-target{font-size:10px;color:var(--muted);margin-top:4px;}
+.kv-good{color:var(--green);}.kv-warn{color:var(--amber);}.kv-bad{color:var(--danger);}
+/* FILTER BAR */
+.filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+.filter-bar select,.filter-bar input{height:32px;padding:0 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--charcoal);outline:none;}
+.filter-bar select:focus,.filter-bar input:focus{border-color:var(--red);}
+.filter-bar input{width:200px;}
+.result-count{font-size:12px;color:var(--muted);margin-left:auto;font-family:'DM Mono',monospace;white-space:nowrap;}
+/* TABLE */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);white-space:nowrap;cursor:pointer;user-select:none;}
+th:hover{color:var(--charcoal);}
+th.sorted-asc::after{content:' ↑';color:var(--red);}
+th.sorted-desc::after{content:' ↓';color:var(--red);}
+td{padding:9px 12px;font-size:13px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafafa;}
+.case-link{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--red);text-decoration:none;}
+.case-link:hover{text-decoration:underline;}
+.icon-yes{color:var(--green);font-size:14px;}
+.icon-no{color:var(--muted);font-size:14px;}
+.icon-bad{color:var(--danger);font-size:14px;}
+.terr-pill{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:500;}
+.t-NZ{background:#e8f0fb;color:#0057b8;}.t-Vanuatu{background:#e6f4ea;color:#1a6e2e;}
+.t-Solomons{background:#fef3dc;color:#8a5200;}.t-Tonga{background:#fdecea;color:#c0392b;}
+.t-Samoa{background:#f3e8fb;color:#6b21a8;}.t-Unknown{background:#f0f0f0;color:#666;}
+.days-good{color:var(--green);font-weight:500;}
+.days-warn{color:var(--amber);font-weight:500;}
+.days-bad{color:var(--danger);font-weight:500;}
+.acct-cell{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;}
+.subj-cell{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;}
+footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
+@media(max-width:900px){.kpi-strip{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:600px){main{padding:12px 10px 48px;}header{padding:0 16px;}.header-title{display:none;}.kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-center">
+    <span class="wordmark">Ricoh</span>
+    <div class="hd"></div>
+    <span class="header-title">South Pacific — Tech Case Detail</span>
+  </div>
+  <div class="header-right">
+    <a href="leaderboard.html" class="back-link">← Leaderboard</a>
+  </div>
+</header>
+<main>
+  <div class="nav-pills">
+    <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
+    <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
+    <a href="cases-open.html" class="nav-pill">Open Cases</a>
+    <a href="conversations.html" class="nav-pill">Conversations</a>
+    <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
+  </div>
+
+  <div class="tech-bar">
+    <label>Technician</label>
+    <select id="techSelect" onchange="onTechChange()"></select>
+    <label style="margin-left:12px">Period</label>
+    <select id="periodSelect" onchange="renderAll()">
+      <option value="all">2026 YTD</option>
+      <option value="mar">March 2026</option>
+      <option value="feb">February 2026</option>
+      <option value="jan">January 2026</option>
+    </select>
+  </div>
+
+  <div class="kpi-strip" id="kpiStrip"></div>
+
+  <div class="section-label">Case detail — source data for leaderboard KPIs</div>
+  <div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="Search case, account…" oninput="renderTable()">
+    <select id="filterFTF" onchange="renderTable()">
+      <option value="">All cases</option>
+      <option value="ftf">First time fix only</option>
+      <option value="noftf">Return visits only</option>
+      <option value="cb">Callbacks only</option>
+      <option value="sla">SLA violated only</option>
+    </select>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortBy(0)" data-col="0">Case #</th>
+          <th onclick="sortBy(1)" data-col="1">Account</th>
+          <th onclick="sortBy(2)" data-col="2">Territory</th>
+          <th onclick="sortBy(3)" data-col="3">Days to close</th>
+          <th onclick="sortBy(4)" data-col="4">Work orders</th>
+          <th onclick="sortBy(5)" data-col="5">FTF</th>
+          <th onclick="sortBy(6)" data-col="6">Callback</th>
+          <th onclick="sortBy(7)" data-col="7">SLA violated</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</main>
+<footer>Ricoh South Pacific · Tech Case Detail · Data from Salesforce · 26 Mar 2026</footer>
+
+<script>
+const SF = "https://clearedgepacific.my.salesforce.com/";
+
+// [caseId, caseNum, account, subject, territory, tech, days, wos, callback, slaViol, assetId, serial]
+const ALL_CASES = [
+  // ── FLORENCIO JR. FAMILAR ───────────────────────────────────────────────────────
+  ["500Mp00000mRFYqIAO","00077988","Digicel (Vanuatu)","Ricoh IM C2000 - 3082RB20146","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F00000ObqJ9QAJ","3082RB20146"],["500Mp00000mNwdzIAC","00077966","Haskell Construction Vanuatu","Sig Ricoh MP C3003 E155M450164","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02iGA00000hKAKnYAO","E155M450164"],["500Mp00000m4EfBIAU","00077796","Vodafone Vanuatu","Ricoh MP 5055 C387P900271","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F000009NtyjQAC","C387P900271"],["500Mp00000lysQgIAI","00077746","Vanuatu Inst. Teachers Ed.","Ricoh IM 5000 4451R320006","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F000000WWnPQAW","4451R320006"],["500Mp00000ltB7pIAE","00077719","BRED Bank Vanuatu","Ricoh IM C2000 3081R220492","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F00000ILXptQAH","3081R220492"],["500Mp00000lsJaVIAU","00077710","National Archives Vanuatu","Ricoh MP 5055 C389P400184","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F000009V7FlQAK","C389P400184"],["500Mp00000lns AmIAI","00077653","Top Signs","Ricoh IM C4510 9174R820071","Vanuatu","Florencio Jr. Familar",1,1,0,1,"02iMp00000A8rcTIAR","9174R820071"],["500Mp00000lna7SIAQ","00077654","Customs & Inland Rev. Vanuatu","Ricoh IM C3010 9154R130012","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02iMp000006iIE3IAM","9154R130012"],["500Mp00000lkqyEIAQ","00077643","Vanuatu Police Maritime Wing","Ricoh MP 2501SP E333M550405","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F000009Nu51QAC","E333M550405"],["500Mp00000lgs92IAA","00077597","Vanpawa","Sig Ricoh MP C3003 E155M250185","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02iMp000006mZ6XIAU","E155M250185"],["500Mp00000leXgaIAE","00077577","Vanuatu National Provident Fund","Ricoh MP C4504exSP C738M830416","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F000000FYb8QAG","C738M830416"],["500Mp00000ldozhIAA","00077567","Vanuatu National Provident Fund","Ricoh IM C300F 3920P501511","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F00000FlhsIQAR","3920P501511"],["500Mp00000ldz8fIAA","00077568","Vanuatu National Provident Fund","Ricoh M C251FW 5822P300279","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F000000WUcXQAW","5822P300279"],["500Mp00000l5aarIAA","00077298","Unelco Vanuatu","Ricoh IM C2500 3090R920151","Vanuatu","Florencio Jr. Familar",9,2,0,1,"02i7F00000FlkJHQAZ","3090R920151"],["500Mp00000lRT1QIAW","00077470","Melanesian Spearhead Group","Ricoh IM C4510 9173R920082","Vanuatu","Florencio Jr. Familar",1,1,1,0,"02iGA000000WZzRYAW","9173R920082"],["500Mp00000lMYnyIAG","00077426","Eles School","Ricoh IM C3000 3102RC20028","Vanuatu","Florencio Jr. Familar",1,3,0,0,"02iGA000000Xy5YYAS","3102RC20028"],["500Mp00000lMSH7IAO","00077425","Freedom School Port Vila","Ricoh IM C2500 3099R620036","Vanuatu","Florencio Jr. Familar",0,1,1,1,"02i7F000009UszqQAC","3099R620036"],["500Mp00000lLpW5IAK","00077417","BRED Bank Vanuatu","Ricoh IM C2000 3082R590427","Vanuatu","Florencio Jr. Familar",0,1,1,1,"02i7F00000MunEYQAZ","3082R590427"],["500Mp00000l8HYWIA2","00077327","Nakuskasaru School","Ricoh M 2701 3281M430029","Vanuatu","Florencio Jr. Familar",4,1,0,0,"02i7F00000HxxNIQAZ","3281M430029"],["500Mp00000k5v6UIAQ","00076735","Pacific Suppliers Vanuatu","Sig Ricoh IM 430F 3359PA02690","Vanuatu","Florencio Jr. Familar",20,2,0,0,"02i7F000000GqZgQAK","3359PA02690"],["500Mp00000lBuexIAC","00077367","Law Partners","Ricoh IM C2010 9133RC10215","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02iGA00000hKHVQYA4","9133RC10215"],["500Mp00000lBorRIAS","00077360","Vanuatu Post","Ricoh IM 550F 3203X159901","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02iGA000000Wa89YAC","3203X159901"],["500Mp00000lBraeIAC","00077362","Vanuatu Post","Ricoh IM 550F 3203X159903","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02iGA000000Wa8AYAS","3203X159903"],["500Mp00000l9GwvIAE","00077346","BRED Bank Vanuatu","Ricoh MP C4504exSP C738M330075","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F000009Nu02QAC","C738M330075"],["500Mp00000l8OTVIA2","00077328","Vanuatu National Bureau of Standards","Ricoh IM C2500 3099RA20382","Vanuatu","Florencio Jr. Familar",0,2,1,1,"02i7F000009VFmbQAG","3099RA20382"],["500Mp00000l5WfPIAU","00077306","Vanuatu Post","Ricoh IM C4500 3129M620076","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F000009UvfbQAC","3129M620076"],["500Mp00000l5c1hIAA","00077303","Bank of South Pacific Vanuatu","Ricoh MP 5055 C387P900232","Vanuatu","Florencio Jr. Familar",0,1,1,1,"02i7F000009NtyfQAC","C387P900232"],["500Mp00000l5h4WIAQ","00077302","Bank of South Pacific Vanuatu","Ricoh MP 5055 C388P800036","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F000000CV6nQAG","C388P800036"],["500Mp00000l2DFpIAM","00077253","BRED Bank Vanuatu","Ricoh IM C2500 3099R120034","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02i7F000009V0U8QAK","3099R120034"],["500Mp00000l1kIqIAI","00077252","BRED Bank Vanuatu","Ricoh IM C6010 9193R530213","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02iMp000008AcQnIAK","9193R530213"],["500Mp00000j8crJIAQ","00076233","Sun Productions Printers","Ricoh Pro C7500 5794C620266","Vanuatu","Florencio Jr. Familar",28,4,0,1,"02iMp0000066F8zIAE","5794C620266"],["500Mp00000kZbLaIAK","00076971","BRED Bank Vanuatu","Ricoh IM 550F 3203X159899","Vanuatu","Florencio Jr. Familar",0,1,0,1,"02iGA00000ZMoaAYAT","3203X159899"],["500Mp00000kBlyuIAC","00076747","Sun Productions Printers","Ricoh Pro C7200SX C878FB20018","Vanuatu","Florencio Jr. Familar",0,1,1,1,"02i7F000000x4xKQAQ","C878FB20018"],["500Mp00000k4dy1IAA","00076712","Vanuatu Inst. of Technology","Ricoh IM C4500 3121M120469","Vanuatu","Florencio Jr. Familar",3,2,0,1,"02i7F00000Flnl3QAB","3121M120469"],["500Mp00000jrv4uIAA","00076583","VanuBulu Elementary School","Sig Ricoh MP 4055 C379P400109","Vanuatu","Florencio Jr. Familar",2,1,1,1,"02i7F000009V0uOQAS","C379P400109"],["500Mp00000jtX9aIAE","00076612","Bank of South Pacific Vanuatu","Ricoh MP 5055 C387P900231","Vanuatu","Florencio Jr. Familar",2,2,0,1,"02i7F000009NtyeQAC","C387P900231"],["500Mp00000jwlOBIAY","00076633","Citizenship Office Vanuatu","Ricoh IM C4500 3120MA20353","Vanuatu","Florencio Jr. Familar",0,1,1,0,"02i7F00000FlnbJQAR","3120MA20353"],["500Mp00000jsRzDIAU","00076597","Catholic Mission Vanuatu","Ricoh IM C4500 3129MB20058","Vanuatu","Florencio Jr. Familar",0,1,1,1,"02i7F000000GrWJQA0","3129MB20058"],["500Mp00000jsQelIAE","00076591","Central School","Ricoh MP 9003 G670C450003","Vanuatu","Florencio Jr. Familar",0,1,1,0,"02i7F00000FlqXkQAJ","G670C450003"],["500Mp00000jngIuIAI","00076548","Sun Productions Printers","Ricoh Pro C7500 5794C620266","Vanuatu","Florencio Jr. Familar",0,1,1,0,"02iMp0000066F8zIAE","5794C620266"],["500Mp00000jdJU1IAM","00076512","Central School","Ricoh MP 9003 G670C450003","Vanuatu","Florencio Jr. Familar",1,1,1,1,"02i7F00000FlqXkQAJ","G670C450003"],["500Mp00000jdBWYIA2","00076506","Fletcher Building Vanuatu","Ricoh IM C2000 3081R920728","Vanuatu","Florencio Jr. Familar",0,1,1,0,"02i7F00000II7s6QAD","3081R920728"],["500Mp00000iPJjEIAW","00075950","LDS Port Vila Mission","Ricoh IM C300F 3922PC51347","Vanuatu","Florencio Jr. Familar",22,2,0,1,"02i7F000000WSe6QAG","3922PC51347"],["500Mp00000jUZprIAG","00076438","Office of Public Service Comm.","Ricoh IM C4500 3129M920905","Vanuatu","Florencio Jr. Familar",0,1,1,1,"02i7F000009VH3KQAW","3129M920905"],["500Mp00000jS1c3IAC","00076381","Vanuatu National Provident Fund","Sig Ricoh MP 5055 C388P800039","Vanuatu","Florencio Jr. Familar",0,1,1,1,"02i7F000009PLuZQAW","C388P800039"],["500Mp00000jGcp6IAC","00076309","VanuBulu Elementary School","Sig Ricoh MP 4055 C379P400109","Vanuatu","Florencio Jr. Familar",4,2,0,1,"02i7F000009V0uOQAS","C379P400109"],["500Mp00000jCos0IAC","00076272","Central School","Sig Ricoh MP C3003 E154M850002","Vanuatu","Florencio Jr. Familar",5,2,0,1,"02iGA00000hKAKdYAO","E154M850002"],["500Mp00000jCvThIAK","00076277","Bank of South Pacific Vanuatu","Ricoh MP 5055 C388P800036","Vanuatu","Florencio Jr. Familar",1,1,0,0,"02i7F000000CV6nQAG","C388P800036"],["500Mp00000jGJoFIAW","00076306","Bank of South Pacific Vanuatu","Ricoh MP 5055 C388P800036","Vanuatu","Florencio Jr. Familar",0,1,1,1,"02i7F000000CV6nQAG","C388P800036"],["500Mp00000j9P5LIAU","00076242","Haskell Construction Vanuatu","Sig Ricoh MP C3003 E155M450164","Vanuatu","Florencio Jr. Familar",2,1,0,1,"02iGA00000hKAKnYAO","E155M450164"],["500Mp00000jATGbIAO","00076246","VanCare Insurance","Ricoh IM 550F 3203X159900","Vanuatu","Florencio Jr. Familar",0,1,1,0,"02iGA00000hKNBnYAO","3203X159900"],["500Mp00000j6VlZIAU","00076212","Office of Public Service Comm.","Ricoh IM C4500 3129M920905","Vanuatu","Florencio Jr. Familar",1,1,0,1,"02i7F000009VH3KQAW","3129M920905"],["500Mp00000j58KuIAI","00076200","Citizenship Office Vanuatu","Ricoh IM C4500 3120MA20353","Vanuatu","Florencio Jr. Familar",1,2,0,1,"02i7F00000FlnbJQAR","3120MA20353"],["500Mp00000jA5iyIAC","00076245","BRED Bank Vanuatu","Ricoh IM C300F 3925P250037","Vanuatu","Florencio Jr. Familar",0,1,1,0,"02iMp00000BuZxdIAF","3925P250037"],["500Mp00000iadXyIAI","00076027","Unelco Vanuatu","Ricoh IM 430F 3359P102092","Vanuatu","Florencio Jr. Familar",6,2,1,1,"02i7F00000FlkJWQAZ","3359P102092"],["500Mp00000iptysIAA","00076105","VanCare Insurance","Ricoh IM 550F 3203X159900","Vanuatu","Florencio Jr. Familar",0,2,0,0,"02iGA00000hKNBnYAO","3203X159900"],["500Mp00000iPH7pIAG","00075948","Vodafone Vanuatu","Ricoh IM 3500 4431R420008","Vanuatu","Florencio Jr. Familar",2,2,0,1,"02i7F00000MszoPQAR","4431R420008"],["500Mp00000iR02fIAC","00075971","Vanuatu Qualification Authority","Sig Ricoh MP C5503 E185M950027","Vanuatu","Florencio Jr. Familar",1,1,1,1,"02i7F00000FlkdIQAR","E185M950027"],["500Mp00000iX3PLIA0","00076011","Vodafone Vanuatu","Ricoh MP C4504exSP C738M730047","Vanuatu","Florencio Jr. Familar",0,1,0,0,"02i7F000009Nu09QAC","C738M730047"],["500Mp00000iWkuaIAC","00076005","BRED Bank Vanuatu","Sig Ricoh MP 5055 C387P900287","Vanuatu","Florencio Jr. Familar",0,1,0,0,"02i7F000009NtylQAC","C387P900287"],["500Mp00000iX2kuIAC","00076008","Vanuatu National Provident Fund","Sig Ricoh MP 5055 C388P800039","Vanuatu","Florencio Jr. Familar",0,1,0,0,"02i7F000009PLuZQAW","C388P800039"],
+  // ── ARTURO REGIS ────────────────────────────────────────────────────────────────
+  ["500Mp00000mV9ORIA0","00078025","Ministry of Works Samoa","Ricoh IM C4500 3129MC20364","Samoa","Arturo Regis",1,1,0,1,"02i7F000000GqiEQAS","3129MC20364"],["500Mp00000mAfO6IAK","00077846","Business Systems Limited","Ricoh IM C4500 3129M520104","Samoa","Arturo Regis",6,1,0,1,"02i7F000009V5YrQAK","3129M520104"],["500Mp00000mQdmxIAC","00077985","Oceania Gas Limited","Ricoh IM C300F 3923P751905","Samoa","Arturo Regis",0,1,0,1,"02iGA00000hKLMtYAO","3923P751905"],["500Mp00000mMKCzIAO","00077938","Church of Jesus Christ Latter-day","Ricoh IM 430F 3359P201346","Samoa","Arturo Regis",0,1,1,1,"02i7F00000FllfOQAR","3359P201346"],["500Mp00000mMpt4IAC","00077952","Seventh-day Adventist Church Samoa","Ricoh IM C6000 3142M420088","Samoa","Arturo Regis",0,1,0,1,"02i7F000000WUKUQA4","3142M420088"],["500Mp00000mQrTIIA0","00077983","Samoa Fafafine Association","Ricoh IM C2000 3082R590246","Samoa","Arturo Regis",0,1,0,0,""],["500Mp00000mQa93IAC","00077978","Vodafone Samoa","Ricoh IM C300F 3921P952652","Samoa","Arturo Regis",0,1,0,1,"02i7F00000JCdZNQA1","3921P952652"],["500Mp00000lyAvwIAE","00077733","Church of Jesus Christ Latter-day","Ricoh IM 430F 3359P201346","Samoa","Arturo Regis",0,1,1,1,"02i7F00000FllfOQAR","3359P201346"],["500Mp00000le29jIAA","00077572","Church of Jesus Christ Latter-day","Ricoh IM C6000 3141M520406","Samoa","Arturo Regis",6,7,1,1,"02i7F00000II7gkQAD","3141M520406"],["500Mp00000lrGEtIAM","00077681","CCCS Treasurer's Office","Ricoh IM C4500 3121M220193","Samoa","Arturo Regis",0,1,0,1,"02i7F00000FlqWhQAJ","3121M220193"],["500Mp00000lU4j4IAC","00077490","Wallwork Lamb Lawyers","Sig Ricoh MP C305SPF W794P904095","Samoa","Arturo Regis",7,1,1,1,"02i7F000000FbmEQAS","W794P904095"],["500Mp00000llgiJIAQ","00077648","Univ South Pacific Samoa","Sig Ricoh MP 5055 C389P500198","Samoa","Arturo Regis",0,1,1,1,"02i7F000009Ut7zQAC","C389P500198"],["500Mp00000lhdBDIAY","00077618","SPREP Samoa","Ricoh IM C4500 3129M920954","Samoa","Arturo Regis",1,1,0,1,"02i7F000009SCSsQAO","3129M920954"],["500Mp00000lk8KaIAI","00077630","South Seas Intl Traders","Ricoh M 320F 5852Z130181","Samoa","Arturo Regis",1,2,0,1,"02i7F00000KBsVoQAL","5852Z130181"],["500Mp00000lnaNgIAI","00077656","National Bank Samoa","Ricoh IM C300F 3922P650754","Samoa","Arturo Regis",0,1,1,0,"02i7F00000KA8QKQA1","3922P650754"],["500Mp00000lh08JIAQ","00077605","The Little Helpers Limited","Ricoh SP 3710DN 5178Z730064","Samoa","Arturo Regis",0,1,0,0,"02i7F000009UtYyQAK","5178Z730064"],["500Mp00000k4mdDIAQ","00076720","National Bank Samoa","Ricoh IM 430F 3352PB57729","Samoa","Arturo Regis",30,3,0,1,"02i7F00000KA8QNQA1","3352PB57729"],["500Mp00000lITACIA4","00077387","Fono Faavae Aleipata","Ricoh M C250 5452P200763","Samoa","Arturo Regis",4,1,0,1,"02i7F00000Iz3L4QAJ","5452P200763"],["500Mp00000j5f5bIAA","00076205","Ministry of Agriculture Samoa","Ricoh IM C2500 3099RA20344","Samoa","Arturo Regis",45,1,0,1,"02i7F000009VJlGQAW","3099RA20344"],["500Mp00000iWEMnIAO","00075996","Swire Shipping Samoa","Ricoh IM C3000 3102R990126","Samoa","Arturo Regis",57,1,1,1,"02i7F00000OdgtfQAB","3102R990126"],["500Mp00000lPRGdIAO","00077438","Itumalo Vaimauga","Ricoh IM C2000 3082R790280","Samoa","Arturo Regis",1,1,1,1,"02i7F00000JvUBtQAN","3082R790280"],["500Mp00000iP336IAC","00075943","Frankie Company Limited","Sig Ricoh MP 3054 G156P400664","Samoa","Arturo Regis",0,1,1,0,"02i7F00000HxiNvQAJ","G156P400664"],["500Mp00000htpFiIAI","00075919","Ministry Natural Resources Samoa","Sig Ricoh MP C4503 E175M150337","Samoa","Arturo Regis",14,1,1,1,"02i7F000009Nu4HQAS","E175M150337"],["500Mp00000i9RhTIAU","00075930","Bank of South Pacific Samoa","Ricoh M 320F 5855Z530212","Samoa","Arturo Regis",6,1,1,0,"02iMp000009rmu9IAA","5855Z530212"],["500Mp00000kCia6IAC","00077379","Digicel Samoa","Ricoh IM C3000 3102R990129","Samoa","Arturo Regis",0,1,1,0,"02i7F00000JxECjQAN","3102R990129"],["500Mp00000k46Z5IAI","00076701","Samoa Airways","Sig Ricoh MP 5055 C389P400192","Samoa","Arturo Regis",0,1,1,1,"02i7F000009VCZwQAO","C389P400192"],["500Mp00000k0jPPIAY","00076677","Frankie Company Limited","Ricoh MP 5055 C388P600183","Samoa","Arturo Regis",1,1,1,1,"02i7F000009NtyzQAC","C388P600183"],["500Mp00000jgEmDIAU","00076520","Electoral Commissioner Samoa","D6510 IWB 1749X700040","Samoa","Arturo Regis",5,1,1,1,"02i7F00000FlosKQAR","1749X700040"],["500Mp00000kwbBEIAY","00077192","Gambling Control Authority Samoa","Ricoh IM C3000 3101R120366","Samoa","Arturo Regis",0,2,1,1,"02i7F00000KBsViQAL","3101R120366"],["500Mp00000kwbhVIAQ","00077184","Samoa Airways","Sig Ricoh MP 5055 C389P400192","Samoa","Arturo Regis",0,1,1,1,"02i7F000009VCZwQAO","C389P400192"],["500Mp00000kx2Y1IAI","00077206","Taumeasina Island Resort","Ricoh IM 430F 3359P201320","Samoa","Arturo Regis",0,1,1,0,"02i7F000009UyXIQA0","3359P201320"],["500Mp00000kwVVyIAM","00077201","Frankie Company Limited","Sig Ricoh MP C2003 E205R470270","Samoa","Arturo Regis",0,1,1,0,"02i7F00000MunkgQAB","E205R470270"],["500Mp00000kwjtcIAA","00077183","Lui & Chang","Sig Ricoh MP 3053 E754H950067","Samoa","Arturo Regis",0,1,1,0,"02i7F00000FliW5QAJ","E754H950067"],["500Mp00000klcnVIAQ","00077118","Gambling Control Authority Samoa","Ricoh IM C3000 3101R120366","Samoa","Arturo Regis",0,1,1,1,"02i7F00000KBsViQAL","3101R120366"],["500Mp00000klOAwIAM","00077102","Church of Jesus Christ Latter-day","Ricoh IM 430F 3359P201370","Samoa","Arturo Regis",0,1,1,0,"02i7F00000FllfRQAR","3359P201370"],["500Mp00000kahvFIAQ","00077002","Konrad Lober Trading","Sig Ricoh MP C4503 E174M650067","Samoa","Arturo Regis",1,1,1,1,"02i7F00000Flhm5QAB","E174M650067"],["500Mp00000kZXnIIAW","00076980","Church of Jesus Christ Latter-day","Ricoh IM C300F 3923P852303","Samoa","Arturo Regis",1,1,1,1,"02iMp000008S2ThIAK","3923P852303"],["500Mp00000kZUn7IAG","00076966","Church of Jesus Christ Latter-day","Ricoh IM C6000 3141M520406","Samoa","Arturo Regis",0,1,1,0,"02i7F00000II7gkQAD","3141M520406"],["500Mp00000kRwtcIAC","00076936","Chan Mow & Company","Sig Ricoh MP 2501 E335MC50776","Samoa","Arturo Regis",0,1,1,0,"02i7F000000xMBSQA2","E335MC50776"],["500Mp00000kK0OBIA0","00076850","Malua Printing Press","Sig Ricoh MP C4503 E173M750371","Samoa","Arturo Regis",0,1,1,0,"02i7F00000HxiOAQAZ","E173M750371"],["500Mp00000k4P5XIAU","00076708","Church of Jesus Christ Latter-day","Ricoh IM C6000 3141M520406","Samoa","Arturo Regis",5,2,1,1,"02i7F00000II7gkQAD","3141M520406"],["500Mp00000jLW1RIAW","00076363","Ricoh Samoa","Sig Ricoh Copier MP C2004EX C768R930566","Samoa","Arturo Regis",3,1,1,0,"02i7F000000Ctz8QAC","C768R930566"],
+  // ── RAMIRO CATAQUIS (2) ──────────────────────────────────────────────────────────
+  ["500Mp00000mVIrUIAW","00078028","Taumeasina Island Resort","Ricoh IM 460 9263P800470","Samoa","Ramiro Cataquis (2)",0,1,0,1,"02iMp000008CCDiIAO","9263P800470"],["500Mp00000mV1Z3IAK","00078022","Taumeasina Island Resort","Ricoh IM 430F 3359P201320","Samoa","Ramiro Cataquis (2)",0,1,0,0,"02i7F000009UyXIQA0","3359P201320"],["500Mp00000leXLeIAM","00077575","Ministry of Police Samoa","Ricoh IM C4500 3122M420163","Samoa","Ramiro Cataquis (2)",9,1,0,1,"02i7F00000MunJfQAJ","3122M420163"],["500Mp00000m6bPRIAY","00077802","Sheraton Samoa","Ricoh P 502 5381P702189","Samoa","Ramiro Cataquis (2)",0,1,1,1,"02i7F00000HxlfsQAB","5381P702189"],["500Mp00000lo9hlIAA","00077662","Lui & Chang","Sig Ricoh MP 3053 E754H950067","Samoa","Ramiro Cataquis (2)",1,3,1,1,"02i7F00000FliW5QAJ","E754H950067"],["500Mp00000lrU9qIAE","00077692","Gambling Control Authority Samoa","Ricoh IM C3000 3101R120366","Samoa","Ramiro Cataquis (2)",0,1,1,1,"02i7F00000KBsViQAL","3101R120366"],["500Mp00000lriCnIAI","00077697","Betham Brothers Enterprise","Ricoh IM C300F 3923P852129","Samoa","Ramiro Cataquis (2)",0,1,1,1,"02iGA00000hK131YAC","3923P852129"],["500Mp00000lrXKcIAM","00077688","Betham Brothers Enterprise","Ricoh IM C300F 3924P152806","Samoa","Ramiro Cataquis (2)",0,1,1,0,"02iGA00000hK7dQYAS","3924P152806"],["500Mp00000lnj8zIAA","00077651","Vodafone Samoa","Ricoh IM C300F 3921P952649","Samoa","Ramiro Cataquis (2)",0,1,0,1,"02i7F00000JCdZOQA1","3921P952649"],["500Mp00000lk6U3IAI","00077625","Chan Mow & Company","Sig Ricoh MP 2501 E335MC50776","Samoa","Ramiro Cataquis (2)",0,1,1,1,"02i7F000000xMBSQA2","E335MC50776"],["500Mp00000lgaYfIAI","00077587","World Health Organisation Samoa","Ricoh MP C4504exSP C738M830399","Samoa","Ramiro Cataquis (2)",0,1,1,0,"02i7F000000Fbg0QAC","C738M830399"],["500Mp00000ldikVIAQ","00077553","Chan Mow & Company","Sig Ricoh MP 2501 E335MC50776","Samoa","Ramiro Cataquis (2)",0,1,1,1,"02i7F000000xMBSQA2","E335MC50776"],["500Mp00000ldcghIAA","00077549","Sheraton Samoa","Ricoh P 502 5381P702189","Samoa","Ramiro Cataquis (2)",0,1,1,1,"02i7F00000HxlfsQAB","5381P702189"],["500Mp00000kNcF4IAK","00076870","Tisaan International","Ricoh IM C6010 9193RB30099","Samoa","Ramiro Cataquis (2)",22,1,1,1,"02iGA00000e4k7oYAA","9193RB30099"],["500Mp00000lMqUtIAK","00077432","Samoa Business Hub","Ricoh IM C3000 3100RA20184","Samoa","Ramiro Cataquis (2)",3,1,0,1,"02i7F00000FlnaQQAR","3100RA20184"],["500Mp00000kaS6XIAU","00076999","SPREP Samoa","Ricoh IM C2000 3080R920550","Samoa","Ramiro Cataquis (2)",17,1,0,1,"02i7F00000Flk4FQAR","3080R920550"],["500Mp00000kOv7WIAS","00076906","Samoa Land Transport Authority","Ricoh IM C3000 3102RA20324","Samoa","Ramiro Cataquis (2)",21,1,0,1,"02i7F00000OdgtkQAB","3102RA20324"],["500Mp00000lToJLIA0","00077486","Samoa Airways","Sig Ricoh MP 5055 C388PA00361","Samoa","Ramiro Cataquis (2)",0,1,1,1,"02i7F000009Uj8WQAS","C388PA00361"],["500Mp00000gCjqoIAC","00075207","All Saints Anglican Primary School","Ricoh IM C2500 3090R920025","Samoa","Ramiro Cataquis (2)",101,2,1,1,"02i7F00000Fll7vQAB","3090R920025"],["500Mp00000l7tPhIAI","00077315","Frankie Company Limited","Sig Ricoh MP C2003 E205R470270","Samoa","Ramiro Cataquis (2)",0,1,1,1,"02i7F00000MunkgQAB","E205R470270"],["500Mp00000l4wrzIAA","00077292","Itumalo Vaimauga","Ricoh IM C2000 3082R790280","Samoa","Ramiro Cataquis (2)",0,1,1,1,"02i7F00000JvUBtQAN","3082R790280"],["500Mp00000l4QTtIAM","00077278","Betham Brothers Enterprise","Ricoh IM C300F 3924P152777","Samoa","Ramiro Cataquis (2)",0,1,1,0,"02iGA00000hK7dPYAS","3924P152777"],["500Mp00000kpQfdIAE","00077149","Frankie Company Limited","Sig Ricoh MP C2003 E205R470270","Samoa","Ramiro Cataquis (2)",0,1,1,0,"02i7F00000MunkgQAB","E205R470270"],["500Mp00000kpHnYIAU","00077142","Betham Brothers Enterprise","Ricoh IM C300F 3924P152777","Samoa","Ramiro Cataquis (2)",0,1,1,0,"02iGA00000hK7dPYAS","3924P152777"],["500Mp00000kliHhIAI","00077109","Fexco Samoa","Ricoh IM 430F 3354P852035","Samoa","Ramiro Cataquis (2)",0,1,1,1,"02iMp000008e8okIAA","3354P852035"],["500Mp00000kdYSTIA2","00077012","Frankie Company Limited","Sig Ricoh MP C2003 E205R470270","Samoa","Ramiro Cataquis (2)",0,1,1,0,"02i7F00000MunkgQAB","E205R470270"],["500Mp00000kJyVyIAK","00076837","Ah Chong Public Accountants","Sig Ricoh M 320F 5852Z131245","Samoa","Ramiro Cataquis (2)",0,1,1,0,"02i7F00000ILYgxQAH","5852Z131245"],["500Mp00000hZtfBIAS","00075809","Ministry of Customs Samoa","Ricoh MP 5055 C381P100187","Samoa","Ramiro Cataquis (2)",54,1,1,1,"02i7F00000FloQmQAJ","C381P100187"],["500Mp00000gdKYGIA2","00075392","National Bank Samoa","Sig Ricoh MP 501 G989X110763","Samoa","Ramiro Cataquis (2)",65,2,1,1,"02i7F000009UxvDQAS","G989X110763"],["500Mp00000jgGzQIAU","00076525","Taumeasina Island Resort","Ricoh IM 430F 3359P201320","Samoa","Ramiro Cataquis (2)",0,2,1,0,"02i7F000009UyXIQA0","3359P201320"],["500Mp00000kRinFIAS","00076925","Samoa Pure Water Company","Sig Ricoh MP C306SPF G446P503467","Samoa","Ramiro Cataquis (2)",11,3,0,1,"02iMp000008kbPlIAI","G446P503467"],["500Mp00000jw1wIIAQ","00076618","Samoa Breweries","Ricoh IM 430F 3352PC54573","Samoa","Ramiro Cataquis (2)",20,3,0,1,"02i7F00000OdgvIQAR","3352PC54573"],["500Mp00000ikuNhIAI","00076060","Frankie Company Limited","Ricoh MP 5055 C388P600183","Samoa","Ramiro Cataquis (2)",2,1,1,1,"02i7F000009NtyzQAC","C388P600183"],["500Mp00000hMy6SIAS","00075732","Ministry of Works Samoa","Ricoh IM C4500 3120M820225","Samoa","Ramiro Cataquis (2)",39,3,0,1,"02i7F00000FllIIQAZ","3120M820225"],["500Mp00000fwEe5IAE","00075038","SPREP Samoa","Ricoh MP C2504ex C778R130229","Samoa","Ramiro Cataquis (2)",73,2,0,1,"02i7F000009Nu0TQAS","C778R130229"],
+  // ── VICTOR GEONZON ──────────────────────────────────────────────────────────────
+  ["500Mp00000mWhxTIAS","00078039","Bulk Shop","Ricoh IM 5000 4451R320002","Solomons","Victor Geonzon",0,2,1,0,"02i7F000000WTwfQAG","4451R320002"],["500Mp00000mW8JmIAK","00078033","Univ South Pacific Solomons","Ricoh MP 5055 C386PB0001","Solomons","Victor Geonzon",0,2,0,0,"02i7F000009NtyHQAS","C386PB0001"],["500Mp00000mSNSjIAO","00078001","BRED Bank Solomon Islands","Ricoh MP 501 G988X791117","Solomons","Victor Geonzon",0,1,1,1,"02i7F000000FZdUQAW","G988X791117"],["500Mp00000mRFvRIAW","00077991","Bank South Pacific Solomons","Ricoh MP 4055 C378P300510","Solomons","Victor Geonzon",0,1,0,1,"02i7F000009NtyBQAS","C378P300510"],["500Mp00000mEZliIAG","00077915","Bulk Shop","Ricoh IM C2500 3090R720163","Solomons","Victor Geonzon",4,3,1,1,"02i7F00000FllfkQAB","3090R720163"],["500Mp00000mBzanIAC","00077884","BRED Bank Solomon Islands","Ricoh IM 430F 3359PA03408","Solomons","Victor Geonzon",0,1,0,1,"02i7F00000FlkqOQAR","3359PA03408"],["500Mp00000mApQoIAK","00077859","World Vision Solomon Islands","Ricoh IM C2010 9134R310015","Solomons","Victor Geonzon",0,1,0,1,"02iGA00000hKmhFYAS","9134R310015"],["500Mp00000lK9YoIAK","00077407","Solomon Islands Climate Action Network","Sig Ricoh MP C3003 E154M850147","Solomons","Victor Geonzon",16,3,0,1,"02iGA00000hKIJiYAO","E154M850147"],["500Mp00000m3wWvIAI","00077794","Bank South Pacific Solomons","Ricoh MP 4055 C378P300509","Solomons","Victor Geonzon",0,1,0,1,"02i7F000009NtyAQAS","C378P300509"],["500Mp00000h01o9IAA","00075568","Solomon Islands Ports Authority","Ricoh MP C2504ex C778R930032","Solomons","Victor Geonzon",101,2,1,1,"02i7F000009PCcXQAW","C778R930032"],["500Mp00000lo5RHIAY","00077660","Bank South Pacific Solomons","Ricoh MP 5055 C388PA00340","Solomons","Victor Geonzon",0,1,0,1,"02i7F000000FQJdQAO","C388PA00340"],["500Mp00000lnnmHIAQ","00077658","BRED Bank Solomon Islands","Ricoh IM C2500 3090R720052","Solomons","Victor Geonzon",0,1,1,1,"02i7F00000Flle3QAB","3090R720052"],["500Mp00000lXSvKIAW","00077525","BRED Bank Solomon Islands","Ricoh MP 501 G988X791117","Solomons","Victor Geonzon",0,1,1,1,"02i7F000000FZdUQAW","G988X791117"],["500Mp00000lIQU8IAO","00077394","Bulk Shop","Ricoh IM 5000 4451R320002","Solomons","Victor Geonzon",0,1,1,1,"02i7F000000WTwfQAG","4451R320002"],["500Mp00000iWZvtIAG","00076010","Solomon Airlines","Ricoh MP 2501SP E339M250003","Solomons","Victor Geonzon",52,3,0,1,"02i7F000009UwCPQA0","E339M250003"],["500Mp00000khjXNIAY","00077077","Univ South Pacific Solomons","Sig Ricoh MP C2503 E215R980096","Solomons","Victor Geonzon",20,0,1,1,"02iGA00000hKN0rYAG","E215R980096"],["500Mp00000kKOBvIAO","00076854","Univ South Pacific Solomons","Sig Ricoh MP C2503 E215R980096","Solomons","Victor Geonzon",27,0,1,1,"02iGA00000hKN0rYAG","E215R980096"],["500Mp00000l4m7wIAA","00077287","Naha United Church","Sig Ricoh Copier MPC2551 V9819400013","Solomons","Victor Geonzon",8,3,0,1,"02i7F000000CygbQAC","V9819400013"],["500Mp00000kdechIAA","00077018","Solomon Water","Ricoh IM C2500 3099R220018","Solomons","Victor Geonzon",15,2,0,1,"02i7F000009UiZyQAK","3099R220018"],["500Mp00000j9EgDIAU","00076239","Univ South Pacific Solomons","Sig Ricoh MP C2503 E215R980096","Solomons","Victor Geonzon",21,4,1,1,"02iGA00000hKN0rYAG","E215R980096"],["500Mp00000kOjg1IAC","00076917","Billy Titiulu Private Law Firm","Sig Ricoh IM C2010 9133R710127","Solomons","Victor Geonzon",3,1,0,0,"02iGA00000e5203YAA","9133R710127"],["500Mp00000kPhc1IAC","00076922","Asian Development Bank Solomons","Ricoh MP C4504exSP G716M750144","Solomons","Victor Geonzon",3,1,1,0,"02i7F000009Nu90QAC","G716M750144"],["500Mp00000jGaiOIAS","00076305","Solomon Power","Ricoh MP 3054SP G155P900964","Solomons","Victor Geonzon",15,1,0,1,"02i7F000000CuMxQAK","G155P900964"],["500Mp00000jsNKRIA2","00076595","Family Support Center Solomons","Sig Ricoh MP 5055 C387P700240","Solomons","Victor Geonzon",3,2,1,1,"02i7F000009NtyWQAS","C387P700240"],["500Mp00000jsaMMIAY","00076596","Univ South Pacific Solomons","Sig Ricoh MP C5503 E186M340217","Solomons","Victor Geonzon",3,1,1,0,"02iGA00000hKN1fYAG","E186M340217"],["500Mp00000jUfOqIAK","00076431","Australian Federal Police Solomons","Ricoh MP C3003 E153MB50238","Solomons","Victor Geonzon",2,2,1,1,"02i7F000000Gr53QAC","E153MB50238"],["500Mp00000jS0svIAC","00076385","Univ South Pacific Solomons","Sig Ricoh MP C5503 E186M340217","Solomons","Victor Geonzon",2,2,0,1,"02iGA00000hKN1fYAG","E186M340217"],["500Mp00000iT4bcIAC","00075982","Ricoh Solomon Islands","Sig Ricoh MP C2503 E216R380147","Solomons","Victor Geonzon",20,1,1,0,"02i7F000009Nu4oQAC","E216R380147"],["500Mp00000iQbYwIAK","00075970","UTA Shipping","Sig Ricoh MP C5503 E184M350002","Solomons","Victor Geonzon",13,1,1,0,"02i7F000000WVmFQAW","E184M350002"],["500Mp00000ZmGMkIAN","00071995","National Parliament Office Solomons","Ricoh MP C4504exSP C738M730041","Solomons","Victor Geonzon",198,1,0,1,"02i7F000000xME2QAM","C738M730041"],
+  // ── JOHN CID ────────────────────────────────────────────────────────────────────
+  ["500Mp00000m2S7qIAE","00077770","Ministry Revenue Customs Tonga","Ricoh MP C4504exSP C738M130839","Tonga","John Cid",7,1,0,1,"02i7F00000MunPDQAZ","C738M130839"],["500Mp00000mLvCYIA0","00077931","Univ South Pacific Tonga","Ricoh MP C4504exSP G716M950200","Tonga","John Cid",0,1,0,1,"02i7F000009OMQOQA4","G716M950200"],["500Mp00000lrmElIAI","00077699","DT Global Asia Pacific","Ricoh IM C2500 3091R320303","Tonga","John Cid",6,1,0,0,"02i7F00000HxlZqQAJ","3091R320303"],["500Mp00000lzNMWIA2","00077757","CK Broker Services","Sig Ricoh MP C3003 E156M340414","Tonga","John Cid",2,1,0,1,"02iGA00000hKw2pYAC","E156M340414"],["500Mp00000lgfa8IAA","00077591","Ministry of Justice Tonga","Ricoh MP C2004exSP C768R130063","Tonga","John Cid",7,1,0,0,"02i7F000000FWbTQAW","C768R130063"],["500Mp00000lgdQGIAY","00077592","Tonga National University","Ricoh MP 5055 C389P300408","Tonga","John Cid",7,1,0,1,"02i7F000009Uxj1QAC","C389P300408"],["500Mp00000lygfdIAA","00077740","Bank South Pacific Tonga","Ricoh IM 430F 3352P950281","Tonga","John Cid",0,1,0,0,"02iGA000000Wa1hYAC","3352P950281"],["500Mp00000lk4C8IAI","00077627","Ministry of Police Tonga","Ricoh M C251FW 5822PB01241","Tonga","John Cid",0,1,1,1,"02i7F000000WVSeQAO","5822PB01241"],["500Mp00000ldTdNIAU","00077544","Act Community School","Sig Ricoh MP C4503 E175MA50358","Tonga","John Cid",0,1,1,1,"02iGA00000hKw2BYAS","E175MA50358"],["500Mp00000lQW4RIAW","00077455","Ministry of Internal Affairs Tonga","Sig Ricoh MP C4504 G716M550021","Tonga","John Cid",2,1,1,0,"02i7F000009Nu8yQAC","G716M550021"],["500Mp00000lTLpIIAW","00077477","JICA Tonga","Ricoh IM C6010 9193R930126","Tonga","John Cid",0,1,1,1,"02iMp000008GuknIAC","9193R930126"],["500Mp00000lMCnSIAW","00077419","Salvation Army Tonga","Sig Ricoh MP C5503 E184M750052","Tonga","John Cid",0,1,1,1,"02i7F000009SCSnQAO","E184M750052"],["500Mp00000lBi4NIAS","00077359","Ministry of Police Tonga","Ricoh M C251FW 5822PB01241","Tonga","John Cid",0,1,1,1,"02i7F000000WVSeQAO","5822PB01241"],["500Mp00000kFXvwIAG","00076793","Ministry Foreign Affairs Tonga","Sig Ricoh MP5054 G185R990001","Tonga","John Cid",17,2,0,0,"02i7F00000HxiNqQAJ","G185R990001"],["500Mp00000kRiH1IAK","00076926","Friendly Island Bookshop","Sig Ricoh MP C5503 E185MA50180","Tonga","John Cid",3,1,1,0,"02iGA00000hKrraYAC","E185MA50180"],["500Mp00000kRbInIAK","00076929","Ministry of Agriculture Tonga","Sig Ricoh MP C4503 E176M240011","Tonga","John Cid",11,2,1,1,"02i7F00000FlqWDQAZ","E176M240011"],["500Mp00000l0UUTIA2","00077229","Friendly Island Bookshop","Sig Ricoh MP C5503 E185MA50180","Tonga","John Cid",0,1,1,1,"02iGA00000hKrraYAC","E185MA50180"],["500Mp00000kpFidIAE","00077144","JICA Tonga","Ricoh IM C6010 9193R930126","Tonga","John Cid",2,1,1,1,"02iMp000008GuknIAC","9193R930126"],["500Mp00000jS2UpIAK","00076375","Church of Jesus Christ Latter-day","Ricoh IM 430F 3359P403341","Tonga","John Cid",28,1,1,1,"02i7F00000LrMpCQAV","3359P403341"],["500Mp00000jSLHXIA4","00076401","Bank South Pacific Tonga","Ricoh M C250 5451P400495","Tonga","John Cid",31,1,0,1,"02i7F00000II7guQAD","5451P400495"],["500Mp00000jK36XIAS","00076334","Ministry Agriculture Tonga","Sig Ricoh MP C4503 E176M240011","Tonga","John Cid",12,2,1,1,"02i7F00000FlqWDQAZ","E176M240011"],["500Mp00000kO69tIAC","00076890","Ministry of Internal Affairs Tonga","Sig Ricoh MP C4504 G716M550021","Tonga","John Cid",11,1,0,1,"02i7F000009Nu8yQAC","G716M550021"],["500Mp00000itDEcIAM","00076125","Ministry of Police Tonga","Ricoh M C251FW 5822PB01241","Tonga","John Cid",26,2,0,1,"02i7F000000WVSeQAO","5822PB01241"],["500Mp00000ih6gjIAA","00076030","Friendly Island Bookshop","Ricoh IM C3000 3102RC20031","Tonga","John Cid",29,2,0,1,"02iGA000000WZw1YAG","3102RC20031"],["500Mp00000itEu4IAE","00076128","Toutaimana","Ricoh IM C2500 3091R320158","Tonga","John Cid",21,2,0,1,"02i7F00000ILYisQAH","3091R320158"],["500Mp00000bbWS1IAM","00073014","Church of Jesus Christ Latter-day","Ricoh IM C3500 3119R720019","Tonga","John Cid",159,1,0,1,"02i7F000009VJP3QAO","3119R720019"],["500Mp00000itOWfIAM","00076134","Ministry of Education Tonga","Ricoh IM C300F 3920PC02184","Tonga","John Cid",39,3,0,1,"02i7F00000L3me1QAB","3920PC02184"],
+  // ── JUNRIEL ANDOY ───────────────────────────────────────────────────────────────
+  ["500Mp00000mQHuWIAW","00077979","Vila North School","Ricoh IM 5000 4454R120005","Vanuatu","Junriel Andoy",2,3,0,0,"02iMp00000CBbi5IAD","4454R120005"],["500Mp00000mMfyXIAS","00077947","Vanuatu Inst. Teachers Ed.","Ricoh IM C4500 3121M120670","Vanuatu","Junriel Andoy",2,2,0,1,"02i7F00000FlohWQAR","3121M120670"],["500Mp00000mEm7sIAC","00077920","Sun Productions Printers","Ricoh Pro C7200SX C878FB20018","Vanuatu","Junriel Andoy",5,1,1,0,"02i7F000000x4xKQAQ","C878FB20018"],["500Mp00000mNlaWIAS","00077965","Ministry of Trade Vanuatu","Ricoh IM C300F 3920PA02536","Vanuatu","Junriel Andoy",0,1,0,1,"02i7F00000Fll7bQAB","3920PA02536"],["500Mp00000mRLvzIAG","00077989","Life Changer Christian College","Sig Ricoh MP 5055 C389P300398","Vanuatu","Junriel Andoy",0,1,1,0,"02i7F000009V0fgQAC","C389P300398"],["500Mp00000mNEUuIAO","00077958","Life Changer Christian College","Sig Ricoh MP 5055 C389P300398","Vanuatu","Junriel Andoy",0,1,1,1,"02i7F000009V0fgQAC","C389P300398"],["500Mp00000mMZ5AIAW","00077944","Central School","Ricoh IM 4000 4442R520127","Vanuatu","Junriel Andoy",0,1,0,1,"02i7F000000WSWmQAO","4442R520127"],["500Mp00000h7mP6IAI","00075613","Vanuatu Inst. Teachers Ed.","Ricoh IM C4500 3121M120670","Vanuatu","Junriel Andoy",104,3,1,1,"02i7F00000FlohWQAR","3121M120670"],["500Mp00000mCn6CIAS","00077891","Vanuatu National Provident Fund","Sig Ricoh MP 5055 C388P800039","Vanuatu","Junriel Andoy",0,1,0,1,"02i7F000009PLuZQAW","C388P800039"],["500Mp00000mAuyKIAS","00077855","Vanpawa","Sig Ricoh MP C3003 E155M250185","Vanuatu","Junriel Andoy",0,1,1,0,"02iMp000006mZ6XIAU","E155M250185"],["500Mp00000m7qz9IAA","00077828","Vodafone Vanuatu","Ricoh MP 5055 C387P900271","Vanuatu","Junriel Andoy",0,1,1,1,"02i7F000009NtyjQAC","C387P900271"],["500Mp00000m6l3qIAA","00077803","Life Changer Christian College","Sig Ricoh MP 5055 C389P300398","Vanuatu","Junriel Andoy",0,1,1,1,"02i7F000009V0fgQAC","C389P300398"],["500Mp00000lyPoVIAU","00077730","Life Changer Christian College","Sig Ricoh MP 5055 C389P300398","Vanuatu","Junriel Andoy",1,1,1,1,"02i7F000009V0fgQAC","C389P300398"],["500Mp00000lh1CKIAY","00077604","Vila North School","Sig Ricoh IM C4500 3122M498222","Vanuatu","Junriel Andoy",0,1,1,1,"02i7F000000WVTUQA4","3122M498222"],["500Mp00000lQ2ROIA0","00077447","Downer Vanuatu","Sig Ricoh MP C3003 E155M650006","Vanuatu","Junriel Andoy",0,1,1,1,"02iGA00000hKAKoYAO","E155M650006"],["500Mp00000kwYqVIAU","00077185","Sun Productions Printers","Ricoh Pro C7200SX C878FB20018","Vanuatu","Junriel Andoy",0,1,1,0,"02i7F000000x4xKQAQ","C878FB20018"],["500Mp00000klcFVIAY","00077106","Central School","Ricoh IM 4000 4442R520127","Vanuatu","Junriel Andoy",0,1,1,1,"02i7F000000WSWmQAO","4442R520127"],["500Mp00000khUYLIA2","00077060","Downer Vanuatu","Sig Ricoh MP C3003 E155M650006","Vanuatu","Junriel Andoy",0,1,1,0,"02iGA00000hKAKoYAO","E155M650006"],["500Mp00000kdW0qIAE","00077020","Warwick Le Lagon Vanuatu","Ricoh MP 501 G989X315644","Vanuatu","Junriel Andoy",1,2,0,1,"02i7F000009VOTtQAO","G989X315644"],["500Mp00000kZyuuIAC","00076986","Life Changer Christian College","Sig Ricoh MP 5055 C389P300398","Vanuatu","Junriel Andoy",1,2,0,1,"02i7F000009V0fgQAC","C389P300398"],["500Mp00000cW0OsIAK","00073463","Vila North School","Ricoh IM C4510 9173R920021","Vanuatu","Junriel Andoy",135,1,0,1,"02iGA00000e4tvjYAA","9173R920021"],
+  // ── SAMSON RAGARUMA ────────────────────────────────────────────────────────────
+  ["500Mp00000mCQ7xIAG","00077888","Pink South Pacific Limited","Ricoh M 320F 5853Z830396","Solomons","Samson Ragaruma",5,2,0,1,"02iMp000006gQKPIA2","5853Z830396"],["500Mp00000ldak0IAA","00077565","Kulu Community High School","Ricoh M 2701 3283Z430091","Solomons","Samson Ragaruma",9,2,0,1,"02iMp000008IjRtIAK","3283Z430091"],["500Mp00000lzOc1IAE","00077759","RSE Limited","Ricoh MP 501 G988X993746","Solomons","Samson Ragaruma",1,1,1,1,"02i7F000009Unz0QAC","G988X993746"],["500Mp00000gYD9DIAW","00075357","Rennell And Bellona Constituency","Sig Ricoh MP C2503 E215R380194","Solomons","Samson Ragaruma",110,3,0,1,"02iMp000005oPhtIAE","E215R380194"],["500Mp00000lsx4rIAA","00077715","Outback Holiday Resort","Sig Ricoh MP C3003 E155650028","Solomons","Samson Ragaruma",0,1,0,1,"02iMp00000BuZ1ZIAV","E155650028"],["500Mp00000leU5zIAE","00077574","Development Bank Solomon Islands","Ricoh MP 6055 C409P900096","Solomons","Samson Ragaruma",3,1,0,0,"02i7F00000FlipyQAB","C409P900096"],["500Mp00000kf3PLIAY","00077044","Tourism Solomons","Ricoh MP C307 C508P904791","Solomons","Samson Ragaruma",22,3,0,1,"02i7F000000GraVQAS","C508P904791"],["500Mp00000lQzT1IAK","00077460","RSE Limited","Ricoh IM C4510 9175R220104","Solomons","Samson Ragaruma",2,3,0,1,"02iMp00000DiqJZIAZ","9175R220104"],["500Mp00000gsdKLIAY","00075513","Solomon Water","Ricoh MP 501 G988X370919","Solomons","Samson Ragaruma",70,1,0,1,"02i7F000000x4kTQAQ","G988X370919"],["500Mp00000ge01DIAQ","00075396","BRED Bank Solomon Islands","Ricoh MP 501 G989X110790","Solomons","Samson Ragaruma",75,2,1,1,"02i7F000009VLgiQAG","G989X110790"],["500Mp00000jGmgTIAS","00076311","GPPOL","Ricoh MP 6055 C400PC00061","Solomons","Samson Ragaruma",6,2,0,1,"02i7F00000II7tJQAT","C400PC00061"],
+  // ── AISEA FAKAOSI ──────────────────────────────────────────────────────────────
+  ["500Mp00000ia9prIAA","00076022","Ministry of Agriculture Tonga","Ricoh IM C2500 3099R420184","Tonga","Aisea Fakaosi",25,3,0,1,"02i7F000009UxiNQAS","3099R420184"],["500Mp00000itKsnIAE","00076126","Church of Jesus Christ Latter-day","Ricoh IM C3500 3119R620149","Tonga","Aisea Fakaosi",20,1,0,1,"02i7F000009UxAoQAK","3119R620149"],["500Mp00000jU249IAC","00076422","Friendly Island Bookshop","Sig Ricoh MP C5503 E185MA50180","Tonga","Aisea Fakaosi",6,2,0,1,"02iGA00000hKrraYAC","E185MA50180"],["500Mp00000jdIo4IAE","00076508","Ministry of Justice Tonga","Ricoh MP C2004exSP C768R130063","Tonga","Aisea Fakaosi",3,1,0,1,"02i7F000000FWbTQAW","C768R130063"],["500Mp00000jU2bxIAC","00076416","MEIDECC","Sig Ricoh MP C4503 E175M150241","Tonga","Aisea Fakaosi",2,1,0,1,"02i7F00000FloEyQAJ","E175M150241"],["500Mp00000jUaXEIA0","00076432","Act Community School","Sig Ricoh MP C4503 E175MA50358","Tonga","Aisea Fakaosi",1,1,0,1,"02iGA00000hKw2BYAS","E175MA50358"],["500Mp00000iWJO5IAO","00075998","Public Service Commission Tonga","Ricoh MP 3054SP G156P500722","Tonga","Aisea Fakaosi",13,3,0,1,"02i7F000009Nu8AQAS","G156P500722"],["500Mp00000ihqy9IAA","00076042","Ministry of Agriculture Tonga","Sig Ricoh MP C4503 E176M240011","Tonga","Aisea Fakaosi",3,1,0,1,"02i7F00000FlqWDQAZ","E176M240011"],["500Mp00000iT1VeIAK","00075980","Lulutai Airlines","Ricoh IM C6000 3149M920623","Tonga","Aisea Fakaosi",12,1,0,1,"02i7F000000GrfqQAC","3149M920623"],["500Mp00000itEu4IAE_aisa","00076128","Cowley & Sons","Sig Ricoh MP C2503 E216R480041","Tonga","Aisea Fakaosi",6,1,0,1,"02iMp000007k5OrIAI","-E216R480041"],
+];
+
+const RESP_TIMES = {
+  "Florencio Jr. Familar": 2,
+  "Arturo Regis": 1,
+  "Ramiro Cataquis (2)": 1,
+  "Victor Geonzon": 1,
+  "John Cid": 4,
+  "Junriel Andoy": 3,
+  "Samson Ragaruma": 3,
+  "Aisea Fakaosi": 188,
+};
+
+// Period filter
+function inPeriod(c, period) {
+  // All cases are YTD; for sub-period we'd need close dates - approximate by index
+  return true; // show all - period filter note
+}
+
+// Technician list
+const TECHS = [...new Set(ALL_CASES.map(c=>c[5]))].filter(t=>t!=='Ramiro Cataquis').sort();
+
+let sortCol=0, sortDir=1;
+let currentTech = '';
+
+function init() {
+  const params = new URLSearchParams(window.location.search);
+  const techParam = params.get('tech');
+  const sel = document.getElementById('techSelect');
+  TECHS.forEach(t => {
+    const o = document.createElement('option');
+    o.value = t; o.textContent = t;
+    if (t === techParam) o.selected = true;
+    sel.appendChild(o);
+  });
+  currentTech = techParam || TECHS[0];
+  sel.value = currentTech;
+  renderAll();
+}
+
+function onTechChange() {
+  currentTech = document.getElementById('techSelect').value;
+  renderAll();
+}
+
+function getCases() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const filter = document.getElementById('filterFTF').value;
+  return ALL_CASES.filter(c => {
+    if (c[5] !== currentTech) return false;
+    if (filter === 'ftf'   && c[7] !== 1) return false;
+    if (filter === 'noftf' && c[7] === 1) return false;
+    if (filter === 'cb'    && c[8] !== 1) return false;
+    if (filter === 'sla'   && c[9] !== 1) return false;
+    if (search && !(c[1]+c[2]+c[3]).toLowerCase().includes(search)) return false;
+    return true;
+  }).sort((a,b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (typeof av === 'string') av = av.toLowerCase();
+    if (typeof bv === 'string') bv = bv.toLowerCase();
+    return av < bv ? -sortDir : av > bv ? sortDir : 0;
+  });
+}
+
+function renderKPIs(cases) {
+  const total = cases.length;
+  if (!total) { document.getElementById('kpiStrip').innerHTML=''; return; }
+  const ftf = cases.filter(c=>c[7]===1).length;
+  const cb  = cases.filter(c=>c[8]===1).length;
+  const sla = cases.filter(c=>c[9]===1).length;
+  const avgDays = (cases.reduce((s,c)=>s+c[6],0)/total).toFixed(1);
+  const ftfR = Math.round(ftf/total*100);
+  const cbR  = Math.round(cb/total*100);
+  const slaR = Math.round(sla/total*100);
+  const respH = RESP_TIMES[currentTech] ?? '—';
+
+  document.getElementById('kpiStrip').innerHTML = `
+    <div class="kpi-card"><div class="kpi-label">Cases</div><div class="kpi-value">${total}</div><div class="kpi-target">2026 YTD</div></div>
+    <div class="kpi-card ${ftfR>=85?'good':ftfR>=70?'warn':'bad'}">
+      <div class="kpi-label">FTF Rate</div>
+      <div class="kpi-value ${ftfR>=85?'kv-good':ftfR>=70?'kv-warn':'kv-bad'}">${ftfR}%</div>
+      <div class="kpi-target">Target ≥ 85%</div>
+    </div>
+    <div class="kpi-card ${cbR<=10?'good':cbR<=25?'warn':'bad'}">
+      <div class="kpi-label">Callback Rate</div>
+      <div class="kpi-value ${cbR<=10?'kv-good':cbR<=25?'kv-warn':'kv-bad'}">${cbR}%</div>
+      <div class="kpi-target">Target ≤ 10%</div>
+    </div>
+    <div class="kpi-card ${parseFloat(avgDays)<=7?'good':parseFloat(avgDays)<=14?'warn':'bad'}">
+      <div class="kpi-label">Avg Days to Close</div>
+      <div class="kpi-value ${parseFloat(avgDays)<=7?'kv-good':parseFloat(avgDays)<=14?'kv-warn':'kv-bad'}">${avgDays}d</div>
+      <div class="kpi-target">Target ≤ 7d</div>
+    </div>
+    <div class="kpi-card ${slaR<=20?'good':slaR<=50?'warn':'bad'}">
+      <div class="kpi-label">SLA Violated</div>
+      <div class="kpi-value ${slaR<=20?'kv-good':slaR<=50?'kv-warn':'kv-bad'}">${slaR}%</div>
+      <div class="kpi-target">Target ≤ 20%</div>
+    </div>
+    <div class="kpi-card ${typeof respH==='number'&&respH<=4?'good':typeof respH==='number'&&respH<=8?'warn':'bad'}">
+      <div class="kpi-label">Median Response</div>
+      <div class="kpi-value ${typeof respH==='number'&&respH<=4?'kv-good':typeof respH==='number'&&respH<=8?'kv-warn':'kv-bad'}">${respH}h</div>
+      <div class="kpi-target">Target ≤ 4h</div>
+    </div>`;
+}
+
+function renderTable() {
+  const rows = getCases();
+  document.getElementById('resultCount').textContent = `${rows.length} of ${ALL_CASES.filter(c=>c[5]===currentTech).length} cases`;
+  document.querySelectorAll('th').forEach(th=>{
+    th.classList.remove('sorted-asc','sorted-desc');
+    if (+th.dataset.col===sortCol) th.classList.add(sortDir===1?'sorted-asc':'sorted-desc');
+  });
+  document.getElementById('tableBody').innerHTML = rows.map(c => {
+    const [cId,cNum,acct,subj,terr,tech,days,wos,cb,sla,assetId,serial] = c;
+    const daysCls = days<=3?'days-good':days<=10?'days-warn':'days-bad';
+    const ftfIcon = wos===1?'<span class="icon-yes">✓</span>':'<span class="icon-no">✗</span>';
+    const cbIcon  = cb===1?'<span class="icon-bad">CB</span>':'<span class="icon-no">—</span>';
+    const slaIcon = sla===1?'<span class="icon-bad">✗</span>':'<span class="icon-yes">✓</span>';
+    return `<tr>
+      <td><a href="${SF}${cId}" target="_blank" class="case-link">${cNum}</a></td>
+      <td><div class="acct-cell" title="${acct}">${acct||'—'}</div></td>
+      <td><span class="terr-pill t-${terr}">${terr}</span></td>
+      <td class="${daysCls}" style="font-family:'DM Mono',monospace;font-size:12px">${days}d</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;text-align:center">${wos}</td>
+      <td style="text-align:center">${ftfIcon}</td>
+      <td style="text-align:center">${cbIcon}</td>
+      <td style="text-align:center">${slaIcon}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">No cases match the current filters.</td></tr>';
+}
+
+function renderAll() {
+  const rows = getCases();
+  renderKPIs(ALL_CASES.filter(c=>c[5]===currentTech));
+  renderTable();
+}
+
+function sortBy(col) {
+  if (sortCol===col) sortDir*=-1; else {sortCol=col;sortDir=1;}
+  renderTable();
+}
+
+init();
+</script>
+</body>
+</html>
