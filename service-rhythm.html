@@ -157,7 +157,7 @@ tr:last-child td{border-bottom:none;}
 <body>
 <header>
   <div style="display:flex;align-items:center">
-    <span class="wordmark">Ricoh</span>
+    <span class="wordmark" style="display:flex;align-items:center"><img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:28px;display:block;"></span>
     <div class="hd"></div>
     <span class="header-title">South Pacific — Service Operating Rhythm</span>
   </div>
@@ -200,6 +200,7 @@ tr:last-child td{border-bottom:none;}
     <a href="cases-open.html" class="nav-pill">Open Cases</a>
     <a href="conversations.html" class="nav-pill">Conversations</a>
     <a href="service-rhythm.html" class="nav-pill active">Service Rhythm</a>
+    <a href="service-rhythm.html" class="nav-pill">Service Rhythm</a>
     <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
     <a href="asset-downtime.html" class="nav-pill">Asset Downtime</a>
     <a href="case-origin.html" class="nav-pill">Case Origin</a>
@@ -208,7 +209,7 @@ tr:last-child td{border-bottom:none;}
 
   <div class="hero">
     <h1>Service Operating Rhythm</h1>
-    <p class="hero-sub">A practical guide for the Service Manager on how to use this dashboard suite to drive performance, run weekly technician conversations, and build a high-quality service team across five Pacific territories.</p>
+    <p class="hero-sub">A practical guide for the Service Manager using the Active Manager Programme (AMP) framework — how to use this dashboard suite to drive performance, run meaningful weekly check-in conversations, and develop a high-performance service team across five Pacific territories.</p>
     <div class="hero-meta">
       <div class="hero-meta-item">For <strong>Sridhar Bhattacharjee</strong></div>
       <div class="hero-meta-item">9 dashboard pages</div>
@@ -231,13 +232,19 @@ tr:last-child td{border-bottom:none;}
     <p>The callback rate of 30.9% is the most important number to address. Every third closed case is coming back — this is the single biggest driver of wasted tech time, extended asset downtime, and customer dissatisfaction. The weekly conversations and coaching patterns in this guide are designed specifically to move this number down.</p>
   </div>
 
+  <div class="callout info">
+    <div class="ct ct-info">Active Manager Programme</div>
+    <p>This guide is structured around the Active Manager Programme (AMP) framework. AMP is built on the principle that manager behaviour is the primary driver of team performance — not systems, not processes, but the quality and consistency of the conversations you have with your people every week.</p>
+    <p>The dashboards make those conversations data-led. AMP makes them human. Both are required.</p>
+  </div>
+
   <!-- 1. WEEKLY RHYTHM -->
   <div class="section" id="rhythm">
     <div class="section-header">
       <span class="section-number">01</span>
       <h2 class="section-title">Weekly rhythm</h2>
     </div>
-    <p class="section-intro">Three cadences keep the service operation running. Daily catches what is burning. Weekly is the management layer — review, conversations, coaching. Monthly is strategic — scores, bonus, trend analysis.</p>
+    <p class="section-intro">AMP operates on three cadences. The daily ops check catches what is burning before it becomes a problem. The weekly rhythm is your primary management layer — review, check-in conversations, coaching. Monthly is strategic — scores, recognition, and trend analysis. Consistency across all three is what separates managing from reacting.</p>
     <div class="rhythm-grid">
       <div class="rc daily">
         <div class="rc-cadence c-daily">Daily — 10 min</div>
@@ -251,13 +258,13 @@ tr:last-child td{border-bottom:none;}
       </div>
       <div class="rc weekly">
         <div class="rc-cadence c-weekly">Weekly — 90 min total</div>
-        <div class="rc-title">Service review + conversations</div>
+        <div class="rc-title">AMP check-in conversations</div>
         <ul class="rc-items">
-          <li>Open <a href="leaderboard.html">Leaderboard</a> — who moved up or down?</li>
-          <li>Open <a href="conversations.html">Conversations</a> — check prompts before each call</li>
-          <li>1:1 with each tech: 10 min. Score manual KPIs. Log notes and commitment.</li>
-          <li>Review <a href="callbacks.html">Callbacks</a> — any repeat assets to address?</li>
-          <li>Check <a href="case-origin.html">Case Origin</a> — any techs self-logging this week?</li>
+          <li>Open <a href="leaderboard.html">Leaderboard</a> — who moved up or down? Prepare your data story for each tech.</li>
+          <li>Open <a href="conversations.html">Conversations</a> — read coaching prompts and last week's commitment before each session</li>
+          <li>Check-in with each tech: 10–15 min. Score manual KPIs. Log notes, commitment, and follow-up.</li>
+          <li>Review <a href="callbacks.html">Callbacks</a> — bring specific asset serials to the conversations</li>
+          <li>Check <a href="case-origin.html">Case Origin</a> — any techs self-logging? Raise it in the session.</li>
         </ul>
       </div>
       <div class="rc monthly">
@@ -390,22 +397,22 @@ tr:last-child td{border-bottom:none;}
       <span class="section-number">05</span>
       <h2 class="section-title">Running the weekly conversation</h2>
     </div>
-    <p class="section-intro">Each 1:1 takes 10–15 minutes. Open the Conversations page before you start. The coaching prompts at the bottom of each tech's card are generated from their actual Salesforce data — read them before you call.</p>
+    <p class="section-intro">AMP check-in conversations are the core of the framework. Each session takes 10–15 minutes and follows a consistent structure: open with accountability (last week's commitment), review the data together, coach to one specific behaviour, score the manual KPIs, and close with a single measurable commitment. The Conversations page is your prep sheet — open it before every session.</p>
 
     <div class="conv-flow">
       <div class="conv-step">
         <div class="conv-time"><div class="ct-label">Open</div><div class="ct-min">1</div><div class="ct-unit">min</div></div>
         <div class="conv-body">
           <div class="conv-dot"></div>
-          <div class="cb-title">Check in on last week's commitment</div>
-          <div class="cb-desc">Open with the follow-up field from last week. Ask directly: "Last week you said you were going to [X]. How did that go?" Acknowledge if they delivered. If they didn't, ask what got in the way — don't skip this step. If commitments are never followed up, they stop meaning anything.</div>
+          <div class="cb-title">AMP step 1 — open with accountability</div>
+          <div class="cb-desc">Open by reviewing the follow-up field from last week's session. AMP is clear on this: accountability is set in the close and held in the open. Ask directly — "Last week you committed to [X]. How did that go?" Acknowledge delivery without over-praising. If the commitment wasn't kept, stay curious rather than critical. "What got in the way?" is more useful than a reminder of expectations. If you skip this step consistently, commitments stop meaning anything — and so do the conversations.</div>
         </div>
       </div>
       <div class="conv-step">
         <div class="conv-time"><div class="ct-label">Data</div><div class="ct-min">4</div><div class="ct-unit">min</div></div>
         <div class="conv-body">
           <div class="conv-dot"></div>
-          <div class="cb-title">Walk through the Salesforce metrics together</div>
+          <div class="cb-title">AMP step 2 — review the data together</div>
           <div class="cb-desc">Share screen or read the numbers aloud. Be specific — not "your callback rate is high" but "you had 11 callbacks this month from 29 cases." Then open the callbacks page filtered for their territory:</div>
           <ul class="cb-items">
             <li>"Your FTF is 78% — we need 85%. That is about 2 extra cases needing a return visit."</li>
@@ -418,8 +425,8 @@ tr:last-child td{border-bottom:none;}
         <div class="conv-time"><div class="ct-label">Coach</div><div class="ct-min">5</div><div class="ct-unit">min</div></div>
         <div class="conv-body">
           <div class="conv-dot"></div>
-          <div class="cb-title">Work the coaching focus from the prompts</div>
-          <div class="cb-desc">The auto-generated prompts at the bottom of each card tell you what to focus on based on the data. Use open questions — avoid telling them what to do:</div>
+          <div class="cb-title">AMP step 3 — coaching conversation</div>
+          <div class="cb-desc">AMP coaching focuses on one thing per session — not a performance review, not a list of issues. The coaching prompts on the Conversations page are generated from the tech's Salesforce data and tell you where to focus. Use open questions to surface insight rather than prescribing solutions:</div>
           <ul class="cb-items">
             <li>"When you go back to the same machine a second time — what is typically the reason?"</li>
             <li>"Are you getting enough time to diagnose properly, or are you being rushed to the next job?"</li>
@@ -431,7 +438,7 @@ tr:last-child td{border-bottom:none;}
         <div class="conv-time"><div class="ct-label">Score</div><div class="ct-min">3</div><div class="ct-unit">min</div></div>
         <div class="conv-body">
           <div class="conv-dot"></div>
-          <div class="cb-title">Score the six manual KPIs</div>
+          <div class="cb-title">AMP step 4 — calibrate your assessment</div>
           <div class="cb-desc">Move the sliders on the Conversations page for: job audit, CSAT, report timeliness, PM compliance, safety. Be honest — if you do not have evidence for a score, default to mid-range rather than giving full marks automatically. The score summary table at the top of the page updates live.</div>
           <a href="conversations.html" class="slink">Open Conversations →</a>
         </div>
@@ -440,14 +447,15 @@ tr:last-child td{border-bottom:none;}
         <div class="conv-time"><div class="ct-label">Close</div><div class="ct-min">2</div><div class="ct-unit">min</div></div>
         <div class="conv-body">
           <div class="conv-dot"></div>
-          <div class="cb-title">Get one specific commitment and log it</div>
-          <div class="cb-desc">End with a single measurable commitment. Not "try to do better on callbacks" — that is unmeasurable. Instead: "For the next three calls on Bulk Shop's IM 5000, I will spend 30 minutes on diagnostics before ordering any parts." Log it in the commitment field. This is what you open with next week.</div>
+          <div class="cb-title">AMP step 5 — close with one commitment</div>
+          <div class="cb-desc">AMP is specific about this: one commitment, made by the technician, specific enough to verify. Not "I'll try to improve callbacks" — that cannot be checked. The standard is: "For the next three calls on Bulk Shop's IM 5000, I will spend 30 minutes on full diagnostics before ordering any parts." The tech sets the commitment — you validate it is measurable and log it. This becomes the opening of next week's conversation. The loop closes here.</div>
         </div>
       </div>
     </div>
     <div class="callout good">
-      <div class="ct ct-good">Saving scores</div>
-      <p>Click "Save all scores &amp; notes" at the top of the Conversations page after each session. Data is saved by month in your browser. Once the Supabase migration is complete, scores will sync server-side and be accessible from any device, with trend lines available after 2–3 months of data.</p>
+      <div class="ct ct-good">Logging the conversation</div>
+      <p>Click "Save all scores &amp; notes" at the top of the Conversations page after each session. AMP requires that you document commitments and follow-up notes — memory is not a reliable system. The notes field is the record that matters when you need to escalate, adjust a development plan, or have a formal conversation with HR.</p>
+      <p>Data is saved by month in your browser. Once the Supabase migration is complete, scores will sync server-side with trend lines available after 2–3 months of stored data.</p>
     </div>
   </div>
 
@@ -457,7 +465,7 @@ tr:last-child td{border-bottom:none;}
       <span class="section-number">06</span>
       <h2 class="section-title">Coaching patterns</h2>
     </div>
-    <p class="section-intro">The most common performance patterns you will see in the data, and the questions to ask for each. Ask and listen — do not diagnose or prescribe.</p>
+    <p class="section-intro">AMP coaching is pattern recognition — you see something in the data, you name it in the conversation, and you coach to one behaviour change. The patterns below are the ones that appear most often in service operations. For each: identify the pattern from the data before the session, use the questions to surface the cause, and close with one specific commitment.</p>
     <div class="pattern-grid">
       <div class="pc urgent">
         <div class="ps ps-u">Urgent — address immediately</div>
@@ -558,13 +566,13 @@ tr:last-child td{border-bottom:none;}
       <span class="section-number">08</span>
       <h2 class="section-title">Escalation triggers</h2>
     </div>
-    <p class="section-intro">Some situations need to move beyond the weekly conversation. These are the thresholds that trigger a formal escalation to Shiv, HR, or the account manager.</p>
+    <p class="section-intro">AMP conversations are developmental, not disciplinary — but there are thresholds that require a different type of conversation. These triggers are the point where a check-in session is no longer sufficient and a formal process needs to begin. Document every step using the notes field in Conversations before escalating.</p>
 
     <div class="step">
       <div class="sn sn-danger">!</div>
       <div>
-        <div class="st">D category for two consecutive months → Shiv + formal plan</div>
-        <div class="sd">A score below 60 for two months means the weekly conversations are not producing change. Escalate to Shiv with the two-month score summary from the Conversations page. A formal performance improvement plan should be initiated with HR support. Continue weekly conversations and document everything.</div>
+        <div class="st">D category for two consecutive months → AMP formal conversation with Shiv</div>
+        <div class="sd">Two consecutive D-category months means the weekly check-in conversations are not producing movement. Under AMP, this is the trigger for a formal conversation — not punishment, but a clear reset of expectations and a structured support plan. Bring the two-month score summary from the Conversations page to your meeting with Shiv. A formal development plan should be documented and reviewed at monthly intervals. Continue weekly conversations — they become the evidence trail if the formal process needs to proceed further.</div>
       </div>
     </div>
 
