@@ -125,6 +125,12 @@
 
   @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.overage-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
   @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-title{display:none;}.kpi-grid{grid-template-columns:1fr 1fr;}}
+
+  /* NAV PILLS */
+  .nav-pills{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;}
+  .nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;letter-spacing:.02em;}
+  .nav-pill:hover{border-color:var(--red);color:var(--red);}
+  .nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
 </style>
 </head>
 <body>
@@ -143,15 +149,16 @@
 </header>
 
 <main>
-  <div style="display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;">
-    <a href="service-dashboard.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;background:var(--charcoal);border:1px solid var(--charcoal);color:#fff;text-decoration:none;letter-spacing:.02em;">Service Dashboard</a>
-    <a href="leaderboard.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;letter-spacing:.02em;">Leaderboard</a>
-    <a href="cases-open.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;letter-spacing:.02em;">Open Cases</a>
-    <a href="conversations.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;letter-spacing:.02em;">Conversations</a>
-    <a href="data-dictionary.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;letter-spacing:.02em;">Data Dictionary</a>
-    <a href="asset-downtime.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;letter-spacing:.02em;">Asset Downtime</a>
-    <a href="case-origin.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;letter-spacing:.02em;">Case Origin</a>
-    <a href="parts-consumption.html" style="padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;letter-spacing:.02em;">Parts & Revenue</a>
+  <div class="nav-pills">
+    <a href="service-dashboard.html" class="nav-pill active">Service Dashboard</a>
+    <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
+    <a href="cases-open.html" class="nav-pill">Open Cases</a>
+    <a href="conversations.html" class="nav-pill">Conversations</a>
+    <a href="service-rhythm.html" class="nav-pill">Service Rhythm</a>
+    <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
+    <a href="asset-downtime.html" class="nav-pill">Asset Downtime</a>
+    <a href="case-origin.html" class="nav-pill">Case Origin</a>
+    <a href="parts-consumption.html" class="nav-pill">Parts &amp; Revenue</a>
   </div>
 
   <div class="section-label">Open cases snapshot</div>
