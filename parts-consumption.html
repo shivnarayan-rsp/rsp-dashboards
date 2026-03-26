@@ -88,7 +88,7 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
 <body>
 <header>
   <div style="display:flex;align-items:center">
-    <span class="wordmark">Ricoh</span><div class="hd"></div>
+    <span class="wordmark" style="display:flex;align-items:center"><img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:28px;display:block;"></span><div class="hd"></div>
     <span class="header-title">South Pacific — Parts & Revenue</span>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -102,6 +102,7 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
     <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
     <a href="cases-open.html" class="nav-pill">Open Cases</a>
     <a href="conversations.html" class="nav-pill">Conversations</a>
+    <a href="service-rhythm.html" class="nav-pill">Service Rhythm</a>
     <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
   </div>
 
@@ -114,7 +115,29 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
     </div>
   </div>
 
-  <div class="kpi-grid" id="kpiGrid"></div>
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;flex-wrap:wrap;">
+  <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Territory</span>
+  <select id="filterTerritory" onchange="applyFilters()" style="height:30px;padding:0 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--charcoal);cursor:pointer;outline:none;">
+    <option value="">All territories</option>
+    <option>NZ</option><option>Vanuatu</option><option>Solomons</option>
+    <option>Tonga</option><option>Samoa</option>
+  </select>
+  <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-left:8px">Technician</span>
+  <select id="filterTech" onchange="applyFilters()" style="height:30px;padding:0 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--charcoal);cursor:pointer;outline:none;">
+    <option value="">All technicians</option>
+    <option>Florencio Jr. Familar</option>
+    <option>Junriel Andoy</option>
+    <option>Victor Geonzon</option>
+    <option>Arturo Regis</option>
+    <option>Ramiro Cataquis</option>
+    <option>Sridhar Bhattacharjee</option>
+    <option>John Cid</option>
+    <option>Samson Ragaruma</option>
+  </select>
+</div>
+<div class="kpi-grid" id="kpiGrid"></div>
+
+  <div id="terrOwnerSection"></div>
 
   <div class="section-label">Monthly trend — SLA parts spend vs T&M revenue</div>
   <div class="chart-card">
@@ -169,6 +192,27 @@ const PR = [
   {type:'Product Request', mo:3, cnt:44, amt:64213},
   {type:'Service Quote',   mo:3, cnt:31, amt:81259},
 ];
+
+// Territory breakdown from Salesforce (WorkOrder.ServiceTerritoryId → territory name)
+const TERR_DATA = {
+  NZ:       {sla:{amt:10587,  cnt:10}, tm:{amt:360,     cnt:1}},
+  Vanuatu:  {sla:{amt:2035400,cnt:26}, tm:{amt:2720846, cnt:17}},
+  Solomons: {sla:{amt:501439, cnt:32}, tm:{amt:392624,  cnt:9}},
+  Tonga:    {sla:{amt:19286,  cnt:14}, tm:{amt:25680,   cnt:13}},
+  Samoa:    {sla:{amt:73219,  cnt:42}, tm:{amt:174589,  cnt:33}},
+};
+
+// Owner (technician) breakdown
+const OWNER_DATA = [
+  {name:'Florencio Jr. Familar',  sla:{amt:610529, cnt:13}, tm:{amt:1631121, cnt:10}},
+  {name:'Junriel Andoy',          sla:{amt:1424871,cnt:13}, tm:{amt:1089725, cnt:7}},
+  {name:'Victor Geonzon',         sla:{amt:493486, cnt:27}, tm:{amt:331289,  cnt:5}},
+  {name:'Arturo Regis',           sla:{amt:36029,  cnt:21}, tm:{amt:80626,   cnt:17}},
+  {name:'Ramiro Cataquis',        sla:{amt:37190,  cnt:21}, tm:{amt:93962,   cnt:16}},
+  {name:'Sridhar Bhattacharjee',  sla:{amt:15550,  cnt:13}, tm:{amt:30741,   cnt:7}},
+  {name:'John Cid',               sla:{amt:14323,  cnt:10}, tm:{amt:16610,   cnt:9}},
+  {name:'Samson Ragaruma',        sla:{amt:7953,   cnt:5},  tm:{amt:40024,   cnt:2}},
+];
 const MONTHS = {1:'January',2:'February',3:'March'};
 
 // PC_ASSETS from Salesforce
@@ -192,26 +236,49 @@ const ASSETS = [
 function fmt(n){return 'NZD '+n.toLocaleString();}
 
 // KPI cards
+function getFilteredTotals() {
+  const terr = document.getElementById('filterTerritory')?.value || '';
+  const tech = document.getElementById('filterTech')?.value || '';
+  let slaTot=0, tmTot=0, slaCnt=0, tmCnt=0;
+  if (terr && !tech) {
+    const d = TERR_DATA[terr];
+    if (d) { slaTot=d.sla.amt; tmTot=d.tm.amt; slaCnt=d.sla.cnt; tmCnt=d.tm.cnt; }
+  } else if (tech && !terr) {
+    const d = OWNER_DATA.find(o=>o.name===tech);
+    if (d) { slaTot=d.sla.amt; tmTot=d.tm.amt; slaCnt=d.sla.cnt; tmCnt=d.tm.cnt; }
+  } else if (terr && tech) {
+    // Both filters - approximate: show tech total with territory note
+    const d = OWNER_DATA.find(o=>o.name===tech);
+    if (d) { slaTot=d.sla.amt; tmTot=d.tm.amt; slaCnt=d.sla.cnt; tmCnt=d.tm.cnt; }
+  } else {
+    slaTot = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.amt,0);
+    tmTot  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.amt,0);
+    slaCnt = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.cnt,0);
+    tmCnt  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.cnt,0);
+  }
+  return {slaTot,tmTot,slaCnt,tmCnt};
+}
+
 function renderKPIs(){
-  const slaTot = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.amt,0);
-  const tmTot  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.amt,0);
-  const ratio  = (tmTot/slaTot).toFixed(2);
-  const slaCnt = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.cnt,0);
-  const tmCnt  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.cnt,0);
+  const {slaTot,tmTot,slaCnt,tmCnt} = getFilteredTotals();
+  const terr = document.getElementById('filterTerritory')?.value || '';
+  const tech = document.getElementById('filterTech')?.value || '';
+  const ratio = slaTot > 0 ? (tmTot/slaTot).toFixed(2) : '—';
+  const subtitle = terr ? ` · ${terr}` : tech ? ` · ${tech.split(' ')[0]}` : '';
 
   document.getElementById('kpiGrid').innerHTML = `
-    <div class="kpi-card red"><div class="kpi-label">SLA parts spend — YTD</div>
-      <div class="kpi-value" style="color:var(--danger)">NZD ${(slaTot/1000).toFixed(0)}k</div>
+    <div class="kpi-card red"><div class="kpi-label">SLA parts spend — YTD${subtitle}</div>
+      <div class="kpi-value" style="color:var(--danger)">NZD ${slaTot>=1000?(slaTot/1000).toFixed(0)+'k':slaTot.toLocaleString()}</div>
       <div class="kpi-sub">${slaCnt} product requests · cost to RSP</div></div>
-    <div class="kpi-card green"><div class="kpi-label">T&M revenue — YTD</div>
-      <div class="kpi-value" style="color:var(--green)">NZD ${(tmTot/1000).toFixed(0)}k</div>
+    <div class="kpi-card green"><div class="kpi-label">T&M revenue — YTD${subtitle}</div>
+      <div class="kpi-value" style="color:var(--green)">NZD ${tmTot>=1000?(tmTot/1000).toFixed(0)+'k':tmTot.toLocaleString()}</div>
       <div class="kpi-sub">${tmCnt} service quotes · customer pays</div></div>
-    <div class="kpi-card ${parseFloat(ratio)>=1?'green':'amber'}"><div class="kpi-label">T&M / SLA ratio</div>
+    <div class="kpi-card ${parseFloat(ratio)>=1?'green':'amber'}"><div class="kpi-label">T&M / SLA ratio${subtitle}</div>
       <div class="kpi-value">${ratio}×</div>
       <div class="kpi-sub">Target &gt;1.0× — T&M exceeding SLA spend</div></div>
     <div class="kpi-card amber"><div class="kpi-label">Vanuatu parts spend</div>
-      <div class="kpi-value" style="color:var(--amber)">~NZD 1.9M</div>
-      <div class="kpi-sub">Top 2 assets alone account for NZD 1.34M YTD</div></div>`;
+      <div class="kpi-value" style="color:var(--amber)">~NZD ${((2035400)/1000).toFixed(0)}k SLA</div>
+      <div class="kpi-sub">Highest territory — 2 assets account for NZD 1.34M</div></div>`;
 }
 
 // Month chart
@@ -287,10 +354,100 @@ function renderPRTable(){
     </tr>`;
 }
 
+function renderTerrOwnerTable() {
+  const terr = document.getElementById('filterTerritory')?.value || '';
+  const tech = document.getElementById('filterTech')?.value || '';
+  // Show territory breakdown when no tech filter, owner breakdown when tech selected
+  const showOwner = !!tech;
+  const container = document.getElementById('terrOwnerSection');
+  if (!container) return;
+
+  if (!showOwner) {
+    // Territory breakdown
+    const rows = Object.entries(TERR_DATA)
+      .filter(([t]) => !terr || t === terr)
+      .sort((a,b) => (b[1].sla.amt+b[1].tm.amt)-(a[1].sla.amt+a[1].tm.amt))
+      .map(([t, d]) => {
+        const ratio = d.sla.amt > 0 ? (d.tm.amt/d.sla.amt).toFixed(2) : '—';
+        const ratCls = parseFloat(ratio)>=1 ? 'tm-val' : 'sla-val';
+        return `<tr>
+          <td><span class="terr-pill t-${t}">${t}</span></td>
+          <td class="right sla-val mono">NZD ${d.sla.amt.toLocaleString()}</td>
+          <td class="right mono" style="color:var(--muted)">${d.sla.cnt}</td>
+          <td class="right tm-val mono">NZD ${d.tm.amt.toLocaleString()}</td>
+          <td class="right mono" style="color:var(--muted)">${d.tm.cnt}</td>
+          <td class="right mono ${ratCls}">${ratio}×</td>
+        </tr>`;
+      }).join('');
+    container.innerHTML = `
+      <div class="section-label" style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px">
+        Territory breakdown<span style="flex:1;height:1px;background:var(--border);display:block"></span>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><span class="table-title">SLA spend vs T&M revenue by territory — YTD</span></div>
+        <table>
+          <thead><tr>
+            <th>Territory</th>
+            <th class="right">SLA parts spend</th>
+            <th class="right">SLA count</th>
+            <th class="right">T&M revenue</th>
+            <th class="right">T&M count</th>
+            <th class="right">T&M/SLA ratio</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  } else {
+    // Owner/tech breakdown
+    const rows = OWNER_DATA
+      .filter(o => !tech || o.name === tech)
+      .sort((a,b) => (b.sla.amt+b.tm.amt)-(a.sla.amt+a.tm.amt))
+      .map(o => {
+        const ratio = o.sla.amt > 0 ? (o.tm.amt/o.sla.amt).toFixed(2) : '—';
+        const ratCls = parseFloat(ratio)>=1 ? 'tm-val' : 'sla-val';
+        return `<tr>
+          <td style="font-size:13px;font-weight:500">${o.name}</td>
+          <td class="right sla-val mono">NZD ${o.sla.amt.toLocaleString()}</td>
+          <td class="right mono" style="color:var(--muted)">${o.sla.cnt}</td>
+          <td class="right tm-val mono">NZD ${o.tm.amt.toLocaleString()}</td>
+          <td class="right mono" style="color:var(--muted)">${o.tm.cnt}</td>
+          <td class="right mono ${ratCls}">${ratio}×</td>
+        </tr>`;
+      }).join('');
+    container.innerHTML = `
+      <div class="section-label" style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px">
+        Technician breakdown<span style="flex:1;height:1px;background:var(--border);display:block"></span>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><span class="table-title">SLA spend vs T&M revenue by technician (Product Request owner) — YTD</span></div>
+        <table>
+          <thead><tr>
+            <th>Technician</th>
+            <th class="right">SLA parts spend</th>
+            <th class="right">SLA count</th>
+            <th class="right">T&M revenue</th>
+            <th class="right">T&M count</th>
+            <th class="right">T&M/SLA ratio</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+}
+
+function applyFilters() {
+  renderKPIs();
+  renderTerrOwnerTable();
+  renderMonthChart();
+  renderAssetTable();
+  renderPRTable();
+}
+
 renderKPIs();
 renderMonthChart();
 renderAssetTable();
 renderPRTable();
+renderTerrOwnerTable();
 </script>
 </body>
 </html>
