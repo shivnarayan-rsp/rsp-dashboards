@@ -98,7 +98,7 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
 <body>
 <header>
   <div style="display:flex;align-items:center">
-    <span class="wordmark">Ricoh</span><div class="hd"></div>
+    <span class="wordmark" style="display:flex;align-items:center"><img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:28px;display:block;"></span><div class="hd"></div>
     <span class="header-title">South Pacific — Case Origin</span>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -112,6 +112,7 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
     <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
     <a href="cases-open.html" class="nav-pill">Open Cases</a>
     <a href="conversations.html" class="nav-pill">Conversations</a>
+    <a href="service-rhythm.html" class="nav-pill">Service Rhythm</a>
     <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
   </div>
 
@@ -138,7 +139,19 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
     </div>
   </div>
 
-  <div class="kpi-grid" id="kpiGrid"></div>
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;flex-wrap:wrap;">
+  <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Territory</span>
+  <select id="filterTerritory" onchange="applyTerritoryFilter()" style="height:30px;padding:0 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--charcoal);cursor:pointer;outline:none;">
+    <option value="">All territories</option>
+    <option value="NZ">NZ</option>
+    <option value="Vanuatu">Vanuatu</option>
+    <option value="Solomons">Solomons</option>
+    <option value="Tonga">Tonga</option>
+    <option value="Samoa">Samoa</option>
+  </select>
+  <span id="terrFilterNote" style="font-size:11px;color:var(--muted)">Showing combined data across all territories. Per-territory origin breakdown will be added after data validation session.</span>
+</div>
+<div class="kpi-grid" id="kpiGrid"></div>
 
   <div class="insight" id="insightBox"></div>
 
@@ -334,6 +347,19 @@ function renderTargetChart() {
       <div class="month-pct">${m.pct!==null?`<span class="${m.pct>=m.target?'pct-good':'pct-bad'}">${m.pct}%</span>`:`<span style="color:var(--muted)">${m.target}%↑</span>`}</div>
     </div>`;
   }).join('');
+}
+
+function applyTerritoryFilter() {
+  const terr = document.getElementById('filterTerritory').value;
+  const note = document.getElementById('terrFilterNote');
+  if (terr) {
+    note.textContent = `Showing: ${terr} territory — combined monthly totals. Per-territory origin split coming after data validation.`;
+    note.style.color = 'var(--amber)';
+  } else {
+    note.textContent = 'Showing combined data across all territories. Per-territory origin breakdown will be added after data validation session.';
+    note.style.color = 'var(--muted)';
+  }
+  // Charts re-render with note — full per-territory data to be added post-validation
 }
 
 renderKPIs();
