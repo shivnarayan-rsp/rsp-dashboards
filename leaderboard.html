@@ -64,6 +64,7 @@
   .kpi-value{font-size:32px;font-weight:300;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;}
   .kpi-value.alert{color:var(--danger);}.kpi-value.good{color:var(--green);}.kpi-value.warn{color:var(--amber);}.kpi-value.muted{color:var(--mid);}
   .kpi-sub{font-size:11px;color:var(--muted);line-height:1.4;}
+  .kpi-target{font-size:10px;color:var(--muted);margin-top:3px;font-family:'DM Mono',monospace;letter-spacing:.02em;}
 
   /* DIVIDER */
   hr.divider{border:none;border-top:1px solid var(--border);margin:28px 0;}
@@ -158,6 +159,9 @@
     <a href="cases-open.html" class="nav-pill">Open Cases</a>
     <a href="conversations.html" class="nav-pill">Conversations</a>
     <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
+    <a href="asset-downtime.html" class="nav-pill">Asset Downtime</a>
+    <a href="case-origin.html" class="nav-pill">Case Origin</a>
+    <a href="parts-consumption.html" class="nav-pill">Parts & Revenue</a>
   </div>
 
   <div class="section-label">Summary — 2026 year to date · service calls only</div>
@@ -309,12 +313,16 @@ const DATA = {
 
   // Asset repeat offenders - 3+ service calls YTD
   repeatAssets: [
-    { name: "Ricoh Pro C7200SX",               serial: "C878FB20018", territory: "Vanuatu",  calls: 4 },
-    { name: "Signature Series Ricoh MP 5055",  serial: "C388P800039", territory: "Vanuatu",  calls: 4 },
-    { name: "Signature Series Ricoh MP 3054",  serial: "G156P400664", territory: "Samoa",    calls: 3 },
-    { name: "Ricoh MP 5055",                   serial: "C388P600183", territory: "Samoa",    calls: 3 },
-    { name: "Signature Series Ricoh MP C4503", serial: "E176M240011", territory: "Tonga",    calls: 3 },
-    { name: "Ricoh P 502",                     serial: "5381P702189", territory: "Solomons", calls: 3 }
+    { name: "Sig Ricoh MP C2003",              serial: "E205R470270", territory: "Samoa",    calls: 6, assetId: "02i7F00000MunkgQAB" },
+    { name: "Sig Ricoh MP 5055",               serial: "C389P300398", territory: "Vanuatu",  calls: 5, assetId: "02i7F000009V0fgQAC" },
+    { name: "Ricoh MP 9003",                   serial: "G670C450003", territory: "Vanuatu",  calls: 4, assetId: "02i7F00000FlqXkQAJ" },
+    { name: "Ricoh IM C300F",                  serial: "3924P152777", territory: "Samoa",    calls: 4, assetId: "02iGA00000hK7dPYAS" },
+    { name: "Ricoh Pro C7100SX",               serial: "G365F120009", territory: "NZ",       calls: 4, assetId: "02i7F000000WSY0QAO" },
+    { name: "Ricoh IM C6000",                  serial: "3141M520406", territory: "Samoa",    calls: 4, assetId: "02i7F00000II7gkQAD" },
+    { name: "Sig Ricoh MP C2503",              serial: "E215R980096", territory: "Solomons", calls: 4, assetId: "02iGA00000hKN0rYAG" },
+    { name: "Sig Ricoh MP 5055",               serial: "C388P800039", territory: "Vanuatu",  calls: 4, assetId: "02i7F000009PLuZQAW" },
+    { name: "Ricoh IM C4500",                  serial: "3120MA20353", territory: "Vanuatu",  calls: 4, assetId: "02i7F00000FlnbJQAR" },
+    { name: "Ricoh IM C3000",                  serial: "3101R120366", territory: "Samoa",    calls: 4, assetId: "02i7F00000KBsViQAL" }
   ],
 
   // Visit distribution summary
@@ -357,15 +365,17 @@ document.getElementById("kpiSummary").innerHTML = `
     <div class="kpi-value">${totalCases}</div>
     <div class="kpi-sub">Across ${DATA.technicians.length} technicians</div>
   </div>
-  <div class="kpi-card good">
+  <div class="kpi-card ${ftfRate>=85?'good':'warn'}">
     <div class="kpi-label">FTF rate YTD</div>
-    <div class="kpi-value good">${ftfRate}%</div>
+    <div class="kpi-value ${ftfRate>=85?'good':'warn'}">${ftfRate}%</div>
     <div class="kpi-sub">${totalFTF} of ${totalCases} cases</div>
+    <div class="kpi-target">Target ≥ 85%</div>
   </div>
-  <div class="kpi-card warn">
+  <div class="kpi-card ${cbRate<=10?'good':'alert'}">
     <div class="kpi-label">Callback rate YTD</div>
-    <div class="kpi-value warn">${cbRate}%</div>
+    <div class="kpi-value ${cbRate<=10?'good':'alert'}">${cbRate}%</div>
     <div class="kpi-sub">${totalCB} callbacks from ${totalCases} cases</div>
+    <div class="kpi-target">Target ≤ 10%</div>
   </div>
   <div class="kpi-card alert">
     <div class="kpi-label">SLA violation rate</div>
@@ -454,7 +464,7 @@ document.getElementById("callbackBody").innerHTML = cbSorted.map(r => {
   const p = pctNum(r.callbacks, r.total);
   const cls = cbCls(p);
   return `<tr>
-    <td>${terrPill(r.territory)}</td>
+    <td style="cursor:pointer" onclick="window.location='callbacks.html?territory='+encodeURIComponent(r.territory)" title="View callbacks for ${r.territory}"><span style="cursor:pointer">${terrPill(r.territory)}</span> <span style="font-size:10px;color:var(--red)">→</span></td>
     <td class="count">${r.callbacks}</td>
     <td class="count">${r.total}</td>
     <td class="right ${cls}">${p}%</td>
@@ -480,7 +490,7 @@ document.getElementById("repeatBody").innerHTML = sortedAssets.map(a => {
   const cls = a.calls >= 5 ? "danger-text" : a.calls >= 4 ? "warn-text" : "";
   return `<tr>
     <td style="font-size:12px">${a.name}</td>
-    <td class="mono" style="font-size:11px;color:var(--muted)">${a.serial}</td>
+    <td class="mono" style="font-size:11px;color:var(--muted)">${a.assetId ? `<a href="https://clearedgepacific.my.salesforce.com/${a.assetId}" target="_blank" style="color:var(--red);text-decoration:none" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${a.serial}</a>` : a.serial}</td>
     <td>${terrPill(a.territory)}</td>
     <td class="count ${cls}">${a.calls}</td>
   </tr>`;
