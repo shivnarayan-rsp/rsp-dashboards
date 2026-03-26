@@ -65,12 +65,26 @@ tr:hover td{background:#fafafa;}
 .tech-cell{font-size:11px;color:var(--muted);}
 footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
 @media(max-width:900px){.kpi-strip{grid-template-columns:repeat(2,minmax(0,1fr));}}
+
+.viz-section{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px 20px;margin-bottom:20px;}
+.viz-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.viz-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.bar-chart{display:flex;flex-direction:column;gap:10px;}
+.bc-row{display:grid;grid-template-columns:110px 1fr 80px;align-items:center;gap:10px;}
+.bc-label{font-size:12px;font-weight:500;color:var(--mid);}
+.bc-track{height:24px;background:var(--surface2);border-radius:4px;overflow:hidden;display:flex;}
+.bc-seg-tech{background:var(--danger);opacity:.85;}
+.bc-seg-ext{background:var(--amber);opacity:.85;}
+.bc-meta{font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);text-align:right;}
+.viz-legend{display:flex;gap:16px;margin-top:12px;}
+.vl-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mid);}
+.vl-dot{width:10px;height:10px;border-radius:2px;}
 </style>
 </head>
 <body>
 <header>
   <div style="display:flex;align-items:center">
-    <span class="wordmark">Ricoh</span><div class="hd"></div>
+    <span class="wordmark" style="display:flex;align-items:center"><img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:28px;display:block;"></span><div class="hd"></div>
     <span class="header-title">South Pacific — Asset Downtime</span>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
@@ -84,7 +98,11 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
     <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
     <a href="cases-open.html" class="nav-pill">Open Cases</a>
     <a href="conversations.html" class="nav-pill">Conversations</a>
+    <a href="service-rhythm.html" class="nav-pill">Service Rhythm</a>
     <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
+    <a href="asset-downtime.html" class="nav-pill active">Asset Downtime</a>
+    <a href="case-origin.html" class="nav-pill">Case Origin</a>
+    <a href="parts-consumption.html" class="nav-pill">Parts &amp; Revenue</a>
   </div>
 
   <div class="kpi-strip" id="kpiStrip"></div>
@@ -92,6 +110,20 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
   <div class="legend">
     <div class="legend-item"><div class="legend-dot dot-tech"></div><strong>Tech / Ops delay</strong> — New, Work Order Issued, Doing. Action not yet taken by technician or service controller.</div>
     <div class="legend-item"><div class="legend-dot dot-ext"></div><strong>External / Blocked</strong> — Waiting on Parts, Waiting on Quotation, Waiting on Customer, Stop Credit, Processing Invoice. Blocked outside tech's control.</div>
+  </div>
+
+    <div class="viz-section" id="territoryChart">
+    <div class="viz-title">Hours of asset downtime by territory</div>
+    <div class="bar-chart" id="terrBarChart"></div>
+    <div class="viz-legend">
+      <div class="vl-item"><div class="vl-dot" style="background:var(--danger)"></div>Tech / Ops delay</div>
+      <div class="vl-item"><div class="vl-dot" style="background:var(--amber)"></div>External / Blocked</div>
+    </div>
+  </div>
+
+  <div class="viz-section" id="techChart">
+    <div class="viz-title">Cases by technician</div>
+    <div class="bar-chart" id="techBarChart"></div>
   </div>
 
   <div class="filter-bar">
@@ -220,6 +252,7 @@ function ageBar(h) {
 }
 
 function render() {
+  renderCharts();
   const rows = getRows();
   document.getElementById('resultCount').textContent = `${rows.length} of ${CASES.length} cases`;
   document.querySelectorAll('th').forEach(th => {
@@ -249,8 +282,76 @@ function render() {
 }
 
 renderKPIs();
+renderCharts();
 render();
 function sortBy(col){if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=col===7?-1:1;}render();}
+
+function renderCharts() {
+  const filtered = CASES.filter(c => {
+    const terr = document.getElementById('filterTerritory').value;
+    const bucket = document.getElementById('filterBucket').value;
+    const age = +document.getElementById('filterAge').value || 0;
+    if (terr && c[3] !== terr) return false;
+    if (bucket && c[5] !== bucket) return false;
+    if (age && c[6] < age) return false;
+    return true;
+  });
+
+  // Territory chart
+  const terrTotals = {};
+  filtered.forEach(c => {
+    if (!terrTotals[c[3]]) terrTotals[c[3]] = {tech:0, ext:0, cases:0};
+    terrTotals[c[3]].cases++;
+    if (c[5]==='TECH') terrTotals[c[3]].tech += c[6];
+    else terrTotals[c[3]].ext += c[6];
+  });
+  const terrOrder = Object.entries(terrTotals)
+    .map(([t,v]) => ({t, total: v.tech+v.ext, ...v}))
+    .sort((a,b) => b.total - a.total);
+  const maxH = terrOrder.length ? terrOrder[0].total : 1;
+
+  document.getElementById('terrBarChart').innerHTML = terrOrder.map(r => {
+    const techW = Math.round(r.tech/maxH*100);
+    const extW  = Math.round(r.ext/maxH*100);
+    const pill = `<span class="terr-pill t-${r.t}" style="font-size:11px">${r.t}</span>`;
+    return `<div class="bc-row">
+      <div class="bc-label">${pill}</div>
+      <div class="bc-track" title="${r.t}: ${Math.round(r.tech/24)}d tech delay + ${Math.round(r.ext/24)}d external">
+        <div class="bc-seg-tech" style="width:${techW}%"></div>
+        <div class="bc-seg-ext" style="width:${extW}%"></div>
+      </div>
+      <div class="bc-meta">${r.cases} cases · ${Math.round(r.total/24)}d total</div>
+    </div>`;
+  }).join('') || '<div style="color:var(--muted);font-size:12px">No data for current filters.</div>';
+
+  // Tech chart
+  const techTotals = {};
+  filtered.forEach(c => {
+    const t = c[10] || 'Unassigned';
+    if (!techTotals[t]) techTotals[t] = {tech:0, ext:0, cases:0};
+    techTotals[t].cases++;
+    if (c[5]==='TECH') techTotals[t].tech++;
+    else techTotals[t].ext++;
+  });
+  const techOrder = Object.entries(techTotals)
+    .map(([t,v]) => ({t, total:v.tech+v.ext, ...v}))
+    .sort((a,b) => b.total - a.total);
+  const maxC = techOrder.length ? techOrder[0].total : 1;
+
+  document.getElementById('techBarChart').innerHTML = techOrder.map(r => {
+    const techW = Math.round(r.tech/maxC*100);
+    const extW  = Math.round(r.ext/maxC*100);
+    return `<div class="bc-row">
+      <div class="bc-label" style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.t}">${r.t.split(' ')[0]}</div>
+      <div class="bc-track" title="${r.t}: ${r.tech} tech delay · ${r.ext} external">
+        <div class="bc-seg-tech" style="width:${techW}%"></div>
+        <div class="bc-seg-ext" style="width:${extW}%"></div>
+      </div>
+      <div class="bc-meta">${r.total} cases</div>
+    </div>`;
+  }).join('') || '<div style="color:var(--muted);font-size:12px">No data for current filters.</div>';
+}
+
 </script>
 </body>
 </html>
