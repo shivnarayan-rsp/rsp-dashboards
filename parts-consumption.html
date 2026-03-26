@@ -135,6 +135,7 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
     <option>Samson Ragaruma</option>
   </select>
 </div>
+<div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-family:'DM Mono',monospace;padding:6px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;">All values in NZD · converted from local currencies at 26 Mar 2026 mid-market rates: VUV ×0.01439 · WST ×0.6197 · SBD ×0.2119 · TOP ×0.6904 · NZD ×1.0</div>
 <div class="kpi-grid" id="kpiGrid"></div>
 
   <div id="terrOwnerSection"></div>
@@ -184,34 +185,39 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
 const SF = "https://clearedgepacific.my.salesforce.com/";
 
 // PR_MONTHLY=Service Quote:1:11:25993|Product Request:1:30:33806|Service Quote:2:31:106931|Product Request:2:50:78548|Service Quote:3:31:81259|Product Request:3:44:64213
+// All values in NZD (converted from local currencies using March 2026 mid-market rates)
+// Rates used: VUV 0.01439, WST 0.6197, SBD 0.2119, TOP 0.6904, NZD 1.0
+const FX_NOTE = "NZD values converted from local currencies (VUV, WST, SBD, TOP) at March 2026 mid-market rates.";
 const PR = [
-  {type:'Product Request', mo:1, cnt:30, amt:33806},
-  {type:'Service Quote',   mo:1, cnt:11, amt:25993},
-  {type:'Product Request', mo:2, cnt:50, amt:78548},
-  {type:'Service Quote',   mo:2, cnt:31, amt:106931},
-  {type:'Product Request', mo:3, cnt:44, amt:64213},
-  {type:'Service Quote',   mo:3, cnt:31, amt:81259},
+  {type:'Product Request', mo:1, cnt:30, amt:39215},
+  {type:'Service Quote',   mo:1, cnt:11, amt:30174},
+  {type:'Product Request', mo:2, cnt:50, amt:91117},
+  {type:'Service Quote',   mo:2, cnt:31, amt:124130},
+  {type:'Product Request', mo:3, cnt:44, amt:74488},
+  {type:'Service Quote',   mo:3, cnt:31, amt:94329},
 ];
 
 // Territory breakdown from Salesforce (WorkOrder.ServiceTerritoryId → territory name)
+// Territory NZD values (local currency × FX rate, March 2026)
 const TERR_DATA = {
-  NZ:       {sla:{amt:10587,  cnt:10}, tm:{amt:360,     cnt:1}},
-  Vanuatu:  {sla:{amt:2035400,cnt:26}, tm:{amt:2720846, cnt:17}},
-  Solomons: {sla:{amt:501439, cnt:32}, tm:{amt:392624,  cnt:9}},
-  Tonga:    {sla:{amt:19286,  cnt:14}, tm:{amt:25680,   cnt:13}},
-  Samoa:    {sla:{amt:73219,  cnt:42}, tm:{amt:174589,  cnt:33}},
+  NZ:       {sla:{amt:10587,  cnt:10}, tm:{amt:360,    cnt:1}},
+  Solomons: {sla:{amt:106255, cnt:32}, tm:{amt:83197,  cnt:9}},
+  Samoa:    {sla:{amt:45374,  cnt:42}, tm:{amt:108193, cnt:33}},
+  Vanuatu:  {sla:{amt:29289,  cnt:26}, tm:{amt:39153,  cnt:17}},
+  Tonga:    {sla:{amt:13315,  cnt:14}, tm:{amt:17729,  cnt:13}},
 };
 
 // Owner (technician) breakdown
+// Owner NZD values (local currency × FX rate by territory, March 2026)
 const OWNER_DATA = [
-  {name:'Florencio Jr. Familar',  sla:{amt:610529, cnt:13}, tm:{amt:1631121, cnt:10}},
-  {name:'Junriel Andoy',          sla:{amt:1424871,cnt:13}, tm:{amt:1089725, cnt:7}},
-  {name:'Victor Geonzon',         sla:{amt:493486, cnt:27}, tm:{amt:331289,  cnt:5}},
-  {name:'Arturo Regis',           sla:{amt:36029,  cnt:21}, tm:{amt:80626,   cnt:17}},
-  {name:'Ramiro Cataquis',        sla:{amt:37190,  cnt:21}, tm:{amt:93962,   cnt:16}},
-  {name:'Sridhar Bhattacharjee',  sla:{amt:15550,  cnt:13}, tm:{amt:30741,   cnt:7}},
-  {name:'John Cid',               sla:{amt:14323,  cnt:10}, tm:{amt:16610,   cnt:9}},
-  {name:'Samson Ragaruma',        sla:{amt:7953,   cnt:5},  tm:{amt:40024,   cnt:2}},
+  {name:'Victor Geonzon',         sla:{amt:104570, cnt:27}, tm:{amt:70200,  cnt:5}},
+  {name:'Arturo Regis',           sla:{amt:22327,  cnt:21}, tm:{amt:49964,  cnt:17}},
+  {name:'Ramiro Cataquis',        sla:{amt:23047,  cnt:21}, tm:{amt:58228,  cnt:16}},
+  {name:'Junriel Andoy',          sla:{amt:20504,  cnt:13}, tm:{amt:15681,  cnt:7}},
+  {name:'Sridhar Bhattacharjee',  sla:{amt:15550,  cnt:13}, tm:{amt:30741,  cnt:7}},
+  {name:'Florencio Jr. Familar',  sla:{amt:8786,   cnt:13}, tm:{amt:23472,  cnt:10}},
+  {name:'John Cid',               sla:{amt:9889,   cnt:10}, tm:{amt:11468,  cnt:9}},
+  {name:'Samson Ragaruma',        sla:{amt:1685,   cnt:5},  tm:{amt:8481,   cnt:2}},
 ];
 const MONTHS = {1:'January',2:'February',3:'March'};
 
@@ -276,9 +282,9 @@ function renderKPIs(){
     <div class="kpi-card ${parseFloat(ratio)>=1?'green':'amber'}"><div class="kpi-label">T&M / SLA ratio${subtitle}</div>
       <div class="kpi-value">${ratio}×</div>
       <div class="kpi-sub">Target &gt;1.0× — T&M exceeding SLA spend</div></div>
-    <div class="kpi-card amber"><div class="kpi-label">Vanuatu parts spend</div>
-      <div class="kpi-value" style="color:var(--amber)">~NZD ${((2035400)/1000).toFixed(0)}k SLA</div>
-      <div class="kpi-sub">Highest territory — 2 assets account for NZD 1.34M</div></div>`;
+    <div class="kpi-card amber"><div class="kpi-label">Solomons parts spend</div>
+      <div class="kpi-value" style="color:var(--amber)">NZD 106k SLA</div>
+      <div class="kpi-sub">Highest territory in NZD — Victor Geonzon NZD 105k</div></div>`;
 }
 
 // Month chart
