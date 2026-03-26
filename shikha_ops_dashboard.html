@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shikha — Operations Accountability Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  :root {
+    --bg: #f8f7f4;
+    --surface: #ffffff;
+    --surface2: #f1efe8;
+    --border: rgba(0,0,0,0.1);
+    --border-strong: rgba(0,0,0,0.2);
+    --text: #1a1a18;
+    --text-muted: #5f5e5a;
+    --text-hint: #888780;
+    --green-bg: #eaf3de;
+    --green-text: #3b6d11;
+    --green-border: #639922;
+    --amber-bg: #faeeda;
+    --amber-text: #854f0b;
+    --amber-border: #ba7517;
+    --red-bg: #fcebeb;
+    --red-text: #a32d2d;
+    --red-border: #e24b4a;
+    --blue-bg: #e6f1fb;
+    --blue-text: #185fa5;
+    --blue-border: #378add;
+    --teal-bg: #e1f5ee;
+    --teal-text: #0f6e56;
+    --teal-border: #1d9e75;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: 'DM Sans', 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  header {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border);
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  header .logo {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  header h1 {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  header .badge {
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--teal-bg);
+    color: var(--teal-text);
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 1rem;
+    color: var(--text-muted);
+  }
+
+  .spinner {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--border);
+    border-top-color: var(--teal-border);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-label {
+    font-size: 13px;
+    color: var(--text-hint);
+  }
+
+  .error-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
+    gap: 0.5rem;
+    color: var(--red-text);
+    font-size: 14px;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  main {
+    display: none;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    gap: 1.5rem;
+    flex-direction: column;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    margin-bottom: 0.75rem;
+  }
+
+  /* Scoreboard */
+  .scoreboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+  }
+
+  .score-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    position: relative;
+  }
+
+  .score-card .indicator {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .score-card .metric-name {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    padding-right: 16px;
+    line-height: 1.4;
+  }
+
+  .score-card .metric-value {
+    font-size: 26px;
+    font-weight: 500;
+    font-family: 'DM Mono', monospace;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .score-card .metric-target {
+    font-size: 11px;
+    color: var(--text-hint);
+  }
+
+  .score-card.green .indicator { background: var(--green-border); }
+  .score-card.amber .indicator { background: var(--amber-border); }
+  .score-card.red .indicator { background: var(--red-border); }
+  .score-card.green .metric-value { color: var(--green-text); }
+  .score-card.amber .metric-value { color: var(--amber-text); }
+  .score-card.red .metric-value { color: var(--red-text); }
+
+  /* WIGs */
+  .wig-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+  }
+
+  .wig-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+  }
+
+  .wig-number {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal-text);
+    background: var(--teal-bg);
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 0.6rem;
+  }
+
+  .wig-statement {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+
+  .wig-lag {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding: 0.6rem;
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.75rem;
+  }
+
+  .lead-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .lead-item {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
+  .lead-item::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    min-width: 5px;
+    border-radius: 50%;
+    background: var(--teal-border);
+    margin-top: 5px;
+  }
+
+  .lead-target {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+    background: var(--surface2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  .wig-footer {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .source-tag {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--blue-text);
+    background: var(--blue-bg);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  /* Whirlwind */
+  .whirlwind-table {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .ww-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 200px;
+    gap: 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .ww-row:last-child { border-bottom: none; }
+
+  .ww-header {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    background: var(--surface2);
+  }
+
+  .ww-cell {
+    padding: 0.75rem 1rem;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    border-right: 0.5px solid var(--border);
+  }
+
+  .ww-cell:last-child { border-right: none; }
+
+  .ww-task-name {
+    font-weight: 500;
+    color: var(--text);
+    font-size: 13px;
+  }
+
+  .disposition-pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+  }
+
+  .disposition-pill.delegate { background: var(--amber-bg); color: var(--amber-text); }
+  .disposition-pill.systematise { background: var(--blue-bg); color: var(--blue-text); }
+  .disposition-pill.finance { background: var(--teal-bg); color: var(--teal-text); }
+
+  @media (max-width: 640px) {
+    .ww-row { grid-template-columns: 1fr; }
+    main { padding: 1rem; }
+    header { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Ricoh South Pacific</div>
+  <h1>Shikha — Operations Accountability Map</h1>
+  <span class="badge">4DX framework</span>
+</header>
+
+<div class="loading-state" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-label" id="loading-msg">Running accountability analysis...</div>
+</div>
+
+<div class="error-state" id="error">
+  <strong>Could not load analysis</strong>
+  <span id="error-msg"></span>
+</div>
+
+<main id="main">
+  <div>
+    <div class="section-label">Weekly scoreboard</div>
+    <div class="scoreboard" id="scoreboard"></div>
+  </div>
+
+  <div>
+    <div class="section-label">Wildly important goals</div>
+    <div class="wig-grid" id="wigs"></div>
+  </div>
+
+  <div>
+    <div class="section-label">Whirlwind — tasks to delegate, systematise or reassign</div>
+    <div class="whirlwind-table">
+      <div class="ww-row">
+        <div class="ww-cell ww-header">Task</div>
+        <div class="ww-cell ww-header">Why it is not a WIG</div>
+        <div class="ww-cell ww-header">Disposition</div>
+      </div>
+      <div id="whirlwind"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+const PROMPT = `You are a senior operations and business performance consultant with deep experience in 4DX (The 4 Disciplines of Execution) and the managed print services (MPS) industry.
+
+Produce a 4DX accountability map for an Operations Manager named Shikha at Ricoh South Pacific (RSP), a managed print and technology solutions provider headquartered in Auckland, NZ, with 100% export revenue across Pacific Island markets (Samoa, Solomon Islands, Tonga, Vanuatu).
+
+RSP's five source systems: Xero (accounting), Unleashed (inventory), Salesforce (CRM/service), PrintIQ (MIS for sister company Alpine Print), BMS (field service management). Business Central ERP go-live is targeted 1 November 2026.
+
+Shikha was previously an Assistant Accountant. Her current Operations Manager role covers billing administration, order processing, GL posting, and general ops coordination. The CEO is building AI-powered dashboards — all lead measures must be measurable from the source systems listed.
+
+KEY TENSION TO RESOLVE: Whether CPC billing ownership sits with Shikha or a finance/billing function is an open question. Surface this in the whirlwind section — do not assume billing is her primary WIG. GL posting timeliness is a finance control, not an operations WIG. Be direct.
+
+Return ONLY valid JSON — no markdown, no preamble, no explanation. Exactly this structure:
+
+{
+  "wigs": [
+    {
+      "wig_number": 1,
+      "wig_statement": "X to Y by WHEN format",
+      "lag_measure": "what does winning look like",
+      "lead_measures": [
+        {"measure": "description", "target": "value", "frequency": "weekly"}
+      ],
+      "data_source": "system name(s)",
+      "dashboard_metric_name": "Short KPI label"
+    }
+  ],
+  "whirlwind": [
+    {
+      "task": "task name",
+      "why_not_wig": "one sentence",
+      "disposition": "delegate to X / systematise via Y / move to Finance"
+    }
+  ],
+  "scoreboard": [
+    {
+      "metric": "name",
+      "target": "value",
+      "display_value": "current realistic value",
+      "status": "green|amber|red",
+      "update_frequency": "daily|weekly"
+    }
+  ]
+}
+
+Generate 2-3 WIGs, 4-5 whirlwind items, 5 scoreboard metrics.`;
+
+const loadingMessages = [
+  "Running accountability analysis...",
+  "Applying 4DX framework to MPS context...",
+  "Resolving CPC billing ownership question...",
+  "Building scoreboard structure..."
+];
+
+let msgIndex = 0;
+const msgEl = document.getElementById('loading-msg');
+const msgTimer = setInterval(() => {
+  msgIndex = (msgIndex + 1) % loadingMessages.length;
+  msgEl.textContent = loadingMessages[msgIndex];
+}, 2200);
+
+function statusColor(status) {
+  if (status === 'green') return 'green';
+  if (status === 'red') return 'red';
+  return 'amber';
+}
+
+function dispositionClass(text) {
+  const t = (text || '').toLowerCase();
+  if (t.includes('finance') || t.includes('minoo')) return 'finance';
+  if (t.includes('delegate') || t.includes('jane') || t.includes('sridhar')) return 'delegate';
+  return 'systematise';
+}
+
+function dispositionLabel(text) {
+  const t = (text || '').toLowerCase();
+  if (t.includes('finance')) return 'Finance';
+  if (t.includes('delegate')) return 'Delegate';
+  if (t.includes('systematise') || t.includes('automate')) return 'Systematise';
+  return 'Reassign';
+}
+
+function renderScoreboard(data) {
+  const el = document.getElementById('scoreboard');
+  el.innerHTML = data.map(m => `
+    <div class="score-card ${statusColor(m.status)}">
+      <div class="indicator"></div>
+      <div class="metric-name">${m.metric}</div>
+      <div class="metric-value">${m.display_value || m.target}</div>
+      <div class="metric-target">Target: ${m.target} &middot; ${m.update_frequency}</div>
+    </div>
+  `).join('');
+}
+
+function renderWIGs(data) {
+  const el = document.getElementById('wigs');
+  el.innerHTML = data.map(w => `
+    <div class="wig-card">
+      <div class="wig-number">WIG ${w.wig_number}</div>
+      <div class="wig-statement">${w.wig_statement}</div>
+      <div class="wig-lag"><strong style="font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-hint)">Lag measure</strong><br>${w.lag_measure}</div>
+      <ul class="lead-list">
+        ${w.lead_measures.map(l => `
+          <li class="lead-item">
+            <span>${l.measure} <span class="lead-target">${l.target}</span></span>
+          </li>
+        `).join('')}
+      </ul>
+      <div class="wig-footer">
+        ${w.data_source.split('/').map(s => `<span class="source-tag">${s.trim()}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderWhirlwind(data) {
+  const el = document.getElementById('whirlwind');
+  el.innerHTML = data.map(w => `
+    <div class="ww-row">
+      <div class="ww-cell"><span class="ww-task-name">${w.task}</span></div>
+      <div class="ww-cell">${w.why_not_wig}</div>
+      <div class="ww-cell">
+        <span class="disposition-pill ${dispositionClass(w.disposition)}">${dispositionLabel(w.disposition)}</span><br>
+        <span style="font-size:11px;color:var(--text-hint)">${w.disposition}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function run() {
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        messages: [{ role: 'user', content: PROMPT }]
+      })
+    });
+
+    const result = await resp.json();
+    clearInterval(msgTimer);
+
+    if (!resp.ok) {
+      throw new Error(result.error?.message || 'API error');
+    }
+
+    const text = result.content.filter(b => b.type === 'text').map(b => b.text).join('');
+    const clean = text.replace(/```json|```/g, '').trim();
+    const data = JSON.parse(clean);
+
+    renderScoreboard(data.scoreboard || []);
+    renderWIGs(data.wigs || []);
+    renderWhirlwind(data.whirlwind || []);
+
+    document.getElementById('loading').style.display = 'none';
+    const mainEl = document.getElementById('main');
+    mainEl.style.display = 'flex';
+
+  } catch (err) {
+    clearInterval(msgTimer);
+    document.getElementById('loading').style.display = 'none';
+    const errEl = document.getElementById('error');
+    errEl.style.display = 'flex';
+    document.getElementById('error-msg').textContent = err.message;
+  }
+}
+
+run();
+</script>
+</body>
+</html>
