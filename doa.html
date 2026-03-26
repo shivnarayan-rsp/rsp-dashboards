@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Delegation of Authority — RSP Group v2</title>
+<title>Delegation of Authority — RSP &amp; Pacific Islands v2</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -51,12 +51,9 @@
   }
   .header-left { display: flex; align-items: center; gap: 14px; }
   .header-logo {
-    width: 36px; height: 36px;
-    background: rgba(255,255,255,0.15);
-    border: 1.5px solid rgba(255,255,255,0.3);
-    border-radius: 6px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    height: 36px;
   }
   .header-logo svg { width: 20px; height: 20px; opacity: 0.9; }
   .header-title {
@@ -382,14 +379,11 @@
 <header>
   <div class="header-left">
     <div class="header-logo">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9 12h6M9 16h6M9 8h3M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M15 8l1.5 1.5L19 6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:22px;width:auto;display:block;">
     </div>
     <div>
       <div class="header-title">Delegation of Authority</div>
-      <div class="header-sub">Ricoh South Pacific Group</div>
+      <div class="header-sub">RSP &amp; Pacific Islands</div>
     </div>
   </div>
   <div class="header-badge">Version 2 — 17 March 2026</div>
@@ -405,10 +399,10 @@
   <!-- LEGEND -->
   <div class="legend-row">
     <span class="legend-pill"><span class="legend-dot" style="background:#cc0000"></span>RSP</span>
-    <span class="legend-pill"><span class="legend-dot" style="background:#1a3a5c"></span>Alpine Print</span>
+    
     <span class="legend-pill"><span class="legend-dot" style="background:#1a6b6b"></span>Pacific Islands</span>
     <span class="legend-sep">|</span>
-    <span style="font-size:12.5px;color:var(--ink-muted);">All monetary thresholds in NZD · Approvals must proceed sequentially through each authority level · Questions? <a href="https://teams.microsoft.com/l/chat/0/0?users=minoo@ricohsouthpacific.com" target="_blank" style="display:inline-flex;align-items:center;gap:5px;background:#5558af;color:white;font-size:11.5px;font-weight:600;padding:3px 10px 3px 8px;border-radius:5px;text-decoration:none;vertical-align:middle;letter-spacing:0.02em;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>Message Finance Manager</a></span>
+    <span style="font-size:12.5px;color:var(--ink-muted);">All monetary thresholds in NZD · Approvals must proceed sequentially through each authority level · Questions?<br><a href="https://teams.microsoft.com/l/chat/0/0?users=minoo@ricohsouthpacific.com" target="_blank" style="display:inline-flex;align-items:center;gap:5px;background:#5558af;color:white;font-size:11.5px;font-weight:600;padding:3px 10px 3px 8px;border-radius:5px;text-decoration:none;vertical-align:middle;letter-spacing:0.02em;margin-top:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>Message Finance Manager</a></span>
   </div>
 
   <!-- FILTER BAR -->
@@ -429,8 +423,7 @@
     <div class="filter-row">
       <span class="filter-label">Entity</span>
       <button class="filter-btn active-type" id="entity-all" onclick="filterEntity('all', this)">All Entities</button>
-      <button class="filter-btn entity-btn-rsp" id="entity-rsp" onclick="filterEntity('rsp', this)">RSP</button>
-      <button class="filter-btn entity-btn-alpine" id="entity-alpine" onclick="filterEntity('alpine', this)">Alpine Print</button>
+      <button class="filter-btn entity-btn-rsp" id="entity-rsp" onclick="filterEntity('rsp', this)">NZ</button>
       <button class="filter-btn entity-btn-pacific" id="entity-pacific" onclick="filterEntity('pacific', this)">Pacific Islands</button>
     </div>
   </div>
@@ -443,7 +436,7 @@
           <th style="width:155px">Category</th>
           <th style="width:185px">Decision Type</th>
           <th class="col-entity" style="width:185px">RSP</th>
-          <th class="col-entity" style="width:175px">Alpine Print</th>
+          
           <th class="col-entity" style="width:185px">Pacific Islands</th>
           <th style="width:170px">Evidence Required</th>
           <th style="width:145px">Notes / Exceptions</th>
@@ -452,7 +445,7 @@
       <tbody id="doa-body">
 
         <!-- OPEX ONE OFF -->
-        <tr data-cat="opex" data-entity="rsp alpine pacific">
+        <tr data-cat="opex" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag opex">OPEX</span><br>
             One-off & Irregular<br>
@@ -466,13 +459,7 @@
               <div class="tier"><span class="tier-badge rsp">&gt; $10k</span><span class="approver-name">CEO</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">≤ $2k</span><span class="approver-name">Lead Estimator</span></div>
-              <div class="tier"><span class="tier-badge alpine">$2k–$10k</span><span class="approver-name">Finance Manager</span></div>
-              <div class="tier"><span class="tier-badge alpine">&gt; $10k</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">&lt; $2k</span><span class="approver-name">Operations Manager</span></div>
@@ -485,7 +472,7 @@
         </tr>
 
         <!-- OPEX REGULAR -->
-        <tr data-cat="opex" data-entity="rsp alpine pacific">
+        <tr data-cat="opex" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag opex">OPEX</span><br>
             Regular / Standard<br>
@@ -499,13 +486,7 @@
               <div class="tier"><span class="tier-badge rsp">&gt; $20k</span><span class="approver-name">CEO</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">≤ $5k</span><span class="approver-name">Lead Estimator</span></div>
-              <div class="tier"><span class="tier-badge alpine">$5k–$20k</span><span class="approver-name">Finance Manager</span></div>
-              <div class="tier"><span class="tier-badge alpine">&gt; $20k</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">≤ $5k</span><span class="approver-name">Operations Co-ordinator</span></div>
@@ -518,7 +499,7 @@
         </tr>
 
         <!-- CAPEX -->
-        <tr data-cat="capex" data-entity="rsp alpine pacific">
+        <tr data-cat="capex" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag capex">CAPEX</span><br>
             Asset / Capital Purchase
@@ -531,12 +512,7 @@
               <div class="tier"><span class="tier-badge rsp">&gt; $25k</span><span class="approver-name">CEO + Business Advisory Board</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">&lt; $25k</span><span class="approver-name">Finance Manager</span></div>
-              <div class="tier"><span class="tier-badge alpine">&gt; $25k</span><span class="approver-name">Commercial Manager + Business Advisory Board</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">≤ $5k</span><span class="approver-name">Operations Manager</span></div>
@@ -549,7 +525,7 @@
         </tr>
 
         <!-- PRICING - RSP to subsidiary -->
-        <tr data-cat="pricing" data-entity="rsp alpine pacific">
+        <tr data-cat="pricing" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag pricing">Pricing</span><br>
             RSP → Subsidiary Sales
@@ -562,13 +538,7 @@
               <div class="tier"><span class="tier-badge rsp">All other low GM</span><span class="approver-name">CEO</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">Within floor</span><span class="approver-name">No approval required</span></div>
-              <div class="tier"><span class="tier-badge alpine">GM &lt; 5% floor</span><span class="approver-name">Lead Estimator</span></div>
-              <div class="tier"><span class="tier-badge alpine">All other low GM</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">Within floor</span><span class="approver-name">No approval required</span></div>
@@ -594,14 +564,14 @@
               <div class="tier"><span class="tier-badge rsp">GM &lt; 15%</span><span class="approver-name">CEO</span></div>
             </div>
           </td>
-          <td class="col-entity"><div class="na-cell">N/A</div></td>
-          <td class="col-entity"><div class="na-cell">N/A</div></td>
+          
+          
           <td class="col-evidence">Quote in system. Margin analysis if below guardrail.</td>
           <td class="col-notes">Below minimum GM logged as exception to CEO.</td>
         </tr>
 
         <!-- PRICING - Non-standard terms -->
-        <tr data-cat="pricing" data-entity="rsp alpine pacific">
+        <tr data-cat="pricing" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag pricing">Pricing</span><br>
             Non-Standard Terms
@@ -613,11 +583,7 @@
               <div class="tier"><span class="tier-badge rsp">&gt; $10k or unusual</span><span class="approver-name">CEO</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">All non-standard</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">≤ $10k</span><span class="approver-name">Avi Sharma (Regional Sales Manager)</span></div>
@@ -629,7 +595,7 @@
         </tr>
 
         <!-- CREDIT NOTE -->
-        <tr data-cat="credit" data-entity="rsp alpine pacific">
+        <tr data-cat="credit" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag credit">Credit Note</span><br>
             Admin / Pricing Error
@@ -642,13 +608,7 @@
               <div class="tier"><span class="tier-badge rsp">&gt; $10k</span><span class="approver-name">CEO</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">≤ $2k</span><span class="approver-name">Lead Estimator</span></div>
-              <div class="tier"><span class="tier-badge alpine">$2k–$10k</span><span class="approver-name">Finance Manager</span></div>
-              <div class="tier"><span class="tier-badge alpine">&gt; $10k</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">≤ $2k</span><span class="approver-name">Operations Manager</span></div>
@@ -661,7 +621,7 @@
         </tr>
 
         <!-- WRITE OFF -->
-        <tr data-cat="credit" data-entity="rsp alpine pacific">
+        <tr data-cat="credit" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag credit">Write-Off</span><br>
             Bad Debts
@@ -674,13 +634,7 @@
               <div class="tier"><span class="tier-badge rsp">&gt; $10k</span><span class="approver-name">CEO</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">&lt; $1k</span><span class="approver-name">Lead Estimator</span></div>
-              <div class="tier"><span class="tier-badge alpine">$1k–$5k</span><span class="approver-name">Finance Manager</span></div>
-              <div class="tier"><span class="tier-badge alpine">&gt; $5k</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">≤ $5k</span><span class="approver-name">Operations Manager</span></div>
@@ -693,7 +647,7 @@
         </tr>
 
         <!-- STOP CREDIT -->
-        <tr data-cat="credit" data-entity="rsp alpine pacific">
+        <tr data-cat="credit" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag credit">Stop-Credit</span><br>
             Credit Hold Release
@@ -705,12 +659,7 @@
               <div class="tier"><span class="tier-badge rsp">Release &gt; $10k</span><span class="approver-name">CEO</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">Release ≤ $10k</span><span class="approver-name">Finance Manager</span></div>
-              <div class="tier"><span class="tier-badge alpine">Release &gt; $10k</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">≤ $2k</span><span class="approver-name">Operations Co-ordinator</span></div>
@@ -724,7 +673,7 @@
         </tr>
 
         <!-- PAYMENTS -->
-        <tr data-cat="payments" data-entity="rsp alpine pacific">
+        <tr data-cat="payments" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag payments">Payments</span><br>
             Batch Release
@@ -737,13 +686,7 @@
               <div class="tier"><span class="tier-badge rsp">Release</span><span class="approver-name">CEO + Finance Manager</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">Prepare</span><span class="approver-name">Finance</span></div>
-              <div class="tier"><span class="tier-badge alpine">Checks</span><span class="approver-name">Finance Manager</span></div>
-              <div class="tier"><span class="tier-badge alpine">Release</span><span class="approver-name">Commercial Manager + Finance Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">Prepare</span><span class="approver-name">Local branch admin</span></div>
@@ -769,14 +712,14 @@
               <div class="tier"><span class="tier-badge rsp">&gt; $50k</span><span class="approver-name">David Apfel (Fractional CFO)</span></div>
             </div>
           </td>
-          <td class="col-entity"><div class="na-cell">N/A</div></td>
-          <td class="col-entity"><div class="na-cell">N/A</div></td>
+          
+          
           <td class="col-evidence">Inventory analysis (stock available, safety stock, branch requirements). Excel workings or Unleashed report. Match SO to downstream customer PO.</td>
           <td class="col-notes">—</td>
         </tr>
 
         <!-- INVENTORY - Non RNZ -->
-        <tr data-cat="inventory" data-entity="rsp alpine">
+        <tr data-cat="inventory" data-entity="rsp">
           <td class="col-category">
             <span class="cat-tag inventory">Inventory</span><br>
             Stock Purchases (excl. RNZ)
@@ -789,19 +732,14 @@
               <div class="tier"><span class="tier-badge rsp">&gt; $30k</span><span class="approver-name">David Apfel (Fractional CFO)</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">≤ $5k</span><span class="approver-name">Lead Estimator</span></div>
-              <div class="tier"><span class="tier-badge alpine">&gt; $5k</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
-          <td class="col-entity"><div class="na-cell">N/A</div></td>
+          
+          
           <td class="col-evidence">Inventory analysis (stock available, safety stock, branch requirements). Excel workings or Unleashed report. Match SO to downstream customer PO.</td>
           <td class="col-notes">—</td>
         </tr>
 
         <!-- ENTERTAINMENT - Gifts -->
-        <tr data-cat="entertainment" data-entity="rsp alpine pacific">
+        <tr data-cat="entertainment" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag entertainment">Entertainment</span><br>
             Customer Gifts & Treats
@@ -813,11 +751,7 @@
               <div class="tier"><span class="tier-badge rsp">Approver</span><span class="approver-name">Avi Sharma (Regional Sales Manager)</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">Approver</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">Per contact</span><span class="approver-name">Up to $50 / contact · $400 / month / branch</span></div>
@@ -828,7 +762,7 @@
         </tr>
 
         <!-- ENTERTAINMENT - Team treats -->
-        <tr data-cat="entertainment" data-entity="rsp alpine pacific">
+        <tr data-cat="entertainment" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag entertainment">Entertainment</span><br>
             Customer Staff Treats
@@ -841,11 +775,7 @@
               <div class="tier"><span class="tier-badge rsp">Above limits</span><span class="approver-name">Escalate to Operations or Finance</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">Approver</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">≤ $50 / customer / month · $400 / month / branch</span><span class="approver-name"></span></div>
@@ -857,7 +787,7 @@
         </tr>
 
         <!-- ENTERTAINMENT - Events -->
-        <tr data-cat="entertainment" data-entity="rsp alpine pacific">
+        <tr data-cat="entertainment" data-entity="rsp pacific">
           <td class="col-category">
             <span class="cat-tag entertainment">Entertainment</span><br>
             Event-Based
@@ -870,11 +800,7 @@
               <div class="tier"><span class="tier-badge rsp">Above limits</span><span class="approver-name">Escalate to Operations or Finance</span></div>
             </div>
           </td>
-          <td class="col-entity">
-            <div class="entity-cell">
-              <div class="tier"><span class="tier-badge alpine">Approver</span><span class="approver-name">Commercial Manager</span></div>
-            </div>
-          </td>
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">≤ $500 / event · $1,000 / month / branch</span><span class="approver-name"></span></div>
@@ -892,8 +818,8 @@
             Loan Machine
           </td>
           <td class="col-decision">Duration of loan</td>
-          <td class="col-entity"><div class="na-cell">N/A</div></td>
-          <td class="col-entity"><div class="na-cell">N/A</div></td>
+          
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">&lt; 1 month</span><span class="approver-name">Senior Engineer***</span></div>
@@ -911,8 +837,8 @@
             Parts Fitting Approvals
           </td>
           <td class="col-decision">Parts fitting approval</td>
-          <td class="col-entity"><div class="na-cell">N/A</div></td>
-          <td class="col-entity"><div class="na-cell">N/A</div></td>
+          
+          
           <td class="col-entity">
             <div class="entity-cell">
               <div class="tier"><span class="tier-badge pacific">&lt; $500</span><span class="approver-name">Senior Engineer****</span></div>
@@ -947,7 +873,7 @@
     </div>
     <div class="fn-item">
       <span class="fn-mark">BAB</span>
-      <span>Business Advisory Board. Required as co-approver on all CAPEX above $25,000 across RSP, Alpine Print, and Pacific Islands entities.</span>
+      <span>Business Advisory Board. Required as co-approver on all CAPEX above $25,000.</span>
     </div>
     <div class="fn-item">
       <span class="fn-mark">CFO</span>
@@ -978,7 +904,7 @@
     });
 
     // Dim entity columns not selected
-    const cols = { rsp: 2, alpine: 3, pacific: 4 };
+    const cols = { rsp: 2, pacific: 3 };
     const colHeaders = document.querySelectorAll('thead th');
     const allTds = document.querySelectorAll('#doa-body td');
 
@@ -1009,13 +935,13 @@
   function filterEntity(entity, btn) {
     activeEntity = entity;
     // Clear all entity active classes
-    document.querySelectorAll('#entity-all, #entity-rsp, #entity-alpine, #entity-pacific').forEach(b => {
+    document.querySelectorAll('#entity-all, #entity-rsp, #entity-pacific').forEach(b => {
       b.classList.remove('active-type', 'active-rsp', 'active-alpine', 'active-pacific');
     });
     // Apply correct active class
     if (entity === 'all') btn.classList.add('active-type');
     else if (entity === 'rsp') btn.classList.add('active-rsp');
-    else if (entity === 'alpine') btn.classList.add('active-alpine');
+    
     else if (entity === 'pacific') btn.classList.add('active-pacific');
     applyFilters();
   }
