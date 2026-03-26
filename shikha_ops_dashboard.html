@@ -3,563 +3,943 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shikha — Operations Accountability Dashboard</title>
+<title>Shikha — Operations Dashboard · RSP</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #f8f7f4;
-    --surface: #ffffff;
-    --surface2: #f1efe8;
-    --border: rgba(0,0,0,0.1);
-    --border-strong: rgba(0,0,0,0.2);
-    --text: #1a1a18;
-    --text-muted: #5f5e5a;
-    --text-hint: #888780;
-    --green-bg: #eaf3de;
-    --green-text: #3b6d11;
-    --green-border: #639922;
-    --amber-bg: #faeeda;
-    --amber-text: #854f0b;
-    --amber-border: #ba7517;
-    --red-bg: #fcebeb;
-    --red-text: #a32d2d;
-    --red-border: #e24b4a;
-    --blue-bg: #e6f1fb;
-    --blue-text: #185fa5;
-    --blue-border: #378add;
-    --teal-bg: #e1f5ee;
-    --teal-text: #0f6e56;
-    --teal-border: #1d9e75;
-    --radius: 10px;
-    --radius-sm: 6px;
+    --bg: #f5f4f0; --surface: #ffffff; --surface-2: #f1efe8;
+    --border: rgba(0,0,0,0.10); --border-strong: rgba(0,0,0,0.18);
+    --text: #1a1a18; --text-mid: #4a4940; --text-muted: #5f5e5a; --text-hint: #888780;
+    --green: #3B6D11; --green-bg: #EAF3DE; --green-border: #639922;
+    --amber: #854F0B; --amber-bg: #FAEEDA; --amber-border: #BA7517;
+    --red: #A32D2D; --red-bg: #FCEBEB; --red-border: #E24B4A;
+    --blue: #185FA5; --blue-bg: #E6F1FB; --blue-border: #378ADD;
+    --teal: #0F6E56; --teal-bg: #E1F5EE; --teal-border: #1D9E75;
+    --radius: 6px; --radius-lg: 10px;
   }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; min-height: 100vh; }
 
-  body {
-    font-family: 'DM Sans', 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 0;
-  }
+  /* HEADER */
+  .header { background: var(--surface); border-bottom: 0.5px solid var(--border-strong); padding: 13px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; position: sticky; top: 0; z-index: 100; }
+  .hrow { display: flex; align-items: center; gap: 10px; }
+  .logo { width: 28px; height: 28px; background: #1a1a18; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .logo svg { width: 14px; height: 14px; fill: #f5f4f0; }
+  .h1 { font-size: 15px; font-weight: 500; }
+  .h-sub { font-size: 11px; color: var(--text-hint); margin-top: 1px; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .live-pill { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--teal); font-weight: 500; }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal-border); animation: blink 2s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+  .as-of { font-size: 11px; color: var(--text-hint); }
 
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+  /* NOTICE */
+  .notice { background: var(--amber-bg); border-bottom: 0.5px solid var(--amber-border); padding: 7px 24px; font-size: 12px; color: var(--amber); }
 
-  header {
-    background: var(--surface);
-    border-bottom: 0.5px solid var(--border);
-    padding: 1.25rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  /* NAV */
+  .nav { background: var(--surface); border-bottom: 0.5px solid var(--border-strong); padding: 0 24px; display: flex; overflow-x: auto; }
+  .nav-tab { font-size: 12px; font-weight: 500; color: var(--text-hint); padding: 10px 14px; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.12s, border-color 0.12s; user-select: none; }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--text); border-bottom-color: var(--text); }
 
-  header .logo {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    text-transform: uppercase;
-  }
+  /* PAGES */
+  .page { display: none; padding: 20px 24px; max-width: 1400px; }
+  .page.active { display: block; }
 
-  header h1 {
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--text);
-  }
+  /* SECTION LABEL */
+  .slabel { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-hint); margin-bottom: 10px; }
 
-  header .badge {
-    font-size: 11px;
-    font-weight: 500;
-    background: var(--teal-bg);
-    color: var(--teal-text);
-    padding: 3px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.03em;
-  }
+  /* FILTER CHIPS */
+  .filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-label { font-size: 11px; color: var(--text-hint); font-weight: 500; }
+  .chip { padding: 5px 12px; border-radius: 100px; border: 0.5px solid var(--border-strong); background: var(--surface); font-size: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.12s; user-select: none; white-space: nowrap; }
+  .chip:hover { border-color: var(--text); color: var(--text); }
+  .chip.active { background: var(--text); border-color: var(--text); color: #f5f4f0; font-weight: 500; }
 
-  .loading-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 60vh;
-    gap: 1rem;
-    color: var(--text-muted);
-  }
+  /* TILES */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .tile { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); padding: 13px 15px; position: relative; }
+  .tile::after { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; border-radius:3px 0 0 3px; }
+  .tile.green::after { background:var(--green-border); } .tile.amber::after { background:var(--amber-border); }
+  .tile.red::after   { background:var(--red-border); }  .tile.blue::after  { background:var(--blue-border); }
+  .tile.teal::after  { background:var(--teal-border); } .tile.neutral::after { background:var(--border-strong); }
+  .tile-lbl { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; line-height: 1.3; }
+  .tile-val { font-size: 26px; font-weight: 500; line-height: 1; margin-bottom: 3px; font-variant-numeric: tabular-nums; }
+  .tile.green .tile-val  { color: var(--green); }  .tile.amber .tile-val  { color: var(--amber); }
+  .tile.red   .tile-val  { color: var(--red); }    .tile.blue  .tile-val  { color: var(--blue); }
+  .tile.teal  .tile-val  { color: var(--teal); }   .tile.neutral .tile-val { color: var(--text); }
+  .tile-sub { font-size: 10px; color: var(--text-hint); }
+  .tile-src { font-size: 9px; color: var(--text-hint); margin-top: 6px; opacity: 0.7; }
 
-  .spinner {
-    width: 28px;
-    height: 28px;
-    border: 2px solid var(--border);
-    border-top-color: var(--teal-border);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
+  /* TABLE */
+  .tbl-wrap { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { font-size: 9px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-hint); background: var(--surface-2); padding: 9px 14px; text-align: left; border-bottom: 0.5px solid var(--border-strong); cursor: pointer; user-select: none; white-space: nowrap; }
+  th:not(.th-left) { text-align: right; }
+  th.sorted { color: var(--text); }
+  td { padding: 9px 14px; border-bottom: 0.5px solid rgba(0,0,0,0.06); color: var(--text-muted); vertical-align: middle; }
+  td.td-r { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface-2); }
+  .tbl-foot td { background: var(--surface-2); font-weight: 500; color: var(--text); border-top: 0.5px solid var(--border-strong); }
+  .td-name { font-weight: 500; color: var(--text); }
 
-  @keyframes spin { to { transform: rotate(360deg); } }
+  /* PILLS + TAGS */
+  .pill { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .pill-green { background:var(--green-bg); color:var(--green); } .pill-amber { background:var(--amber-bg); color:var(--amber); }
+  .pill-red   { background:var(--red-bg);   color:var(--red); }   .pill-blue  { background:var(--blue-bg);  color:var(--blue); }
+  .pill-teal  { background:var(--teal-bg);  color:var(--teal); }  .pill-neutral { background:var(--surface-2); color:var(--text-muted); }
+  .src-tag { font-size: 9px; font-weight: 500; color: var(--blue); background: var(--blue-bg); padding: 2px 7px; border-radius: 3px; }
+  .src-tag.pending { color: var(--amber); background: var(--amber-bg); }
 
-  .loading-label {
-    font-size: 13px;
-    color: var(--text-hint);
-  }
+  /* WIG CARDS */
+  .wig-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .wig { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); overflow: hidden; }
+  .wig-head { background: var(--text); color: #f5f4f0; padding: 11px 14px; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .wig-num { font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal-border); white-space: nowrap; margin-top: 2px; }
+  .wig-title { font-size: 13px; font-weight: 500; line-height: 1.4; }
+  .wig-body { padding: 13px 14px; }
+  .lag-lbl { font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-hint); margin-bottom: 3px; }
+  .lag-text { font-size: 12px; color: var(--text-muted); margin-bottom: 11px; line-height: 1.5; }
+  .progress-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+  .bar { height: 5px; background: #e8e7e3; border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+  .leads { list-style: none; border-top: 0.5px solid var(--border); padding-top: 10px; display: flex; flex-direction: column; gap: 1px; }
+  .lead-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); padding: 5px 0; border-bottom: 0.5px solid rgba(0,0,0,0.04); }
+  .lead-row:last-child { border-bottom: none; }
+  .wig-foot { border-top: 0.5px solid var(--border); padding: 8px 14px; display: flex; gap: 6px; flex-wrap: wrap; }
 
-  .error-state {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 40vh;
-    gap: 0.5rem;
-    color: var(--red-text);
-    font-size: 14px;
-    padding: 2rem;
-    text-align: center;
-  }
+  /* DRILL-DOWN */
+  .dd-controls { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .dd-tabs { display: flex; gap: 0; margin-bottom: 14px; border-bottom: 2px solid var(--border-strong); }
+  .dd-tab { padding: 8px 18px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--text-hint); border: none; background: transparent; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.12s; }
+  .dd-tab.active { color: var(--text); border-bottom-color: var(--text); }
+  .dd-tab .tc { display: inline-flex; align-items: center; justify-content: center; background: var(--surface-2); color: var(--text-muted); border-radius: 20px; font-size: 10px; font-weight: 600; padding: 1px 6px; margin-left: 5px; }
+  .dd-tab.active .tc { background: var(--text); color: #f5f4f0; }
+  .search-input { border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 6px 12px; font-size: 12px; background: var(--surface); color: var(--text); width: 200px; outline: none; }
+  .search-input:focus { border-color: var(--text); }
+  .sum-strip { display: flex; gap: 18px; margin-bottom: 12px; flex-wrap: wrap; }
+  .sum-item { font-size: 12px; color: var(--text-hint); }
+  .sum-item strong { color: var(--text); font-weight: 600; }
+  .sum-item.warn strong { color: var(--amber); }
+  .sum-item.alert strong { color: var(--red); }
+  .status-pill { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+  .status-draft { background: var(--amber-bg); color: var(--amber); }
+  .status-submitted { background: var(--red-bg); color: var(--red); }
+  .row-draft td:first-child    { border-left: 2px solid var(--amber-border); }
+  .row-submitted td:first-child { border-left: 2px solid var(--red-border); }
+  .aging-green { color: var(--green); font-weight: 600; }
+  .aging-amber { color: var(--amber); font-weight: 600; }
+  .aging-red   { color: var(--red);   font-weight: 600; }
+  .attach-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; color: var(--blue); background: var(--blue-bg); padding: 2px 6px; border-radius: 3px; }
+  .inv-link { color: var(--blue); font-size: 11px; font-weight: 600; text-decoration: none; }
+  .inv-link:hover { text-decoration: underline; }
+  .xero-btn { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 500; color: var(--blue); background: var(--blue-bg); border: 0.5px solid var(--blue-border); padding: 2px 7px; border-radius: 4px; text-decoration: none; white-space: nowrap; }
+  .xero-btn:hover { background: #B5D4F4; }
+  .so-copy { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 500; color: var(--teal); background: var(--teal-bg); border: 0.5px solid var(--teal-border); padding: 2px 7px; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+  .so-copy:hover { background: #9FE1CB; }
+  .so-copy.copied { color: var(--green); background: var(--green-bg); border-color: var(--green-border); }
+  .entity-badge { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 600; background: var(--surface-2); color: var(--text-muted); }
+  .empty-state { padding: 40px; text-align: center; color: var(--text-hint); font-size: 13px; }
+  .empty-state strong { display: block; font-size: 14px; color: var(--text); margin-bottom: 5px; }
 
-  main {
-    display: none;
-    padding: 2rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    gap: 1.5rem;
-    flex-direction: column;
-  }
+  /* PAYROLL WORKFLOW */
+  .pw-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .pw-card { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); overflow: hidden; }
+  .pw-card-head { padding: 11px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); }
+  .pw-entity { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; }
+  .pw-cycle { font-size: 10px; color: var(--text-hint); }
+  .pw-progress { height: 3px; background: #e8e7e3; border-radius: 2px; margin: 0 14px 0; }
+  .pw-progress-fill { height: 100%; border-radius: 2px; background: var(--teal-border); transition: width 0.4s ease; }
+  .pw-progress-wrap { padding: 8px 14px 0; }
+  .pw-progress-lbl { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-hint); margin-bottom: 4px; }
+  .pw-steps { list-style: none; padding: 10px 0 4px; }
+  .pw-step { display: flex; align-items: flex-start; gap: 10px; padding: 7px 14px; border-bottom: 0.5px solid rgba(0,0,0,0.04); cursor: pointer; transition: background 0.1s; }
+  .pw-step:last-child { border-bottom: none; }
+  .pw-step:hover { background: var(--surface-2); }
+  .pw-step.done { opacity: 0.6; }
+  .pw-check { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--border-strong); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; transition: all 0.15s; }
+  .pw-step.done .pw-check { background: var(--teal-border); border-color: var(--teal-border); }
+  .pw-check svg { width: 9px; height: 9px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+  .pw-step.done .pw-check svg { opacity: 1; }
+  .pw-step-body { flex: 1; min-width: 0; }
+  .pw-step-label { font-size: 12px; color: var(--text); line-height: 1.4; }
+  .pw-step.done .pw-step-label { text-decoration: line-through; color: var(--text-muted); }
+  .pw-step-meta { font-size: 10px; color: var(--text-hint); margin-top: 2px; }
+  .pw-step-time { font-size: 10px; color: var(--teal); font-weight: 500; }
+  .pw-card-foot { padding: 8px 14px; border-top: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .pw-elapsed { font-size: 11px; color: var(--text-muted); }
+  .pw-elapsed strong { color: var(--text); }
+  .pw-status-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+  .pw-reset-btn { font-size: 10px; color: var(--text-hint); cursor: pointer; text-decoration: underline; padding: 2px 0; background: none; border: none; }
+  .pw-reset-btn:hover { color: var(--red); }
+  .pw-summary { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 20px; }
+  .pw-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .pw-summary-item { text-align: center; }
+  .pw-summary-val { font-size: 22px; font-weight: 500; line-height: 1; margin-bottom: 3px; color: var(--text); font-variant-numeric: tabular-nums; }
+  .pw-summary-lbl { font-size: 10px; color: var(--text-hint); }
+  .pw-note { font-size: 11px; color: var(--text-hint); background: var(--surface-2); border-radius: var(--radius); padding: 8px 12px; margin: 0 14px 10px; line-height: 1.5; }
 
-  .section-label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-hint);
-    margin-bottom: 0.75rem;
-  }
+  /* BMS */
+  .bms-box { background: var(--surface); border: 1px dashed var(--amber-border); border-radius: var(--radius-lg); padding: 28px; text-align: center; margin-bottom: 20px; }
+  .bms-title { font-size: 14px; font-weight: 500; color: var(--amber); margin-bottom: 5px; }
+  .bms-body { font-size: 12px; color: var(--text-hint); max-width: 400px; margin: 0 auto 18px; }
+  .bms-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+  .bms-tile { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 12px; opacity: 0.5; text-align: left; }
+  .bms-lbl { font-size: 10px; color: var(--text-hint); margin-bottom: 4px; }
+  .bms-val { font-size: 22px; font-weight: 500; color: var(--border-strong); }
 
-  /* Scoreboard */
-  .scoreboard {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 10px;
-  }
+  /* WHIRLWIND */
+  .ww-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .ww { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); padding: 13px 14px; }
+  .ww-task { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .ww-why { font-size: 12px; color: var(--text-muted); margin-bottom: 9px; line-height: 1.5; }
+  .ww-disp { display: flex; align-items: flex-start; gap: 7px; }
+  .ww-action { font-size: 11px; color: var(--text-hint); line-height: 1.4; }
 
-  .score-card {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem 1.1rem;
-    position: relative;
-  }
+  .card { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); padding: 14px 16px; }
 
-  .score-card .indicator {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
-  .score-card .metric-name {
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-    padding-right: 16px;
-    line-height: 1.4;
-  }
-
-  .score-card .metric-value {
-    font-size: 26px;
-    font-weight: 500;
-    font-family: 'DM Mono', monospace;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .score-card .metric-target {
-    font-size: 11px;
-    color: var(--text-hint);
-  }
-
-  .score-card.green .indicator { background: var(--green-border); }
-  .score-card.amber .indicator { background: var(--amber-border); }
-  .score-card.red .indicator { background: var(--red-border); }
-  .score-card.green .metric-value { color: var(--green-text); }
-  .score-card.amber .metric-value { color: var(--amber-text); }
-  .score-card.red .metric-value { color: var(--red-text); }
-
-  /* WIGs */
-  .wig-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 12px;
-  }
-
-  .wig-card {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-  }
-
-  .wig-number {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--teal-text);
-    background: var(--teal-bg);
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-bottom: 0.6rem;
-  }
-
-  .wig-statement {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.5;
-    margin-bottom: 0.75rem;
-  }
-
-  .wig-lag {
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.5;
-    padding: 0.6rem;
-    background: var(--surface2);
-    border-radius: var(--radius-sm);
-    margin-bottom: 0.75rem;
-  }
-
-  .lead-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .lead-item {
-    font-size: 12px;
-    color: var(--text-muted);
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    line-height: 1.5;
-  }
-
-  .lead-item::before {
-    content: '';
-    display: inline-block;
-    width: 5px;
-    height: 5px;
-    min-width: 5px;
-    border-radius: 50%;
-    background: var(--teal-border);
-    margin-top: 5px;
-  }
-
-  .lead-target {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--text);
-    background: var(--surface2);
-    padding: 1px 5px;
-    border-radius: 3px;
-    white-space: nowrap;
-  }
-
-  .wig-footer {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 0.5px solid var(--border);
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .source-tag {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--blue-text);
-    background: var(--blue-bg);
-    padding: 2px 7px;
-    border-radius: 4px;
-  }
-
-  /* Whirlwind */
-  .whirlwind-table {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  .ww-row {
-    display: grid;
-    grid-template-columns: 180px 1fr 200px;
-    gap: 0;
-    border-bottom: 0.5px solid var(--border);
-  }
-
-  .ww-row:last-child { border-bottom: none; }
-
-  .ww-header {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-hint);
-    background: var(--surface2);
-  }
-
-  .ww-cell {
-    padding: 0.75rem 1rem;
-    font-size: 12.5px;
-    color: var(--text-muted);
-    line-height: 1.5;
-    border-right: 0.5px solid var(--border);
-  }
-
-  .ww-cell:last-child { border-right: none; }
-
-  .ww-task-name {
-    font-weight: 500;
-    color: var(--text);
-    font-size: 13px;
-  }
-
-  .disposition-pill {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-bottom: 4px;
-  }
-
-  .disposition-pill.delegate { background: var(--amber-bg); color: var(--amber-text); }
-  .disposition-pill.systematise { background: var(--blue-bg); color: var(--blue-text); }
-  .disposition-pill.finance { background: var(--teal-bg); color: var(--teal-text); }
-
-  @media (max-width: 640px) {
-    .ww-row { grid-template-columns: 1fr; }
-    main { padding: 1rem; }
-    header { padding: 1rem; }
+  @media (max-width: 680px) {
+    .page { padding: 14px; }
+    .tiles { grid-template-columns: repeat(2,1fr); }
+    .header { padding: 12px 14px; }
+    .nav, .notice { padding-left: 14px; padding-right: 14px; }
+    .pw-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">Ricoh South Pacific</div>
-  <h1>Shikha — Operations Accountability Map</h1>
-  <span class="badge">4DX framework</span>
+<header class="header">
+  <div class="hrow">
+    <div class="logo">
+      <svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+    </div>
+    <div>
+      <div class="h1">Operations Dashboard</div>
+      <div class="h-sub">Shikha Sohal · Operations Manager · Ricoh South Pacific</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="live-pill"><span class="live-dot"></span>Live — Xero · Unleashed</span>
+    <span class="as-of">27 Mar 2026</span>
+  </div>
 </header>
 
-<div class="loading-state" id="loading">
-  <div class="spinner"></div>
-  <div class="loading-label" id="loading-msg">Running accountability analysis...</div>
+<div class="notice">⏳ BMS MCP connecting today (Vijendra) · GoPayroll MCP scoped · Vanuatu Unleashed sync error logged</div>
+
+<nav class="nav">
+  <div class="nav-tab active" onclick="go('scoreboard',this)">Scoreboard</div>
+  <div class="nav-tab" onclick="go('csf',this)">CSFs</div>
+  <div class="nav-tab" onclick="go('bms',this)">BMS</div>
+  <div class="nav-tab" onclick="go('payroll',this)">Payroll</div>
+  <div class="nav-tab" onclick="go('orders',this)">Orders</div>
+  <div class="nav-tab" onclick="go('drilldown',this)">Invoice Drill-Down</div>
+  <div class="nav-tab" onclick="go('whirlwind',this)">Whirlwind</div>
+</nav>
+
+
+<!-- ══════════════ SCOREBOARD ══════════════ -->
+<div class="page active" id="page-scoreboard">
+  <p class="slabel">This week — live data</p>
+  <div class="filter-bar">
+    <span class="filter-label">Country</span>
+    <button class="chip active" onclick="filterSB('all',this)">All</button>
+    <button class="chip" onclick="filterSB('nz',this)">🇳🇿 RSP (NZ)</button>
+    <button class="chip" onclick="filterSB('samoa',this)">🇼🇸 Samoa</button>
+    <button class="chip" onclick="filterSB('vanuatu',this)">🇻🇺 Vanuatu</button>
+    <button class="chip" onclick="filterSB('tonga',this)">🇹🇴 Tonga</button>
+    <button class="chip" onclick="filterSB('solomons',this)">🇸🇧 Solomons</button>
+  </div>
+  <div id="sb-tiles"></div>
+  <p class="slabel" style="margin-top:4px;">Data sources</p>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;">
+    <span class="src-tag">Xero — Samoa</span><span class="src-tag">Xero — Vanuatu</span>
+    <span class="src-tag">Xero — Tonga</span><span class="src-tag">Xero — Solomon Islands</span>
+    <span class="src-tag">Xero — RSP NZ</span><span class="src-tag">Unleashed — RSP</span>
+    <span class="src-tag">Unleashed — Samoa</span><span class="src-tag">Unleashed — Solomons</span>
+    <span class="src-tag">Unleashed — Tonga</span>
+    <span class="src-tag pending">Unleashed — Vanuatu (sync error)</span>
+    <span class="src-tag pending">BMS — connecting today</span>
+    <span class="src-tag pending">GoPayroll — scoped</span>
+  </div>
 </div>
 
-<div class="error-state" id="error">
-  <strong>Could not load analysis</strong>
-  <span id="error-msg"></span>
-</div>
 
-<main id="main">
-  <div>
-    <div class="section-label">Weekly scoreboard</div>
-    <div class="scoreboard" id="scoreboard"></div>
-  </div>
-
-  <div>
-    <div class="section-label">Wildly important goals</div>
-    <div class="wig-grid" id="wigs"></div>
-  </div>
-
-  <div>
-    <div class="section-label">Whirlwind — tasks to delegate, systematise or reassign</div>
-    <div class="whirlwind-table">
-      <div class="ww-row">
-        <div class="ww-cell ww-header">Task</div>
-        <div class="ww-cell ww-header">Why it is not a WIG</div>
-        <div class="ww-cell ww-header">Disposition</div>
+<!-- ══════════════ CSFs ══════════════ -->
+<div class="page" id="page-csf">
+  <p class="slabel">Critical success factors — 4DX · Jun 2026 horizon</p>
+  <div class="wig-grid">
+    <div class="wig">
+      <div class="wig-head">
+        <div class="wig-title">Reduce open / parked orders across all entities from 49 to ≤10 at any week-end snapshot</div>
+        <div class="wig-num">CSF 01</div>
       </div>
-      <div id="whirlwind"></div>
+      <div class="wig-body">
+        <div class="lag-lbl">Lag measure</div>
+        <div class="lag-text">Total open/parked/pending sales orders at week-end — baseline 49 (RSP 23 · SI 14 · Tonga 8 · Samoa 4 · Vanuatu pending)</div>
+        <div class="progress-row"><span>Baseline → Target</span><span style="color:var(--red)">49 → 10</span></div>
+        <div class="bar"><div class="bar-fill" style="width:20%;background:var(--red-border);"></div></div>
+        <ul class="leads">
+          <li class="lead-row"><span>Orders processed within 24 hrs</span><span class="pill pill-neutral">Baseline TBC</span></li>
+          <li class="lead-row"><span>Orders held &gt;48 hrs — missing data</span><span class="pill pill-amber">Target ≤3/wk</span></li>
+          <li class="lead-row"><span>Open orders at week-end — all entities</span><span class="pill pill-red">49 this week</span></li>
+        </ul>
+      </div>
+      <div class="wig-foot">
+        <span class="src-tag">Unleashed — RSP, Samoa, SI, Tonga</span>
+        <span class="src-tag pending">Vanuatu — pending</span>
+      </div>
+    </div>
+    <div class="wig">
+      <div class="wig-head">
+        <div class="wig-title">CPC billing cycle completion — 100% of meter reads billing-ready within 3 days of cycle open</div>
+        <div class="wig-num">CSF 02</div>
+      </div>
+      <div class="wig-body">
+        <div class="lag-lbl">Lag measure</div>
+        <div class="lag-text">% of billable devices with completed BMS Billing Cycle transaction within 3 days of cycle open — baseline from historic BMS data at go-live</div>
+        <div class="progress-row"><span>Baseline</span><span style="color:var(--amber)">Setting at BMS go-live</span></div>
+        <div class="bar"><div class="bar-fill" style="width:0%;background:var(--amber-border);"></div></div>
+        <ul class="leads">
+          <li class="lead-row"><span>Billing Cycle created → completed (BMS delta)</span><span class="pill pill-neutral">BMS pending</span></li>
+          <li class="lead-row"><span>Open billing exceptions at week-end</span><span class="pill pill-neutral">Target 0</span></li>
+          <li class="lead-row"><span>Devices missing contract data (unbillable)</span><span class="pill pill-neutral">Reduce 2/mo</span></li>
+        </ul>
+      </div>
+      <div class="wig-foot"><span class="src-tag pending">BMS — connecting today</span></div>
+    </div>
+    <div class="wig">
+      <div class="wig-head">
+        <div class="wig-title">Reduce payroll processing from 3.7-day baseline to ≤1.5 days across all island entities by 30 Jun 2026</div>
+        <div class="wig-num">CSF 03</div>
+      </div>
+      <div class="wig-body">
+        <div class="lag-lbl">Lag measure</div>
+        <div class="lag-text">Avg days from payroll period close to pay run marked paid/posted — baseline 3.7 days (Xero proxy, Mar 2026)</div>
+        <div class="progress-row"><span>Baseline → Target</span><span style="color:var(--amber)">3.7d → 1.5d</span></div>
+        <div class="bar"><div class="bar-fill" style="width:41%;background:var(--amber-border);"></div></div>
+        <ul class="leads">
+          <li class="lead-row"><span>Days: period close → GoPayroll submission</span><span class="pill pill-amber">Baseline 3.7d</span></li>
+          <li class="lead-row"><span>Pay runs on time per entity per cycle</span><span class="pill pill-neutral">Target 100%</span></li>
+          <li class="lead-row"><span>Entities hitting ≤1.5d target</span><span class="pill pill-red">0 / 4</span></li>
+        </ul>
+      </div>
+      <div class="wig-foot">
+        <span class="src-tag">Xero — all island entities</span>
+        <span class="src-tag pending">GoPayroll MCP — scoped</span>
+      </div>
     </div>
   </div>
-</main>
+</div>
+
+
+<!-- ══════════════ BMS ══════════════ -->
+<div class="page" id="page-bms">
+  <div class="bms-box">
+    <div class="bms-title">BMS MCP connecting today (Vijendra)</div>
+    <div class="bms-body">Historic Billing Cycle data will set the CSF 02 baseline. Metrics below populate once the MCP is live.</div>
+    <div class="bms-preview">
+      <div class="bms-tile"><div class="bms-lbl">Billing cycle completion</div><div class="bms-val">—%</div></div>
+      <div class="bms-tile"><div class="bms-lbl">Avg days cycle → complete</div><div class="bms-val">—d</div></div>
+      <div class="bms-tile"><div class="bms-lbl">Open billing exceptions</div><div class="bms-val">—</div></div>
+      <div class="bms-tile"><div class="bms-lbl">Unbillable devices</div><div class="bms-val">—</div></div>
+      <div class="bms-tile"><div class="bms-lbl">SLA breach — open</div><div class="bms-val">—</div></div>
+      <div class="bms-tile"><div class="bms-lbl">First-time fix rate</div><div class="bms-val">—%</div></div>
+    </div>
+  </div>
+  <p class="slabel">Fields to map at BMS go-live</p>
+  <div class="tbl-wrap" style="max-width:640px;">
+    <table>
+      <thead><tr><th class="th-left">BMS field</th><th class="th-left">Dashboard metric</th><th class="th-left">CSF use</th></tr></thead>
+      <tbody>
+        <tr><td class="td-name">Billing Cycle — created timestamp</td><td>Cycle open date</td><td>Lead measure: Day 3 completion rate</td></tr>
+        <tr><td class="td-name">Billing Cycle — completed timestamp</td><td>Avg days to complete</td><td>Lag measure: billing cycle completion %</td></tr>
+        <tr><td class="td-name">Billing exception log</td><td>Open exceptions count</td><td>Lead measure: exceptions at week-end</td></tr>
+        <tr><td class="td-name">Device — contract status flag</td><td>Unbillable device count</td><td>Lead measure: reduce 2/mo</td></tr>
+        <tr><td class="td-name">Customer / entity on Billing Cycle</td><td>Split by customer &amp; entity</td><td>Country view for weekly huddle</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ══════════════ PAYROLL ══════════════ -->
+<div class="page" id="page-payroll">
+  <p class="slabel">Payroll cycle tracker — all island entities · March 2026</p>
+
+  <div class="pw-summary" style="margin-bottom:20px;">
+    <div class="slabel" style="margin-bottom:12px;">Cycle summary</div>
+    <div class="pw-summary-grid" id="pw-summary-grid"></div>
+  </div>
+
+  <div class="filter-bar" style="margin-bottom:16px;">
+    <span class="filter-label">Cycle</span>
+    <button class="chip active" onclick="pwSetCycle('mar-w3',this)">Mar W3 (current)</button>
+    <button class="chip" onclick="pwSetCycle('mar-w2',this)">Mar W2</button>
+    <button class="chip" onclick="pwSetCycle('mar-w1',this)">Mar W1</button>
+  </div>
+
+  <div class="pw-grid" id="pw-cards"></div>
+
+  <div class="card" style="max-width:640px;">
+    <p class="slabel">Supabase write-back — scoped</p>
+    <p style="font-size:12px;color:var(--text-muted);line-height:1.7;">
+      Each task completion here records a timestamp. Once the GoPayroll MCP and Supabase write-back are live, this tracker will log: entity, cycle, task, opened_at, completed_at — allowing bottleneck analysis across the full payroll close workflow. The prototype uses localStorage for now so state persists across browser sessions.
+    </p>
+  </div>
+</div>
+
+
+<!-- ══════════════ ORDERS ══════════════ -->
+<div class="page" id="page-orders">
+  <p class="slabel">Order processing — Unleashed · March 2026</p>
+  <div class="filter-bar">
+    <span class="filter-label">Country</span>
+    <button class="chip active" onclick="filterOrders('all',this)">All</button>
+    <button class="chip" onclick="filterOrders('nz',this)">🇳🇿 RSP (NZ)</button>
+    <button class="chip" onclick="filterOrders('samoa',this)">🇼🇸 Samoa</button>
+    <button class="chip" onclick="filterOrders('vanuatu',this)">🇻🇺 Vanuatu</button>
+    <button class="chip" onclick="filterOrders('tonga',this)">🇹🇴 Tonga</button>
+    <button class="chip" onclick="filterOrders('solomons',this)">🇸🇧 Solomons</button>
+  </div>
+  <div id="orders-tiles"></div>
+  <p class="slabel">By entity</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th class="th-left">Entity</th>
+        <th>Orders — Mar</th><th>Open / Parked</th><th>Open %</th>
+        <th>Order Value</th><th>CCY</th><th>CSF 01 Status</th>
+      </tr></thead>
+      <tbody id="orders-tbody"></tbody>
+      <tfoot id="orders-tfoot"></tfoot>
+    </table>
+  </div>
+  <div class="card" style="max-width:500px;">
+    <p class="slabel">Vanuatu Unleashed</p>
+    <p style="font-size:12px;color:var(--text-muted);line-height:1.7;">Sync error during last query. Connection is active — likely transient. Flag to Vijendra if it persists past today's BMS MCP work.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════ INVOICE DRILL-DOWN ══════════════ -->
+<div class="page" id="page-drilldown">
+  <p class="slabel">Invoice &amp; bill drill-down — DRAFT and SUBMITTED · Xero · 24 Mar 2026</p>
+  <div class="dd-controls">
+    <span class="filter-label">Entity</span>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;" id="dd-chips">
+      <button class="chip active" onclick="ddSetEntity('all',this)">All</button>
+      <button class="chip" onclick="ddSetEntity('samoa',this)">🇼🇸 Samoa</button>
+      <button class="chip" onclick="ddSetEntity('vanuatu',this)">🇻🇺 Vanuatu</button>
+      <button class="chip" onclick="ddSetEntity('tonga',this)">🇹🇴 Tonga</button>
+      <button class="chip" onclick="ddSetEntity('solomons',this)">🇸🇧 Solomons</button>
+      <button class="chip" onclick="ddSetEntity('rsp',this)">🇳🇿 RSP (NZ)</button>
+    </div>
+    <input class="search-input" type="text" id="dd-search" placeholder="Search customer, ref, invoice #…" oninput="ddRender()" style="margin-left:auto;">
+  </div>
+  <div class="dd-tabs">
+    <button class="dd-tab active" id="dd-tab-inv" onclick="ddSetType('invoices')">Sales Invoices <span class="tc" id="dd-cnt-inv">0</span></button>
+    <button class="dd-tab" id="dd-tab-bills" onclick="ddSetType('bills')">Bills <span class="tc" id="dd-cnt-bills">0</span></button>
+  </div>
+  <div class="sum-strip" id="dd-summary"></div>
+  <div class="tbl-wrap" id="dd-table" style="overflow-x:auto;"></div>
+  <p style="font-size:11px;color:var(--text-hint);margin-top:10px;">SyncHub → Xero · 24 Mar 2026 · Journal-prefixed records excluded · Click column header to sort · Xero button opens record · SO# copies to clipboard on click</p>
+</div>
+
+
+<!-- ══════════════ WHIRLWIND ══════════════ -->
+<div class="page" id="page-whirlwind">
+  <p class="slabel">Whirlwind — tasks Shikha touches but should not own as CSFs</p>
+  <div class="ww-grid">
+    <div class="ww">
+      <div class="ww-task">AR / overdue invoice management</div>
+      <div class="ww-why">Cash and working capital — owned by Minoo (Finance). Shikha's role ends at correct, on-time invoicing.</div>
+      <div class="ww-disp"><span class="pill pill-teal">Finance</span><span class="ww-action">Minoo owns collection. Shikha hands over correctly-coded invoices.</span></div>
+    </div>
+    <div class="ww">
+      <div class="ww-task">Daily GL posting</div>
+      <div class="ww-why">Finance control. Once AP SOP is running this should not touch Shikha.</div>
+      <div class="ww-disp"><span class="pill pill-teal">Finance</span><span class="ww-action">Move to Minoo. Shikha's obligation ends at handing over correctly-coded transactions.</span></div>
+    </div>
+    <div class="ww">
+      <div class="ww-task">Inventory accuracy — SLOB, stock counts</div>
+      <div class="ww-why">Ranika owns inventory. Shikha should not absorb IC tasks while the role is being backfilled.</div>
+      <div class="ww-disp"><span class="pill pill-amber">Delegate</span><span class="ww-action">Ranika owns this. Shikha = escalation only. Urgent: backfill IC role (SC profile).</span></div>
+    </div>
+    <div class="ww">
+      <div class="ww-task">AP invoice triage and approval chasing</div>
+      <div class="ww-why">AP SOP assigns daily triage to Jane Bacon and payment batches to Minoo.</div>
+      <div class="ww-disp"><span class="pill pill-amber">Delegate</span><span class="ww-action">Jane owns intake. Shikha = exception escalation only.</span></div>
+    </div>
+    <div class="ww">
+      <div class="ww-task">Ad hoc reporting requests</div>
+      <div class="ww-why">Reactive extracts pull Shikha away from CSF lead measures. This dashboard absorbs most of these.</div>
+      <div class="ww-disp"><span class="pill pill-blue">Systematise</span><span class="ww-action">Route standard requests here.</span></div>
+    </div>
+  </div>
+</div>
+
 
 <script>
-const PROMPT = `You are a senior operations and business performance consultant with deep experience in 4DX (The 4 Disciplines of Execution) and the managed print services (MPS) industry.
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────────────────────
 
-Produce a 4DX accountability map for an Operations Manager named Shikha at Ricoh South Pacific (RSP), a managed print and technology solutions provider headquartered in Auckland, NZ, with 100% export revenue across Pacific Island markets (Samoa, Solomon Islands, Tonga, Vanuatu).
+const ORDERS_DATA = {
+  nz:       { flag:'🇳🇿', name:'RSP (NZ)',      raised:51,  open:23, value:725050,  ccy:'NZD' },
+  samoa:    { flag:'🇼🇸', name:'Ricoh Samoa',   raised:178, open:4,  value:240443,  ccy:'WST' },
+  vanuatu:  { flag:'🇻🇺', name:'Ricoh Vanuatu', raised:null,open:null,value:null,   ccy:'VUV', error:true },
+  tonga:    { flag:'🇹🇴', name:'Ricoh Tonga',   raised:52,  open:8,  value:139196,  ccy:'TOP' },
+  solomons: { flag:'🇸🇧', name:'Ricoh Solomons',raised:93,  open:14, value:677709,  ccy:'SBD' },
+};
 
-RSP's five source systems: Xero (accounting), Unleashed (inventory), Salesforce (CRM/service), PrintIQ (MIS for sister company Alpine Print), BMS (field service management). Business Central ERP go-live is targeted 1 November 2026.
-
-Shikha was previously an Assistant Accountant. Her current Operations Manager role covers billing administration, order processing, GL posting, and general ops coordination. The CEO is building AI-powered dashboards — all lead measures must be measurable from the source systems listed.
-
-KEY TENSION TO RESOLVE: Whether CPC billing ownership sits with Shikha or a finance/billing function is an open question. Surface this in the whirlwind section — do not assume billing is her primary WIG. GL posting timeliness is a finance control, not an operations WIG. Be direct.
-
-Return ONLY valid JSON — no markdown, no preamble, no explanation. Exactly this structure:
-
-{
-  "wigs": [
-    {
-      "wig_number": 1,
-      "wig_statement": "X to Y by WHEN format",
-      "lag_measure": "what does winning look like",
-      "lead_measures": [
-        {"measure": "description", "target": "value", "frequency": "weekly"}
-      ],
-      "data_source": "system name(s)",
-      "dashboard_metric_name": "Short KPI label"
-    }
+const SB_DATA = {
+  all:[
+    { lbl:'Open / parked orders — all entities', val:'49', sub:'RSP 23 · SI 14 · Tonga 8 · Samoa 4', src:'Unleashed — 4 entities', cls:'red' },
+    { lbl:'Orders raised — Mar 2026', val:'374', sub:'RSP+Samoa+SI+Tonga · Vanuatu pending', src:'Unleashed — 4 entities', cls:'blue' },
+    { lbl:'Pay runs — Mar 2026', val:'12', sub:'3 per island entity', src:'Xero → 4 island entities', cls:'teal' },
+    { lbl:'Avg payroll processing — islands', val:'3.7d', sub:'Baseline. Target ≤1.5d by Jun 2026', src:'Xero proxy', cls:'amber' },
+    { lbl:'CPC billing completion', val:'—', sub:'BMS connecting today', src:'BMS pending', cls:'neutral' },
+    { lbl:'Open billing exceptions', val:'—', sub:'BMS connecting today', src:'BMS pending', cls:'neutral' },
   ],
-  "whirlwind": [
-    {
-      "task": "task name",
-      "why_not_wig": "one sentence",
-      "disposition": "delegate to X / systematise via Y / move to Finance"
-    }
+  nz:[
+    { lbl:'Open / parked orders', val:'23', sub:'of 51 raised · 45% unresolved', src:'Unleashed — RSP', cls:'red' },
+    { lbl:'Orders raised — Mar', val:'51', sub:'NZD $725K total value', src:'Unleashed — RSP', cls:'blue' },
+    { lbl:'CPC billing completion', val:'—', sub:'BMS connecting today', src:'BMS pending', cls:'neutral' },
   ],
-  "scoreboard": [
-    {
-      "metric": "name",
-      "target": "value",
-      "display_value": "current realistic value",
-      "status": "green|amber|red",
-      "update_frequency": "daily|weekly"
-    }
-  ]
-}
+  samoa:[
+    { lbl:'Open / parked orders', val:'4', sub:'of 178 raised · 2% open', src:'Unleashed — Samoa', cls:'green' },
+    { lbl:'Orders raised — Mar', val:'178', sub:'WST $240K total value', src:'Unleashed — Samoa', cls:'blue' },
+    { lbl:'Last pay run', val:'16 Mar', sub:'avg 3.3d processing', src:'Xero — Samoa', cls:'teal' },
+    { lbl:'CPC billing completion', val:'—', sub:'BMS pending', src:'BMS pending', cls:'neutral' },
+  ],
+  vanuatu:[
+    { lbl:'Unleashed orders', val:'—', sub:'Sync error — flag to Vijendra', src:'Unleashed Vanuatu (error)', cls:'neutral' },
+    { lbl:'Last pay run', val:'18 Mar', sub:'avg 3.7d processing', src:'Xero — Vanuatu', cls:'amber' },
+    { lbl:'CPC billing completion', val:'—', sub:'BMS pending', src:'BMS pending', cls:'neutral' },
+  ],
+  tonga:[
+    { lbl:'Open / parked orders', val:'8', sub:'of 52 raised · 15% open', src:'Unleashed — Tonga', cls:'amber' },
+    { lbl:'Orders raised — Mar', val:'52', sub:'TOP $139K total value', src:'Unleashed — Tonga', cls:'blue' },
+    { lbl:'Last pay run', val:'17 Mar', sub:'avg 4.0d processing', src:'Xero — Tonga', cls:'amber' },
+    { lbl:'CPC billing completion', val:'—', sub:'BMS pending', src:'BMS pending', cls:'neutral' },
+  ],
+  solomons:[
+    { lbl:'Open / parked orders', val:'14', sub:'of 93 raised · 15% open', src:'Unleashed — Solomons', cls:'amber' },
+    { lbl:'Orders raised — Mar', val:'93', sub:'SBD $678K total value', src:'Unleashed — Solomons', cls:'blue' },
+    { lbl:'Last pay run', val:'16 Mar', sub:'avg 4.0d processing', src:'Xero — Solomons', cls:'amber' },
+    { lbl:'CPC billing completion', val:'—', sub:'BMS pending', src:'BMS pending', cls:'neutral' },
+  ],
+};
 
-Generate 2-3 WIGs, 4-5 whirlwind items, 5 scoreboard metrics.`;
+// ─────────────────────────────────────────────────────────────────────────────
+// PAYROLL WORKFLOW
+// ─────────────────────────────────────────────────────────────────────────────
 
-const loadingMessages = [
-  "Running accountability analysis...",
-  "Applying 4DX framework to MPS context...",
-  "Resolving CPC billing ownership question...",
-  "Building scoreboard structure..."
+const PW_ENTITIES = [
+  { key:'samoa',    flag:'🇼🇸', name:'Ricoh Samoa',        cycle:'15–16 Mar' },
+  { key:'vanuatu',  flag:'🇻🇺', name:'Ricoh Vanuatu',       cycle:'11–18 Mar' },
+  { key:'solomons', flag:'🇸🇧', name:'Ricoh Solomon Islands', cycle:'9–16 Mar' },
+  { key:'tonga',    flag:'🇹🇴', name:'Ricoh Tonga',          cycle:'16–17 Mar' },
 ];
 
-let msgIndex = 0;
-const msgEl = document.getElementById('loading-msg');
-const msgTimer = setInterval(() => {
-  msgIndex = (msgIndex + 1) % loadingMessages.length;
-  msgEl.textContent = loadingMessages[msgIndex];
-}, 2200);
+const PW_STEPS = [
+  { id:'timesheet',    label:'Timesheet collection from managers',           desc:'Managers submit hours for pay period' },
+  { id:'commissions',  label:'Commissions calculation',                      desc:'Sales commissions calculated and verified' },
+  { id:'deductions',   label:'Deductions & corrections',                     desc:'Statutory deductions, adjustments, corrections applied' },
+  { id:'dataentry',    label:'Payroll data entry & preparation',             desc:'Data entered into GoPayroll, headcount verified' },
+  { id:'review',       label:'Review & approval — in-country manager',      desc:'Manager reviews and signs off payroll run' },
+  { id:'submission',   label:'Submission to GoPayroll',                      desc:'Payroll submitted for processing' },
+  { id:'posting',      label:'Confirmation & posting in Xero',               desc:'Pay run confirmed and posted to Xero' },
+  { id:'exceptions',   label:'Exception handling / corrections',             desc:'Any post-submission corrections resolved' },
+];
 
-function statusColor(status) {
-  if (status === 'green') return 'green';
-  if (status === 'red') return 'red';
-  return 'amber';
+let pwCycle = 'mar-w3';
+
+function pwStateKey(entityKey, cycle) { return `pw_${cycle}_${entityKey}`; }
+
+function pwLoad(entityKey, cycle) {
+  const key = pwStateKey(entityKey, cycle);
+  try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; }
 }
 
-function dispositionClass(text) {
-  const t = (text || '').toLowerCase();
-  if (t.includes('finance') || t.includes('minoo')) return 'finance';
-  if (t.includes('delegate') || t.includes('jane') || t.includes('sridhar')) return 'delegate';
-  return 'systematise';
+function pwSave(entityKey, cycle, state) {
+  const key = pwStateKey(entityKey, cycle);
+  localStorage.setItem(key, JSON.stringify(state));
 }
 
-function dispositionLabel(text) {
-  const t = (text || '').toLowerCase();
-  if (t.includes('finance')) return 'Finance';
-  if (t.includes('delegate')) return 'Delegate';
-  if (t.includes('systematise') || t.includes('automate')) return 'Systematise';
-  return 'Reassign';
-}
-
-function renderScoreboard(data) {
-  const el = document.getElementById('scoreboard');
-  el.innerHTML = data.map(m => `
-    <div class="score-card ${statusColor(m.status)}">
-      <div class="indicator"></div>
-      <div class="metric-name">${m.metric}</div>
-      <div class="metric-value">${m.display_value || m.target}</div>
-      <div class="metric-target">Target: ${m.target} &middot; ${m.update_frequency}</div>
-    </div>
-  `).join('');
-}
-
-function renderWIGs(data) {
-  const el = document.getElementById('wigs');
-  el.innerHTML = data.map(w => `
-    <div class="wig-card">
-      <div class="wig-number">WIG ${w.wig_number}</div>
-      <div class="wig-statement">${w.wig_statement}</div>
-      <div class="wig-lag"><strong style="font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-hint)">Lag measure</strong><br>${w.lag_measure}</div>
-      <ul class="lead-list">
-        ${w.lead_measures.map(l => `
-          <li class="lead-item">
-            <span>${l.measure} <span class="lead-target">${l.target}</span></span>
-          </li>
-        `).join('')}
-      </ul>
-      <div class="wig-footer">
-        ${w.data_source.split('/').map(s => `<span class="source-tag">${s.trim()}</span>`).join('')}
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderWhirlwind(data) {
-  const el = document.getElementById('whirlwind');
-  el.innerHTML = data.map(w => `
-    <div class="ww-row">
-      <div class="ww-cell"><span class="ww-task-name">${w.task}</span></div>
-      <div class="ww-cell">${w.why_not_wig}</div>
-      <div class="ww-cell">
-        <span class="disposition-pill ${dispositionClass(w.disposition)}">${dispositionLabel(w.disposition)}</span><br>
-        <span style="font-size:11px;color:var(--text-hint)">${w.disposition}</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-async function run() {
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        messages: [{ role: 'user', content: PROMPT }]
-      })
-    });
-
-    const result = await resp.json();
-    clearInterval(msgTimer);
-
-    if (!resp.ok) {
-      throw new Error(result.error?.message || 'API error');
-    }
-
-    const text = result.content.filter(b => b.type === 'text').map(b => b.text).join('');
-    const clean = text.replace(/```json|```/g, '').trim();
-    const data = JSON.parse(clean);
-
-    renderScoreboard(data.scoreboard || []);
-    renderWIGs(data.wigs || []);
-    renderWhirlwind(data.whirlwind || []);
-
-    document.getElementById('loading').style.display = 'none';
-    const mainEl = document.getElementById('main');
-    mainEl.style.display = 'flex';
-
-  } catch (err) {
-    clearInterval(msgTimer);
-    document.getElementById('loading').style.display = 'none';
-    const errEl = document.getElementById('error');
-    errEl.style.display = 'flex';
-    document.getElementById('error-msg').textContent = err.message;
+function pwToggle(entityKey, stepId) {
+  const state = pwLoad(entityKey, pwCycle);
+  if (state[stepId]) {
+    delete state[stepId];
+  } else {
+    state[stepId] = { done: true, ts: new Date().toISOString() };
   }
+  pwSave(entityKey, pwCycle, state);
+  renderPayroll();
 }
 
-run();
+function pwReset(entityKey) {
+  pwSave(entityKey, pwCycle, {});
+  renderPayroll();
+}
+
+function pwSetCycle(cycle, el) {
+  document.querySelectorAll('#page-payroll .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  pwCycle = cycle;
+  renderPayroll();
+}
+
+function pwElapsed(state) {
+  const dones = Object.values(state).filter(v => v.done && v.ts).map(v => new Date(v.ts));
+  if (!dones.length) return null;
+  const first = new Date(Math.min(...dones.map(d => d.getTime())));
+  const last  = new Date(Math.max(...dones.map(d => d.getTime())));
+  const diffMs = last - first;
+  const mins = Math.round(diffMs / 60000);
+  if (mins < 60) return mins + ' min';
+  const hrs = (diffMs / 3600000).toFixed(1);
+  return hrs + ' hrs';
+}
+
+function renderPayroll() {
+  const allSteps = PW_STEPS.length;
+  let totalDone = 0, totalEntities = PW_ENTITIES.length;
+  let fullyDone = 0;
+
+  // Summary
+  PW_ENTITIES.forEach(e => {
+    const state = pwLoad(e.key, pwCycle);
+    const done = PW_STEPS.filter(s => state[s.id]?.done).length;
+    totalDone += done;
+    if (done === allSteps) fullyDone++;
+  });
+
+  const totalTasks = totalEntities * allSteps;
+  const pct = Math.round((totalDone / totalTasks) * 100);
+  const avgDays = '3.7d'; // live baseline from Xero
+  document.getElementById('pw-summary-grid').innerHTML = `
+    <div class="pw-summary-item"><div class="pw-summary-val">${totalDone}/${totalTasks}</div><div class="pw-summary-lbl">Tasks completed</div></div>
+    <div class="pw-summary-item"><div class="pw-summary-val">${pct}%</div><div class="pw-summary-lbl">Overall progress</div></div>
+    <div class="pw-summary-item"><div class="pw-summary-val">${fullyDone}/${totalEntities}</div><div class="pw-summary-lbl">Entities fully closed</div></div>
+    <div class="pw-summary-item"><div class="pw-summary-val">${avgDays}</div><div class="pw-summary-lbl">Avg cycle time (baseline)</div></div>
+  `;
+
+  // Cards
+  document.getElementById('pw-cards').innerHTML = PW_ENTITIES.map(e => {
+    const state = pwLoad(e.key, pwCycle);
+    const done = PW_STEPS.filter(s => state[s.id]?.done).length;
+    const pctDone = Math.round((done / allSteps) * 100);
+    const elapsed = pwElapsed(state);
+    const statusCls = done === 0 ? 'pill-neutral' : done === allSteps ? 'pill-teal' : 'pill-amber';
+    const statusLbl = done === 0 ? 'Not started' : done === allSteps ? 'Complete' : `${done}/${allSteps} done`;
+
+    const stepsHtml = PW_STEPS.map(s => {
+      const isDone = state[s.id]?.done;
+      const ts = state[s.id]?.ts ? new Date(state[s.id].ts).toLocaleTimeString('en-NZ',{hour:'2-digit',minute:'2-digit'}) : '';
+      return `
+        <li class="pw-step ${isDone?'done':''}" onclick="pwToggle('${e.key}','${s.id}')">
+          <div class="pw-check">
+            <svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg>
+          </div>
+          <div class="pw-step-body">
+            <div class="pw-step-label">${s.label}</div>
+            <div class="pw-step-meta">${s.desc}${ts ? ' <span class="pw-step-time">· '+ts+'</span>' : ''}</div>
+          </div>
+        </li>`;
+    }).join('');
+
+    return `
+      <div class="pw-card">
+        <div class="pw-card-head">
+          <div class="pw-entity">${e.flag} ${e.name}</div>
+          <div class="pw-cycle">Cycle: ${e.cycle}</div>
+        </div>
+        <div class="pw-progress-wrap">
+          <div class="pw-progress-lbl"><span>${pctDone}% complete</span><span>${done}/${allSteps} tasks</span></div>
+          <div class="pw-progress"><div class="pw-progress-fill" style="width:${pctDone}%"></div></div>
+        </div>
+        <ul class="pw-steps">${stepsHtml}</ul>
+        <div class="pw-card-foot">
+          <div class="pw-elapsed">${elapsed ? 'Session time: <strong>'+elapsed+'</strong>' : '<span style="color:var(--text-hint)">Not started</span>'}</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="pill ${statusCls}">${statusLbl}</span>
+            ${done > 0 ? `<button class="pw-reset-btn" onclick="event.stopPropagation();pwReset('${e.key}')">Reset</button>` : ''}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SCOREBOARD
+// ─────────────────────────────────────────────────────────────────────────────
+
+function filterSB(key, el) {
+  document.querySelectorAll('#page-scoreboard .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const data = SB_DATA[key] || SB_DATA.all;
+  document.getElementById('sb-tiles').innerHTML =
+    '<div class="tiles">' + data.map(t => `
+      <div class="tile ${t.cls}">
+        <div class="tile-lbl">${t.lbl}</div>
+        <div class="tile-val">${t.val}</div>
+        <div class="tile-sub">${t.sub}</div>
+        <div class="tile-src">${t.src}</div>
+      </div>`).join('') + '</div>';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ORDERS
+// ─────────────────────────────────────────────────────────────────────────────
+
+function filterOrders(key, el) {
+  document.querySelectorAll('#page-orders .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const entities = key === 'all' ? Object.keys(ORDERS_DATA) : [key];
+  let totalRaised = 0, totalOpen = 0;
+  entities.forEach(k => { if (ORDERS_DATA[k].raised) { totalRaised += ORDERS_DATA[k].raised; totalOpen += ORDERS_DATA[k].open; } });
+
+  document.getElementById('orders-tiles').innerHTML = key === 'all'
+    ? `<div class="tiles"><div class="tile red"><div class="tile-lbl">Total open / parked</div><div class="tile-val">${totalOpen}</div><div class="tile-sub">4 entities · Vanuatu pending</div></div><div class="tile blue"><div class="tile-lbl">Total orders — Mar</div><div class="tile-val">${totalRaised}</div><div class="tile-sub">4 entities · Vanuatu pending</div></div></div>`
+    : '';
+
+  document.getElementById('orders-tbody').innerHTML = entities.map(k => {
+    const e = ORDERS_DATA[k];
+    if (e.error) return `<tr><td class="td-name"><span style="margin-right:5px">${e.flag}</span>${e.name}</td><td colspan="5" style="color:var(--amber);font-size:12px;">Unleashed sync error — pending</td><td><span class="pill pill-neutral">Pending</span></td></tr>`;
+    const pct = Math.round((e.open/e.raised)*100);
+    const cls = pct<10?'pill-green':pct<20?'pill-amber':'pill-red';
+    const val = new Intl.NumberFormat('en-NZ',{maximumFractionDigits:0}).format(e.value);
+    const wigCls = e.open<=5?'pill-green':e.open<=15?'pill-amber':'pill-red';
+    return `<tr><td class="td-name"><span style="margin-right:5px">${e.flag}</span>${e.name}</td><td class="td-r">${e.raised}</td><td class="td-r">${e.open}</td><td class="td-r"><span class="pill ${cls}">${pct}%</span></td><td class="td-r">${val}</td><td class="td-r" style="font-size:11px;color:var(--text-hint);">${e.ccy}</td><td class="td-r"><span class="pill ${wigCls}">${e.open<=5?'On target':e.open<=15?'Watch':'Off target'}</span></td></tr>`;
+  }).join('');
+
+  document.getElementById('orders-tfoot').innerHTML = key === 'all'
+    ? `<tr class="tbl-foot"><td>Total (4 entities)</td><td class="td-r">${totalRaised}</td><td class="td-r">${totalOpen}</td><td class="td-r">—</td><td class="td-r">Multi-ccy</td><td class="td-r">—</td><td class="td-r"><span class="pill ${totalOpen<=10?'pill-green':'pill-red'}">${totalOpen<=10?'On target':'Off target'}</span></td></tr>`
+    : '';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DRILL-DOWN
+// ─────────────────────────────────────────────────────────────────────────────
+
+const DD_TODAY = new Date('2026-03-24');
+function ddAge(d) { return d ? Math.round((DD_TODAY - new Date(d))/86400000) : 0; }
+function ddFmt(d) { if(!d)return'—'; return new Date(d).toLocaleDateString('en-NZ',{day:'2-digit',month:'short',year:'numeric'}); }
+function ddAmt(v,ccy) {
+  if(!v||parseFloat(v)===0)return'<span style="color:var(--text-hint)">—</span>';
+  return new Intl.NumberFormat('en-NZ',{minimumFractionDigits:2,maximumFractionDigits:2}).format(parseFloat(v))+'<span style="font-size:10px;color:var(--text-hint);margin-left:2px">'+ccy+'</span>';
+}
+function ddAgeLbl(d){
+  if(!d)return'<span style="color:var(--text-hint)">—</span>';
+  const c=d<=7?'aging-green':d<=21?'aging-amber':'aging-red';
+  return`<span class="${c}">${d}d</span>`;
+}
+function ddXero(id,type){
+  const url=type==='ACCREC'?`https://go.xero.com/AccountsReceivable/View.aspx?InvoiceID=${id}`:`https://go.xero.com/AccountsPayable/View.aspx?InvoiceID=${id}`;
+  return`<a class="xero-btn" href="${url}" target="_blank" rel="noopener">Xero ↗</a>`;
+}
+function ddSO(ref){
+  if(!ref||ref.indexOf('PO')===-1&&ref.indexOf('RSP')===-1&&ref.indexOf('RT')===-1&&ref.indexOf('RS')===-1)return'<span style="color:var(--text-hint);font-size:11px;">—</span>';
+  const soNum = ref.split(' ')[0];
+  return`<span class="so-copy" onclick="copySO(this,'${soNum}')" title="Click to copy SO number">${soNum} 📋</span>`;
+}
+function copySO(el,val){
+  navigator.clipboard.writeText(val).then(()=>{
+    el.classList.add('copied');
+    el.textContent='Copied ✓';
+    setTimeout(()=>{el.classList.remove('copied');el.innerHTML=val+' 📋';},1500);
+  });
+}
+
+const ENTITY_LABELS = {samoa:'Ricoh Samoa',vanuatu:'Ricoh Vanuatu',tonga:'Ricoh Tonga',solomons:'Ricoh Solomons',rsp:'RSP (NZ)'};
+
+const DD = {
+  samoa:{
+    invoices:[
+      {id:'63223112-9e09-4c92-80a4-3f3074e45e82',num:'RSSI-00033007',contact:'Frankie Company Limited',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-06',amtDue:0,ccy:'WST',ref:'Case 00077930',attach:true},
+      {id:'5a7d5dd1-0fc4-4566-92e1-4ac7dfadfaf6',num:'RSSI-00033019',contact:'Betham Brothers Enterprise Limited',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-06',amtDue:0,ccy:'WST',ref:'Case 00077956',attach:true},
+      {id:'7803ea70-848c-425e-af51-066334a4a3d6',num:'RSSI-00033018',contact:'Betham Brothers Enterprise Limited',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-06',amtDue:0,ccy:'WST',ref:'Case 00077955',attach:true},
+      {id:'8c19f4bf-d1c9-48f4-b4eb-e1a8807baf64',num:'RSSI-00032971',contact:'Ministry of Finance (Samoa)',status:'SUBMITTED',date:'2026-03-18',due:'2026-04-20',amtDue:5263.53,ccy:'WST',ref:'OFI041023',attach:true},
+      {id:'7ba943c9-c7a2-4712-a1ec-3066be1dc8ad',num:'RSSI-00032950',contact:'Peltan Custom Agent',status:'DRAFT',date:'2026-03-17',due:'2026-03-31',amtDue:228.85,ccy:'WST',ref:'Case 00077756',attach:false},
+      {id:'400f9833-1407-43c2-8577-abe874b82f6c',num:'RSSI-00032999',contact:'Ministry of Commerce, Industry & Labour',status:'SUBMITTED',date:'2026-03-20',due:'2026-04-03',amtDue:17387.21,ccy:'WST',ref:'OCL012780',attach:true},
+      {id:'110f136a-f114-4f5e-b29e-ee3082265b9a',num:'RSSI-00033017',contact:'Samoa Ports Authority',status:'DRAFT',date:'2026-03-23',due:'2026-04-06',amtDue:3926.21,ccy:'WST',ref:'PO6515',attach:true},
+      {id:'405d1de9-4c3f-4cf7-8793-7ccd9dfbf393',num:'RSSI-00033000',contact:'Bank of South Pacific (Samoa)',status:'SUBMITTED',date:'2026-03-20',due:'2026-04-03',amtDue:687.92,ccy:'WST',ref:'PO/0013008',attach:true},
+      {id:'d5b11ad6-e15c-4422-ac90-5dc6e30e86d7',num:'RSSI-00032987',contact:'Ministry of Police (Samoa)',status:'DRAFT',date:'2026-03-19',due:'2026-04-02',amtDue:228.85,ccy:'WST',ref:'OPP034971',attach:true},
+      {id:'28125019-53df-4965-bd13-dea84df88231',num:'RSSI-00032806',contact:'Church of JC - Church College Pesega',status:'SUBMITTED',date:'2026-03-06',due:'2026-03-20',amtDue:735.84,ccy:'WST',ref:'Case 00077341',attach:true},
+      {id:'abeabd13-1e30-4002-92b9-48676ac3e597',num:'RSSI-00033011',contact:'Leota & Niumata Chartered Accountants',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-06',amtDue:228.85,ccy:'WST',ref:'Case 00077942',attach:true},
+      {id:'2474f2b6-8a6e-4171-a36a-8ceb1bfc5a4a',num:'RSSI-00032901',contact:'Chan Mow & Company Limited',status:'SUBMITTED',date:'2026-03-11',due:'2026-03-25',amtDue:82.80,ccy:'WST',ref:'Grace Chan Mow',attach:true},
+    ],
+    bills:[
+      {id:'1c5e64c9-01a6-4227-89b0-8e48f52ec180',num:'03202026C223858',contact:'Vodafone Samoa',status:'DRAFT',date:'2026-03-22',due:'2026-04-10',amtDue:496.22,ccy:'WST',ref:'',attach:true},
+      {id:'eb716206-d95d-499d-b73e-f4b8df211565',num:'Instalment 2025',contact:'Inland Revenue Department',status:'DRAFT',date:'2026-01-15',due:'2026-01-29',amtDue:24732.55,ccy:'WST',ref:'',attach:false},
+      {id:'2bbb53c4-d358-4070-b00e-8dc8f9695ea5',num:'Registration Renewal - 35548',contact:'Samoa Land Transport Authority',status:'DRAFT',date:'2026-03-20',due:'2026-04-01',amtDue:386.60,ccy:'WST',ref:'',attach:false},
+    ],
+  },
+  vanuatu:{
+    invoices:[
+      {id:'e3ac6e68-f109-49ae-8e6e-321f39abdf2a',num:'RVSI-00034623',contact:'Société de Services Pétroliers (Vanuatu)',status:'SUBMITTED',date:'2026-03-16',due:'2026-03-30',amtDue:0,ccy:'VUV',ref:'Case 00077728',attach:true},
+      {id:'5a06c764-d8f8-4ce3-80f4-bb01fa80b268',num:'RVSI-00034391',contact:'Sun Productions Printers',status:'DRAFT',date:'2026-02-11',due:'2026-03-20',amtDue:323817,ccy:'VUV',ref:'PO No 3173',attach:true},
+      {id:'e9001d88-68b5-448f-a00a-04abc8f2c04c',num:'RVSI-00034673',contact:'Sun Productions Printers',status:'SUBMITTED',date:'2026-03-20',due:'2026-04-20',amtDue:9775,ccy:'VUV',ref:'PO No 3194',attach:true},
+      {id:'889c1781-3266-46fc-97d4-0546c8290b1f',num:'RVSI-00034684',contact:'Sun Productions Printers',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-20',amtDue:127143,ccy:'VUV',ref:'PO No 3195',attach:true},
+      {id:'51068a36-c8ca-419f-be7f-7e16c0721ef1',num:'RVSI-00034674',contact:'Customary Land Management Office',status:'SUBMITTED',date:'2026-03-20',due:'2026-04-03',amtDue:55996,ccy:'VUV',ref:'Case 00077723',attach:true},
+      {id:'f30a2cd4-27c5-4884-a86f-e63fc5ef23ce',num:'RVSI-00034619',contact:'Customary Land Management Office',status:'DRAFT',date:'2026-03-13',due:'2026-03-27',amtDue:24723.85,ccy:'VUV',ref:'Case 00077679',attach:true},
+      {id:'f80f634a-0127-4259-b2b6-45823f2daaa4',num:'RVSI-00033531',contact:'United Nations Development Program',status:'DRAFT',date:'2025-10-28',due:'2025-11-11',amtDue:9350,ccy:'VUV',ref:'Case 00073425',attach:true},
+      {id:'4b6db7ad-7097-4b0c-a5e3-8a3a1ebb0a5f',num:'RVSI-00034682',contact:'Western Union Money Transfers Vanuatu',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-06',amtDue:68099,ccy:'VUV',ref:'Case 00077951',attach:true},
+      {id:'fbf04dd7-21c4-47d1-b3e2-eda6c029050f',num:'RVSI-00034681',contact:'Western Union Money Transfers Vanuatu',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-06',amtDue:68099,ccy:'VUV',ref:'Case 00077950',attach:true},
+      {id:'7bf4e13a-a70d-403f-a5f7-bc59c7d5bcc1',num:'RVSI-00034677',contact:'Freedom School Port Vila',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-06',amtDue:14145,ccy:'VUV',ref:'Case 00077937',attach:true},
+    ],
+    bills:[],
+  },
+  tonga:{
+    invoices:[
+      {id:'0cb9f3b6-a683-41dc-82e5-8c2ed2e24923',num:'RTSI-00026315',contact:'Otukie Construction',status:'SUBMITTED',date:'2026-03-10',due:'2026-03-24',amtDue:0,ccy:'TOP',ref:'Installation C#77269',attach:true},
+      {id:'65a997c9-0fde-478c-8074-7c835275f618',num:'RTSI-00026360',contact:'Ministry of Health - Headquarters',status:'SUBMITTED',date:'2026-03-13',due:'2026-03-27',amtDue:4424.02,ccy:'TOP',ref:'Case 00077701',attach:true},
+      {id:'6ad1f9b0-1f4b-460c-92d4-8c9ec46e0fde',num:'RTSI-00026364',contact:'Office of the Anti-Corruption Commissioner',status:'SUBMITTED',date:'2026-03-17',due:'2026-03-17',amtDue:571.15,ccy:'TOP',ref:'Case 00077088',attach:true},
+      {id:'74c0efd5-cda4-4a75-bcf9-3b2268194ac8',num:'RTSI-00026369',contact:'Free Wesleyan Church of Tonga',status:'DRAFT',date:'2026-03-06',due:'2026-03-06',amtDue:5978.85,ccy:'TOP',ref:'Installation C#77856',attach:false},
+      {id:'a59b80cd-d6cf-411d-807b-67d8b719910a',num:'RTSI-00026385',contact:'Tonga Development Bank',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-06',amtDue:205.07,ccy:'TOP',ref:'Case 00077882',attach:true},
+      {id:'b24ae174-48fb-4a54-9171-5cf4091f7835',num:'RTSI-00026374',contact:'DT Global Asia Pacific',status:'SUBMITTED',date:'2026-03-19',due:'2026-04-02',amtDue:1177.01,ccy:'TOP',ref:'Case 00077786',attach:true},
+      {id:'ced19981-1755-43ed-bb1c-ad4216e57a35',num:'RTSI-00026384',contact:'Ministry of Commerce & Labour (Tonga)',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-06',amtDue:4116.77,ccy:'TOP',ref:'Case 00077912',attach:true},
+    ],
+    bills:[
+      {id:'a4736aa4-89d8-441e-b451-e352fc73312b',num:'INV-SkyEye-Jan',contact:'SkyEye Tonga Limited',status:'DRAFT',date:'2026-01-01',due:'2026-02-20',amtDue:198,ccy:'TOP',ref:'',attach:false},
+      {id:'b46d0ea7-718c-4822-9ca7-6aa1c59fdd3f',num:'INV-SkyEye-Mar',contact:'SkyEye Tonga Limited',status:'DRAFT',date:'2026-03-01',due:'2026-04-20',amtDue:198,ccy:'TOP',ref:'',attach:false},
+    ],
+  },
+  solomons:{
+    invoices:[
+      {id:'97f250b6-3498-4442-bc41-b473822fffcf',num:'RSI-00020072',contact:'Cash Sales Account',status:'SUBMITTED',date:'2026-03-23',due:'2026-03-23',amtDue:18496,ccy:'SBD',ref:'Eye Solomons - BSP 139220',attach:true},
+      {id:'01516bc4-7f67-45c9-840c-a81134b7e899',num:'RSI-00020175',contact:'Solomon Islands Climate Action Network',status:'SUBMITTED',date:'2026-03-20',due:'2026-03-20',amtDue:856,ccy:'SBD',ref:'Case 00077407',attach:true},
+      {id:'dc9e4900-4222-4704-944f-f4b859cf5b79',num:'RSI-00020139',contact:'Kulu Community High School',status:'SUBMITTED',date:'2026-03-18',due:'2026-03-18',amtDue:941.60,ccy:'SBD',ref:'Case 00077565',attach:true},
+      {id:'d0168bbc-621e-45ab-ae15-5057a6739375',num:'RSI-00020168',contact:'Santa Ana Community High School',status:'SUBMITTED',date:'2026-03-19',due:'2026-03-19',amtDue:4500,ccy:'SBD',ref:'Case 00077873',attach:true},
+      {id:'c58f248e-e7b7-48fb-8bb4-5063ff3469bf',num:'RSI-00020171',contact:'Solomon Water',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-20',amtDue:0,ccy:'SBD',ref:'Case 00077864',attach:true},
+      {id:'959d4766-2c71-4dea-b655-c07dd9aa3977',num:'RSI-00020182',contact:'Guadalcanal Travel Solomons',status:'SUBMITTED',date:'2026-03-23',due:'2026-04-06',amtDue:0,ccy:'SBD',ref:'Case 00077949',attach:true},
+      {id:'89b0a81b-5cb0-4e25-b0b9-cf76a46c28f8',num:'RSI-00020092',contact:'USP Solomon Islands',status:'SUBMITTED',date:'2026-03-20',due:'2026-04-03',amtDue:0,ccy:'SBD',ref:'Case 00077810',attach:true},
+    ],
+    bills:[
+      {id:'7737a008-9754-4e43-a32c-756db1fbd6ae',num:'Invoice #: 87450995',contact:'Solomon Telekom Company Limited',status:'DRAFT',date:'2026-03-01',due:'2026-03-21',amtDue:11765.06,ccy:'SBD',ref:'',attach:true},
+    ],
+  },
+  rsp:{
+    invoices:[
+      {id:'838dfe9c-0b86-4884-a4b6-7d07c29d674f',num:'RSPSI-00126771',contact:'Ricoh Tonga Limited',status:'DRAFT',date:'2026-03-19',due:'2026-04-20',amtDue:1953.00,ccy:'NZD',ref:'RTPO-00002750',attach:false},
+      {id:'967a03fe-69b4-4536-81db-516ddfc42ac9',num:'RSPSI-00126770',contact:'Ricoh Tonga Limited',status:'DRAFT',date:'2026-03-19',due:'2026-04-20',amtDue:620.10,ccy:'NZD',ref:'RTPO-00002750',attach:false},
+      {id:'9088f200-c31f-4be8-ae65-935534c08cf2',num:'RSPSI-00126757',contact:'Alpine Print Limited',status:'SUBMITTED',date:'2026-03-13',due:'2026-03-27',amtDue:0,ccy:'NZD',ref:'',attach:false},
+      {id:'e56f8d20-164c-4648-85b4-85820ec73111',num:'INV-1046',contact:'Alpine Print Limited',status:'DRAFT',date:'2026-03-20',due:'2026-04-20',amtDue:2185.00,ccy:'NZD',ref:'March 2026',attach:false},
+      {id:'87d4d6c7-e55c-4444-acdd-f7940cd86348',num:'RSPSI-00126768',contact:'Ricoh Samoa Limited',status:'DRAFT',date:'2026-03-20',due:'2026-04-20',amtDue:2070.74,ccy:'NZD',ref:'RSPO-00002382',attach:false},
+      {id:'cdd2d0b5-14b1-4f86-9d54-feb0f5c08595',num:'RSPSI-00126720',contact:'Ricoh Samoa Limited',status:'DRAFT',date:'2026-03-18',due:'2026-04-20',amtDue:801.16,ccy:'NZD',ref:'',attach:false},
+      {id:'fea86d5d-cd33-4301-84cb-b93b0ec9ead7',num:'RSPSI-00126750',contact:'Ricoh Vanuatu Limited',status:'DRAFT',date:'2026-03-11',due:'2026-04-20',amtDue:1628.32,ccy:'NZD',ref:'Air Freight 03-03-26',attach:false},
+    ],
+    bills:[
+      {id:'205a2a06-6820-43e8-b73e-b97e7f135bee',num:'RSPPO-00014941/1 - 219346',contact:'Parts Overnight',status:'DRAFT',date:'2026-03-10',due:'2026-04-20',amtDue:772.80,ccy:'NZD',ref:'RSPPO-00014941',attach:false},
+      {id:'49b7157f-78cd-428b-858c-4f219052097b',num:'INV007416',contact:'Alpine Print Limited',status:'DRAFT',date:'2026-03-18',due:'2026-04-20',amtDue:2125.20,ccy:'NZD',ref:'',attach:false},
+      {id:'c69765b7-82f0-48aa-b003-ebbf38dcd293',num:'5072573264',contact:'Mercury Energy',status:'DRAFT',date:'2026-03-05',due:'2026-04-10',amtDue:1422.38,ccy:'NZD',ref:'',attach:false},
+      {id:'ead9c462-c3f7-4d63-b399-66b5f3e1f782',num:'RSPPO-00014931 - 370539',contact:'Innovative Digital Solutions',status:'SUBMITTED',date:'2026-02-26',due:'2026-02-26',amtDue:3187.64,ccy:'NZD',ref:'RSPPO-00014931',attach:true},
+      {id:'a4dd2ea1-d974-4468-8bbf-6aca218f9299',num:'RSPPO-00014966 - INV1197501',contact:'Ricoh New Zealand Limited',status:'DRAFT',date:'2026-03-18',due:'2026-04-20',amtDue:3390.86,ccy:'NZD',ref:'RSPPO-00014966',attach:false},
+      {id:'b844c4a8-1e03-43c9-b2bb-93ebeb27fa77',num:'RSPPO-00014973 - INV1197534',contact:'Ricoh New Zealand Limited',status:'DRAFT',date:'2026-03-18',due:'2026-04-20',amtDue:1309.74,ccy:'NZD',ref:'RSPPO-00014973',attach:false},
+    ],
+  },
+};
+
+let ddEntity='all', ddDocType='invoices', ddSortCol='age', ddSortAsc=false;
+
+function ddGetRows(e,t){ const ents=e==='all'?Object.keys(DD):[e]; return ents.flatMap(k=>(DD[k][t]||[]).map(r=>({...r,entity:k}))); }
+function ddFilter(rows){ const q=document.getElementById('dd-search').value.toLowerCase(); return q?rows.filter(r=>r.contact.toLowerCase().includes(q)||r.num.toLowerCase().includes(q)||(r.ref||'').toLowerCase().includes(q)):rows; }
+function ddSortRows(rows){
+  return [...rows].sort((a,b)=>{
+    let va,vb;
+    if(ddSortCol==='age'){va=ddAge(a.date);vb=ddAge(b.date);}
+    else if(ddSortCol==='amt'){va=parseFloat(a.amtDue)||0;vb=parseFloat(b.amtDue)||0;}
+    else if(ddSortCol==='contact'){va=a.contact;vb=b.contact;}
+    else if(ddSortCol==='num'){va=a.num;vb=b.num;}
+    else if(ddSortCol==='date'){va=new Date(a.date);vb=new Date(b.date);}
+    else if(ddSortCol==='due'){va=new Date(a.due||'9999');vb=new Date(b.due||'9999');}
+    else if(ddSortCol==='status'){va=a.status;vb=b.status;}
+    else if(ddSortCol==='entity'){va=a.entity;vb=b.entity;}
+    else return 0;
+    if(va<vb)return ddSortAsc?-1:1; if(va>vb)return ddSortAsc?1:-1; return 0;
+  });
+}
+function ddSetSort(col){ if(ddSortCol===col)ddSortAsc=!ddSortAsc; else{ddSortCol=col;ddSortAsc=(col==='contact'||col==='num');} ddRender(); }
+
+function ddRender(){
+  const invRows=ddGetRows(ddEntity,'invoices'), billRows=ddGetRows(ddEntity,'bills');
+  document.getElementById('dd-cnt-inv').textContent=invRows.length;
+  document.getElementById('dd-cnt-bills').textContent=billRows.length;
+
+  const rows=ddFilter(ddSortRows(ddGetRows(ddEntity,ddDocType)));
+  const xeroType=ddDocType==='invoices'?'ACCREC':'ACCPAY';
+  const showEntity=ddEntity==='all';
+  const aged=rows.filter(r=>ddAge(r.date)>7).length;
+  const totalAmt=rows.reduce((a,r)=>a+(parseFloat(r.amtDue)||0),0);
+
+  document.getElementById('dd-summary').innerHTML=`
+    <div class="sum-item">Showing <strong>${rows.length}</strong> records</div>
+    <div class="sum-item ${aged>10?'alert':aged>4?'warn':''}">Aged &gt;7d: <strong>${aged}</strong></div>
+    <div class="sum-item">Total amt due: <strong>${new Intl.NumberFormat('en-NZ',{minimumFractionDigits:2,maximumFractionDigits:2}).format(totalAmt)}</strong> (mixed ccy)</div>`;
+
+  if(!rows.length){ document.getElementById('dd-table').innerHTML='<div class="empty-state"><strong>No records</strong>Adjust filter or search.</div>'; return; }
+
+  const arr=col=>`<span style="font-size:9px;margin-left:3px;opacity:${ddSortCol===col?1:0.3}">${ddSortCol===col?(ddSortAsc?'▲':'▼'):'▼'}</span>`;
+  const th=(col,lbl,left=false)=>`<th class="${left?'th-left':''}${ddSortCol===col?' sorted':''}" onclick="ddSetSort('${col}')">${lbl}${arr(col)}</th>`;
+
+  document.getElementById('dd-table').innerHTML=`
+    <table style="table-layout:fixed;min-width:900px;">
+      <colgroup>
+        <col style="width:120px">${showEntity?'<col style="width:100px">':''}
+        <col style="width:90px"><col style="width:190px">
+        <col style="width:88px"><col style="width:88px"><col style="width:55px">
+        <col style="width:110px"><col style="width:90px"><col style="width:80px"><col style="width:65px">
+      </colgroup>
+      <thead><tr>
+        ${th('num','Invoice #',true)}
+        ${showEntity?th('entity','Entity',true):''}
+        ${th('status','Status',true)}
+        ${th('contact','Customer',true)}
+        ${th('date','Date')}${th('due','Due')}${th('age','Age')}
+        ${th('amt','Amt Due')}
+        <th>Xero</th>
+        <th class="th-left">SO #</th>
+        <th class="th-left">Files</th>
+      </tr></thead>
+      <tbody>${rows.map(r=>{
+        const age=ddAge(r.date);
+        return `<tr class="row-${r.status.toLowerCase()}">
+          <td class="th-left" style="font-size:11px;font-weight:600;color:var(--text)">${r.num}</td>
+          ${showEntity?`<td><span class="entity-badge">${ENTITY_LABELS[r.entity]||r.entity}</span></td>`:''}
+          <td><span class="status-pill status-${r.status.toLowerCase()}">${r.status}</span></td>
+          <td title="${r.contact}" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;">${r.contact}</td>
+          <td class="td-r" style="font-size:11px;">${ddFmt(r.date)}</td>
+          <td class="td-r" style="font-size:11px;">${ddFmt(r.due)}</td>
+          <td class="td-r">${ddAgeLbl(age)}</td>
+          <td class="td-r">${ddAmt(r.amtDue,r.ccy)}</td>
+          <td>${ddXero(r.id,xeroType)}</td>
+          <td>${ddSO(r.ref)}</td>
+          <td>${r.attach?'<span class="attach-badge">📎</span>':'<span style="font-size:11px;color:var(--text-hint)">—</span>'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+}
+
+function ddSetEntity(key,el){ document.querySelectorAll('#dd-chips .chip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); ddEntity=key; ddRender(); }
+function ddSetType(type){ ddDocType=type; document.getElementById('dd-tab-inv').classList.toggle('active',type==='invoices'); document.getElementById('dd-tab-bills').classList.toggle('active',type==='bills'); ddRender(); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NAV + INIT
+// ─────────────────────────────────────────────────────────────────────────────
+
+function go(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+filterSB('all', document.querySelector('#page-scoreboard .chip'));
+filterOrders('all', document.querySelector('#page-orders .chip'));
+ddRender();
+renderPayroll();
 </script>
 </body>
 </html>
