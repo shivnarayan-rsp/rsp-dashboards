@@ -1,641 +1,546 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RSP — Service Operating Rhythm</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSP — Parts & Revenue</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{--red:#D7063B;--charcoal:#1a1a1a;--mid:#444;--muted:#888;--border:#e5e5e5;--bg:#f7f7f6;--surface:#fff;--surface2:#f2f2f1;--green:#1a6e2e;--green-bg:#e6f4ea;--green-border:#b7dfbe;--amber:#8a5200;--amber-bg:#fef3dc;--amber-border:#f5d87e;--danger:#c0392b;--danger-bg:#fdecea;--danger-border:#f5bcb7;--blue:#0057b8;--blue-bg:#e8f0fb;--blue-border:#b3cfee;}
+:root{--red:#D7063B;--charcoal:#1a1a1a;--mid:#444;--muted:#888;--border:#e5e5e5;--bg:#f7f7f6;--surface:#fff;--surface2:#f2f2f1;--green:#1a6e2e;--green-bg:#e6f4ea;--amber:#8a5200;--amber-bg:#fef3dc;--danger:#c0392b;--danger-bg:#fdecea;--blue:#0057b8;--blue-bg:#e8f0fb;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
 header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .wordmark{font-size:22px;font-weight:600;color:var(--red);letter-spacing:.15em;text-transform:uppercase;}
 .hd{width:1px;height:22px;background:#444;margin:0 16px;}
-.header-title{font-size:13px;color:#aaa;letter-spacing:.03em;}
+.header-title{font-size:13px;color:#aaa;}
 .as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
-.back-link{font-size:11px;color:#666;text-decoration:none;transition:color .15s;}
+.back-link{font-size:11px;color:#666;text-decoration:none;}
 .back-link:hover{color:#aaa;}
-.page-layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 63px);}
-.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:63px;height:calc(100vh - 63px);overflow-y:auto;}
-.sidebar-heading{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);padding:0 20px 6px;margin-top:14px;}
-.sidebar-link{display:block;padding:7px 20px;font-size:12px;color:var(--mid);text-decoration:none;border-left:2px solid transparent;transition:all .12s;line-height:1.3;}
-.sidebar-link:hover{color:var(--charcoal);background:var(--surface2);}
-.sidebar-link.active{color:var(--red);border-left-color:var(--red);background:#fdf0f3;}
-.sidebar-divider{height:1px;background:var(--border);margin:8px 0;}
-main{padding:36px 48px 80px;max-width:900px;}
-.nav-pills{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;}
-.nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;white-space:nowrap;}
+main{max-width:1200px;margin:0 auto;padding:28px 24px 64px;}
+.nav-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;}
 .nav-pill:hover{border-color:var(--red);color:var(--red);}
 .nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
-.hero{margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--border);}
-.hero h1{font-size:28px;font-weight:600;letter-spacing:-.02em;margin-bottom:10px;}
-.hero-sub{font-size:15px;color:var(--mid);line-height:1.6;max-width:680px;}
-.hero-meta{display:flex;gap:20px;margin-top:16px;flex-wrap:wrap;}
-.hero-meta-item{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;}
-.hero-meta-item strong{color:var(--charcoal);}
-.section{margin-bottom:48px;scroll-margin-top:80px;}
-.section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--charcoal);}
-.section-number{font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);background:var(--danger-bg);padding:3px 8px;border-radius:3px;}
-.section-title{font-size:18px;font-weight:600;letter-spacing:-.01em;}
-.section-intro{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:20px;}
-/* SNAPSHOT */
-.data-snapshot{background:var(--charcoal);color:#fff;border-radius:6px;padding:20px 24px;margin-bottom:20px;}
-.ds-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#888;margin-bottom:14px;}
-.data-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;}
-.di-label{font-size:10px;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em;}
-.di-value{font-size:20px;font-weight:300;line-height:1;}
-.di-sub{font-size:10px;color:#666;margin-top:3px;}
-.dv-bad{color:#f87171;}.dv-warn{color:#fbbf24;}.dv-good{color:#4ade80;}
-/* CALLOUTS */
-.callout{padding:14px 18px;border-radius:6px;margin-bottom:16px;border-left:4px solid;}
-.callout.info{background:var(--blue-bg);border-color:var(--blue);}
-.callout.warn{background:var(--amber-bg);border-color:var(--amber);}
-.callout.good{background:var(--green-bg);border-color:var(--green);}
-.callout.alert{background:var(--danger-bg);border-color:var(--danger);}
-.ct{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
-.ct-info{color:var(--blue);}.ct-warn{color:var(--amber);}.ct-good{color:var(--green);}.ct-alert{color:var(--danger);}
-.callout p{font-size:13px;color:var(--mid);line-height:1.6;}
-.callout p+p{margin-top:6px;}
-/* RHYTHM GRID */
-.rhythm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
-.rc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;position:relative;overflow:hidden;}
-.rc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.rc.daily::before{background:var(--charcoal);}
-.rc.weekly::before{background:var(--red);}
-.rc.monthly::before{background:var(--blue);}
-.rc-cadence{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;margin-bottom:8px;}
-.c-daily{color:var(--mid);}.c-weekly{color:var(--red);}.c-monthly{color:var(--blue);}
-.rc-title{font-size:13px;font-weight:600;margin-bottom:8px;}
-.rc-items{list-style:none;}
-.rc-items li{font-size:12px;color:var(--mid);padding:3px 0 3px 14px;position:relative;line-height:1.4;}
-.rc-items li::before{content:'→';position:absolute;left:0;color:var(--muted);font-size:10px;}
-.rc-items a{color:var(--red);}
-/* STEPS */
-.step{display:grid;grid-template-columns:32px 1fr;gap:16px;margin-bottom:24px;align-items:start;}
-.sn{width:32px;height:32px;border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;margin-top:1px;}
-.sn-red{background:var(--red);}.sn-amber{background:var(--amber);}.sn-dark{background:var(--charcoal);}.sn-danger{background:var(--danger);}
-.st{font-size:14px;font-weight:600;margin-bottom:5px;}
-.sd{font-size:13px;color:var(--mid);line-height:1.6;}
-.slink{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11px;font-weight:500;color:var(--red);text-decoration:none;padding:4px 10px;background:var(--danger-bg);border-radius:4px;border:1px solid var(--danger-border);}
-.slink:hover{background:#fde0e5;}
-.snote{margin-top:8px;padding:8px 12px;background:var(--surface2);border-radius:4px;font-size:12px;color:var(--mid);line-height:1.5;border-left:3px solid var(--border);}
-/* KPI TABLE */
-.kpi-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:24px;}
+.section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* EXPLAINER */
+.explainer{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 20px;margin-bottom:24px;}
+.explainer p{font-size:12px;color:var(--mid);line-height:1.6;}
+.type-tags{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;}
+.type-tag{padding:6px 14px;border-radius:4px;font-size:12px;font-weight:500;}
+.tag-sla{background:var(--danger-bg);color:var(--danger);}
+.tag-tm{background:var(--green-bg);color:var(--green);}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:28px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-card.red::before{background:var(--danger);}
+.kpi-card.green::before{background:var(--green);}
+.kpi-card.amber::before{background:var(--amber);}
+.kpi-card.blue::before{background:var(--blue);}
+.kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;}
+.kpi-value{font-size:24px;font-weight:300;line-height:1;}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+
+/* MONTH CHART */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px 24px;margin-bottom:28px;}
+.chart-title{font-size:12px;font-weight:600;margin-bottom:16px;}
+.dual-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.dual-label{font-size:12px;font-family:'DM Mono',monospace;width:50px;flex-shrink:0;color:var(--mid);}
+.dual-bars{flex:1;display:flex;flex-direction:column;gap:3px;}
+.dual-bar-track{height:14px;background:#f5f5f5;border-radius:3px;overflow:hidden;position:relative;}
+.bar-fill-sla{height:100%;background:var(--danger);border-radius:3px;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;color:rgba(255,255,255,.9);}
+.bar-fill-tm{height:100%;background:var(--green);border-radius:3px;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;color:rgba(255,255,255,.9);}
+.dual-totals{font-size:11px;font-family:'DM Mono',monospace;width:120px;flex-shrink:0;text-align:right;}
+.chart-legend{display:flex;gap:16px;margin-top:12px;}
+.chart-leg-item{display:flex;align-items:center;gap:6px;font-size:11px;}
+.leg-dot{width:10px;height:10px;border-radius:2px;}
+
+/* TERRITORY TABLE */
+.table-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:28px;}
+.table-header{padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);}
+.table-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
 table{width:100%;border-collapse:collapse;}
-th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);}
-td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f0f0f0;vertical-align:top;}
+th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);}
+th.right{text-align:right;}
+td{padding:9px 12px;font-size:13px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-.kn{font-weight:500;}
-.ktgt{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;}
-.t-g{color:var(--green);}.t-r{color:var(--danger);}
-.ksrc{font-size:11px;color:var(--muted);}
-.sb{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace;}
-.sb15{background:#e6f4ea;color:#1a6e2e;}.sb10{background:#e8f0fb;color:#0057b8;}
-/* SCORE BANDS */
-.score-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
-.band{padding:14px 16px;border-radius:6px;text-align:center;}
-.ba-a{background:#e6f4ea;border:1px solid #b7dfbe;}
-.ba-b{background:#e8f0fb;border:1px solid #b3cfee;}
-.ba-c{background:#fef3dc;border:1px solid #f5d87e;}
-.ba-d{background:#fdecea;border:1px solid #f5bcb7;}
-.bl{font-size:28px;font-weight:700;font-family:'DM Mono',monospace;line-height:1;}
-.br{font-size:12px;font-family:'DM Mono',monospace;margin:4px 0;}
-.blabel{font-size:11px;font-weight:600;}
-.bdesc{font-size:11px;margin-top:4px;line-height:1.3;}
-.ca{color:#1a6e2e;}.cb{color:#0057b8;}.cc{color:#8a5200;}.cd{color:#c0392b;}
-/* CONVERSATION FLOW */
-.conv-flow{display:flex;flex-direction:column;gap:0;margin-bottom:24px;}
-.conv-step{display:grid;grid-template-columns:140px 1fr;gap:0;position:relative;}
-.conv-step:not(:last-child)::after{content:'';position:absolute;left:70px;top:40px;bottom:0;width:2px;background:var(--border);}
-.conv-time{padding:14px 20px 14px 0;text-align:right;border-right:2px solid var(--border);}
-.ct-label{font-size:10px;font-weight:700;font-family:'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
-.ct-min{font-size:22px;font-weight:300;color:var(--charcoal);line-height:1;}
-.ct-unit{font-size:10px;color:var(--muted);}
-.conv-body{padding:14px 0 22px 22px;position:relative;}
-.conv-dot{width:10px;height:10px;border-radius:50%;background:var(--charcoal);position:absolute;left:-6px;top:18px;}
-.cb-title{font-size:13px;font-weight:600;margin-bottom:6px;}
-.cb-desc{font-size:12px;color:var(--mid);line-height:1.6;}
-.cb-items{list-style:none;padding:0;margin-top:6px;}
-.cb-items li{font-size:12px;color:var(--mid);padding:2px 0 2px 14px;position:relative;line-height:1.4;}
-.cb-items li::before{content:'·';position:absolute;left:0;color:var(--muted);}
-.cb-items a{color:var(--red);}
-/* COACHING PATTERNS */
-.pattern-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
-.pc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;}
-.pc.urgent{border-color:var(--danger-border);background:var(--danger-bg);}
-.pc.watch{border-color:var(--amber-border);background:var(--amber-bg);}
-.pc.good{border-color:var(--green-border);background:var(--green-bg);}
-.ps{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
-.ps-u{color:var(--danger);}.ps-w{color:var(--amber);}.ps-g{color:var(--green);}
-.pt{font-size:13px;font-weight:600;margin-bottom:10px;}
-.pa{list-style:none;padding:0;}
-.pa li{font-size:12px;color:var(--mid);padding:4px 0 4px 16px;position:relative;line-height:1.4;border-bottom:1px solid rgba(0,0,0,.06);}
-.pa li:last-child{border-bottom:none;}
-.pa li::before{content:'"';position:absolute;left:0;color:var(--muted);font-weight:700;}
-.pnote{margin-top:10px;font-size:11px;color:var(--muted);line-height:1.4;font-style:italic;}
-/* CHECKLIST */
-.checklist{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px;}
-.cl-header{padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.cl-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
-.cl-who{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
-.cl-item{display:flex;align-items:flex-start;gap:12px;padding:11px 16px;border-bottom:1px solid #f5f5f5;}
-.cl-item:last-child{border-bottom:none;}
-.cl-box{width:18px;height:18px;border:2px solid var(--border);border-radius:3px;flex-shrink:0;margin-top:1px;}
-.cl-text{font-size:13px;flex:1;line-height:1.4;}
-.cl-detail{display:block;font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
-.cl-badge{flex-shrink:0;font-size:10px;padding:2px 7px;border-radius:3px;font-weight:500;font-family:'DM Mono',monospace;margin-top:2px;}
-.cb-tech{background:var(--danger-bg);color:var(--danger);}
-.cb-sc{background:var(--amber-bg);color:var(--amber);}
-.cb-mgr{background:var(--blue-bg);color:var(--blue);}
-@media(max-width:1000px){.page-layout{grid-template-columns:1fr;}.sidebar{display:none;}main{padding:20px 16px 60px;}}
-@media(max-width:680px){.rhythm-grid,.pattern-grid,.score-grid,.data-grid{grid-template-columns:1fr;}.conv-step{grid-template-columns:1fr;}.conv-time{text-align:left;border-right:none;border-bottom:1px solid var(--border);padding-bottom:8px;}}
+td.right{text-align:right;}
+td.mono{font-family:'DM Mono',monospace;font-size:12px;}
+.sla-val{color:var(--danger);font-weight:500;}
+.tm-val{color:var(--green);font-weight:500;}
+.ratio-good{color:var(--green);font-weight:500;}
+.ratio-warn{color:var(--amber);font-weight:500;}
+.ratio-bad{color:var(--danger);font-weight:500;}
+.terr-pill{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:500;}
+.t-NZ{background:#e8f0fb;color:#0057b8;}.t-Vanuatu{background:#e6f4ea;color:#1a6e2e;}
+.t-Solomons{background:#fef3dc;color:#8a5200;}.t-Tonga{background:#fdecea;color:#c0392b;}
+.t-Samoa{background:#f3e8fb;color:#6b21a8;}
+.asset-link{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);text-decoration:none;}
+.asset-link:hover{text-decoration:underline;}
+footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
+@media(max-width:800px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+
+.viz-section{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px 20px;margin-bottom:20px;}
+.viz-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.viz-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.viz-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.bc-row{display:grid;grid-template-columns:130px 1fr 100px;align-items:center;gap:8px;margin-bottom:8px;}
+.bc-label{font-size:11px;font-weight:500;color:var(--mid);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bc-track{height:18px;background:var(--surface2);border-radius:3px;overflow:hidden;display:flex;}
+.bc-sla{background:var(--danger);opacity:.8;}
+.bc-tm{background:var(--green);opacity:.8;}
+.bc-meta{font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);text-align:right;}
+.bc-legend{display:flex;gap:14px;margin-top:8px;}
+.bcl-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mid);}
+.bcl-dot{width:10px;height:10px;border-radius:2px;}
+@media(max-width:700px){.viz-row-2{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 <header>
   <div style="display:flex;align-items:center">
-    <span class="wordmark" style="display:flex;align-items:center"><img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:28px;display:block;"></span>
-    <div class="hd"></div>
-    <span class="header-title">South Pacific — Service Operating Rhythm</span>
+    <span class="wordmark" style="display:flex;align-items:center"><img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:28px;display:block;"></span><div class="hd"></div>
+    <span class="header-title">South Pacific — Parts & Revenue</span>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <span class="as-of">26 Mar 2026</span>
     <a href="service-dashboard.html" class="back-link">← Dashboard</a>
   </div>
 </header>
-
-<div class="page-layout">
-
-<aside class="sidebar">
-  <div class="sidebar-heading">On this page</div>
-  <a href="#rhythm" class="sidebar-link">1. Weekly rhythm</a>
-  <a href="#dashboards" class="sidebar-link">2. Reading the dashboards</a>
-  <a href="#kpis" class="sidebar-link">3. KPI reference</a>
-  <a href="#scoring" class="sidebar-link">4. Scoring &amp; bonus</a>
-  <a href="#conversations" class="sidebar-link">5. Running conversations</a>
-  <a href="#coaching" class="sidebar-link">6. Coaching patterns</a>
-  <a href="#hygiene" class="sidebar-link">7. Data hygiene</a>
-  <a href="#escalation" class="sidebar-link">8. Escalation triggers</a>
-  <div class="sidebar-divider"></div>
-  <div class="sidebar-heading">Dashboard pages</div>
-  <a href="service-dashboard.html" class="sidebar-link">Service Dashboard</a>
-  <a href="leaderboard.html" class="sidebar-link">Leaderboard</a>
-  <a href="cases-open.html" class="sidebar-link">Open Cases</a>
-  <a href="conversations.html" class="sidebar-link">Conversations</a>
-  <a href="tech-cases.html" class="sidebar-link">Tech Case Detail</a>
-  <a href="callbacks.html" class="sidebar-link">Callbacks</a>
-  <a href="asset-downtime.html" class="sidebar-link">Asset Downtime</a>
-  <a href="case-origin.html" class="sidebar-link">Case Origin</a>
-  <a href="parts-consumption.html" class="sidebar-link">Parts &amp; Revenue</a>
-  <a href="data-dictionary.html" class="sidebar-link">Data Dictionary</a>
-</aside>
-
 <main>
   <div class="nav-pills">
     <a href="service-dashboard.html" class="nav-pill">Service Dashboard</a>
     <a href="leaderboard.html" class="nav-pill">Leaderboard</a>
     <a href="cases-open.html" class="nav-pill">Open Cases</a>
     <a href="conversations.html" class="nav-pill">Conversations</a>
-    <a href="service-rhythm.html" class="nav-pill active">Service Rhythm</a>
     <a href="service-rhythm.html" class="nav-pill">Service Rhythm</a>
     <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
     <a href="asset-downtime.html" class="nav-pill">Asset Downtime</a>
     <a href="case-origin.html" class="nav-pill">Case Origin</a>
-    <a href="parts-consumption.html" class="nav-pill">Parts &amp; Revenue</a>
+    <a href="parts-consumption.html" class="nav-pill active">Parts &amp; Revenue</a>
   </div>
 
-  <div class="hero">
-    <h1>Service Operating Rhythm</h1>
-    <p class="hero-sub">A practical guide for the Service Manager using the Active Manager Programme (AMP) framework — how to use this dashboard suite to drive performance, run meaningful weekly check-in conversations, and develop a high-performance service team across five Pacific territories.</p>
-    <div class="hero-meta">
-      <div class="hero-meta-item">For <strong>Sridhar Bhattacharjee</strong></div>
-      <div class="hero-meta-item">9 dashboard pages</div>
-      <div class="hero-meta-item">8 technicians · 5 territories</div>
-    </div>
-  </div>
-
-  <div class="data-snapshot">
-    <div class="ds-title">Where things stand — 26 Mar 2026</div>
-    <div class="data-grid">
-      <div><div class="di-label">FTF rate Mar</div><div class="di-value dv-warn">76.5%</div><div class="di-sub">Target ≥ 85%</div></div>
-      <div><div class="di-label">Callback rate Mar</div><div class="di-value dv-bad">30.9%</div><div class="di-sub">Target ≤ 10%</div></div>
-      <div><div class="di-label">Avg days to close</div><div class="di-value dv-bad">13.6d</div><div class="di-sub">Target ≤ 7d</div></div>
-      <div><div class="di-label">Open cases &gt;72h</div><div class="di-value dv-bad">83</div><div class="di-sub">69% of all open</div></div>
+  <div class="explainer">
+    <p>Parts and revenue are tracked via <strong>Product Requests</strong> in Salesforce. There are two types. <strong>Product Request (SLA)</strong> records represent parts consumption on SLA-covered machines — this is a cost to RSP. <strong>Service Quote (T&M)</strong> records are time-and-materials jobs where parts are charged to the customer — this is revenue. When approved, both create an Order: SLA orders are at $0 value, T&M orders are at RRP.</p>
+    <p style="margin-top:8px">The objective is to <strong>reduce SLA parts spend</strong> (manage asset reliability, reduce repeat failures) and <strong>increase T&M revenue</strong> (convert more out-of-contract work into billable jobs).</p>
+    <div class="type-tags">
+      <div class="type-tag tag-sla">Product Request (SLA) — parts cost to RSP · want to reduce</div>
+      <div class="type-tag tag-tm">Service Quote (T&M) — revenue from customer · want to increase</div>
     </div>
   </div>
 
-  <div class="callout alert">
-    <div class="ct ct-alert">The honest picture</div>
-    <p>The callback rate of 30.9% is the most important number to address. Every third closed case is coming back — this is the single biggest driver of wasted tech time, extended asset downtime, and customer dissatisfaction. The weekly conversations and coaching patterns in this guide are designed specifically to move this number down.</p>
-  </div>
-
-  <div class="callout info">
-    <div class="ct ct-info">Active Manager Programme</div>
-    <p>This guide is structured around the Active Manager Programme (AMP) framework. AMP is built on the principle that manager behaviour is the primary driver of team performance — not systems, not processes, but the quality and consistency of the conversations you have with your people every week.</p>
-    <p>The dashboards make those conversations data-led. AMP makes them human. Both are required.</p>
-  </div>
-
-  <!-- 1. WEEKLY RHYTHM -->
-  <div class="section" id="rhythm">
-    <div class="section-header">
-      <span class="section-number">01</span>
-      <h2 class="section-title">Weekly rhythm</h2>
-    </div>
-    <p class="section-intro">AMP operates on three cadences. The daily ops check catches what is burning before it becomes a problem. The weekly rhythm is your primary management layer — review, check-in conversations, coaching. Monthly is strategic — scores, recognition, and trend analysis. Consistency across all three is what separates managing from reacting.</p>
-    <div class="rhythm-grid">
-      <div class="rc daily">
-        <div class="rc-cadence c-daily">Daily — 10 min</div>
-        <div class="rc-title">Morning ops check</div>
-        <ul class="rc-items">
-          <li>Check <a href="asset-downtime.html">Asset Downtime</a> — new Tech-delay cases overnight?</li>
-          <li>Check <a href="cases-open.html">Open Cases</a> — new escalations or Stop Credit?</li>
-          <li>Any case stuck in Work Order Issued &gt;24h? Message the tech directly.</li>
-          <li>Any new callback? Note asset serial for the weekly conversation.</li>
-        </ul>
-      </div>
-      <div class="rc weekly">
-        <div class="rc-cadence c-weekly">Weekly — 90 min total</div>
-        <div class="rc-title">AMP check-in conversations</div>
-        <ul class="rc-items">
-          <li>Open <a href="leaderboard.html">Leaderboard</a> — who moved up or down? Prepare your data story for each tech.</li>
-          <li>Open <a href="conversations.html">Conversations</a> — read coaching prompts and last week's commitment before each session</li>
-          <li>Check-in with each tech: 10–15 min. Score manual KPIs. Log notes, commitment, and follow-up.</li>
-          <li>Review <a href="callbacks.html">Callbacks</a> — bring specific asset serials to the conversations</li>
-          <li>Check <a href="case-origin.html">Case Origin</a> — any techs self-logging? Raise it in the session.</li>
-        </ul>
-      </div>
-      <div class="rc monthly">
-        <div class="rc-cadence c-monthly">Monthly — 60 min</div>
-        <div class="rc-title">Score, bonus &amp; trend review</div>
-        <ul class="rc-items">
-          <li>Finalise all manual KPI scores in Conversations for the month</li>
-          <li>Review leaderboard ranking — confirm A/B/C/D categories</li>
-          <li>Determine bonus eligibility (A/B = eligible, C = review, D = PIP)</li>
-          <li>Check <a href="parts-consumption.html">Parts &amp; Revenue</a> — SLA spend vs T&amp;M</li>
-          <li>Share summary with Shiv: callback trend, FTF trend, any escalations</li>
-        </ul>
-      </div>
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:6px;flex-wrap:wrap;">
+  <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)">Territory</span>
+  <select id="filterTerritory" onchange="applyFilters()" style="height:30px;padding:0 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--charcoal);cursor:pointer;outline:none;">
+    <option value="">All territories</option>
+    <option>NZ</option><option>Vanuatu</option><option>Solomons</option>
+    <option>Tonga</option><option>Samoa</option>
+  </select>
+  <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-left:8px">Technician</span>
+  <select id="filterTech" onchange="applyFilters()" style="height:30px;padding:0 10px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--charcoal);cursor:pointer;outline:none;">
+    <option value="">All technicians</option>
+    <option>Florencio Jr. Familar</option>
+    <option>Junriel Andoy</option>
+    <option>Victor Geonzon</option>
+    <option>Arturo Regis</option>
+    <option>Ramiro Cataquis</option>
+    <option>Sridhar Bhattacharjee</option>
+    <option>John Cid</option>
+    <option>Samson Ragaruma</option>
+  </select>
+</div>
+<div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-family:'DM Mono',monospace;padding:6px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;">All values in NZD · converted from local currencies at 26 Mar 2026 mid-market rates: VUV ×0.01439 · WST ×0.6197 · SBD ×0.2119 · TOP ×0.6904 · NZD ×1.0</div>
+<div class="viz-row-2">
+  <div class="viz-section">
+    <div class="viz-title">SLA parts spend by territory (NZD)</div>
+    <div id="terrSLAChart"></div>
+    <div class="bc-legend">
+      <div class="bcl-item"><div class="bcl-dot" style="background:var(--danger)"></div>SLA parts cost</div>
+      <div class="bcl-item"><div class="bcl-dot" style="background:var(--green)"></div>T&amp;M revenue</div>
     </div>
   </div>
-
-  <!-- 2. READING DASHBOARDS -->
-  <div class="section" id="dashboards">
-    <div class="section-header">
-      <span class="section-number">02</span>
-      <h2 class="section-title">Reading the dashboards</h2>
-    </div>
-    <p class="section-intro">Each page answers a specific question. Start at the Service Dashboard and drill down. Every key number on every page links to the source data behind it.</p>
-
-    <div class="step">
-      <div class="sn sn-red">1</div>
-      <div>
-        <div class="st">Service Dashboard — weekly headline check</div>
-        <div class="sd">Four KPI cards across the top. Callback rate is the most important. Below that: territory breakdown by status and work type. Click any status row to jump to the filtered Open Cases list — for example, "Processing Invoice under Vanuatu" lands on the exact 8 cases.</div>
-        <a href="service-dashboard.html" class="slink">Open Service Dashboard →</a>
-        <div class="snote">Watch: callback rate above 25% is a warning. Avg days above 10 means cases are sitting open — check the Asset Downtime page to understand whether it's tech delay or genuine external holds.</div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="sn sn-red">2</div>
-      <div>
-        <div class="st">Leaderboard — quality ranking, not volume</div>
-        <div class="sd">Ranked by quality score: FTF rate (60% weight) and inverse callback rate (40%). A tech who closes 30 cases cleanly ranks above one who closes 100 with a 40% callback rate. Click a tech's name to see every case behind their numbers. Click a territory in the callback table to see every callback for that territory with asset serial links direct to Salesforce.</div>
-        <a href="leaderboard.html" class="slink">Open Leaderboard →</a>
-        <div class="snote">Before each weekly conversation, click the tech's name to pull up their case list. Sort by Work Order count to find cases that came back. Look for patterns — same asset? Same fault type? That's your coaching conversation.</div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="sn sn-red">3</div>
-      <div>
-        <div class="st">Asset Downtime — what is sitting and why</div>
-        <div class="sd">Open Service Call cases with an asset, split into two buckets. Red (Tech/Ops delay): New, Work Order Issued, Doing — action needed now. Amber (External/Blocked): Waiting on Parts, Quotation Approval, Customer — legitimate holds, but still customer downtime. Sort by Hours Open to find the worst cases.</div>
-        <a href="asset-downtime.html" class="slink">Open Asset Downtime →</a>
-        <div class="snote">The three NZ cases open 14,000–18,000 hours are old Alpine Print cases. These are inflating the avg days to close metric significantly — worth closing or archiving if work is done.</div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="sn sn-red">4</div>
-      <div>
-        <div class="st">Conversations — weekly 1:1 prep sheet</div>
-        <div class="sd">One card per tech. The top section shows Salesforce-calculated scores (FTF, callback rate, calls per day) already scored out of 35 points. You fill in the six manual KPIs using sliders. Coaching prompts at the bottom are generated from their actual data — if callback rate is above 30% it escalates the prompt automatically. Save at the end of each session; scores persist by month.</div>
-        <a href="conversations.html" class="slink">Open Conversations →</a>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="sn sn-red">5</div>
-      <div>
-        <div class="st">Case Origin — are timestamps trustworthy?</div>
-        <div class="sd">Tracks the split between objective origins (Email, @remote, 3manager — timestamp is real, set by customer or system) and controllable origins (Phone, Internal, Technician — timestamp is set by RSP staff). Currently 29% objective YTD. Target is above 50%. The @remote opportunity is significant: 746 assets registered, only 4 automated cases YTD.</div>
-        <a href="case-origin.html" class="slink">Open Case Origin →</a>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="sn sn-red">6</div>
-      <div>
-        <div class="st">Parts &amp; Revenue — SLA cost vs T&amp;M income</div>
-        <div class="sd">SLA parts spend is money out of RSP. T&amp;M revenue is money in. The T&amp;M/SLA ratio is currently 1.22×. Watch the Vanuatu parts figures: two assets alone account for NZD 1.34M in parts consumed YTD — these are candidates for an account conversation about replacement or a dedicated service plan.</div>
-        <a href="parts-consumption.html" class="slink">Open Parts &amp; Revenue →</a>
-      </div>
-    </div>
+  <div class="viz-section">
+    <div class="viz-title">SLA spend by technician (NZD)</div>
+    <div id="techSLAChart"></div>
   </div>
-
-  <!-- 3. KPI REFERENCE -->
-  <div class="section" id="kpis">
-    <div class="section-header">
-      <span class="section-number">03</span>
-      <h2 class="section-title">KPI reference</h2>
-    </div>
-    <p class="section-intro">Nine KPIs totalling 100 points. Three auto-calculated from Salesforce. Six scored manually after each weekly conversation.</p>
-    <div class="kpi-wrap">
-      <table>
-        <thead><tr><th>KPI</th><th>Target</th><th>Weight</th><th>Source</th><th>What it measures</th></tr></thead>
-        <tbody>
-          <tr><td><span class="kn">First Time Fix Rate</span></td><td><span class="ktgt t-g">≥ 85%</span></td><td><span class="sb sb15">15 pts</span></td><td><span class="ksrc">Salesforce auto</span></td><td style="font-size:12px;color:var(--mid)">Cases closed with exactly one Work Order. Second WO = not fixed first time. Validate whether parts-return second visits should count against FTF — discuss with Sridhar.</td></tr>
-          <tr><td><span class="kn">Avg Response Time</span></td><td><span class="ktgt t-g">≤ 4 hours</span></td><td><span class="sb sb10">10 pts</span></td><td><span class="ksrc">Salesforce auto<br><span style="color:var(--amber);font-size:10px">replacing manual slider</span></span></td><td style="font-size:12px;color:var(--mid)">Median hours from first Work Order created to first Service Appointment ActualStartTime. Aisea Fakaosi's 188h median is an island logistics outlier (6 samples only).</td></tr>
-          <tr><td><span class="kn">Calls Closed per Day</span></td><td><span class="ktgt t-g">≥ 5/day</span></td><td><span class="sb sb10">10 pts</span></td><td><span class="ksrc">Salesforce auto</span></td><td style="font-size:12px;color:var(--mid)">YTD cases ÷ 60 working days. All techs are currently below 5/day on this measure. The target likely applies to days in-territory — confirm the denominator with Sridhar before this KPI is weighted heavily.</td></tr>
-          <tr><td><span class="kn">Repeat Call Rate</span></td><td><span class="ktgt t-g">≤ 5%</span></td><td><span class="sb sb10">10 pts</span></td><td><span class="ksrc">Salesforce auto</span></td><td style="font-size:12px;color:var(--mid)">Callbacks as % of closed cases. Currently 21–47% across all techs — far above the 5% target. This is the most urgent KPI to address as a team.</td></tr>
-          <tr><td><span class="kn">Job Audit Quality Score</span></td><td><span class="ktgt t-g">≥ 90%</span></td><td><span class="sb sb10">10 pts</span></td><td><span class="ksrc">Manual — you score</span></td><td style="font-size:12px;color:var(--mid)">Based on internal job sheet review. Score after reviewing a sample of the tech's Work Orders. Check: complete fault description, parts used, customer sign-off, correct work type logged.</td></tr>
-          <tr><td><span class="kn">CSAT Score</span></td><td><span class="ktgt t-g">≥ 4.5/5</span></td><td><span class="sb sb15">15 pts</span></td><td><span class="ksrc">Manual — you score</span></td><td style="font-size:12px;color:var(--mid)">Post-service customer survey. If no formal survey exists, base on direct customer feedback received via email or account manager. Document the source in conversation notes.</td></tr>
-          <tr><td><span class="kn">Report Submission Timeliness</span></td><td><span class="ktgt t-g">100%</span></td><td><span class="sb sb10">10 pts</span></td><td><span class="ksrc">Manual — you score</span></td><td style="font-size:12px;color:var(--mid)">Job sheets or Octopus updated within 24 hours of completion. Spot-check in Salesforce: filter cases closed this week, check if Work Orders have notes completed.</td></tr>
-          <tr><td><span class="kn">PM Completion Compliance</span></td><td><span class="ktgt t-g">100%</span></td><td><span class="sb sb10">10 pts</span></td><td><span class="ksrc">Manual — you score</span></td><td style="font-size:12px;color:var(--mid)">Scheduled preventive maintenance jobs completed on time. A missed PM that later causes a breakdown should be flagged and discussed explicitly in the conversation.</td></tr>
-          <tr><td><span class="kn">Safety SOP Adherence</span></td><td><span class="ktgt t-g">100%</span></td><td><span class="sb sb10">10 pts</span></td><td><span class="ksrc">Manual — you score</span></td><td style="font-size:12px;color:var(--mid)">PPE, ESD protocols, handling procedures, checklist completion. Score 10 unless a specific non-compliance is observed. Any safety incident scores 0 and triggers immediate escalation.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- 4. SCORING AND BONUS -->
-  <div class="section" id="scoring">
-    <div class="section-header">
-      <span class="section-number">04</span>
-      <h2 class="section-title">Scoring &amp; bonus eligibility</h2>
-    </div>
-    <p class="section-intro">Total score out of 100. The Conversations page calculates this live as you move the sliders. Category determines bonus eligibility at month end.</p>
-    <div class="score-grid">
-      <div class="band ba-a"><div class="bl ca">A</div><div class="br ca">90–100</div><div class="blabel ca">High Performer</div><div class="bdesc">Bonus eligible. Acknowledge in team comms. Discuss stretch goals.</div></div>
-      <div class="band ba-b"><div class="bl cb">B</div><div class="br cb">75–89</div><div class="blabel cb">On Track</div><div class="bdesc">Bonus eligible. Identify one KPI to improve next month.</div></div>
-      <div class="band ba-c"><div class="bl cc">C</div><div class="br cc">60–74</div><div class="blabel cc">Needs Focus</div><div class="bdesc">No bonus. Clear improvement plan. Monthly check-in with manager.</div></div>
-      <div class="band ba-d"><div class="bl cd">D</div><div class="br cd">0–59</div><div class="blabel cd">At Risk</div><div class="bdesc">No bonus. Formal performance plan. Escalate to Shiv if sustained 2 months.</div></div>
-    </div>
-    <div class="callout info">
-      <div class="ct ct-info">Context on current scores</div>
-      <p>With callback rates at 21–47%, the Repeat Call Rate KPI (10 pts, target ≤5%) will score near zero for everyone right now. Even a tech with excellent FTF and full PM compliance will struggle to reach B category. Use this as evidence for a team-wide callback reduction focus — not as a punitive measure while the baseline is this far from target.</p>
-    </div>
-  </div>
-
-  <!-- 5. CONVERSATIONS GUIDE -->
-  <div class="section" id="conversations">
-    <div class="section-header">
-      <span class="section-number">05</span>
-      <h2 class="section-title">Running the weekly conversation</h2>
-    </div>
-    <p class="section-intro">AMP check-in conversations are the core of the framework. Each session takes 10–15 minutes and follows a consistent structure: open with accountability (last week's commitment), review the data together, coach to one specific behaviour, score the manual KPIs, and close with a single measurable commitment. The Conversations page is your prep sheet — open it before every session.</p>
-
-    <div class="conv-flow">
-      <div class="conv-step">
-        <div class="conv-time"><div class="ct-label">Open</div><div class="ct-min">1</div><div class="ct-unit">min</div></div>
-        <div class="conv-body">
-          <div class="conv-dot"></div>
-          <div class="cb-title">AMP step 1 — open with accountability</div>
-          <div class="cb-desc">Open by reviewing the follow-up field from last week's session. AMP is clear on this: accountability is set in the close and held in the open. Ask directly — "Last week you committed to [X]. How did that go?" Acknowledge delivery without over-praising. If the commitment wasn't kept, stay curious rather than critical. "What got in the way?" is more useful than a reminder of expectations. If you skip this step consistently, commitments stop meaning anything — and so do the conversations.</div>
-        </div>
-      </div>
-      <div class="conv-step">
-        <div class="conv-time"><div class="ct-label">Data</div><div class="ct-min">4</div><div class="ct-unit">min</div></div>
-        <div class="conv-body">
-          <div class="conv-dot"></div>
-          <div class="cb-title">AMP step 2 — review the data together</div>
-          <div class="cb-desc">Share screen or read the numbers aloud. Be specific — not "your callback rate is high" but "you had 11 callbacks this month from 29 cases." Then open the callbacks page filtered for their territory:</div>
-          <ul class="cb-items">
-            <li>"Your FTF is 78% — we need 85%. That is about 2 extra cases needing a return visit."</li>
-            <li>"Let us look at the callbacks — <a href="callbacks.html">here are yours for this month</a>. Any of these look familiar?"</li>
-            <li>"Response time showing 3h median — that is inside target."</li>
-          </ul>
-        </div>
-      </div>
-      <div class="conv-step">
-        <div class="conv-time"><div class="ct-label">Coach</div><div class="ct-min">5</div><div class="ct-unit">min</div></div>
-        <div class="conv-body">
-          <div class="conv-dot"></div>
-          <div class="cb-title">AMP step 3 — coaching conversation</div>
-          <div class="cb-desc">AMP coaching focuses on one thing per session — not a performance review, not a list of issues. The coaching prompts on the Conversations page are generated from the tech's Salesforce data and tell you where to focus. Use open questions to surface insight rather than prescribing solutions:</div>
-          <ul class="cb-items">
-            <li>"When you go back to the same machine a second time — what is typically the reason?"</li>
-            <li>"Are you getting enough time to diagnose properly, or are you being rushed to the next job?"</li>
-            <li>"Is there a parts availability issue on a specific model you keep seeing?"</li>
-          </ul>
-        </div>
-      </div>
-      <div class="conv-step">
-        <div class="conv-time"><div class="ct-label">Score</div><div class="ct-min">3</div><div class="ct-unit">min</div></div>
-        <div class="conv-body">
-          <div class="conv-dot"></div>
-          <div class="cb-title">AMP step 4 — calibrate your assessment</div>
-          <div class="cb-desc">Move the sliders on the Conversations page for: job audit, CSAT, report timeliness, PM compliance, safety. Be honest — if you do not have evidence for a score, default to mid-range rather than giving full marks automatically. The score summary table at the top of the page updates live.</div>
-          <a href="conversations.html" class="slink">Open Conversations →</a>
-        </div>
-      </div>
-      <div class="conv-step">
-        <div class="conv-time"><div class="ct-label">Close</div><div class="ct-min">2</div><div class="ct-unit">min</div></div>
-        <div class="conv-body">
-          <div class="conv-dot"></div>
-          <div class="cb-title">AMP step 5 — close with one commitment</div>
-          <div class="cb-desc">AMP is specific about this: one commitment, made by the technician, specific enough to verify. Not "I'll try to improve callbacks" — that cannot be checked. The standard is: "For the next three calls on Bulk Shop's IM 5000, I will spend 30 minutes on full diagnostics before ordering any parts." The tech sets the commitment — you validate it is measurable and log it. This becomes the opening of next week's conversation. The loop closes here.</div>
-        </div>
-      </div>
-    </div>
-    <div class="callout good">
-      <div class="ct ct-good">Logging the conversation</div>
-      <p>Click "Save all scores &amp; notes" at the top of the Conversations page after each session. AMP requires that you document commitments and follow-up notes — memory is not a reliable system. The notes field is the record that matters when you need to escalate, adjust a development plan, or have a formal conversation with HR.</p>
-      <p>Data is saved by month in your browser. Once the Supabase migration is complete, scores will sync server-side with trend lines available after 2–3 months of stored data.</p>
-    </div>
-  </div>
-
-  <!-- 6. COACHING PATTERNS -->
-  <div class="section" id="coaching">
-    <div class="section-header">
-      <span class="section-number">06</span>
-      <h2 class="section-title">Coaching patterns</h2>
-    </div>
-    <p class="section-intro">AMP coaching is pattern recognition — you see something in the data, you name it in the conversation, and you coach to one behaviour change. The patterns below are the ones that appear most often in service operations. For each: identify the pattern from the data before the session, use the questions to surface the cause, and close with one specific commitment.</p>
-    <div class="pattern-grid">
-      <div class="pc urgent">
-        <div class="ps ps-u">Urgent — address immediately</div>
-        <div class="pt">Callback rate &gt; 30%</div>
-        <ul class="pa">
-          <li>Walk me through your last three callbacks. What was the root cause each time?</li>
-          <li>Are you ordering parts before fully diagnosing the fault?</li>
-          <li>Is there a specific machine model that keeps coming back? Let us look at the serial.</li>
-          <li>Are you getting enough time on-site, or are you being pushed to move on?</li>
-        </ul>
-        <div class="pnote">If above 30% for two months, schedule a joint site visit — you attend alongside the tech to observe diagnostic process.</div>
-      </div>
-      <div class="pc urgent">
-        <div class="ps ps-u">Urgent — address immediately</div>
-        <div class="pt">FTF rate &lt; 70%</div>
-        <ul class="pa">
-          <li>Of cases needing a second visit — were any parts return visits or genuine re-diagnoses?</li>
-          <li>Are Work Orders capturing what was actually done? A parts return should not count against FTF if logged correctly.</li>
-          <li>Is there a knowledge gap on any specific machine model?</li>
-          <li>Do you have access to the service manuals and technical bulletins you need?</li>
-        </ul>
-        <div class="pnote">Check the tech's case list sorted by Work Order count. Cases with 3+ WOs are where FTF is being lost — look for patterns.</div>
-      </div>
-      <div class="pc watch">
-        <div class="ps ps-w">Watch — discuss this week</div>
-        <div class="pt">Avg days to close &gt; 10 days</div>
-        <ul class="pa">
-          <li>Are cases being left open after work is done, or is there genuine delay?</li>
-          <li>What is your process for invoicing and closing — are you doing it same day?</li>
-          <li>Are there cases in Processing Invoice that have been there over a week? What is blocking them?</li>
-        </ul>
-        <div class="pnote">Filter Asset Downtime for their territory. Tech-delay cases open more than 72h are their responsibility — go through these together.</div>
-      </div>
-      <div class="pc watch">
-        <div class="ps ps-w">Watch — discuss this week</div>
-        <div class="pt">Self-logging cases (Technician origin)</div>
-        <ul class="pa">
-          <li>How are customers currently contacting you when they have a problem?</li>
-          <li>When you create the case yourself on arrival — how long after the customer called did you get there?</li>
-          <li>Can we give the account the email address or portal link to log directly?</li>
-        </ul>
-        <div class="pnote">Technician-origin cases inflate response time numbers. The goal is objective origins — not to punish the tech, but to make the data trustworthy for everyone.</div>
-      </div>
-      <div class="pc watch">
-        <div class="ps ps-w">Watch — discuss this week</div>
-        <div class="pt">Same asset appearing repeatedly</div>
-        <ul class="pa">
-          <li>This machine has had [X] callbacks this year. What is your read on its condition?</li>
-          <li>Has the customer been told the machine may need replacing?</li>
-          <li>Is there a CPC contract on this asset? Should we be raising a T&amp;M quote?</li>
-        </ul>
-        <div class="pnote">Check the repeat assets table on the Leaderboard — serials are linked to the Salesforce asset record. A machine with 5+ calls in a quarter is a candidate for an account conversation about replacement.</div>
-      </div>
-      <div class="pc good">
-        <div class="ps ps-g">Positive — acknowledge and reinforce</div>
-        <div class="pt">FTF ≥ 85% and callbacks ≤ 10%</div>
-        <ul class="pa">
-          <li>What is your diagnostic process when you arrive on site? Walk me through it.</li>
-          <li>What do you do differently when you are unsure about a fault?</li>
-          <li>Would you be willing to share your approach with the rest of the team?</li>
-        </ul>
-        <div class="pnote">Ask them to articulate what they do well — this makes it a skill they own, not luck. Recognition in the monthly summary to Shiv is warranted.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 7. DATA HYGIENE -->
-  <div class="section" id="hygiene">
-    <div class="section-header">
-      <span class="section-number">07</span>
-      <h2 class="section-title">Data hygiene</h2>
-    </div>
-    <p class="section-intro">The dashboard is only as good as the data in Salesforce. These behaviours must be consistent across the team for the metrics to be trustworthy.</p>
-    <div class="checklist">
-      <div class="cl-header"><span class="cl-title">Daily — technician responsibilities</span><span class="cl-who">Owner: each tech</span></div>
-      <div class="cl-item"><div class="cl-box"></div><div class="cl-text">Close cases the same day work is completed<span class="cl-detail">Leaving cases open inflates avg days to close. If waiting on invoice approval, set status to Processing Invoice — not Work Order Issued.</span></div><span class="cl-badge cb-tech">Tech</span></div>
-      <div class="cl-item"><div class="cl-box"></div><div class="cl-text">Complete Work Order notes before leaving site<span class="cl-detail">Fault description, parts used or ordered, resolution method. This is what the job audit score is based on. Sparse notes = lost score.</span></div><span class="cl-badge cb-tech">Tech</span></div>
-      <div class="cl-item"><div class="cl-box"></div><div class="cl-text">Log the correct Work Type on every case<span class="cl-detail">Service Call, Parts Fitting, Toner Delivery, Asset Maintenance — these filter separately across the dashboard. A Service Call logged as Toner Delivery disappears from performance metrics entirely.</span></div><span class="cl-badge cb-tech">Tech</span></div>
-      <div class="cl-item"><div class="cl-box"></div><div class="cl-text">Do not create a case if one already exists<span class="cl-detail">If the customer emailed or the SC already logged it, do not create a duplicate. A duplicate case with a later timestamp makes response time look worse than it was.</span></div><span class="cl-badge cb-tech">Tech</span></div>
-    </div>
-    <div class="checklist">
-      <div class="cl-header"><span class="cl-title">Daily — service controller responsibilities</span><span class="cl-who">Owner: Service Controller</span></div>
-      <div class="cl-item"><div class="cl-box"></div><div class="cl-text">Log phone calls immediately — not at end of day<span class="cl-detail">Every hour of delay inflates apparent response time. If the customer called at 9am and the case is logged at 4pm, the tech can never meet a 4h response target even if they arrived by noon.</span></div><span class="cl-badge cb-sc">SC</span></div>
-      <div class="cl-item"><div class="cl-box"></div><div class="cl-text">Assign territory at case creation<span class="cl-detail">Cases without a territory appear as Unassigned across all dashboard pages and don't count toward territory KPIs. Currently 8 open cases have no territory assigned.</span></div><span class="cl-badge cb-sc">SC</span></div>
-      <div class="cl-item"><div class="cl-box"></div><div class="cl-text">Update status when blocked externally<span class="cl-detail">Cases stuck in Work Order Issued look like tech delay on the Asset Downtime page. If the job is genuinely waiting on parts or customer approval, update the status so the delay is classified correctly.</span></div><span class="cl-badge cb-sc">SC</span></div>
-    </div>
-    <div class="checklist">
-      <div class="cl-header"><span class="cl-title">Weekly — manager review</span><span class="cl-who">Owner: Sridhar</span></div>
-      <div class="cl-item"><div class="cl-box"></div><div class="cl-text">Review open cases older than 30 days — close or escalate<span class="cl-detail">Check Asset Downtime filtered by Over 30 days. Any case this old needs a clear owner and next action, or should be closed if work is complete.</span></div><span class="cl-badge cb-mgr">Manager</span></div>
-      <div class="cl-item"><div class="cl-box"></div><div class="cl-text">Spot-check one tech's Work Orders each week<span class="cl-detail">Click a tech name on the leaderboard → review 5 recent cases → check Work Order notes. This is the data behind the Job Audit score. Rotate which tech you check.</span></div><span class="cl-badge cb-mgr">Manager</span></div>
-      <div class="cl-item"><div class="cl-box"></div><div class="cl-text">Confirm Ramiro Cataquis duplicate is being addressed<span class="cl-detail">Assigned_Technician__c is a free-text field, not a User lookup. "Ramiro Cataquis" and "Ramiro Cataquis (2)" are counting as different technicians. Raise with Vijendra for BC migration design.</span></div><span class="cl-badge cb-mgr">Manager</span></div>
-    </div>
-  </div>
-
-  <!-- 8. ESCALATION TRIGGERS -->
-  <div class="section" id="escalation">
-    <div class="section-header">
-      <span class="section-number">08</span>
-      <h2 class="section-title">Escalation triggers</h2>
-    </div>
-    <p class="section-intro">AMP conversations are developmental, not disciplinary — but there are thresholds that require a different type of conversation. These triggers are the point where a check-in session is no longer sufficient and a formal process needs to begin. Document every step using the notes field in Conversations before escalating.</p>
-
-    <div class="step">
-      <div class="sn sn-danger">!</div>
-      <div>
-        <div class="st">D category for two consecutive months → AMP formal conversation with Shiv</div>
-        <div class="sd">Two consecutive D-category months means the weekly check-in conversations are not producing movement. Under AMP, this is the trigger for a formal conversation — not punishment, but a clear reset of expectations and a structured support plan. Bring the two-month score summary from the Conversations page to your meeting with Shiv. A formal development plan should be documented and reviewed at monthly intervals. Continue weekly conversations — they become the evidence trail if the formal process needs to proceed further.</div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="sn sn-danger">!</div>
-      <div>
-        <div class="st">Callback rate &gt; 40% in any month → joint site visit</div>
-        <div class="sd">Above 40% is not a data anomaly — roughly every other job is coming back. Schedule a joint site visit to observe the tech's diagnostic and repair process in person. This is coaching, not performance management. Bring the relevant case numbers and asset serials from the Callbacks page.</div>
-        <a href="callbacks.html" class="slink">Callbacks by territory →</a>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="sn sn-danger">!</div>
-      <div>
-        <div class="st">Asset with 5+ callbacks in a quarter → account conversation</div>
-        <div class="sd">This is a machine reliability issue, not a technician issue. Raise with the account manager for a customer conversation. The machine may need replacement, a dedicated service plan, or a T&amp;M quote. Pull the asset record from Salesforce and review the full case history via the serial number link on the Leaderboard.</div>
-        <a href="leaderboard.html" class="slink">Repeat offender assets →</a>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="sn sn-amber">↑</div>
-      <div>
-        <div class="st">Any safety SOP breach → immediate report to Shiv</div>
-        <div class="sd">Score the safety KPI as 0 for the month. Document the incident in the conversation notes field with date and full description. Report to Shiv on the same day. Do not wait for the monthly scoring cycle. Follow RSP's incident reporting procedure.</div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="sn sn-amber">↑</div>
-      <div>
-        <div class="st">Samson Ragaruma — Solomon Islands coverage watch</div>
-        <div class="sd">With only 11 cases YTD and an average of 27.9 days to close, Solomons coverage from Samson is thin. Victor Geonzon is carrying the bulk of the Solomons work at 73 cases. If Samson's case volume is not increasing by end of April, raise a Solomons staffing conversation with Shiv at the monthly review.</div>
-      </div>
-    </div>
-
-    <div class="callout info">
-      <div class="ct ct-info">Coming next — Supabase migration</div>
-      <p>Once KPI definitions are validated with Sridhar (particularly the FTF definition and calls/day denominator), scores will migrate from browser localStorage to Supabase. Scores will then persist across devices, Shiv will be able to view monthly summaries, and trend lines per technician will be available after 2–3 months of stored data. Schema and migration scripts are already designed — ready to implement after tomorrow's validation session.</p>
-    </div>
-  </div>
-
-</main>
 </div>
 
-<footer>Ricoh South Pacific · Service Operating Rhythm · 26 Mar 2026</footer>
+<div class="kpi-grid" id="kpiGrid"></div>
+
+  <div id="terrOwnerSection"></div>
+
+  <div class="section-label">Monthly trend — SLA parts spend vs T&M revenue</div>
+  <div class="chart-card">
+    <div class="chart-title">NZD by month — Product Requests (SLA) vs Service Quotes (T&M)</div>
+    <div id="monthChart"></div>
+    <div class="chart-legend">
+      <div class="chart-leg-item"><div class="leg-dot" style="background:var(--danger)"></div>SLA parts spend (cost to RSP)</div>
+      <div class="chart-leg-item"><div class="leg-dot" style="background:var(--green)"></div>T&M revenue (customer pays)</div>
+    </div>
+  </div>
+
+  <div class="section-label">Top parts-consuming assets (SLA) — ProductConsumed YTD</div>
+  <div class="table-card">
+    <div class="table-header"><span class="table-title">Assets by SLA parts cost — unit price × qty consumed</span></div>
+    <table>
+      <thead><tr>
+        <th>Serial number</th>
+        <th>Asset</th>
+        <th>Territory</th>
+        <th class="right">Parts cost YTD (NZD)</th>
+      </tr></thead>
+      <tbody id="assetTable"></tbody>
+    </table>
+  </div>
+
+  <div class="section-label">Product Request summary — counts and values</div>
+  <div class="table-card">
+    <div class="table-header"><span class="table-title">Monthly breakdown</span></div>
+    <table>
+      <thead><tr>
+        <th>Month</th>
+        <th>Type</th>
+        <th class="right">Count</th>
+        <th class="right">Total value (NZD)</th>
+        <th class="right">Avg per request</th>
+      </tr></thead>
+      <tbody id="prTable"></tbody>
+    </table>
+  </div>
+</main>
+<footer>Ricoh South Pacific · Parts & Revenue · Product Request data · 2026 YTD · 26 Mar 2026</footer>
 
 <script>
-const sections = document.querySelectorAll('.section[id]');
-const links = document.querySelectorAll('.sidebar-link[href^="#"]');
-function updateActive() {
-  let cur = '';
-  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
-  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + cur));
+const SF = "https://clearedgepacific.my.salesforce.com/";
+
+// PR_MONTHLY=Service Quote:1:11:25993|Product Request:1:30:33806|Service Quote:2:31:106931|Product Request:2:50:78548|Service Quote:3:31:81259|Product Request:3:44:64213
+// All values in NZD (converted from local currencies using March 2026 mid-market rates)
+// Rates used: VUV 0.01439, WST 0.6197, SBD 0.2119, TOP 0.6904, NZD 1.0
+const FX_NOTE = "NZD values converted from local currencies (VUV, WST, SBD, TOP) at March 2026 mid-market rates.";
+const PR = [
+  {type:'Product Request', mo:1, cnt:30, amt:39215},
+  {type:'Service Quote',   mo:1, cnt:11, amt:30174},
+  {type:'Product Request', mo:2, cnt:50, amt:91117},
+  {type:'Service Quote',   mo:2, cnt:31, amt:124130},
+  {type:'Product Request', mo:3, cnt:44, amt:74488},
+  {type:'Service Quote',   mo:3, cnt:31, amt:94329},
+];
+
+// Territory breakdown from Salesforce (WorkOrder.ServiceTerritoryId → territory name)
+// Territory NZD values (local currency × FX rate, March 2026)
+const TERR_DATA = {
+  NZ:       {sla:{amt:10587,  cnt:10}, tm:{amt:360,    cnt:1}},
+  Solomons: {sla:{amt:106255, cnt:32}, tm:{amt:83197,  cnt:9}},
+  Samoa:    {sla:{amt:45374,  cnt:42}, tm:{amt:108193, cnt:33}},
+  Vanuatu:  {sla:{amt:29289,  cnt:26}, tm:{amt:39153,  cnt:17}},
+  Tonga:    {sla:{amt:13315,  cnt:14}, tm:{amt:17729,  cnt:13}},
+};
+
+// Owner (technician) breakdown
+// Owner NZD values (local currency × FX rate by territory, March 2026)
+const OWNER_DATA = [
+  {name:'Victor Geonzon',         sla:{amt:104570, cnt:27}, tm:{amt:70200,  cnt:5}},
+  {name:'Arturo Regis',           sla:{amt:22327,  cnt:21}, tm:{amt:49964,  cnt:17}},
+  {name:'Ramiro Cataquis',        sla:{amt:23047,  cnt:21}, tm:{amt:58228,  cnt:16}},
+  {name:'Junriel Andoy',          sla:{amt:20504,  cnt:13}, tm:{amt:15681,  cnt:7}},
+  {name:'Sridhar Bhattacharjee',  sla:{amt:15550,  cnt:13}, tm:{amt:30741,  cnt:7}},
+  {name:'Florencio Jr. Familar',  sla:{amt:8786,   cnt:13}, tm:{amt:23472,  cnt:10}},
+  {name:'John Cid',               sla:{amt:9889,   cnt:10}, tm:{amt:11468,  cnt:9}},
+  {name:'Samson Ragaruma',        sla:{amt:1685,   cnt:5},  tm:{amt:8481,   cnt:2}},
+];
+const MONTHS = {1:'January',2:'February',3:'March'};
+
+// PC_ASSETS from Salesforce
+const ASSETS = [
+  ["9135R110133","Ricoh IM C2010 - 9135R110133","Vanuatu",746789,"02iMp00000CnB3RIAV"],
+  ["9263P800171","Ricoh IM 460 - 9263P800171","Vanuatu",593146,"02iMp00000D12jRIAR"],
+  ["4462R220003","Ricoh IM 6000 - 4462R220003","Solomons",229766,"02i7F000000WV12QAG"],
+  ["3120MA20353","Ricoh IM C4500 - 3120MA20353","Vanuatu",142524,"02i7F00000FlnbJQAR"],
+  ["3098RC20298","Ricoh IM C2500 - 3098RC20298","Vanuatu",109272,"02i7F000009UvZQQA0"],
+  ["3923P452807","Ricoh IM C300F - 3923P452807","Vanuatu",92611,"02iGA00000ZMoNMYA1"],
+  ["9174R820071","Ricoh IM C4510 - 9174R820071","Vanuatu",63862,"02iMp00000A8rcTIAR"],
+  ["3925P250037","Ricoh IM C300F - 3925P250037","Vanuatu",60611,"02iMp00000BuZxdIAF"],
+  ["3129M920905","Ricoh IM C4500 - 3129M920905","Vanuatu",58042,"02i7F000009VH3KQAW"],
+  ["3359P102092","Ricoh IM 430F - 3359P102092","Vanuatu",51662,"02i7F00000FlkJWQAZ"],
+  ["G988X370920","Ricoh MP 501 - G988X370920","Vanuatu",51202,"02i7F000009Nu9CQAS"],
+  ["E154M850002","Sig Ricoh MP C3003 - E154M850002","Vanuatu",48908,"02iGA00000hKAKdYAO"],
+  ["C386PC00385","Ricoh MP 5055 - C386PC00385","Solomons",41648,"02i7F000009NtySQAS"],
+  ["C507P502343","Ricoh MP C307 - C507P502343","Vanuatu",35453,"02i7F000009Ntz9QAC"],
+];
+
+function fmt(n){return 'NZD '+n.toLocaleString();}
+
+// KPI cards
+function getFilteredTotals() {
+  const terr = document.getElementById('filterTerritory')?.value || '';
+  const tech = document.getElementById('filterTech')?.value || '';
+  let slaTot=0, tmTot=0, slaCnt=0, tmCnt=0;
+  if (terr && !tech) {
+    const d = TERR_DATA[terr];
+    if (d) { slaTot=d.sla.amt; tmTot=d.tm.amt; slaCnt=d.sla.cnt; tmCnt=d.tm.cnt; }
+  } else if (tech && !terr) {
+    const d = OWNER_DATA.find(o=>o.name===tech);
+    if (d) { slaTot=d.sla.amt; tmTot=d.tm.amt; slaCnt=d.sla.cnt; tmCnt=d.tm.cnt; }
+  } else if (terr && tech) {
+    // Both filters - approximate: show tech total with territory note
+    const d = OWNER_DATA.find(o=>o.name===tech);
+    if (d) { slaTot=d.sla.amt; tmTot=d.tm.amt; slaCnt=d.sla.cnt; tmCnt=d.tm.cnt; }
+  } else {
+    slaTot = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.amt,0);
+    tmTot  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.amt,0);
+    slaCnt = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.cnt,0);
+    tmCnt  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.cnt,0);
+  }
+  return {slaTot,tmTot,slaCnt,tmCnt};
 }
-window.addEventListener('scroll', updateActive, {passive:true});
-updateActive();
-links.forEach(l => l.addEventListener('click', e => {
-  e.preventDefault();
-  const t = document.querySelector(l.getAttribute('href'));
-  if (t) t.scrollIntoView({behavior:'smooth'});
-}));
+
+function renderKPIs(){
+  const {slaTot,tmTot,slaCnt,tmCnt} = getFilteredTotals();
+  const terr = document.getElementById('filterTerritory')?.value || '';
+  const tech = document.getElementById('filterTech')?.value || '';
+  const ratio = slaTot > 0 ? (tmTot/slaTot).toFixed(2) : '—';
+  const subtitle = terr ? ` · ${terr}` : tech ? ` · ${tech.split(' ')[0]}` : '';
+
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi-card red"><div class="kpi-label">SLA parts spend — YTD${subtitle}</div>
+      <div class="kpi-value" style="color:var(--danger)">NZD ${slaTot>=1000?(slaTot/1000).toFixed(0)+'k':slaTot.toLocaleString()}</div>
+      <div class="kpi-sub">${slaCnt} product requests · cost to RSP</div></div>
+    <div class="kpi-card green"><div class="kpi-label">T&M revenue — YTD${subtitle}</div>
+      <div class="kpi-value" style="color:var(--green)">NZD ${tmTot>=1000?(tmTot/1000).toFixed(0)+'k':tmTot.toLocaleString()}</div>
+      <div class="kpi-sub">${tmCnt} service quotes · customer pays</div></div>
+    <div class="kpi-card ${parseFloat(ratio)>=1?'green':'amber'}"><div class="kpi-label">T&M / SLA ratio${subtitle}</div>
+      <div class="kpi-value">${ratio}×</div>
+      <div class="kpi-sub">Target &gt;1.0× — T&M exceeding SLA spend</div></div>
+    <div class="kpi-card amber"><div class="kpi-label">Solomons parts spend</div>
+      <div class="kpi-value" style="color:var(--amber)">NZD 106k SLA</div>
+      <div class="kpi-sub">Highest territory in NZD — Victor Geonzon NZD 105k</div></div>`;
+}
+
+// Month chart
+function renderMonthChart(){
+  const maxAmt = Math.max(...PR.map(r=>r.amt));
+  const rows = [1,2,3].map(mo => {
+    const sla = PR.find(r=>r.type==='Product Request'&&r.mo===mo) || {amt:0};
+    const tm  = PR.find(r=>r.type==='Service Quote'&&r.mo===mo)   || {amt:0};
+    const slaPct = Math.round(sla.amt/maxAmt*100);
+    const tmPct  = Math.round(tm.amt/maxAmt*100);
+    return `<div class="dual-bar-row">
+      <div class="dual-label">${MONTHS[mo].substring(0,3)}</div>
+      <div class="dual-bars">
+        <div class="dual-bar-track"><div class="bar-fill-sla" style="width:${slaPct}%">${slaPct>15?'NZD '+(sla.amt/1000).toFixed(0)+'k':''}</div></div>
+        <div class="dual-bar-track"><div class="bar-fill-tm"  style="width:${tmPct}%">${tmPct>15?'NZD '+(tm.amt/1000).toFixed(0)+'k':''}</div></div>
+      </div>
+      <div class="dual-totals">
+        <span style="color:var(--danger);font-size:10px">SLA: NZD ${(sla.amt/1000).toFixed(0)}k</span><br>
+        <span style="color:var(--green);font-size:10px">T&M: NZD ${(tm.amt/1000).toFixed(0)}k</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('monthChart').innerHTML = rows;
+}
+
+// Asset table
+function renderAssetTable(){
+  const maxCost = ASSETS[0][3];
+  document.getElementById('assetTable').innerHTML = ASSETS.map(([sn,name,terr,cost,assetId]) => {
+    const pct = Math.round(cost/maxCost*100);
+    const link = `<a href="${SF}${assetId}" target="_blank" class="asset-link">${sn}</a>`;
+    return `<tr>
+      <td>${link}</td>
+      <td style="font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</td>
+      <td><span class="terr-pill t-${terr}">${terr}</span></td>
+      <td class="right"><span class="sla-val">NZD ${cost.toLocaleString()}</span>
+        <div style="height:4px;background:#f0f0f0;border-radius:2px;margin-top:3px;width:100px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:4px;background:var(--danger);border-radius:2px;width:${pct}%"></div></div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// PR table
+function renderPRTable(){
+  const rows = PR.map(r => {
+    const avg = Math.round(r.amt/r.cnt);
+    const isSLA = r.type === 'Product Request';
+    return `<tr>
+      <td>${MONTHS[r.mo]}</td>
+      <td><span class="type-tag ${isSLA?'tag-sla':'tag-tm'}" style="padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;background:${isSLA?'var(--danger-bg)':'var(--green-bg)'};color:${isSLA?'var(--danger)':'var(--green)'}">${r.type}</span></td>
+      <td class="right mono">${r.cnt}</td>
+      <td class="right ${isSLA?'sla-val':'tm-val'}">NZD ${r.amt.toLocaleString()}</td>
+      <td class="right mono">NZD ${avg.toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+  // Totals
+  const slaTot = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.amt,0);
+  const tmTot  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.amt,0);
+  const slaCnt = PR.filter(r=>r.type==='Product Request').reduce((s,r)=>s+r.cnt,0);
+  const tmCnt  = PR.filter(r=>r.type==='Service Quote').reduce((s,r)=>s+r.cnt,0);
+  document.getElementById('prTable').innerHTML = rows + `
+    <tr style="background:var(--surface2);font-weight:600">
+      <td colspan="2">YTD Total — SLA</td>
+      <td class="right mono">${slaCnt}</td>
+      <td class="right sla-val">NZD ${slaTot.toLocaleString()}</td>
+      <td class="right mono">NZD ${Math.round(slaTot/slaCnt).toLocaleString()}</td>
+    </tr>
+    <tr style="background:var(--surface2);font-weight:600">
+      <td colspan="2">YTD Total — T&M</td>
+      <td class="right mono">${tmCnt}</td>
+      <td class="right tm-val">NZD ${tmTot.toLocaleString()}</td>
+      <td class="right mono">NZD ${Math.round(tmTot/tmCnt).toLocaleString()}</td>
+    </tr>`;
+}
+
+function renderTerrOwnerTable() {
+  const terr = document.getElementById('filterTerritory')?.value || '';
+  const tech = document.getElementById('filterTech')?.value || '';
+  // Show territory breakdown when no tech filter, owner breakdown when tech selected
+  const showOwner = !!tech;
+  const container = document.getElementById('terrOwnerSection');
+  if (!container) return;
+
+  if (!showOwner) {
+    // Territory breakdown
+    const rows = Object.entries(TERR_DATA)
+      .filter(([t]) => !terr || t === terr)
+      .sort((a,b) => (b[1].sla.amt+b[1].tm.amt)-(a[1].sla.amt+a[1].tm.amt))
+      .map(([t, d]) => {
+        const ratio = d.sla.amt > 0 ? (d.tm.amt/d.sla.amt).toFixed(2) : '—';
+        const ratCls = parseFloat(ratio)>=1 ? 'tm-val' : 'sla-val';
+        return `<tr>
+          <td><span class="terr-pill t-${t}">${t}</span></td>
+          <td class="right sla-val mono">NZD ${d.sla.amt.toLocaleString()}</td>
+          <td class="right mono" style="color:var(--muted)">${d.sla.cnt}</td>
+          <td class="right tm-val mono">NZD ${d.tm.amt.toLocaleString()}</td>
+          <td class="right mono" style="color:var(--muted)">${d.tm.cnt}</td>
+          <td class="right mono ${ratCls}">${ratio}×</td>
+        </tr>`;
+      }).join('');
+    container.innerHTML = `
+      <div class="section-label" style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px">
+        Territory breakdown<span style="flex:1;height:1px;background:var(--border);display:block"></span>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><span class="table-title">SLA spend vs T&M revenue by territory — YTD</span></div>
+        <table>
+          <thead><tr>
+            <th>Territory</th>
+            <th class="right">SLA parts spend</th>
+            <th class="right">SLA count</th>
+            <th class="right">T&M revenue</th>
+            <th class="right">T&M count</th>
+            <th class="right">T&M/SLA ratio</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  } else {
+    // Owner/tech breakdown
+    const rows = OWNER_DATA
+      .filter(o => !tech || o.name === tech)
+      .sort((a,b) => (b.sla.amt+b.tm.amt)-(a.sla.amt+a.tm.amt))
+      .map(o => {
+        const ratio = o.sla.amt > 0 ? (o.tm.amt/o.sla.amt).toFixed(2) : '—';
+        const ratCls = parseFloat(ratio)>=1 ? 'tm-val' : 'sla-val';
+        return `<tr>
+          <td style="font-size:13px;font-weight:500">${o.name}</td>
+          <td class="right sla-val mono">NZD ${o.sla.amt.toLocaleString()}</td>
+          <td class="right mono" style="color:var(--muted)">${o.sla.cnt}</td>
+          <td class="right tm-val mono">NZD ${o.tm.amt.toLocaleString()}</td>
+          <td class="right mono" style="color:var(--muted)">${o.tm.cnt}</td>
+          <td class="right mono ${ratCls}">${ratio}×</td>
+        </tr>`;
+      }).join('');
+    container.innerHTML = `
+      <div class="section-label" style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px">
+        Technician breakdown<span style="flex:1;height:1px;background:var(--border);display:block"></span>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><span class="table-title">SLA spend vs T&M revenue by technician (Product Request owner) — YTD</span></div>
+        <table>
+          <thead><tr>
+            <th>Technician</th>
+            <th class="right">SLA parts spend</th>
+            <th class="right">SLA count</th>
+            <th class="right">T&M revenue</th>
+            <th class="right">T&M count</th>
+            <th class="right">T&M/SLA ratio</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+}
+
+function applyFilters() {
+  renderKPIs();
+  renderVizCharts();
+  renderTerrOwnerTable();
+  renderMonthChart();
+  renderAssetTable();
+  renderPRTable();
+}
+
+renderKPIs();
+renderVizCharts();
+renderMonthChart();
+renderAssetTable();
+renderPRTable();
+renderTerrOwnerTable();
+
+function renderVizCharts() {
+  const terr = document.getElementById('filterTerritory')?.value || '';
+  const tech = document.getElementById('filterTech')?.value || '';
+
+  // Territory SLA+TM chart
+  const terrData = Object.entries(TERR_DATA)
+    .filter(([t]) => !terr || t === terr)
+    .sort((a,b) => b[1].sla.amt - a[1].sla.amt);
+  const maxTerrAmt = terrData.length ? Math.max(...terrData.map(([,v]) => Math.max(v.sla.amt, v.tm.amt))) : 1;
+
+  document.getElementById('terrSLAChart').innerHTML = terrData.map(([t, d]) => {
+    const slaW = Math.round(d.sla.amt/maxTerrAmt*100);
+    const tmW  = Math.round(d.tm.amt/maxTerrAmt*100);
+    const pill = `<span class="terr-pill t-${t}" style="font-size:10px">${t}</span>`;
+    return `<div class="bc-row">
+      <div class="bc-label">${pill}</div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div class="bc-track" title="SLA NZD ${d.sla.amt.toLocaleString()}">
+          <div class="bc-sla" style="width:${slaW}%"></div>
+        </div>
+        <div class="bc-track" title="T&M NZD ${d.tm.amt.toLocaleString()}">
+          <div class="bc-tm" style="width:${tmW}%"></div>
+        </div>
+      </div>
+      <div class="bc-meta">SLA ${(d.sla.amt/1000).toFixed(0)}k<br>T&M ${(d.tm.amt/1000).toFixed(0)}k</div>
+    </div>`;
+  }).join('');
+
+  // Technician SLA chart
+  const techFiltered = OWNER_DATA.filter(o => !tech || o.name === tech);
+  const maxOwnerSLA = techFiltered.length ? Math.max(...techFiltered.map(o => Math.max(o.sla.amt, o.tm.amt))) : 1;
+
+  document.getElementById('techSLAChart').innerHTML = techFiltered.map(o => {
+    const slaW = Math.round(o.sla.amt/maxOwnerSLA*100);
+    const tmW  = Math.round(o.tm.amt/maxOwnerSLA*100);
+    const shortName = o.name.split(' ')[0];
+    return `<div class="bc-row" style="grid-template-columns:80px 1fr 90px">
+      <div class="bc-label" title="${o.name}" style="font-size:10px">${shortName}</div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div class="bc-track" title="${o.name} — SLA NZD ${o.sla.amt.toLocaleString()}">
+          <div class="bc-sla" style="width:${slaW}%"></div>
+        </div>
+        <div class="bc-track" title="${o.name} — T&M NZD ${o.tm.amt.toLocaleString()}">
+          <div class="bc-tm" style="width:${tmW}%"></div>
+        </div>
+      </div>
+      <div class="bc-meta">SLA ${(o.sla.amt/1000).toFixed(0)}k<br>T&M ${(o.tm.amt/1000).toFixed(0)}k</div>
+    </div>`;
+  }).join('');
+}
+
 </script>
 </body>
 </html>
