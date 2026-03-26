@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shikha — Operations Dashboard · RSP</title>
+<title>Shikha — Operations Scorecard · RSP</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -225,33 +225,182 @@
   </div>
 </header>
 
-<div class="notice">⏳ BMS MCP connecting today (Vijendra) · GoPayroll MCP scoped · Vanuatu Unleashed sync error logged</div>
+<div class="notice" style="background:var(--teal-bg);border-bottom-color:var(--teal-border);color:var(--teal);">✓ BMS MCP live · Billing cycle baseline set (90.7% overall) · GoPayroll MCP scoped · Vanuatu Unleashed sync error logged</div>
 
 <nav class="nav">
-  <div class="nav-tab active" onclick="go('scoreboard',this)">Scoreboard</div>
-  <div class="nav-tab" onclick="go('csf',this)">CSFs</div>
+  <div class="nav-tab active" onclick="go('scorecard',this)">Scorecard</div>
+  <div class="nav-tab" onclick="go('wigs',this)">WIGs</div>
   <div class="nav-tab" onclick="go('bms',this)">BMS</div>
   <div class="nav-tab" onclick="go('payroll',this)">Payroll</div>
   <div class="nav-tab" onclick="go('orders',this)">Orders</div>
   <div class="nav-tab" onclick="go('drilldown',this)">Invoice Drill-Down</div>
   <div class="nav-tab" onclick="go('whirlwind',this)">Whirlwind</div>
+  <div class="nav-tab" onclick="go('rhythm',this)">Operating Rhythm</div>
 </nav>
 
 
-<!-- ══════════════ SCOREBOARD ══════════════ -->
-<div class="page active" id="page-scoreboard">
-  <p class="slabel">This week — live data</p>
-  <div class="filter-bar">
-    <span class="filter-label">Country</span>
-    <button class="chip active" onclick="filterSB('all',this)">All</button>
-    <button class="chip" onclick="filterSB('nz',this)">🇳🇿 RSP (NZ)</button>
-    <button class="chip" onclick="filterSB('samoa',this)">🇼🇸 Samoa</button>
-    <button class="chip" onclick="filterSB('vanuatu',this)">🇻🇺 Vanuatu</button>
-    <button class="chip" onclick="filterSB('tonga',this)">🇹🇴 Tonga</button>
-    <button class="chip" onclick="filterSB('solomons',this)">🇸🇧 Solomons</button>
+<!-- ══════════════ SCORECARD ══════════════ -->
+<div class="page active" id="page-scorecard">
+
+  <!-- Framework orientation banner -->
+  <div style="background:var(--text);color:#f5f4f0;border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;">
+    <div style="padding:10px 16px 10px 0;border-right:0.5px solid rgba(255,255,255,0.12);">
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal-border);margin-bottom:5px;">CSFs — always on</div>
+      <div style="font-size:12px;font-weight:500;line-height:1.5;margin-bottom:4px;">Critical Success Factors</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.5;">The structural pillars that must go right for operations to succeed. Ongoing — no score. Defined once, reviewed quarterly. Examples: billing integrity, order velocity, payroll reliability.</div>
+    </div>
+    <div style="padding:10px 16px;border-right:0.5px solid rgba(255,255,255,0.12);">
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#378ADD;margin-bottom:5px;">WIGs — 90-day sprint</div>
+      <div style="font-size:12px;font-weight:500;line-height:1.5;margin-bottom:4px;">Wildly Important Goals</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.5;">2–3 things that matter most right now. Time-bound (X → Y by WHEN). Each WIG maps to one CSF. Set at the start of each quarter with the CEO. Reviewed every L10.</div>
+    </div>
+    <div style="padding:10px 16px;border-right:0.5px solid rgba(255,255,255,0.12);">
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--amber-border);margin-bottom:5px;">Scorecard — weekly</div>
+      <div style="font-size:12px;font-weight:500;line-height:1.5;margin-bottom:4px;">Lead Measures</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.5;">The weekly inputs Shikha controls that predict whether WIGs will be hit. Green = on track. Red = action needed this week. This tab is the L10 Scorecard — update it before every Tuesday meeting.</div>
+    </div>
+    <div style="padding:10px 0 10px 16px;">
+      <div style="font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:5px;">Tasks / Issues — weekly</div>
+      <div style="font-size:12px;font-weight:500;line-height:1.5;margin-bottom:4px;">Rocks &amp; Issues List</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.5;">Quarterly Rocks (90-day milestones toward WIGs) and the Issues List (IDS — Identify, Discuss, Solve) live in the L10 agenda. Not tracked here — managed in the L10 meeting itself.</div>
+    </div>
   </div>
-  <div id="sb-tiles"></div>
-  <p class="slabel" style="margin-top:4px;">Data sources</p>
+
+  <p class="slabel">Week ending 27 Mar 2026 — lead measures · scored weekly</p>
+
+  <!-- WIG 01 lead measures -->
+  <div style="margin-bottom:20px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <span style="font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-hint);">WIG 01 — Order fulfilment velocity</span>
+      <span style="font-size:9px;color:var(--text-hint);">Open/parked orders: 49 → ≤10 by 30 Jun 2026</span>
+    </div>
+    <div class="tiles">
+      <div class="tile red">
+        <div class="tile-lbl">Open / parked orders — all entities</div>
+        <div class="tile-val">49</div>
+        <div class="tile-sub">Target: ≤10 · All orders are stale (&gt;48 hrs)</div>
+        <div class="tile-src">Unleashed — RSP, Samoa, SI, Tonga</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Orders held &gt;48 hrs — RSP</div>
+        <div class="tile-val">23</div>
+        <div class="tile-sub">Target: ≤3/wk · 100% of open RSP orders</div>
+        <div class="tile-src">Unleashed — RSP</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Orders held &gt;48 hrs — Solomons</div>
+        <div class="tile-val">14</div>
+        <div class="tile-sub">Target: ≤3/wk · All SI open orders stale</div>
+        <div class="tile-src">Unleashed — Solomons</div>
+      </div>
+      <div class="tile amber">
+        <div class="tile-lbl">Orders held &gt;48 hrs — Tonga</div>
+        <div class="tile-val">8</div>
+        <div class="tile-sub">Target: ≤3/wk</div>
+        <div class="tile-src">Unleashed — Tonga</div>
+      </div>
+      <div class="tile green">
+        <div class="tile-lbl">Orders held &gt;48 hrs — Samoa</div>
+        <div class="tile-val">4</div>
+        <div class="tile-sub">Target: ≤3/wk · Closest to target</div>
+        <div class="tile-src">Unleashed — Samoa</div>
+      </div>
+      <div class="tile neutral">
+        <div class="tile-lbl">Orders processed within 24 hrs — RSP</div>
+        <div class="tile-val">0%</div>
+        <div class="tile-sub">Target: ≥90% · This week — no completions with CompletedDate set</div>
+        <div class="tile-src">Unleashed — RSP</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIG 02 lead measures -->
+  <div style="margin-bottom:20px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <span style="font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-hint);">WIG 02 — CPC billing cycle completion</span>
+      <span style="font-size:9px;color:var(--text-hint);">90.7% baseline → 100% by 30 Jun 2026</span>
+    </div>
+    <div class="tiles">
+      <div class="tile amber">
+        <div class="tile-lbl">Overall billing completion rate</div>
+        <div class="tile-val">90.7%</div>
+        <div class="tile-sub">Dec 2025–Mar 2026 baseline · 1,148/1,266 periods completed</div>
+        <div class="tile-src">BMS — live</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Tonga completion — critical</div>
+        <div class="tile-val">69.7%</div>
+        <div class="tile-sub">76 periods incomplete · Oldest open Sep 2021 · No @remote reads</div>
+        <div class="tile-src">BMS → billing_billing_periods · TOP</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Open billing transactions</div>
+        <div class="tile-val">454</div>
+        <div class="tile-sub">Target: 0 · Across all entities</div>
+        <div class="tile-src">BMS → billing_transactions</div>
+      </div>
+      <div class="tile amber">
+        <div class="tile-lbl">Meter read coverage — last 30d</div>
+        <div class="tile-val">87%</div>
+        <div class="tile-sub">687 of 790 billable assets read · 103 unread</div>
+        <div class="tile-src">BMS → core_meter_readings</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Assets on automated reads</div>
+        <div class="tile-val">17%</div>
+        <div class="tile-sub">137/790 on 3manager · @remote effectively zero · Tonga = 0</div>
+        <div class="tile-src">BMS → core_readings.source_type</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIG 03 lead measures -->
+  <div style="margin-bottom:20px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <span style="font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-hint);">WIG 03 — Payroll cycle time</span>
+      <span style="font-size:9px;color:var(--text-hint);">3.7d baseline → ≤1.5d by 30 Jun 2026</span>
+    </div>
+    <div class="tiles">
+      <div class="tile amber">
+        <div class="tile-lbl">Avg processing — all islands</div>
+        <div class="tile-val">3.7d</div>
+        <div class="tile-sub">Target: ≤1.5d · Baseline (Xero proxy)</div>
+        <div class="tile-src">Xero → 4 island entities</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Solomons processing time</div>
+        <div class="tile-val">4.0d</div>
+        <div class="tile-sub">Target: ≤1.5d · +2.5d over</div>
+        <div class="tile-src">Xero — Solomon Islands</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Tonga processing time</div>
+        <div class="tile-val">4.0d</div>
+        <div class="tile-sub">Target: ≤1.5d · +2.5d over</div>
+        <div class="tile-src">Xero — Tonga</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Vanuatu processing time</div>
+        <div class="tile-val">3.7d</div>
+        <div class="tile-sub">Target: ≤1.5d · +2.2d over</div>
+        <div class="tile-src">Xero — Vanuatu</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Samoa processing time</div>
+        <div class="tile-val">3.3d</div>
+        <div class="tile-sub">Target: ≤1.5d · +1.8d over · Best of four</div>
+        <div class="tile-src">Xero — Samoa</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Entities hitting ≤1.5d target</div>
+        <div class="tile-val">0/4</div>
+        <div class="tile-sub">Target: 4/4 by Jun 2026</div>
+        <div class="tile-src">Xero → all island entities</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="slabel">Data sources</p>
   <div style="display:flex;gap:7px;flex-wrap:wrap;">
     <span class="src-tag">Xero — Samoa</span><span class="src-tag">Xero — Vanuatu</span>
     <span class="src-tag">Xero — Tonga</span><span class="src-tag">Xero — Solomon Islands</span>
@@ -265,14 +414,47 @@
 </div>
 
 
-<!-- ══════════════ CSFs ══════════════ -->
-<div class="page" id="page-csf">
-  <p class="slabel">Critical success factors — 4DX · Jun 2026 horizon</p>
+<!-- ══════════════ WIGs ══════════════ -->
+<div class="page" id="page-wigs">
+
+  <!-- CSF architecture explainer -->
+  <div style="background:var(--surface);border:0.5px solid var(--border-strong);border-radius:var(--radius-lg);padding:14px 18px;margin-bottom:22px;max-width:860px;">
+    <p class="slabel" style="margin-bottom:8px;">Critical Success Factors — structural pillars (Rockart / Daniel framework)</p>
+    <p style="font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:12px;">CSFs define the areas where things must go right for the operations function to succeed. They are ongoing and structural — not sprint-based. WIGs are set within CSFs: they are the current 90-day execution priorities, scored weekly. Each WIG maps to one CSF.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;">
+      <div style="background:var(--surface-2);border-radius:var(--radius);padding:9px 12px;border-left:3px solid var(--teal-border);">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--teal);margin-bottom:3px;">CSF 1</div>
+        <div style="font-size:12px;font-weight:500;color:var(--text);">Order fulfilment velocity</div>
+        <div style="font-size:11px;color:var(--text-hint);margin-top:2px;">Orders move from receipt to invoice without delay or rework</div>
+      </div>
+      <div style="background:var(--surface-2);border-radius:var(--radius);padding:9px 12px;border-left:3px solid var(--blue-border);">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--blue);margin-bottom:3px;">CSF 2</div>
+        <div style="font-size:12px;font-weight:500;color:var(--text);">Billing cycle integrity</div>
+        <div style="font-size:11px;color:var(--text-hint);margin-top:2px;">CPC billing is complete, accurate, and on time every cycle</div>
+      </div>
+      <div style="background:var(--surface-2);border-radius:var(--radius);padding:9px 12px;border-left:3px solid var(--amber-border);">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--amber);margin-bottom:3px;">CSF 3</div>
+        <div style="font-size:12px;font-weight:500;color:var(--text);">Payroll cycle reliability</div>
+        <div style="font-size:11px;color:var(--text-hint);margin-top:2px;">Island entity payroll is processed accurately and on time every cycle</div>
+      </div>
+      <div style="background:var(--surface-2);border-radius:var(--radius);padding:9px 12px;border-left:3px solid var(--border-strong);">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-hint);margin-bottom:3px;">CSF 4</div>
+        <div style="font-size:12px;font-weight:500;color:var(--text);">Data &amp; systems accuracy</div>
+        <div style="font-size:11px;color:var(--text-hint);margin-top:2px;">BMS, Unleashed, and Xero records are clean and current (supports all WIGs)</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="slabel">WIGs — current 90-day execution priorities · scored weekly · Jun 2026 horizon</p>
   <div class="wig-grid">
+
     <div class="wig">
       <div class="wig-head">
         <div class="wig-title">Reduce open / parked orders across all entities from 49 to ≤10 at any week-end snapshot</div>
-        <div class="wig-num">CSF 01</div>
+        <div class="wig-num">WIG 01</div>
+      </div>
+      <div style="padding:6px 14px;background:rgba(29,158,117,0.08);border-bottom:0.5px solid var(--border);">
+        <span style="font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--teal);">↳ CSF 1 — Order fulfilment velocity</span>
       </div>
       <div class="wig-body">
         <div class="lag-lbl">Lag measure</div>
@@ -280,9 +462,9 @@
         <div class="progress-row"><span>Baseline → Target</span><span style="color:var(--red)">49 → 10</span></div>
         <div class="bar"><div class="bar-fill" style="width:20%;background:var(--red-border);"></div></div>
         <ul class="leads">
-          <li class="lead-row"><span>Orders processed within 24 hrs</span><span class="pill pill-neutral">Baseline TBC</span></li>
-          <li class="lead-row"><span>Orders held &gt;48 hrs — missing data</span><span class="pill pill-amber">Target ≤3/wk</span></li>
-          <li class="lead-row"><span>Open orders at week-end — all entities</span><span class="pill pill-red">49 this week</span></li>
+          <li class="lead-row"><span>Orders processed within 24 hrs of receipt</span><span class="pill pill-red">0% this week</span></li>
+          <li class="lead-row"><span>Orders held &gt;48 hrs — all entities</span><span class="pill pill-red">49 / target ≤3/wk</span></li>
+          <li class="lead-row"><span>Open orders at week-end snapshot</span><span class="pill pill-red">49 / target ≤10</span></li>
         </ul>
       </div>
       <div class="wig-foot">
@@ -290,28 +472,37 @@
         <span class="src-tag pending">Vanuatu — pending</span>
       </div>
     </div>
+
     <div class="wig">
       <div class="wig-head">
-        <div class="wig-title">CPC billing cycle completion — 100% of meter reads billing-ready within 3 days of cycle open</div>
-        <div class="wig-num">CSF 02</div>
+        <div class="wig-title">CPC billing cycle completion — improve from 90.7% baseline to 100% across all entities by 30 Jun 2026</div>
+        <div class="wig-num">WIG 02</div>
+      </div>
+      <div style="padding:6px 14px;background:rgba(55,138,221,0.08);border-bottom:0.5px solid var(--border);">
+        <span style="font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--blue);">↳ CSF 2 — Billing cycle integrity</span>
       </div>
       <div class="wig-body">
         <div class="lag-lbl">Lag measure</div>
-        <div class="lag-text">% of billable devices with completed BMS Billing Cycle transaction within 3 days of cycle open — baseline from historic BMS data at go-live</div>
-        <div class="progress-row"><span>Baseline</span><span style="color:var(--amber)">Setting at BMS go-live</span></div>
-        <div class="bar"><div class="bar-fill" style="width:0%;background:var(--amber-border);"></div></div>
+        <div class="lag-text">% of billing periods for active contracts resulting in a completed transaction — baseline 90.7% overall (Dec 2025–Mar 2026). Tonga 69.7% is critical.</div>
+        <div class="progress-row"><span>Baseline → Target</span><span style="color:var(--amber)">90.7% → 100%</span></div>
+        <div class="bar"><div class="bar-fill" style="width:90%;background:var(--amber-border);"></div></div>
         <ul class="leads">
-          <li class="lead-row"><span>Billing Cycle created → completed (BMS delta)</span><span class="pill pill-neutral">BMS pending</span></li>
-          <li class="lead-row"><span>Open billing exceptions at week-end</span><span class="pill pill-neutral">Target 0</span></li>
-          <li class="lead-row"><span>Devices missing contract data (unbillable)</span><span class="pill pill-neutral">Reduce 2/mo</span></li>
+          <li class="lead-row"><span>Tonga completion rate (lowest entity)</span><span class="pill pill-red">69.7% / target 100%</span></li>
+          <li class="lead-row"><span>Assets with meter read in last 30 days</span><span class="pill pill-amber">687/790 (87%)</span></li>
+          <li class="lead-row"><span>Open billing transactions — all entities</span><span class="pill pill-red">454 open</span></li>
+          <li class="lead-row"><span>Assets on automated reads (3manager/@remote)</span><span class="pill pill-amber">137/790 (17%)</span></li>
         </ul>
       </div>
-      <div class="wig-foot"><span class="src-tag pending">BMS — connecting today</span></div>
+      <div class="wig-foot"><span class="src-tag">BMS — live</span></div>
     </div>
+
     <div class="wig">
       <div class="wig-head">
         <div class="wig-title">Reduce payroll processing from 3.7-day baseline to ≤1.5 days across all island entities by 30 Jun 2026</div>
-        <div class="wig-num">CSF 03</div>
+        <div class="wig-num">WIG 03</div>
+      </div>
+      <div style="padding:6px 14px;background:rgba(186,117,23,0.08);border-bottom:0.5px solid var(--border);">
+        <span style="font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--amber);">↳ CSF 3 — Payroll cycle reliability</span>
       </div>
       <div class="wig-body">
         <div class="lag-lbl">Lag measure</div>
@@ -329,37 +520,236 @@
         <span class="src-tag pending">GoPayroll MCP — scoped</span>
       </div>
     </div>
+
   </div>
 </div>
 
 
 <!-- ══════════════ BMS ══════════════ -->
 <div class="page" id="page-bms">
-  <div class="bms-box">
-    <div class="bms-title">BMS MCP connecting today (Vijendra)</div>
-    <div class="bms-body">Historic Billing Cycle data will set the CSF 02 baseline. Metrics below populate once the MCP is live.</div>
-    <div class="bms-preview">
-      <div class="bms-tile"><div class="bms-lbl">Billing cycle completion</div><div class="bms-val">—%</div></div>
-      <div class="bms-tile"><div class="bms-lbl">Avg days cycle → complete</div><div class="bms-val">—d</div></div>
-      <div class="bms-tile"><div class="bms-lbl">Open billing exceptions</div><div class="bms-val">—</div></div>
-      <div class="bms-tile"><div class="bms-lbl">Unbillable devices</div><div class="bms-val">—</div></div>
-      <div class="bms-tile"><div class="bms-lbl">SLA breach — open</div><div class="bms-val">—</div></div>
-      <div class="bms-tile"><div class="bms-lbl">First-time fix rate</div><div class="bms-val">—%</div></div>
+
+  <p class="slabel">BMS live — billing cycle completion · Dec 2025–Mar 2026 baseline · 27 Mar 2026</p>
+
+  <!-- WIG 02 summary tiles -->
+  <div class="tiles" style="margin-bottom:20px;">
+    <div class="tile red">
+      <div class="tile-lbl">Tonga billing completion</div>
+      <div class="tile-val">69.7%</div>
+      <div class="tile-sub">76 periods incomplete · Target 100% · Worst entity</div>
+      <div class="tile-src">BMS → billing_billing_periods · TOP</div>
+    </div>
+    <div class="tile amber">
+      <div class="tile-lbl">Solomons billing completion</div>
+      <div class="tile-val">93.1%</div>
+      <div class="tile-sub">12 periods incomplete · Target 100%</div>
+      <div class="tile-src">BMS → billing_billing_periods · SBD</div>
+    </div>
+    <div class="tile amber">
+      <div class="tile-lbl">Samoa billing completion</div>
+      <div class="tile-val">96.0%</div>
+      <div class="tile-sub">21 periods incomplete · Target 100%</div>
+      <div class="tile-src">BMS → billing_billing_periods · WST</div>
+    </div>
+    <div class="tile green">
+      <div class="tile-lbl">Vanuatu billing completion</div>
+      <div class="tile-val">97.0%</div>
+      <div class="tile-sub">9 periods incomplete · Target 100%</div>
+      <div class="tile-src">BMS → billing_billing_periods · VUV</div>
+    </div>
+    <div class="tile green">
+      <div class="tile-lbl">RSP (NZ) billing completion</div>
+      <div class="tile-val">100%</div>
+      <div class="tile-sub">0 incomplete · All periods transacted</div>
+      <div class="tile-src">BMS → billing_billing_periods · NZD</div>
+    </div>
+    <div class="tile red">
+      <div class="tile-lbl">Open billing periods — all entities</div>
+      <div class="tile-val">454</div>
+      <div class="tile-sub">Open transactions not yet completed</div>
+      <div class="tile-src">BMS → billing_transactions</div>
     </div>
   </div>
-  <p class="slabel">Fields to map at BMS go-live</p>
-  <div class="tbl-wrap" style="max-width:640px;">
+
+  <!-- Meter read coverage -->
+  <p class="slabel" style="margin-top:4px;">Meter read coverage — last 30 days · billable assets on active contracts</p>
+  <div class="tiles" style="margin-bottom:20px;">
+    <div class="tile green">
+      <div class="tile-lbl">Samoa — assets read last 30d</div>
+      <div class="tile-val">277<span style="font-size:14px;font-weight:400">/302</span></div>
+      <div class="tile-sub">92% coverage · 25 unread</div>
+      <div class="tile-src">BMS → core_meter_readings · WST</div>
+    </div>
+    <div class="tile green">
+      <div class="tile-lbl">Vanuatu — assets read last 30d</div>
+      <div class="tile-val">224<span style="font-size:14px;font-weight:400">/252</span></div>
+      <div class="tile-sub">89% coverage · 28 unread</div>
+      <div class="tile-src">BMS → core_meter_readings · VUV</div>
+    </div>
+    <div class="tile green">
+      <div class="tile-lbl">Solomons — assets read last 30d</div>
+      <div class="tile-val">113<span style="font-size:14px;font-weight:400">/129</span></div>
+      <div class="tile-sub">88% coverage · 16 unread</div>
+      <div class="tile-src">BMS → core_meter_readings · SBD</div>
+    </div>
+    <div class="tile amber">
+      <div class="tile-lbl">Tonga — assets read last 30d</div>
+      <div class="tile-val">73<span style="font-size:14px;font-weight:400">/101</span></div>
+      <div class="tile-sub">72% coverage · 28 unread · Lowest</div>
+      <div class="tile-src">BMS → core_meter_readings · TOP</div>
+    </div>
+    <div class="tile teal">
+      <div class="tile-lbl">Total billable assets — all entities</div>
+      <div class="tile-val">793</div>
+      <div class="tile-sub">NZ 6 · Samoa 302 · Vanuatu 252 · SI 129 · Tonga 101 · NZ 6</div>
+      <div class="tile-src">BMS → billing_contract_assets</div>
+    </div>
+  </div>
+
+  <!-- Per entity detail table -->
+  <p class="slabel">Billing cycle detail by entity — Dec 2025–Mar 2026</p>
+  <div class="tbl-wrap" style="margin-bottom:20px;">
     <table>
-      <thead><tr><th class="th-left">BMS field</th><th class="th-left">Dashboard metric</th><th class="th-left">CSF use</th></tr></thead>
+      <thead>
+        <tr>
+          <th class="th-left">Entity</th>
+          <th>Active contracts</th>
+          <th>Billable assets</th>
+          <th>Periods due</th>
+          <th>Completed</th>
+          <th>Completion %</th>
+          <th>Avg days lag</th>
+          <th>Open periods now</th>
+          <th>Oldest open</th>
+          <th>Read coverage 30d</th>
+          <th>Read method</th>
+        </tr>
+      </thead>
       <tbody>
-        <tr><td class="td-name">Billing Cycle — created timestamp</td><td>Cycle open date</td><td>Lead measure: Day 3 completion rate</td></tr>
-        <tr><td class="td-name">Billing Cycle — completed timestamp</td><td>Avg days to complete</td><td>Lag measure: billing cycle completion %</td></tr>
-        <tr><td class="td-name">Billing exception log</td><td>Open exceptions count</td><td>Lead measure: exceptions at week-end</td></tr>
-        <tr><td class="td-name">Device — contract status flag</td><td>Unbillable device count</td><td>Lead measure: reduce 2/mo</td></tr>
-        <tr><td class="td-name">Customer / entity on Billing Cycle</td><td>Split by customer &amp; entity</td><td>Country view for weekly huddle</td></tr>
+        <tr>
+          <td class="td-name">🇼🇸 Samoa (WST)</td>
+          <td class="td-r">105</td>
+          <td class="td-r">302</td>
+          <td class="td-r">523</td>
+          <td class="td-r">502</td>
+          <td class="td-r"><span class="pill pill-green">96.0%</span></td>
+          <td class="td-r">−6.3d</td>
+          <td class="td-r">180</td>
+          <td class="td-r" style="font-size:11px;color:var(--red)">Dec 2021</td>
+          <td class="td-r"><span class="pill pill-green">92%</span></td>
+          <td class="td-r" style="font-size:11px;color:var(--text-hint)">CSV + manual</td>
+        </tr>
+        <tr>
+          <td class="td-name">🇻🇺 Vanuatu (VUV)</td>
+          <td class="td-r">74</td>
+          <td class="td-r">252</td>
+          <td class="td-r">302</td>
+          <td class="td-r">293</td>
+          <td class="td-r"><span class="pill pill-green">97.0%</span></td>
+          <td class="td-r">−6.8d</td>
+          <td class="td-r">105</td>
+          <td class="td-r" style="font-size:11px;color:var(--red)">Oct 2020</td>
+          <td class="td-r"><span class="pill pill-green">89%</span></td>
+          <td class="td-r" style="font-size:11px;color:var(--teal)">3manager (122 assets)</td>
+        </tr>
+        <tr>
+          <td class="td-name">🇸🇧 Solomons (SBD)</td>
+          <td class="td-r">58</td>
+          <td class="td-r">129</td>
+          <td class="td-r">175</td>
+          <td class="td-r">163</td>
+          <td class="td-r"><span class="pill pill-amber">93.1%</span></td>
+          <td class="td-r">−6.9d</td>
+          <td class="td-r">61</td>
+          <td class="td-r" style="font-size:11px;color:var(--amber)">Mar 2025</td>
+          <td class="td-r"><span class="pill pill-green">88%</span></td>
+          <td class="td-r" style="font-size:11px;color:var(--teal)">3manager (4 assets) + CSV</td>
+        </tr>
+        <tr>
+          <td class="td-name">🇹🇴 Tonga (TOP)</td>
+          <td class="td-r">57</td>
+          <td class="td-r">101</td>
+          <td class="td-r">251</td>
+          <td class="td-r">175</td>
+          <td class="td-r"><span class="pill pill-red">69.7%</span></td>
+          <td class="td-r">−7.0d</td>
+          <td class="td-r">107</td>
+          <td class="td-r" style="font-size:11px;color:var(--red)">Sep 2021</td>
+          <td class="td-r"><span class="pill pill-amber">72%</span></td>
+          <td class="td-r" style="font-size:11px;color:var(--text-hint)">CSV + manual only</td>
+        </tr>
+        <tr>
+          <td class="td-name">🇳🇿 RSP NZ (NZD)</td>
+          <td class="td-r">5</td>
+          <td class="td-r">6</td>
+          <td class="td-r">15</td>
+          <td class="td-r">15</td>
+          <td class="td-r"><span class="pill pill-green">100%</span></td>
+          <td class="td-r">0.1d</td>
+          <td class="td-r">1</td>
+          <td class="td-r" style="font-size:11px;color:var(--text-hint)">Mar 2026 (future)</td>
+          <td class="td-r"><span class="pill pill-green">83%</span></td>
+          <td class="td-r" style="font-size:11px;color:var(--text-hint)">Manual + CSV</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="tbl-foot">
+          <td>All entities</td>
+          <td class="td-r">299</td>
+          <td class="td-r">790</td>
+          <td class="td-r">1,266</td>
+          <td class="td-r">1,148</td>
+          <td class="td-r"><span class="pill pill-amber">90.7%</span></td>
+          <td class="td-r">—</td>
+          <td class="td-r">454</td>
+          <td class="td-r" style="font-size:11px;color:var(--red)">Oct 2020</td>
+          <td class="td-r"><span class="pill pill-green">88%</span></td>
+          <td class="td-r">—</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Reading source breakdown -->
+  <p class="slabel">Meter read source — last 90 days · active contract assets</p>
+  <div class="tbl-wrap" style="margin-bottom:20px;max-width:700px;">
+    <table>
+      <thead>
+        <tr>
+          <th class="th-left">Entity</th>
+          <th class="th-left">Source</th>
+          <th>Assets using</th>
+          <th>Readings</th>
+          <th>Automated?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="td-name">🇻🇺 Vanuatu</td><td>3manager</td><td class="td-r">122</td><td class="td-r">9,913</td><td class="td-r"><span class="pill pill-teal">Automated</span></td></tr>
+        <tr><td class="td-name">🇸🇧 Solomons</td><td>3manager</td><td class="td-r">4</td><td class="td-r">358</td><td class="td-r"><span class="pill pill-teal">Automated</span></td></tr>
+        <tr><td class="td-name">🇼🇸 Samoa</td><td>3manager</td><td class="td-r">11</td><td class="td-r">713</td><td class="td-r"><span class="pill pill-teal">Automated</span></td></tr>
+        <tr><td class="td-name">🇹🇴 Tonga</td><td>3manager</td><td class="td-r">0</td><td class="td-r">0</td><td class="td-r"><span class="pill pill-red">None</span></td></tr>
+        <tr><td class="td-name">All entities</td><td>manual_csv</td><td class="td-r">412</td><td class="td-r">2,197</td><td class="td-r"><span class="pill pill-amber">Semi-manual</span></td></tr>
+        <tr><td class="td-name">All entities</td><td>manual (keyed)</td><td class="td-r">313</td><td class="td-r">930</td><td class="td-r"><span class="pill pill-red">Manual</span></td></tr>
+        <tr><td class="td-name">All entities</td><td>@remote</td><td class="td-r">0</td><td class="td-r">1</td><td class="td-r"><span class="pill pill-red">Not live</span></td></tr>
       </tbody>
     </table>
   </div>
+
+  <!-- Key observations -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;max-width:860px;">
+    <div class="card">
+      <p class="slabel" style="margin-bottom:6px;">Tonga — needs immediate attention</p>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.7;">30.3% of billing periods are not completing — the highest gap of any entity. No 3manager automated reads at all. 101 billable assets on manual/CSV only. Oldest open billing period dates to September 2021. This is both a data quality and process problem — Sridhar's @remote reconciliation task is most urgent here.</p>
+    </div>
+    <div class="card">
+      <p class="slabel" style="margin-bottom:6px;">@remote — effectively not live</p>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.7;">Only 1 reading in the entire BMS database has source_type = '@remote'. The 3manager source (high volume in Vanuatu and Samoa) is the automated predecessor — it is unclear if this is the same system under a different label or a separate integration. The SLA machine list reconciliation task will determine the true @remote coverage across all 790 billable assets.</p>
+    </div>
+    <div class="card">
+      <p class="slabel" style="margin-bottom:6px;">WIG 02 baseline — now set</p>
+      <p style="font-size:12px;color:var(--text-muted);line-height:1.7;">Overall billing cycle completion rate Dec 2025–Mar 2026: 90.7%. Transactions are being raised an average of 6–7 days before the period due date (negative lag = pre-billing). The WIG target of 100% completion is achievable for Samoa, Vanuatu, and Solomons in 90 days. Tonga requires a separate remediation plan.</p>
+    </div>
+  </div>
+
 </div>
 
 
@@ -449,7 +839,7 @@
 
 <!-- ══════════════ WHIRLWIND ══════════════ -->
 <div class="page" id="page-whirlwind">
-  <p class="slabel">Whirlwind — tasks Shikha touches but should not own as CSFs</p>
+  <p class="slabel">Whirlwind — tasks Shikha touches but should not own as WIGs</p>
   <div class="ww-grid">
     <div class="ww">
       <div class="ww-task">AR / overdue invoice management</div>
@@ -480,6 +870,413 @@
 </div>
 
 
+<!-- ══════════════ OPERATING RHYTHM ══════════════ -->
+<div class="page" id="page-rhythm">
+<style>
+  /* Rhythm page styles — scoped */
+  .rh-section { margin-bottom: 36px; scroll-margin-top: 80px; }
+  .rh-section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--text); }
+  .rh-section-num { font-size: 10px; font-weight: 700; font-family: 'SF Mono', 'Fira Mono', monospace; color: var(--red, #A32D2D); background: var(--red-bg); padding: 3px 8px; border-radius: 3px; }
+  .rh-section-title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .rh-intro { font-size: 13px; color: var(--text-muted); line-height: 1.7; margin-bottom: 18px; max-width: 720px; }
+
+  /* Data snapshot */
+  .rh-snapshot { background: var(--text); color: #f5f4f0; border-radius: var(--radius-lg); padding: 18px 22px; margin-bottom: 18px; }
+  .rh-snap-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: #666; margin-bottom: 12px; }
+  .rh-snap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 14px; }
+  .rh-snap-lbl { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+  .rh-snap-val { font-size: 20px; font-weight: 300; line-height: 1; }
+  .rh-snap-sub { font-size: 10px; color: #666; margin-top: 3px; }
+  .rv-bad { color: #f87171; } .rv-warn { color: #fbbf24; } .rv-good { color: #4ade80; }
+
+  /* Callouts */
+  .rh-callout { padding: 13px 16px; border-radius: var(--radius); margin-bottom: 14px; border-left: 3px solid; max-width: 720px; }
+  .rh-callout.alert { background: var(--red-bg); border-color: var(--red-border); }
+  .rh-callout.info  { background: var(--blue-bg); border-color: var(--blue-border); }
+  .rh-callout.good  { background: var(--green-bg); border-color: var(--green-border); }
+  .rh-callout.warn  { background: var(--amber-bg); border-color: var(--amber-border); }
+  .rh-ct { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
+  .rh-ct.alert { color: var(--red); } .rh-ct.info { color: var(--blue); } .rh-ct.good { color: var(--green); } .rh-ct.warn { color: var(--amber); }
+  .rh-callout p { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; }
+  .rh-callout p + p { margin-top: 5px; }
+
+  /* Rhythm cadence cards */
+  .rh-cadence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+  .rh-rc { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); padding: 14px 16px; position: relative; overflow: hidden; }
+  .rh-rc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .rh-rc.daily::before { background: var(--text); }
+  .rh-rc.weekly::before { background: var(--red-border); }
+  .rh-rc.monthly::before { background: var(--blue-border); }
+  .rh-cadence-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.13em; margin-bottom: 6px; }
+  .rh-rc.daily .rh-cadence-lbl { color: var(--text-muted); }
+  .rh-rc.weekly .rh-cadence-lbl { color: var(--red); }
+  .rh-rc.monthly .rh-cadence-lbl { color: var(--blue); }
+  .rh-rc-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .rh-rc-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .rh-rc-list li { font-size: 12px; color: var(--text-muted); padding-left: 12px; position: relative; line-height: 1.4; }
+  .rh-rc-list li::before { content: '→'; position: absolute; left: 0; color: var(--text-hint); font-size: 10px; top: 1px; }
+
+  /* Steps */
+  .rh-step { display: grid; grid-template-columns: 30px 1fr; gap: 14px; margin-bottom: 20px; align-items: start; }
+  .rh-step-num { width: 30px; height: 30px; border-radius: 50%; background: var(--text); color: #f5f4f0; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; font-family: 'SF Mono', monospace; }
+  .rh-step-num.red { background: var(--red); }
+  .rh-step-num.amber { background: var(--amber); }
+  .rh-step-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .rh-step-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
+  .rh-snote { margin-top: 7px; padding: 7px 11px; background: var(--surface-2); border-radius: var(--radius); font-size: 11.5px; color: var(--text-muted); line-height: 1.5; border-left: 2px solid var(--border-strong); }
+
+  /* Checklist */
+  .rh-checklist { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 14px; max-width: 720px; }
+  .rh-cl-head { padding: 9px 14px; background: var(--surface-2); border-bottom: 0.5px solid var(--border-strong); display: flex; align-items: center; justify-content: space-between; }
+  .rh-cl-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+  .rh-cl-who { font-size: 10px; color: var(--text-hint); font-family: 'SF Mono', monospace; }
+  .rh-cl-item { display: flex; align-items: flex-start; gap: 11px; padding: 10px 14px; border-bottom: 0.5px solid rgba(0,0,0,0.05); }
+  .rh-cl-item:last-child { border-bottom: none; }
+  .rh-cl-box { width: 16px; height: 16px; border: 1.5px solid var(--border-strong); border-radius: 3px; flex-shrink: 0; margin-top: 2px; }
+  .rh-cl-text { font-size: 12.5px; flex: 1; line-height: 1.4; }
+  .rh-cl-detail { display: block; font-size: 11px; color: var(--text-hint); margin-top: 2px; line-height: 1.4; }
+  .rh-cl-badge { flex-shrink: 0; font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 600; margin-top: 2px; }
+  .rh-badge-shikha { background: var(--teal-bg); color: var(--teal); }
+  .rh-badge-team { background: var(--blue-bg); color: var(--blue); }
+  .rh-badge-shiv { background: var(--red-bg); color: var(--red); }
+
+  /* Issues / escalation patterns */
+  .rh-pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; max-width: 800px; }
+  .rh-pc { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); padding: 14px 16px; }
+  .rh-pc.urgent { border-color: var(--red-border); background: var(--red-bg); }
+  .rh-pc.watch { border-color: var(--amber-border); background: var(--amber-bg); }
+  .rh-pc.good { border-color: var(--green-border); background: var(--green-bg); }
+  .rh-ps { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 7px; }
+  .rh-pc.urgent .rh-ps { color: var(--red); }
+  .rh-pc.watch .rh-ps { color: var(--amber); }
+  .rh-pc.good .rh-ps { color: var(--green); }
+  .rh-pt { font-size: 12.5px; font-weight: 600; margin-bottom: 8px; }
+  .rh-pa { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .rh-pa li { font-size: 11.5px; color: var(--text-muted); padding-left: 14px; position: relative; line-height: 1.4; }
+  .rh-pa li::before { content: '→'; position: absolute; left: 0; color: var(--text-hint); font-size: 10px; top: 1px; }
+  .rh-pnote { margin-top: 9px; font-size: 11px; color: var(--text-hint); font-style: italic; line-height: 1.4; }
+
+  @media (max-width: 680px) {
+    .rh-cadence-grid { grid-template-columns: 1fr; }
+    .rh-pattern-grid { grid-template-columns: 1fr; }
+    .rh-snap-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+
+  <!-- Hero -->
+  <div style="margin-bottom:28px;padding-bottom:20px;border-bottom:0.5px solid var(--border-strong);">
+    <h1 style="font-size:24px;font-weight:600;letter-spacing:-0.02em;margin-bottom:8px;">Operations Operating Rhythm</h1>
+    <p style="font-size:14px;color:var(--text-muted);line-height:1.6;max-width:680px;">A practical guide for Shikha Sohal using the EOS / 4DX framework — how to use this dashboard to own your WIGs, run the weekly Scorecard, and bring the right numbers to every L10 meeting.</p>
+    <div style="display:flex;gap:18px;margin-top:12px;flex-wrap:wrap;">
+      <span style="font-size:11px;color:var(--text-hint);">For <strong style="color:var(--text);">Shikha Sohal</strong> · Operations Manager</span>
+      <span style="font-size:11px;color:var(--text-hint);">3 WIGs · 5 Pacific entities</span>
+      <span style="font-size:11px;color:var(--text-hint);">L10 every Tuesday</span>
+    </div>
+  </div>
+
+  <!-- Live data snapshot -->
+  <div class="rh-snapshot">
+    <div class="rh-snap-title">Where things stand — 27 Mar 2026</div>
+    <div class="rh-snap-grid">
+      <div><div class="rh-snap-lbl">Open / parked orders</div><div class="rh-snap-val rv-bad">49</div><div class="rh-snap-sub">WIG 01 target: ≤10</div></div>
+      <div><div class="rh-snap-lbl">Billing completion</div><div class="rh-snap-val rv-warn">90.7%</div><div class="rh-snap-sub">WIG 02 target: 100%</div></div>
+      <div><div class="rh-snap-lbl">Tonga billing — critical</div><div class="rh-snap-val rv-bad">69.7%</div><div class="rh-snap-sub">Worst entity · immediate action</div></div>
+      <div><div class="rh-snap-lbl">Payroll processing avg</div><div class="rh-snap-val rv-warn">3.7d</div><div class="rh-snap-sub">WIG 03 target: ≤1.5d</div></div>
+      <div><div class="rh-snap-lbl">Open billing transactions</div><div class="rh-snap-val rv-bad">454</div><div class="rh-snap-sub">All entities</div></div>
+      <div><div class="rh-snap-lbl">Meter read coverage</div><div class="rh-snap-val rv-warn">87%</div><div class="rh-snap-sub">687/790 assets read last 30d</div></div>
+    </div>
+  </div>
+
+  <div class="rh-callout alert">
+    <div class="rh-ct alert">The honest picture</div>
+    <p>All three WIGs are currently off target. WIG 01 has 49 open orders against a target of 10 — and every single open order is stale (over 48 hours). WIG 02 has Tonga at 69.7% billing completion with open billing periods dating back to 2021. WIG 03 has all four island entities above the 1.5-day payroll target. This dashboard exists to give you one place to see these numbers clearly and move them each week.</p>
+  </div>
+
+  <div class="rh-callout info">
+    <div class="rh-ct info">EOS + 4DX at RSP</div>
+    <p>RSP uses 4DX (4 Disciplines of Execution) for operational focus — WIGs, lead measures, and the weekly Scorecard. EOS provides the meeting cadence (L10) and accountability structure (Rocks, Issues List, IDS). The two frameworks complement each other: 4DX tells you what to measure and score weekly; EOS tells you how to run the conversations around those numbers.</p>
+    <p>WIGs replace "Rocks" from standard EOS. The Scorecard tab is your weekly L10 Scorecard. Issues that appear on this dashboard and can't be resolved by Shikha alone go on the L10 Issues List for IDS.</p>
+  </div>
+
+  <!-- 1. WEEKLY RHYTHM -->
+  <div class="rh-section" id="rh-rhythm">
+    <div class="rh-section-header">
+      <span class="rh-section-num">01</span>
+      <h2 class="rh-section-title">Weekly rhythm</h2>
+    </div>
+    <p class="rh-intro">Three cadences. Daily ops keeps things from falling through — a 10-minute check to catch anything burning before it becomes a problem. Weekly is the primary accountability layer — Scorecard, WIG progress, and L10 prep. Monthly is strategic — WIG trajectory, what's working, what needs to go on next quarter's WIG list.</p>
+    <div class="rh-cadence-grid">
+      <div class="rh-rc daily">
+        <div class="rh-cadence-lbl">Daily — 10 min</div>
+        <div class="rh-rc-title">Morning ops check</div>
+        <ul class="rh-rc-list">
+          <li>Check <strong>Orders tab</strong> — any new stale orders overnight? Did RSP's count move?</li>
+          <li>Check <strong>BMS tab</strong> — any new open billing transactions? Tonga is the priority.</li>
+          <li>Check <strong>Invoice Drill-Down</strong> — any DRAFT invoices ageing past 7 days?</li>
+          <li>Flag anything red to the relevant person before 9am. Don't absorb it yourself.</li>
+        </ul>
+      </div>
+      <div class="rh-rc weekly">
+        <div class="rh-cadence-lbl">Weekly — L10 Tuesday</div>
+        <div class="rh-rc-title">Scorecard prep + L10</div>
+        <ul class="rh-rc-list">
+          <li>Monday pm: open <strong>Scorecard tab</strong> — know every lead measure before you walk in.</li>
+          <li>For every red tile: one sentence ready — what caused it, what you're doing this week.</li>
+          <li>Open <strong>WIGs tab</strong> — are progress bars moving? Any WIG stuck 2+ weeks becomes an Issue.</li>
+          <li>If payroll week: open <strong>Payroll tracker</strong> — check cycle progress before the meeting.</li>
+          <li>After L10: update any to-dos assigned to you. Same day.</li>
+        </ul>
+      </div>
+      <div class="rh-rc monthly">
+        <div class="rh-cadence-lbl">Monthly — 60 min</div>
+        <div class="rh-rc-title">WIG trajectory review</div>
+        <ul class="rh-rc-list">
+          <li>Review all three WIGs against June 2026 targets — on track, at risk, or off track?</li>
+          <li>Payroll: review avg processing time trend across all four entities</li>
+          <li>BMS: review Tonga billing completion trend — is it moving up week by week?</li>
+          <li>Whirlwind tab: are delegated tasks actually landing with the right owners?</li>
+          <li>Flag anything to Shiv that needs a quarterly WIG adjustment or additional resource</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. READING THE DASHBOARD -->
+  <div class="rh-section" id="rh-tabs">
+    <div class="rh-section-header">
+      <span class="rh-section-num">02</span>
+      <h2 class="rh-section-title">Reading the dashboard</h2>
+    </div>
+    <p class="rh-intro">Each tab answers a specific question. Start at the Scorecard, drill into the tab where something is red. Every number on every tab links back to a WIG or a CSF.</p>
+
+    <div class="rh-step">
+      <div class="rh-step-num red">1</div>
+      <div>
+        <div class="rh-step-title">Scorecard — your L10 weekly check-in</div>
+        <div class="rh-step-body">Lead measures grouped under each WIG. Green means on track — no discussion needed unless you want to flag it. Red means you need a sentence in the L10: what happened and what action you're taking this week. If a lead measure is red for two consecutive weeks, it graduates to the Issues List for IDS. The Scorecard is the first tab you open on Monday afternoon before the Tuesday L10. Every number should be known before you walk into the room.</div>
+        <div class="rh-snote">Watch: the 0% orders-processed-within-24hrs figure for RSP. Unleashed shows no orders with CompletedDate populated — this means either the field isn't being used, or no orders completed within 24 hours this week. Either way it needs a conversation with whoever is processing orders.</div>
+      </div>
+    </div>
+
+    <div class="rh-step">
+      <div class="rh-step-num red">2</div>
+      <div>
+        <div class="rh-step-title">WIGs — are you on trajectory for June?</div>
+        <div class="rh-step-body">Progress bars show where each WIG sits against its X→Y target. The CSF panel at the top explains the structural context — why each WIG exists. Check WIGs weekly but think about them quarterly. If a progress bar isn't visibly moving week over week, the lead measure Shikha controls needs to change — not just be reported on. WIG 02 (Tonga at 69.7%) and WIG 03 (all four entities above target) both need active intervention, not just monitoring.</div>
+      </div>
+    </div>
+
+    <div class="rh-step">
+      <div class="rh-step-num red">3</div>
+      <div>
+        <div class="rh-step-title">BMS — billing cycle integrity, live</div>
+        <div class="rh-step-body">The billing data is live from the BMS MySQL database. Check it Monday morning and before the L10. The key numbers: overall completion rate (90.7% baseline), open billing transactions (454), and Tonga specifically (69.7% — the outlier). The meter read coverage table shows which entities are reading assets regularly and which are relying entirely on manual data entry. Vanuatu's 3manager automated reads (9,913 readings) are the model — Tonga has zero automated reads.</div>
+        <div class="rh-snote">The oldest open billing period in Vanuatu dates to October 2020. The oldest in Tonga to September 2021. These are not process lag — they are likely dead contracts or data cleanup items. Raise with Sridhar whether these assets are still in field before the next L10.</div>
+      </div>
+    </div>
+
+    <div class="rh-step">
+      <div class="rh-step-num red">4</div>
+      <div>
+        <div class="rh-step-title">Payroll — cycle tracker and bottleneck mapping</div>
+        <div class="rh-step-body">The Payroll tracker is the prototype for what becomes a Supabase audit trail once GoPayroll MCP is live. Each time Shikha ticks a step, it timestamps the action. Over time this data shows where the lag is — is it timesheet collection? GoPayroll submission? Xero posting? The 3.7-day baseline is a floor, not a ceiling. The tracker gives Shikha a way to start measuring what she currently cannot see. Use it on every payroll cycle. Reset it at the start of each new cycle.</div>
+      </div>
+    </div>
+
+    <div class="rh-step">
+      <div class="rh-step-num red">5</div>
+      <div>
+        <div class="rh-step-title">Invoice Drill-Down — find and act on specific records</div>
+        <div class="rh-step-body">Not a monitoring tool — an action tool. When a lead measure is red and Shikha needs to find specific records to work, this is where she goes. Filter by entity to focus on one country at a time. Sort by Age to find the oldest unresolved records first. Click the Xero button to open the record directly in Xero. Click the SO# badge to copy the Unleashed order number. Use it on Wednesday and Thursday when the week's action work happens.</div>
+        <div class="rh-snote">The Solomon Islands IRD bill (WST 24,732) dated January 2026 is now 67+ days old and still in DRAFT. This should be on the Issues List if it hasn't been already.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. L10 SCORECARD GUIDE -->
+  <div class="rh-section" id="rh-scorecard">
+    <div class="rh-section-header">
+      <span class="rh-section-num">03</span>
+      <h2 class="rh-section-title">Running the L10 Scorecard</h2>
+    </div>
+    <p class="rh-intro">The L10 Scorecard is a 5-minute agenda item — not a reporting session. Each lead measure gets a green or red. Red tiles get one sentence: cause and action. The goal is clarity, not justification. The Scorecard is not a performance review — it is a weekly calibration of whether the team is on trajectory for the WIGs.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;max-width:700px;">
+      <div class="rh-callout good" style="margin-bottom:0;">
+        <div class="rh-ct good">Green tile</div>
+        <p>At or above target. Say it aloud, acknowledge the team member responsible, move on. No discussion needed. The L10 is not the place to explain green tiles.</p>
+      </div>
+      <div class="rh-callout alert" style="margin-bottom:0;">
+        <div class="rh-ct alert">Red tile</div>
+        <p>Off target. One sentence: what caused it, what action you're taking this week. If red for 2 consecutive weeks with no movement — add to Issues List for IDS. Do not accept red tiles as normal.</p>
+      </div>
+    </div>
+
+    <div class="rh-callout warn">
+      <div class="rh-ct warn">The 4DX principle on lead measures</div>
+      <p>Lag measures tell you if you won. Lead measures tell you if you're going to win. The Scorecard tracks lead measures — the things Shikha controls this week that predict whether the WIGs will be hit by June. If a lead measure is consistently green but the WIG progress bar isn't moving, the lead measure is wrong. Raise it at the quarterly WIG review.</p>
+    </div>
+  </div>
+
+  <!-- 4. DATA HYGIENE -->
+  <div class="rh-section" id="rh-hygiene">
+    <div class="rh-section-header">
+      <span class="rh-section-num">04</span>
+      <h2 class="rh-section-title">Data hygiene</h2>
+    </div>
+    <p class="rh-intro">The dashboard is only as accurate as the underlying data. These behaviours need to be consistent to make the Scorecard trustworthy.</p>
+
+    <div class="rh-checklist">
+      <div class="rh-cl-head"><span class="rh-cl-title">Daily — Shikha's responsibilities</span><span class="rh-cl-who">Owner: Shikha</span></div>
+      <div class="rh-cl-item"><div class="rh-cl-box"></div><div class="rh-cl-text">Process and close orders on the day they are fulfilled<span class="rh-cl-detail">Open/parked orders that are actually complete inflate WIG 01's lead measure. If an order is done, close it in Unleashed the same day — not end of week.</span></div><span class="rh-cl-badge rh-badge-shikha">Shikha</span></div>
+      <div class="rh-cl-item"><div class="rh-cl-box"></div><div class="rh-cl-text">Ensure invoices are posted to the correct tracking category on first entry<span class="rh-cl-detail">Mis-coded invoices cause reconciliation work downstream and affect Minoo's AP reporting. If uncertain on the tracking category, confirm before posting — not after.</span></div><span class="rh-cl-badge rh-badge-shikha">Shikha</span></div>
+      <div class="rh-cl-item"><div class="rh-cl-box"></div><div class="rh-cl-text">Log payroll cycle start and completion dates in the Payroll tracker<span class="rh-cl-detail">The tracker's value is in the timestamps. Ticking tasks retrospectively defeats the purpose — the bottleneck data won't be meaningful. Tick each step as it actually happens.</span></div><span class="rh-cl-badge rh-badge-shikha">Shikha</span></div>
+    </div>
+
+    <div class="rh-checklist">
+      <div class="rh-cl-head"><span class="rh-cl-title">Weekly — team responsibilities</span><span class="rh-cl-who">Owner: each team member</span></div>
+      <div class="rh-cl-item"><div class="rh-cl-box"></div><div class="rh-cl-text">Island entity staff submit timesheets by the agreed cut-off date<span class="rh-cl-detail">Late timesheet submission is the most common cause of payroll processing delay. The cut-off date should be non-negotiable — it is the starting gun for the entire payroll cycle.</span></div><span class="rh-cl-badge rh-badge-team">Team</span></div>
+      <div class="rh-cl-item"><div class="rh-cl-box"></div><div class="rh-cl-text">BMS meter readings submitted for all assets before billing cycle close<span class="rh-cl-detail">Tonga has zero automated reads — every reading is manual. Without timely submission, billing periods stay open and WIG 02 stalls. Tonga reads are the highest-priority manual data task in the business right now.</span></div><span class="rh-cl-badge rh-badge-team">Team</span></div>
+    </div>
+
+    <div class="rh-checklist">
+      <div class="rh-cl-head"><span class="rh-cl-title">Weekly — Shikha's review</span><span class="rh-cl-who">Owner: Shikha</span></div>
+      <div class="rh-cl-item"><div class="rh-cl-box"></div><div class="rh-cl-text">Spot-check one entity's open orders in Unleashed each week<span class="rh-cl-detail">Rotate: RSP, Solomons, Tonga, Samoa. Look for orders held for non-obvious reasons — missing customer details, pricing disputes, stock holds. These won't surface in the aggregate count.</span></div><span class="rh-cl-badge rh-badge-shikha">Shikha</span></div>
+      <div class="rh-cl-item"><div class="rh-cl-box"></div><div class="rh-cl-text">Review Tonga billing completion rate weekly — not monthly<span class="rh-cl-detail">At 69.7%, Tonga is too far from target to be a monthly check item. It needs to move every week. A week where it doesn't move should be an L10 discussion item.</span></div><span class="rh-cl-badge rh-badge-shikha">Shikha</span></div>
+    </div>
+  </div>
+
+  <!-- 5. ISSUES AND ESCALATION -->
+  <div class="rh-section" id="rh-issues">
+    <div class="rh-section-header">
+      <span class="rh-section-num">05</span>
+      <h2 class="rh-section-title">Issues and escalation patterns</h2>
+    </div>
+    <p class="rh-intro">The EOS Issues List exists to capture problems that can't be resolved by one person in a week. These are the patterns that should move from Shikha's dashboard to the L10 Issues List, or escalate directly to Shiv.</p>
+
+    <div class="rh-pattern-grid">
+      <div class="rh-pc urgent">
+        <div class="rh-ps">Escalate to Shiv immediately</div>
+        <div class="rh-pt">Tonga billing completion below 70% for second consecutive month</div>
+        <ul class="rh-pa">
+          <li>What is the oldest open billing period in Tonga — is the contract still active?</li>
+          <li>Are Tonga assets actually in field, or are some uninstalled / returned?</li>
+          <li>Is there a manual meter read process failure, or a contract data gap?</li>
+          <li>Does this need a visit or a dedicated cleanup project with Sridhar?</li>
+        </ul>
+        <div class="rh-pnote">At 69.7%, Tonga alone is dragging overall completion from ~97% to 90.7%. This is a material revenue risk — billing periods that stay open don't generate invoices.</div>
+      </div>
+
+      <div class="rh-pc urgent">
+        <div class="rh-ps">Add to L10 Issues List immediately</div>
+        <div class="rh-pt">WIG 01 open orders count not falling week over week</div>
+        <ul class="rh-pa">
+          <li>Which entity is holding the most orders — and why are they parked?</li>
+          <li>Is the bottleneck missing customer info, stock, or internal approval?</li>
+          <li>Are orders being created in Unleashed that should be going through a different process?</li>
+          <li>Is the CompletedDate field being populated? If not, the metric is invisible.</li>
+        </ul>
+        <div class="rh-pnote">49 open orders with 100% stale (over 48hrs) is not a data lag — it's a process gap. If the count isn't falling by at least 5 per week, it becomes a WIG-level issue for IDS.</div>
+      </div>
+
+      <div class="rh-pc watch">
+        <div class="rh-ps">Raise at next L10 if not resolved</div>
+        <div class="rh-pt">Payroll processing time not moving toward 1.5-day target</div>
+        <ul class="rh-pa">
+          <li>Which step in the Payroll tracker is consistently the last to be ticked?</li>
+          <li>Is the bottleneck timesheet collection, manager approval, or GoPayroll submission?</li>
+          <li>Are there entities where the in-country manager is the delay point?</li>
+          <li>What would need to be true for processing time to halve?</li>
+        </ul>
+        <div class="rh-pnote">The 3.7-day baseline is from Xero proxy data. Once GoPayroll MCP is live, the real step-level data will be visible. Until then, the Payroll tracker timestamps are the evidence base.</div>
+      </div>
+
+      <div class="rh-pc watch">
+        <div class="rh-ps">Raise at next L10 if not resolved</div>
+        <div class="rh-pt">Whirlwind tasks re-appearing on Shikha's plate</div>
+        <ul class="rh-pa">
+          <li>Is Jane Bacon consistently picking up AP triage, or is it landing back with Shikha?</li>
+          <li>Is Minoo owning AR collection, or are aged debtors still coming to Shikha?</li>
+          <li>Is the Inventory Controller vacancy causing Ranika's inventory work to land with Shikha?</li>
+          <li>What specific task is absorbing time that should be someone else's?</li>
+        </ul>
+        <div class="rh-pnote">The IC vacancy (SC profile) is the most urgent structural issue. Until it's filled, Shikha will continue absorbing inventory tasks. This should stay on the L10 Issues List until it is resolved.</div>
+      </div>
+
+      <div class="rh-pc good">
+        <div class="rh-ps">Acknowledge and reinforce</div>
+        <div class="rh-pt">Samoa order processing — near-target performance</div>
+        <ul class="rh-pa">
+          <li>Samoa has only 4 open orders from 178 raised (2.2%) — what is the process discipline that makes this work?</li>
+          <li>Can the Samoa order processing approach be documented and applied to RSP and Solomons?</li>
+          <li>Who owns order processing in Samoa — acknowledge them directly.</li>
+        </ul>
+        <div class="rh-pnote">Samoa is the benchmark for WIG 01. Bring this to the L10 as a positive data point and use it to frame what "good" looks like for the other entities.</div>
+      </div>
+
+      <div class="rh-pc watch">
+        <div class="rh-ps">Flag to Vijendra this week</div>
+        <div class="rh-pt">Vanuatu Unleashed sync error — persisting</div>
+        <ul class="rh-pa">
+          <li>The Vanuatu Unleashed connection has been erroring since the last query. Is this a transient SyncHub issue or a connection problem?</li>
+          <li>Vanuatu order data is currently invisible in WIG 01 — this understates the open order count.</li>
+          <li>If unresolved by the next L10, add to Issues List with Vijendra as owner.</li>
+        </ul>
+        <div class="rh-pnote">WIG 01's baseline of 49 open orders does not include Vanuatu. The true count is higher. This is a data gap that needs to be resolved before the WIG baseline can be treated as accurate.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. COMING NEXT -->
+  <div class="rh-section" id="rh-next">
+    <div class="rh-section-header">
+      <span class="rh-section-num">06</span>
+      <h2 class="rh-section-title">Coming next</h2>
+    </div>
+    <p class="rh-intro">The dashboard is a working tool that will improve as the data infrastructure matures. These are the next upgrades and what they unlock.</p>
+
+    <div class="rh-step">
+      <div class="rh-step-num amber">1</div>
+      <div>
+        <div class="rh-step-title">GoPayroll MCP — real-time payroll timestamps</div>
+        <div class="rh-step-body">Currently WIG 03 uses Xero pay batch data as a proxy. Once the GoPayroll MCP is live, each step in the payroll cycle will have a real submission timestamp. This replaces the Xero proxy with accurate step-level data — and the Payroll tracker session timestamps will sync to Supabase, enabling bottleneck analysis across entities and cycles.</div>
+      </div>
+    </div>
+
+    <div class="rh-step">
+      <div class="rh-step-num amber">2</div>
+      <div>
+        <div class="rh-step-title">@remote reconciliation — automated read coverage metric</div>
+        <div class="rh-step-body">Sridhar's task (due Monday 31 March) is to reconcile the BMS asset list against the @remote CSV. Once complete, the BMS tab will add a live "% of assets on automated reads" tile per entity. Currently only 1 reading in the entire BMS database has source_type = '@remote'. The reconciliation will show how many assets could be automated and what the gap is.</div>
+      </div>
+    </div>
+
+    <div class="rh-step">
+      <div class="rh-step-num amber">3</div>
+      <div>
+        <div class="rh-step-title">Vanuatu Unleashed sync — WIG 01 complete baseline</div>
+        <div class="rh-step-body">The Vanuatu Unleashed connection is currently erroring. Once resolved, WIG 01 will have a complete five-entity baseline. The current count of 49 open orders understates the true position. Until fixed, the Vanuatu gap should be noted in every L10 Scorecard discussion.</div>
+      </div>
+    </div>
+
+    <div class="rh-step">
+      <div class="rh-step-num amber">4</div>
+      <div>
+        <div class="rh-step-title">Business Central go-live — November 2026</div>
+        <div class="rh-step-body">BC will replace most of the current data pipes (Xero, Unleashed, and eventually BMS integration). The dashboard architecture will migrate from SyncHub → Azure SQL to BC's native connector. Historical data will be retained as snapshots. The WIG baselines set now will carry forward as the benchmark against which BC-era performance is measured.</div>
+      </div>
+    </div>
+
+    <div class="rh-callout info">
+      <div class="rh-ct info">Supabase write-back — scoped</div>
+      <p>The Payroll tracker currently stores session data in browser localStorage. Once the Supabase write-back is implemented, each task completion will be logged server-side with entity, cycle, task, opened_at, and completed_at. This turns the tracker from a to-do list into a bottleneck analysis tool. Schema is designed — implementation is scoped for after the GoPayroll MCP is live.</p>
+    </div>
+  </div>
+
+</div>
+
+
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA
@@ -493,44 +1290,6 @@ const ORDERS_DATA = {
   solomons: { flag:'🇸🇧', name:'Ricoh Solomons',raised:93,  open:14, value:677709,  ccy:'SBD' },
 };
 
-const SB_DATA = {
-  all:[
-    { lbl:'Open / parked orders — all entities', val:'49', sub:'RSP 23 · SI 14 · Tonga 8 · Samoa 4', src:'Unleashed — 4 entities', cls:'red' },
-    { lbl:'Orders raised — Mar 2026', val:'374', sub:'RSP+Samoa+SI+Tonga · Vanuatu pending', src:'Unleashed — 4 entities', cls:'blue' },
-    { lbl:'Pay runs — Mar 2026', val:'12', sub:'3 per island entity', src:'Xero → 4 island entities', cls:'teal' },
-    { lbl:'Avg payroll processing — islands', val:'3.7d', sub:'Baseline. Target ≤1.5d by Jun 2026', src:'Xero proxy', cls:'amber' },
-    { lbl:'CPC billing completion', val:'—', sub:'BMS connecting today', src:'BMS pending', cls:'neutral' },
-    { lbl:'Open billing exceptions', val:'—', sub:'BMS connecting today', src:'BMS pending', cls:'neutral' },
-  ],
-  nz:[
-    { lbl:'Open / parked orders', val:'23', sub:'of 51 raised · 45% unresolved', src:'Unleashed — RSP', cls:'red' },
-    { lbl:'Orders raised — Mar', val:'51', sub:'NZD $725K total value', src:'Unleashed — RSP', cls:'blue' },
-    { lbl:'CPC billing completion', val:'—', sub:'BMS connecting today', src:'BMS pending', cls:'neutral' },
-  ],
-  samoa:[
-    { lbl:'Open / parked orders', val:'4', sub:'of 178 raised · 2% open', src:'Unleashed — Samoa', cls:'green' },
-    { lbl:'Orders raised — Mar', val:'178', sub:'WST $240K total value', src:'Unleashed — Samoa', cls:'blue' },
-    { lbl:'Last pay run', val:'16 Mar', sub:'avg 3.3d processing', src:'Xero — Samoa', cls:'teal' },
-    { lbl:'CPC billing completion', val:'—', sub:'BMS pending', src:'BMS pending', cls:'neutral' },
-  ],
-  vanuatu:[
-    { lbl:'Unleashed orders', val:'—', sub:'Sync error — flag to Vijendra', src:'Unleashed Vanuatu (error)', cls:'neutral' },
-    { lbl:'Last pay run', val:'18 Mar', sub:'avg 3.7d processing', src:'Xero — Vanuatu', cls:'amber' },
-    { lbl:'CPC billing completion', val:'—', sub:'BMS pending', src:'BMS pending', cls:'neutral' },
-  ],
-  tonga:[
-    { lbl:'Open / parked orders', val:'8', sub:'of 52 raised · 15% open', src:'Unleashed — Tonga', cls:'amber' },
-    { lbl:'Orders raised — Mar', val:'52', sub:'TOP $139K total value', src:'Unleashed — Tonga', cls:'blue' },
-    { lbl:'Last pay run', val:'17 Mar', sub:'avg 4.0d processing', src:'Xero — Tonga', cls:'amber' },
-    { lbl:'CPC billing completion', val:'—', sub:'BMS pending', src:'BMS pending', cls:'neutral' },
-  ],
-  solomons:[
-    { lbl:'Open / parked orders', val:'14', sub:'of 93 raised · 15% open', src:'Unleashed — Solomons', cls:'amber' },
-    { lbl:'Orders raised — Mar', val:'93', sub:'SBD $678K total value', src:'Unleashed — Solomons', cls:'blue' },
-    { lbl:'Last pay run', val:'16 Mar', sub:'avg 4.0d processing', src:'Xero — Solomons', cls:'amber' },
-    { lbl:'CPC billing completion', val:'—', sub:'BMS pending', src:'BMS pending', cls:'neutral' },
-  ],
-};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PAYROLL WORKFLOW
@@ -672,23 +1431,6 @@ function renderPayroll() {
   }).join('');
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SCOREBOARD
-// ─────────────────────────────────────────────────────────────────────────────
-
-function filterSB(key, el) {
-  document.querySelectorAll('#page-scoreboard .chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  const data = SB_DATA[key] || SB_DATA.all;
-  document.getElementById('sb-tiles').innerHTML =
-    '<div class="tiles">' + data.map(t => `
-      <div class="tile ${t.cls}">
-        <div class="tile-lbl">${t.lbl}</div>
-        <div class="tile-val">${t.val}</div>
-        <div class="tile-sub">${t.sub}</div>
-        <div class="tile-src">${t.src}</div>
-      </div>`).join('') + '</div>';
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ORDERS
@@ -936,7 +1678,6 @@ function go(id,el){
   el.classList.add('active');
 }
 
-filterSB('all', document.querySelector('#page-scoreboard .chip'));
 filterOrders('all', document.querySelector('#page-orders .chip'));
 ddRender();
 renderPayroll();
