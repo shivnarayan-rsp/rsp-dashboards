@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shikha — Operations Dashboard · RSP</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface-2: #f1efe8;
+    --border: rgba(0,0,0,0.10);
+    --border-strong: rgba(0,0,0,0.18);
+    --text: #1a1a18;
+    --text-mid: #4a4940;
+    --text-muted: #5f5e5a;
+    --text-hint: #888780;
+    --accent: #1d4ed8;
+    --accent-bg: #eff6ff;
+    --accent-text: #1e40af;
+    --green: #3B6D11; --green-bg: #EAF3DE; --green-border: #639922;
+    --amber: #854F0B; --amber-bg: #FAEEDA; --amber-border: #BA7517;
+    --red: #A32D2D; --red-bg: #FCEBEB; --red-border: #E24B4A;
+    --blue: #185FA5; --blue-bg: #E6F1FB; --blue-border: #378ADD;
+    --teal: #0F6E56; --teal-bg: #E1F5EE; --teal-border: #1D9E75;
+    --radius: 6px;
+    --radius-lg: 10px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border-strong);
+    padding: 13px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .hrow { display: flex; align-items: center; gap: 10px; }
+
+  .logo {
+    width: 28px; height: 28px;
+    background: #1a1a18;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logo svg { width: 14px; height: 14px; fill: #f5f4f0; }
+
+  .h1 { font-size: 15px; font-weight: 500; color: var(--text); }
+  .h-sub { font-size: 11px; color: var(--text-hint); margin-top: 1px; }
+
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  .live-pill {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--teal); font-weight: 500;
+  }
+  .live-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--teal-border);
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+  .as-of { font-size: 11px; color: var(--text-hint); }
+
+  /* ── NOTICE BANNER ── */
+  .notice {
+    background: var(--amber-bg);
+    border-bottom: 0.5px solid var(--amber-border);
+    padding: 7px 24px;
+    font-size: 12px;
+    color: var(--amber);
+    display: flex; align-items: center; gap: 7px;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border-strong);
+    padding: 0 24px;
+    display: flex; gap: 0;
+    overflow-x: auto;
+  }
+
+  .nav-tab {
+    font-size: 12px; font-weight: 500;
+    color: var(--text-hint);
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.12s, border-color 0.12s;
+    user-select: none;
+  }
+  .nav-tab:hover { color: var(--text); }
+  .nav-tab.active { color: var(--text); border-bottom-color: var(--text); }
+
+  /* ── PAGES ── */
+  .page { display: none; padding: 20px 24px; max-width: 1300px; }
+  .page.active { display: block; }
+
+  /* ── SECTION LABEL ── */
+  .slabel {
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-hint); margin-bottom: 10px;
+  }
+
+  /* ── METRIC TILES ── */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .tile {
+    background: var(--surface);
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: 13px 15px;
+    position: relative;
+  }
+
+  .tile::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+  }
+  .tile.green::after  { background: var(--green-border); }
+  .tile.amber::after  { background: var(--amber-border); }
+  .tile.red::after    { background: var(--red-border); }
+  .tile.blue::after   { background: var(--blue-border); }
+  .tile.teal::after   { background: var(--teal-border); }
+  .tile.neutral::after { background: var(--border-strong); }
+
+  .tile-lbl { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; line-height: 1.3; padding-right: 4px; }
+
+  .tile-val {
+    font-size: 26px; font-weight: 500; line-height: 1;
+    margin-bottom: 3px; font-variant-numeric: tabular-nums;
+  }
+  .tile.green  .tile-val { color: var(--green); }
+  .tile.amber  .tile-val { color: var(--amber); }
+  .tile.red    .tile-val { color: var(--red); }
+  .tile.blue   .tile-val { color: var(--blue); }
+  .tile.teal   .tile-val { color: var(--teal); }
+  .tile.neutral .tile-val { color: var(--text); }
+
+  .tile-sub { font-size: 10px; color: var(--text-hint); }
+  .tile-src { font-size: 9px; color: var(--text-hint); margin-top: 6px; opacity: 0.7; }
+
+  /* ── WIG CARDS ── */
+  .wig-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .wig {
+    background: var(--surface);
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .wig-head {
+    background: var(--text);
+    color: #f5f4f0;
+    padding: 11px 14px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+  }
+
+  .wig-num {
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--teal-border);
+    white-space: nowrap; margin-top: 2px;
+  }
+
+  .wig-title { font-size: 13px; font-weight: 500; line-height: 1.4; }
+
+  .wig-body { padding: 13px 14px; }
+
+  .lag-lbl {
+    font-size: 9px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-hint); margin-bottom: 3px;
+  }
+
+  .lag-text { font-size: 12px; color: var(--text-muted); margin-bottom: 11px; line-height: 1.5; }
+
+  .progress-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+
+  .bar { height: 5px; background: #e8e7e3; border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+
+  .leads { list-style: none; border-top: 0.5px solid var(--border); padding-top: 10px; display: flex; flex-direction: column; gap: 1px; }
+
+  .lead-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--text-muted); padding: 5px 0;
+    border-bottom: 0.5px solid rgba(0,0,0,0.04);
+  }
+  .lead-row:last-child { border-bottom: none; }
+
+  .pill {
+    display: inline-block; font-size: 10px; font-weight: 500;
+    padding: 2px 8px; border-radius: 10px; white-space: nowrap;
+  }
+  .pill-green { background: var(--green-bg); color: var(--green); }
+  .pill-amber { background: var(--amber-bg); color: var(--amber); }
+  .pill-red   { background: var(--red-bg);   color: var(--red); }
+  .pill-blue  { background: var(--blue-bg);  color: var(--blue); }
+  .pill-teal  { background: var(--teal-bg);  color: var(--teal); }
+  .pill-neutral { background: var(--surface-2); color: var(--text-muted); }
+
+  .wig-foot {
+    border-top: 0.5px solid var(--border);
+    padding: 8px 14px;
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+
+  .src-tag {
+    font-size: 9px; font-weight: 500; letter-spacing: 0.03em;
+    color: var(--blue); background: var(--blue-bg);
+    padding: 2px 7px; border-radius: 3px;
+  }
+
+  .src-tag.pending {
+    color: var(--amber); background: var(--amber-bg);
+  }
+
+  /* ── TWO-COL / CHART CARDS ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+
+  .card {
+    background: var(--surface);
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+  }
+
+  .chart-wrap { position: relative; width: 100%; height: 160px; }
+
+  .legend { display: flex; gap: 14px; font-size: 11px; color: var(--text-hint); margin-bottom: 8px; }
+  .ldot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+
+  /* ── TABLE ── */
+  .tbl-wrap {
+    background: var(--surface);
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+
+  th {
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--text-hint);
+    background: var(--surface-2);
+    padding: 9px 14px;
+    text-align: left;
+    border-bottom: 0.5px solid var(--border-strong);
+  }
+  th:not(:first-child) { text-align: right; }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 0.5px solid rgba(0,0,0,0.06);
+    color: var(--text-muted);
+    vertical-align: middle;
+  }
+  td:not(:first-child) { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: none; }
+
+  .td-name { font-weight: 500; color: var(--text); }
+
+  .tbl-foot td {
+    background: var(--surface-2);
+    font-weight: 500;
+    color: var(--text);
+    border-top: 0.5px solid var(--border-strong);
+  }
+
+  /* ── WHIRLWIND ── */
+  .ww-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .ww {
+    background: var(--surface);
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    padding: 13px 14px;
+  }
+
+  .ww-task { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+  .ww-why { font-size: 12px; color: var(--text-muted); margin-bottom: 9px; line-height: 1.5; }
+  .ww-disp { display: flex; align-items: flex-start; gap: 7px; }
+  .ww-action { font-size: 11px; color: var(--text-hint); line-height: 1.4; }
+
+  /* ── BMS PLACEHOLDER ── */
+  .bms-box {
+    background: var(--surface);
+    border: 1px dashed var(--amber-border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  .bms-title { font-size: 14px; font-weight: 500; color: var(--amber); margin-bottom: 5px; }
+  .bms-body { font-size: 12px; color: var(--text-hint); max-width: 400px; margin: 0 auto 18px; }
+  .bms-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+  }
+  .bms-tile {
+    background: var(--surface-2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    opacity: 0.5;
+    text-align: left;
+  }
+  .bms-lbl { font-size: 10px; color: var(--text-hint); margin-bottom: 4px; }
+  .bms-val { font-size: 22px; font-weight: 500; color: var(--border-strong); }
+
+  /* ── PAYROLL TABLE ── */
+  .payroll-entity { margin-bottom: 18px; }
+  .payroll-entity-name {
+    font-size: 12px; font-weight: 600; color: var(--text);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 680px) {
+    .page { padding: 14px 14px; }
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .header { padding: 12px 14px; }
+    .nav { padding: 0 14px; }
+    .notice { padding: 7px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="hrow">
+    <div class="logo">
+      <svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+    </div>
+    <div>
+      <div class="h1">Operations Dashboard</div>
+      <div class="h-sub">Shikha Sohal · Operations Manager · Ricoh South Pacific</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="live-pill"><span class="live-dot"></span>Live — Xero · Unleashed</span>
+    <span class="as-of">27 Mar 2026</span>
+  </div>
+</header>
+
+<div class="notice">
+  ⏳ BMS MCP connecting today (Vijendra) — CPC billing cycle metrics will populate once live · GoPayroll MCP scoped for island entities
+</div>
+
+<nav class="nav">
+  <div class="nav-tab active" onclick="go('scoreboard',this)">Scoreboard</div>
+  <div class="nav-tab" onclick="go('wigs',this)">WIGs</div>
+  <div class="nav-tab" onclick="go('orders',this)">Orders</div>
+  <div class="nav-tab" onclick="go('payroll',this)">Payroll</div>
+  <div class="nav-tab" onclick="go('whirlwind',this)">Whirlwind</div>
+  <div class="nav-tab" onclick="go('bms',this)">BMS (Pending)</div>
+</nav>
+
+
+<!-- ════════════════════ SCOREBOARD ════════════════════ -->
+<div class="page active" id="page-scoreboard">
+
+  <p class="slabel">This week — live data</p>
+  <div class="tiles">
+
+    <div class="tile red">
+      <div class="tile-lbl">Open / parked orders — RSP</div>
+      <div class="tile-val">23</div>
+      <div class="tile-sub">of 51 raised in Mar · Target ≤5</div>
+      <div class="tile-src">Unleashed → RSP</div>
+    </div>
+
+    <div class="tile blue">
+      <div class="tile-lbl">Orders raised — March 2026</div>
+      <div class="tile-val">51</div>
+      <div class="tile-sub">NZD $725K total value</div>
+      <div class="tile-src">Unleashed → RSP</div>
+    </div>
+
+    <div class="tile amber">
+      <div class="tile-lbl">Avg payroll processing — islands</div>
+      <div class="tile-val">3.7d</div>
+      <div class="tile-sub">Baseline. Target ≤1.5d by Jun 2026</div>
+      <div class="tile-src">Xero → Samoa, Vanuatu, Tonga, SI</div>
+    </div>
+
+    <div class="tile teal">
+      <div class="tile-lbl">Pay runs processed — Mar 2026</div>
+      <div class="tile-val">12</div>
+      <div class="tile-sub">3 per entity across 4 islands</div>
+      <div class="tile-src">Xero → all island entities</div>
+    </div>
+
+    <div class="tile neutral">
+      <div class="tile-lbl">CPC billing completion</div>
+      <div class="tile-val">—</div>
+      <div class="tile-sub">BMS MCP connecting today</div>
+      <div class="tile-src">BMS pending</div>
+    </div>
+
+    <div class="tile neutral">
+      <div class="tile-lbl">Open billing exceptions</div>
+      <div class="tile-val">—</div>
+      <div class="tile-sub">BMS MCP connecting today</div>
+      <div class="tile-src">BMS pending</div>
+    </div>
+
+  </div>
+
+  <p class="slabel">Data sources</p>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;">
+    <span class="src-tag">Xero — Samoa</span>
+    <span class="src-tag">Xero — Vanuatu</span>
+    <span class="src-tag">Xero — Tonga</span>
+    <span class="src-tag">Xero — Solomon Islands</span>
+    <span class="src-tag">Unleashed — RSP</span>
+    <span class="src-tag pending">BMS — connecting today</span>
+    <span class="src-tag pending">GoPayroll — scoped</span>
+  </div>
+
+</div>
+
+
+<!-- ════════════════════ WIGs ════════════════════ -->
+<div class="page" id="page-wigs">
+  <p class="slabel">Wildly important goals — 4DX · Jun 2026 horizon</p>
+  <div class="wig-grid">
+
+    <!-- WIG 1 -->
+    <div class="wig">
+      <div class="wig-head">
+        <div class="wig-title">Reduce open / parked RSP orders from 23 to ≤5 at end of any given week</div>
+        <div class="wig-num">WIG 01</div>
+      </div>
+      <div class="wig-body">
+        <div class="lag-lbl">Lag measure</div>
+        <div class="lag-text">Count of sales orders in Open, Parked, or Pending status at week-end snapshot — current baseline 23 (45% of March orders)</div>
+        <div class="progress-row"><span>Baseline → Target</span><span style="color:var(--red)">23 → 5</span></div>
+        <div class="bar"><div class="bar-fill" style="width:22%;background:var(--red-border);"></div></div>
+        <ul class="leads">
+          <li class="lead-row"><span>Orders processed within 24 hrs of receipt</span><span class="pill pill-neutral">Baseline TBC</span></li>
+          <li class="lead-row"><span>Orders held &gt;48 hrs — missing data or approvals</span><span class="pill pill-amber">Target ≤2/wk</span></li>
+          <li class="lead-row"><span>Orders dispatched and invoiced same week as receipt</span><span class="pill pill-neutral">Target ≥85%</span></li>
+        </ul>
+      </div>
+      <div class="wig-foot">
+        <span class="src-tag">Unleashed — RSP</span>
+        <span class="src-tag">Xero — RSP</span>
+      </div>
+    </div>
+
+    <!-- WIG 2 -->
+    <div class="wig">
+      <div class="wig-head">
+        <div class="wig-title">CPC billing cycle completion — 100% of meter reads billing-ready within 3 days of cycle open</div>
+        <div class="wig-num">WIG 02</div>
+      </div>
+      <div class="wig-body">
+        <div class="lag-lbl">Lag measure</div>
+        <div class="lag-text">% of billable devices with a completed BMS Billing Cycle transaction within 3 days of cycle open date — baseline to be set from BMS historic data at go-live</div>
+        <div class="progress-row"><span>Baseline</span><span style="color:var(--amber)">Setting at BMS go-live</span></div>
+        <div class="bar"><div class="bar-fill" style="width:0%;background:var(--amber-border);"></div></div>
+        <ul class="leads">
+          <li class="lead-row"><span>Billing Cycle transactions created vs completed per customer / entity per week</span><span class="pill pill-neutral">BMS pending</span></li>
+          <li class="lead-row"><span>Avg days from Billing Cycle created → completed (BMS timestamp delta)</span><span class="pill pill-neutral">BMS pending</span></li>
+          <li class="lead-row"><span>Open billing exceptions at week-end</span><span class="pill pill-neutral">Target 0</span></li>
+          <li class="lead-row"><span>Devices missing contract data in BMS (unbillable flag)</span><span class="pill pill-neutral">Reduce 2/mo</span></li>
+        </ul>
+      </div>
+      <div class="wig-foot">
+        <span class="src-tag pending">BMS — connecting today</span>
+      </div>
+    </div>
+
+    <!-- WIG 3 -->
+    <div class="wig">
+      <div class="wig-head">
+        <div class="wig-title">Reduce payroll processing time per island entity from 3.7-day baseline to ≤1.5 days by 30 Jun 2026</div>
+        <div class="wig-num">WIG 03</div>
+      </div>
+      <div class="wig-body">
+        <div class="lag-lbl">Lag measure</div>
+        <div class="lag-text">Avg days from payroll period close to pay run marked as paid/posted in GoPayroll — baseline 3.7 days (from Xero pay batch data, Mar 2026)</div>
+        <div class="progress-row"><span>Baseline → Target</span><span style="color:var(--amber)">3.7d → 1.5d</span></div>
+        <div class="bar"><div class="bar-fill" style="width:41%;background:var(--amber-border);"></div></div>
+        <ul class="leads">
+          <li class="lead-row"><span>Days from period close to payroll submission (GoPayroll timestamp)</span><span class="pill pill-amber">Baseline 3.7d</span></li>
+          <li class="lead-row"><span>Pay runs processed on time (within agreed cycle) per entity</span><span class="pill pill-neutral">Target 100%</span></li>
+          <li class="lead-row"><span>Payroll exceptions / corrections required after submission</span><span class="pill pill-neutral">Target 0/cycle</span></li>
+          <li class="lead-row"><span>Entities hitting ≤1.5d target each cycle</span><span class="pill pill-neutral">Target 4/4</span></li>
+        </ul>
+      </div>
+      <div class="wig-foot">
+        <span class="src-tag">Xero — Samoa, Vanuatu, Tonga, SI</span>
+        <span class="src-tag pending">GoPayroll MCP — scoped</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════ ORDERS ════════════════════ -->
+<div class="page" id="page-orders">
+  <p class="slabel">RSP order processing — Unleashed · March 2026</p>
+
+  <div class="tiles" style="grid-template-columns:repeat(3,1fr);max-width:500px;margin-bottom:22px;">
+    <div class="tile blue">
+      <div class="tile-lbl">Orders raised — Mar</div>
+      <div class="tile-val">51</div>
+    </div>
+    <div class="tile red">
+      <div class="tile-lbl">Open / parked</div>
+      <div class="tile-val">23</div>
+      <div class="tile-sub">45% unresolved</div>
+    </div>
+    <div class="tile teal">
+      <div class="tile-lbl">Order value</div>
+      <div class="tile-val" style="font-size:20px;">$725K</div>
+      <div class="tile-sub">NZD</div>
+    </div>
+  </div>
+
+  <p class="slabel">Context — what the 23 open orders mean</p>
+  <div class="card" style="max-width:640px;margin-bottom:22px;">
+    <p style="font-size:13px;color:var(--text-muted);line-height:1.7;">
+      45% of March orders remain open or parked — this is the WIG 01 lead measure baseline. The target is ≤5 open orders at any week-end snapshot. Once BMS is connected, it will be possible to cross-reference whether any open orders are blocking billing cycle completion for specific devices or customers.
+    </p>
+    <div style="margin-top:12px;padding-top:12px;border-top:0.5px solid var(--border);">
+      <span style="font-size:11px;color:var(--text-hint);">Note: Unleashed covers RSP (NZ) only. Island entity orders flow through Xero directly. Island order data will improve once GoPayroll and BMS MCP are live and cross-referenced.</span>
+    </div>
+  </div>
+
+  <p class="slabel">Lead measure targets — WIG 01</p>
+  <div class="tbl-wrap" style="max-width:640px;">
+    <table>
+      <thead>
+        <tr>
+          <th>Lead measure</th>
+          <th>Baseline</th>
+          <th>Target</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-name">Orders processed within 24 hrs</td>
+          <td>TBC</td>
+          <td>≥90%</td>
+          <td><span class="pill pill-neutral">Measuring</span></td>
+        </tr>
+        <tr>
+          <td class="td-name">Orders held &gt;48 hrs — missing data</td>
+          <td>TBC</td>
+          <td>≤2/wk</td>
+          <td><span class="pill pill-neutral">Measuring</span></td>
+        </tr>
+        <tr>
+          <td class="td-name">Open / parked at week-end snapshot</td>
+          <td>23</td>
+          <td>≤5</td>
+          <td><span class="pill pill-red">Off target</span></td>
+        </tr>
+        <tr>
+          <td class="td-name">Orders invoiced same week as receipt</td>
+          <td>TBC</td>
+          <td>≥85%</td>
+          <td><span class="pill pill-neutral">Measuring</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ════════════════════ PAYROLL ════════════════════ -->
+<div class="page" id="page-payroll">
+  <p class="slabel">Payroll processing baseline — island entities · Xero pay batch data · Mar 2026</p>
+
+  <div class="tiles" style="margin-bottom:22px;">
+    <div class="tile amber">
+      <div class="tile-lbl">Avg processing time — all entities</div>
+      <div class="tile-val">3.7d</div>
+      <div class="tile-sub">Days: period close → posted in Xero</div>
+      <div class="tile-src">Xero → 4 island entities</div>
+    </div>
+    <div class="tile teal">
+      <div class="tile-lbl">Pay runs — Mar 2026</div>
+      <div class="tile-val">12</div>
+      <div class="tile-sub">3 per entity</div>
+      <div class="tile-src">Xero → all island entities</div>
+    </div>
+    <div class="tile blue">
+      <div class="tile-lbl">WIG 03 target</div>
+      <div class="tile-val" style="font-size:20px;">≤1.5d</div>
+      <div class="tile-sub">By 30 Jun 2026 · all 4 entities</div>
+    </div>
+    <div class="tile neutral">
+      <div class="tile-lbl">GoPayroll MCP</div>
+      <div class="tile-val">—</div>
+      <div class="tile-sub">Scoped · will replace Xero proxy</div>
+    </div>
+  </div>
+
+  <p class="slabel">Processing time by entity — March 2026 baseline (Xero proxy data)</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Entity</th>
+          <th>Pay runs — Mar</th>
+          <th>Avg days: close → posted</th>
+          <th>Last pay run</th>
+          <th>vs target (≤1.5d)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-name">🇻🇺 Ricoh Vanuatu</td>
+          <td>3</td>
+          <td>3.7d</td>
+          <td>18 Mar 2026</td>
+          <td><span class="pill pill-red">+2.2d over</span></td>
+        </tr>
+        <tr>
+          <td class="td-name">🇼🇸 Ricoh Samoa</td>
+          <td>3</td>
+          <td>3.3d</td>
+          <td>16 Mar 2026</td>
+          <td><span class="pill pill-red">+1.8d over</span></td>
+        </tr>
+        <tr>
+          <td class="td-name">🇸🇧 Ricoh Solomon Islands</td>
+          <td>3</td>
+          <td>4.0d</td>
+          <td>16 Mar 2026</td>
+          <td><span class="pill pill-red">+2.5d over</span></td>
+        </tr>
+        <tr>
+          <td class="td-name">🇹🇴 Ricoh Tonga</td>
+          <td>3</td>
+          <td>4.0d</td>
+          <td>17 Mar 2026</td>
+          <td><span class="pill pill-red">+2.5d over</span></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="tbl-foot">
+          <td>All entities</td>
+          <td>12</td>
+          <td><strong>3.75d avg</strong></td>
+          <td>—</td>
+          <td><span class="pill pill-red">All above target</span></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="card" style="max-width:640px;margin-bottom:22px;">
+    <p class="slabel">Baseline note</p>
+    <p style="font-size:12px;color:var(--text-muted);line-height:1.7;">
+      The baseline above is derived from Xero pay batch data (created date vs occurred date). Negative lead times in the raw data indicate SyncHub ingested historic records after they were posted — the "created to updated" delta (1–5 days) is the more reliable proxy for processing lag. Once GoPayroll MCP is live, timestamps will be captured at submission rather than back-synced, giving clean real-time measurement. The 3.7-day average should be treated as the floor for the WIG 03 baseline, not the ceiling — actual processing time may be longer if pre-submission steps (timesheet collection, approvals) are not yet captured.
+    </p>
+  </div>
+
+  <p class="slabel">Lead measures — WIG 03</p>
+  <div class="tbl-wrap" style="max-width:640px;">
+    <table>
+      <thead>
+        <tr>
+          <th>Lead measure</th>
+          <th>Baseline</th>
+          <th>Target</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-name">Days: period close → GoPayroll submission</td>
+          <td>3.75d (Xero proxy)</td>
+          <td>≤1d</td>
+        </tr>
+        <tr>
+          <td class="td-name">Days: GoPayroll submission → posted/paid</td>
+          <td>TBC at MCP go-live</td>
+          <td>≤0.5d</td>
+        </tr>
+        <tr>
+          <td class="td-name">Pay runs on time per entity (per cycle)</td>
+          <td>TBC</td>
+          <td>100%</td>
+        </tr>
+        <tr>
+          <td class="td-name">Payroll corrections / resubmissions</td>
+          <td>TBC</td>
+          <td>0 per cycle</td>
+        </tr>
+        <tr>
+          <td class="td-name">Entities hitting ≤1.5d target</td>
+          <td>0 / 4</td>
+          <td>4 / 4</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ════════════════════ WHIRLWIND ════════════════════ -->
+<div class="page" id="page-whirlwind">
+  <p class="slabel">Whirlwind — tasks Shikha touches but does not own as WIGs</p>
+  <div class="ww-grid">
+
+    <div class="ww">
+      <div class="ww-task">AR / overdue invoice management</div>
+      <div class="ww-why">AR is a cash and working capital measure — owned by Minoo (Finance). Shikha's role is to ensure orders are invoiced correctly and on time; collection sits with Finance.</div>
+      <div class="ww-disp">
+        <span class="pill pill-teal">Finance</span>
+        <span class="ww-action">Move to Minoo. Shikha hands over correctly-coded invoices on time. Finance owns follow-up and collection.</span>
+      </div>
+    </div>
+
+    <div class="ww">
+      <div class="ww-task">Daily GL posting</div>
+      <div class="ww-why">A finance control, not an operations output. Accuracy and timeliness are owned by Finance once the AP SOP is running.</div>
+      <div class="ww-disp">
+        <span class="pill pill-teal">Finance</span>
+        <span class="ww-action">Move to Minoo. Shikha's obligation ends at handing over correctly-coded transactions on time.</span>
+      </div>
+    </div>
+
+    <div class="ww">
+      <div class="ww-task">Inventory accuracy — SLOB, stock counts</div>
+      <div class="ww-why">Inventory accountability sits with Ranika (Inventory Controller). Shikha should not absorb this while the IC role is being restaffed.</div>
+      <div class="ww-disp">
+        <span class="pill pill-amber">Delegate</span>
+        <span class="ww-action">Ranika owns inventory accuracy. Shikha provides escalation path only. Urgent: backfill IC role (SC profile).</span>
+      </div>
+    </div>
+
+    <div class="ww">
+      <div class="ww-task">AP invoice triage and approval chasing</div>
+      <div class="ww-why">AP SOP assigns daily triage to Jane Bacon and payment batches to Minoo. Shikha should not be in this loop.</div>
+      <div class="ww-disp">
+        <span class="pill pill-amber">Delegate</span>
+        <span class="ww-action">Jane Bacon owns intake per AP SOP. Shikha's involvement is exception-only escalation.</span>
+      </div>
+    </div>
+
+    <div class="ww">
+      <div class="ww-task">Ad hoc reporting requests</div>
+      <div class="ww-why">Reactive extracts pull Shikha away from WIG lead measures. This dashboard should absorb the majority of requests.</div>
+      <div class="ww-disp">
+        <span class="pill pill-blue">Systematise</span>
+        <span class="ww-action">Route all standard requests to this dashboard. Shikha directs requestors here rather than producing one-off extracts.</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════ BMS ════════════════════ -->
+<div class="page" id="page-bms">
+  <div class="bms-box">
+    <div class="bms-title">BMS MCP connecting today (Vijendra)</div>
+    <div class="bms-body">Once live, Billing Cycle transaction data will populate WIG 02 and the CPC metrics below. Historic BMS data will be used to set the billing cycle completion baseline.</div>
+    <div class="bms-preview">
+      <div class="bms-tile"><div class="bms-lbl">Billing cycle completion</div><div class="bms-val">—%</div></div>
+      <div class="bms-tile"><div class="bms-lbl">Avg days cycle created → completed</div><div class="bms-val">—d</div></div>
+      <div class="bms-tile"><div class="bms-lbl">Open billing exceptions</div><div class="bms-val">—</div></div>
+      <div class="bms-tile"><div class="bms-lbl">Unbillable devices</div><div class="bms-val">—</div></div>
+      <div class="bms-tile"><div class="bms-lbl">SLA breach — open</div><div class="bms-val">—</div></div>
+      <div class="bms-tile"><div class="bms-lbl">First-time fix rate</div><div class="bms-val">—%</div></div>
+    </div>
+  </div>
+
+  <p class="slabel">Fields to map at BMS go-live — WIG 02</p>
+  <div class="tbl-wrap" style="max-width:640px;">
+    <table>
+      <thead>
+        <tr><th>BMS field</th><th>Dashboard metric</th><th>WIG use</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-name">Billing Cycle — created timestamp</td>
+          <td>Cycle open date</td>
+          <td>Lead measure: Day 3 completion rate</td>
+        </tr>
+        <tr>
+          <td class="td-name">Billing Cycle — completed / closed timestamp</td>
+          <td>Avg days to complete</td>
+          <td>Lag measure: billing cycle completion %</td>
+        </tr>
+        <tr>
+          <td class="td-name">Billing exception log</td>
+          <td>Open exceptions count</td>
+          <td>Lead measure: exceptions at week-end</td>
+        </tr>
+        <tr>
+          <td class="td-name">Device — contract status flag</td>
+          <td>Unbillable device count</td>
+          <td>Lead measure: reduce 2/mo</td>
+        </tr>
+        <tr>
+          <td class="td-name">Customer / entity on Billing Cycle record</td>
+          <td>Breakdown by customer and entity</td>
+          <td>Segment view for Shikha's weekly huddle</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<script>
+function go(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+
+</body>
+</html>
