@@ -53,6 +53,7 @@
   .header-logo {
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    height: 36px;
   }
   .header-logo svg { width: 20px; height: 20px; opacity: 0.9; }
   .header-title {
@@ -378,7 +379,7 @@
 <header>
   <div class="header-left">
     <div class="header-logo">
-      <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:28px;width:auto;display:block;">
+      <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:22px;width:auto;display:block;">
     </div>
     <div>
       <div class="header-title">Delegation of Authority</div>
@@ -402,6 +403,13 @@
     <span class="legend-pill"><span class="legend-dot" style="background:#1a6b6b"></span>Pacific Islands</span>
     <span class="legend-sep">|</span>
     <span style="font-size:12.5px;color:var(--ink-muted);">All monetary thresholds in NZD · Approvals must proceed sequentially through each authority level · Questions?<br><a href="https://teams.microsoft.com/l/chat/0/0?users=minoo@ricohsouthpacific.com" target="_blank" style="display:inline-flex;align-items:center;gap:5px;background:#5558af;color:white;font-size:11.5px;font-weight:600;padding:3px 10px 3px 8px;border-radius:5px;text-decoration:none;vertical-align:middle;letter-spacing:0.02em;margin-top:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>Message Finance Manager</a></span>
+  </div>
+
+  <!-- ESCALATION RULE -->
+  <div class="escalation-box" style="margin-bottom:20px;">
+    <h3>Sequential Approval Rule</h3>
+    <p>All approvals must be endorsed at each required authority level before progressing to the next level.</p>
+    <p style="color:var(--ink-muted);font-size:12.5px;margin-top:8px;"><strong>Example — Bad-debt write-off of $15,000:</strong> First approved by the Finance Manager → then David Apfel (Fractional CFO) → finally CEO. Each level must sign off before the next is engaged.</p>
   </div>
 
   <!-- FILTER BAR -->
@@ -850,13 +858,6 @@
 
       </tbody>
     </table>
-  </div>
-
-  <!-- ESCALATION RULE -->
-  <div class="escalation-box">
-    <h3>Sequential Approval Rule</h3>
-    <p>All approvals must be endorsed at each required authority level before progressing to the next level.</p>
-    <p style="color:var(--ink-muted);font-size:12.5px;margin-top:8px;"><strong>Example — Bad-debt write-off of $15,000:</strong> First approved by the Finance Manager → then David Apfel (Fractional CFO) → finally CEO. Each level must sign off before the next is engaged.</p>
   </div>
 
   <!-- FOOTNOTES -->
