@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSP Finance — Overdue Invoice Drilldown</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #D7063B;
+      --charcoal: #1e2124;
+      --charcoal-mid: #2c3036;
+      --body-bg: #f0f0ef;
+      --surface: #ffffff;
+      --border: #e2e2e0;
+      --text: #1a1a1a;
+      --text-2: #4b5563;
+      --text-3: #9ca3af;
+      --green: #16a34a;
+      --green-bg: #dcfce7;
+      --green-border: #86efac;
+      --amber: #d97706;
+      --amber-bg: #fef3c7;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --danger-border: #fca5a5;
+      --severe-bg: #fff1f2;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--body-bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+
+    /* HEADER */
+    header { background: var(--charcoal); border-bottom: 3px solid #D7063B; color: white; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .header-brand { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: white; }
+    .header-brand span { color: var(--red); }
+    .header-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.2); }
+    .header-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); }
+    .back-link { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; transition: color 0.15s; }
+    .back-link:hover { color: white; }
+
+    /* FILTER BAR */
+    .filter-bar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 12px 32px; display: flex; align-items: center; gap: 16px;
+      flex-wrap: wrap; position: sticky; top: 64px; z-index: 90;
+    }
+    .filter-group { display: flex; align-items: center; gap: 8px; }
+    .filter-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); white-space: nowrap; }
+    .filter-select {
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      color: var(--text); background: var(--body-bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 6px 28px 6px 10px; appearance: none; cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 9px center; min-width: 150px;
+    }
+    .filter-select:focus { outline: none; border-color: var(--red); }
+    .filter-sep { width: 1px; height: 20px; background: var(--border); }
+    .filter-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .refresh-btn {
+      font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
+      background: var(--charcoal); color: white; border: none; border-radius: 6px;
+      padding: 7px 14px; cursor: pointer; transition: background 0.15s;
+    }
+    .refresh-btn:hover { background: #2c3036; }
+    .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .as-at { font-size: 11px; color: var(--text-3); font-family: 'DM Mono', monospace; }
+
+    /* SUMMARY STRIP */
+    .summary-strip { display: flex; gap: 24px; padding: 14px 32px; background: var(--charcoal-mid); flex-wrap: wrap; }
+    .summary-stat .summary-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.4); }
+    .summary-stat .summary-value { font-family: 'DM Mono', monospace; font-size: 18px; font-weight: 500; color: white; line-height: 1.2; }
+    .summary-stat .summary-value.warn { color: #fbbf24; }
+
+    /* MAIN */
+    main { padding: 24px 32px 60px; }
+
+    /* STATES */
+    .loading-state { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); padding: 60px; text-align: center; }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 13px; color: var(--text-2); }
+    .loading-sub { font-size: 12px; color: var(--text-3); margin-top: 6px; font-family: 'DM Mono', monospace; }
+    .error-state { background: var(--danger-bg); border: 1px solid var(--danger-border); border-radius: 10px; padding: 24px; font-size: 13px; color: var(--danger); }
+    .no-invoices { background: var(--green-bg); border: 1px solid var(--green-border); border-radius: 10px; padding: 24px; text-align: center; font-size: 14px; color: var(--green); font-weight: 600; }
+    .partial-error { background: var(--amber-bg); border: 1px solid #fcd34d; border-radius: 8px; padding: 12px 16px; font-size: 12px; color: #78350f; margin-bottom: 16px; }
+
+    /* TABLE */
+    .table-wrap { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+    .table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 800px; }
+    thead th {
+      background: var(--charcoal); color: rgba(255,255,255,0.7);
+      padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.04em; white-space: nowrap; cursor: pointer; user-select: none;
+    }
+    thead th:hover { color: white; }
+    thead th.sort-asc::after  { content: ' ↑'; color: var(--red); }
+    thead th.sort-desc::after { content: ' ↓'; color: var(--red); }
+    thead th.right { text-align: right; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+    tbody tr.bucket-3060  { border-left: 3px solid var(--amber); }
+    tbody tr.bucket-6090  { border-left: 3px solid #f97316; }
+    tbody tr.bucket-90plus { border-left: 3px solid var(--danger); background: var(--severe-bg); }
+    tbody tr.bucket-90plus:hover { background: #fee8ea; }
+    tbody td { padding: 10px 14px; vertical-align: middle; }
+    tbody td.right { text-align: right; }
+    tbody td.mono  { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+    .inv-link { color: var(--red); text-decoration: none; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; }
+    .inv-link:hover { text-decoration: underline; }
+
+    .bucket-badge { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; white-space: nowrap; }
+    .badge-3060   { background: var(--amber-bg); color: var(--amber); }
+    .badge-6090   { background: #fff7ed; color: #c2410c; }
+    .badge-90plus { background: var(--danger-bg); color: var(--danger); }
+
+    .entity-badge { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; background: var(--charcoal); color: rgba(255,255,255,0.8); }
+
+    .days-num { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; }
+    .days-3060   { color: var(--amber); }
+    .days-6090   { color: #c2410c; }
+    .days-90plus { color: var(--danger); }
+
+    @media (max-width: 900px) {
+      main { padding: 16px 12px 40px; }
+      .filter-bar, .summary-strip { padding: 10px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px;display:block;" onerror="this.style.display='none'">
+      <span style="color:rgba(255,255,255,.25);font-weight:300;font-size:20px;line-height:1;">|</span>
+      <span style="font-size:13px;color:#aaa;letter-spacing:.03em;">AR Drilldown</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <span style="font-family:'DM Mono',monospace;font-size:11px;color:#666;" id="asAtLabel"></span>
+    <a href="finance-dashboard.html" class="back-link">← Finance Dashboard</a>
+  </div>
+</header>
+<nav style="background:#1a1a1a;border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px;overflow-x:auto;">
+  <a href="finance-dashboard.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Finance Dashboard</a>
+  <a href="finance-close.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Month-End Close</a>
+  <a href="finance-drilldown.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:white;border-bottom:2px solid #D7063B;text-decoration:none;display:inline-block;margin-bottom:-1px;white-space:nowrap;">AR Drilldown</a>
+  <a href="finance-data-dictionary.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Data Dictionary</a>
+</nav>
+
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <span class="filter-label">Entity</span>
+    <select class="filter-select" id="filterEntity" onchange="applyFilters()">
+      <option value="all">All Entities</option>
+      <option value="RSP">RSP</option>
+      <option value="Samoa">Samoa</option>
+      <option value="Solomons">Solomons</option>
+      <option value="Tonga">Tonga</option>
+      <option value="Vanuatu">Vanuatu</option>
+    </select>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Ageing Bucket</span>
+    <select class="filter-select" id="filterBucket" onchange="applyFilters()">
+      <option value="all">All Overdue</option>
+      <option value="3060">30–60 Days</option>
+      <option value="6090">60–90 Days</option>
+      <option value="90plus">90+ Days</option>
+    </select>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Min Amount (NZD)</span>
+    <select class="filter-select" id="filterAmount" onchange="applyFilters()">
+      <option value="0">No minimum</option>
+      <option value="500">$500+</option>
+      <option value="1000">$1,000+</option>
+      <option value="5000">$5,000+</option>
+      <option value="10000">$10,000+</option>
+    </select>
+  </div>
+  <div class="filter-right">
+    <span class="as-at" id="asAtLabel"></span>
+    <button class="refresh-btn" id="refreshBtn" onclick="loadData()">↺ Refresh</button>
+  </div>
+</div>
+
+<div class="summary-strip" id="summaryStrip" style="display:none"></div>
+
+<main>
+  <div id="tableContainer">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading overdue invoices…</div>
+      <div class="loading-sub">Querying Xero via Synchub</div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let allInvoices = [];
+let sortCol     = 'daysOverdue';
+let sortDir     = 'desc';
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function fmt(n) {
+  if (n === null || n === undefined) return '—';
+  return '$' + Math.round(n).toLocaleString('en-NZ');
+}
+
+function fmtDate(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr.split('T')[0];
+  return d.toLocaleDateString('en-NZ', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function xeroUrl(invoiceId) {
+  return `https://go.xero.com/AccountsReceivable/View.aspx?InvoiceID=${invoiceId}`;
+}
+
+function bucketLabel(b) {
+  const map = {
+    '3060':   '<span class="bucket-badge badge-3060">30–60 Days</span>',
+    '6090':   '<span class="bucket-badge badge-6090">60–90 Days</span>',
+    '90plus': '<span class="bucket-badge badge-90plus">90+ Days</span>',
+  };
+  return map[b] || b;
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOAD DATA — calls the Vercel serverless function
+// ═══════════════════════════════════════════════════════════
+async function loadData() {
+  const btn = document.getElementById('refreshBtn');
+  btn.disabled = true;
+  btn.textContent = 'Loading…';
+  document.getElementById('summaryStrip').style.display = 'none';
+  document.getElementById('asAtLabel').textContent = '';
+  document.getElementById('tableContainer').innerHTML = `
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading overdue invoices from Xero…</div>
+      <div class="loading-sub">This may take 20–30 seconds while Synchub is queried for all entities</div>
+    </div>`;
+
+  try {
+    const res = await fetch('/api/invoices?entity=all&bucket=all');
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    allInvoices = data.invoices || [];
+
+    if (data.asAt) {
+      const d = new Date(data.asAt);
+      document.getElementById('asAtLabel').textContent =
+        'As at ' + d.toLocaleString('en-NZ', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    }
+
+    if (data.errors && data.errors.length > 0) {
+      const failedEntities = data.errors.map(e => e.entity).join(', ');
+      document.getElementById('tableContainer').innerHTML =
+        `<div class="partial-error">⚠ Some entities failed to load: ${failedEntities}. Results shown are partial.</div>`;
+    }
+
+    applyFilters();
+
+  } catch (err) {
+    document.getElementById('tableContainer').innerHTML =
+      `<div class="error-state"><strong>Failed to load invoice data.</strong><br>${err.message}<br><br>Check that the SYNCHUB_API_KEY environment variable is set in Vercel and try refreshing.</div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '↺ Refresh';
+}
+
+// ═══════════════════════════════════════════════════════════
+// FILTERS + RENDER
+// ═══════════════════════════════════════════════════════════
+function getFiltered() {
+  const entity  = document.getElementById('filterEntity').value;
+  const bkt     = document.getElementById('filterBucket').value;
+  const minAmt  = parseInt(document.getElementById('filterAmount').value) || 0;
+
+  return allInvoices.filter(inv => {
+    if (entity !== 'all' && inv.entity !== entity) return false;
+    if (bkt !== 'all' && inv.bucket !== bkt)       return false;
+    if (inv.amountNZD < minAmt)                    return false;
+    return true;
+  });
+}
+
+function applyFilters() {
+  if (allInvoices.length === 0) return;
+  renderTable();
+}
+
+function renderTable() {
+  const filtered = getFiltered();
+
+  // Summary strip
+  const strip    = document.getElementById('summaryStrip');
+  const total90  = filtered.filter(i => i.bucket === '90plus');
+  strip.style.display = 'flex';
+  strip.innerHTML = `
+    <div class="summary-stat">
+      <div class="summary-label">Invoices Shown</div>
+      <div class="summary-value">${filtered.length.toLocaleString()}</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-label">Total Overdue (NZD)</div>
+      <div class="summary-value warn">${fmt(filtered.reduce((s,i) => s+i.amountNZD, 0))}</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-label">90+ Day Count</div>
+      <div class="summary-value warn">${total90.length}</div>
+    </div>
+    <div class="summary-stat">
+      <div class="summary-label">90+ Day Value (NZD)</div>
+      <div class="summary-value warn">${fmt(total90.reduce((s,i) => s+i.amountNZD, 0))}</div>
+    </div>`;
+
+  if (filtered.length === 0) {
+    document.getElementById('tableContainer').innerHTML =
+      `<div class="no-invoices">✓ No overdue invoices match the selected filters</div>`;
+    return;
+  }
+
+  // Sort
+  const sorted = [...filtered].sort((a, b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (typeof av === 'string') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+    if (av < bv) return sortDir === 'asc' ? -1 :  1;
+    if (av > bv) return sortDir === 'asc' ?  1 : -1;
+    return 0;
+  });
+
+  const cols = [
+    { key: 'entity',        label: 'Entity',       right: false },
+    { key: 'invoiceNumber', label: 'Invoice #',     right: false },
+    { key: 'contactName',   label: 'Customer',      right: false },
+    { key: 'date',          label: 'Invoice Date',  right: false },
+    { key: 'dueDate',       label: 'Due Date',      right: false },
+    { key: 'daysOverdue',   label: 'Days Overdue',  right: true  },
+    { key: 'bucket',        label: 'Bucket',        right: false },
+    { key: 'amountLocal',   label: 'Local Amt',     right: true  },
+    { key: 'amountNZD',     label: 'NZD Equiv',     right: true  },
+  ];
+
+  const thead = cols.map(c => {
+    const cls = [
+      c.right ? 'right' : '',
+      sortCol === c.key ? `sort-${sortDir}` : ''
+    ].filter(Boolean).join(' ');
+    return `<th class="${cls}" onclick="setSort('${c.key}')">${c.label}</th>`;
+  }).join('');
+
+  const rows = sorted.map(inv => {
+    const bktCls  = `bucket-${inv.bucket}`;
+    const daysCls = `days-${inv.bucket}`;
+    const localDisplay = inv.currency !== 'NZD'
+      ? `<span style="font-size:10px;color:var(--text-3)">${inv.currency}</span> ${(inv.amountLocal||0).toLocaleString('en-NZ', {maximumFractionDigits:0})}`
+      : '—';
+
+    return `<tr class="${bktCls}">
+      <td><span class="entity-badge">${inv.entity}</span></td>
+      <td><a class="inv-link" href="${xeroUrl(inv.invoiceId)}" target="_blank" rel="noopener">${inv.invoiceNumber || '—'}</a></td>
+      <td>${inv.contactName || '—'}</td>
+      <td class="mono">${fmtDate(inv.date)}</td>
+      <td class="mono">${fmtDate(inv.dueDate)}</td>
+      <td class="right"><span class="days-num ${daysCls}">${inv.daysOverdue}d</span></td>
+      <td>${bucketLabel(inv.bucket)}</td>
+      <td class="right mono">${localDisplay}</td>
+      <td class="right mono" style="font-weight:600">${fmt(inv.amountNZD)}</td>
+    </tr>`;
+  }).join('');
+
+  // Preserve any partial error message above the table
+  const existing = document.getElementById('tableContainer');
+  const partialErr = existing.querySelector('.partial-error');
+  const errHtml = partialErr ? partialErr.outerHTML : '';
+
+  existing.innerHTML = errHtml + `
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <thead><tr>${thead}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function setSort(col) {
+  sortDir = sortCol === col ? (sortDir === 'asc' ? 'desc' : 'asc') : (col === 'daysOverdue' || col === 'amountNZD' ? 'desc' : 'asc');
+  sortCol = col;
+  if (allInvoices.length > 0) renderTable();
+}
+
+// Auto-load
+loadData();
+</script>
+</body>
+</html>

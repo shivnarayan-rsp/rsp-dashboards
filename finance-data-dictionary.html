@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSP Finance Dashboard — Data Dictionary</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #D7063B;
+      --charcoal: #1e2124;
+      --body-bg: #f0f0ef;
+      --surface: #ffffff;
+      --border: #e2e2e0;
+      --text: #1a1a1a;
+      --text-2: #4b5563;
+      --text-3: #9ca3af;
+      --green: #16a34a;
+      --green-bg: #dcfce7;
+      --amber: #d97706;
+      --amber-bg: #fef3c7;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --blue: #2563eb;
+      --blue-bg: #dbeafe;
+      --mono: 'DM Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--body-bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+
+    header { background: var(--charcoal); border-bottom: 3px solid #D7063B; color: white; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .header-brand { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: white; }
+    .header-brand span { color: var(--red); }
+    .header-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.2); }
+    .header-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); }
+    .back-link { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; transition: color 0.15s; }
+    .back-link:hover { color: white; }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 36px 24px 60px; }
+
+    .page-title { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 6px; letter-spacing: -0.3px; }
+    .page-subtitle { font-size: 14px; color: var(--text-2); margin-bottom: 32px; }
+
+    /* SECTION */
+    .dict-section { margin-bottom: 40px; }
+    .dict-section-title {
+      font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+      color: white; background: var(--charcoal); padding: 10px 18px; border-radius: 8px 8px 0 0;
+    }
+
+    /* TABLE */
+    .dict-table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; overflow: hidden; }
+    .dict-table thead th {
+      background: #f5f5f4; font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-3); padding: 10px 16px; text-align: left;
+      border-bottom: 1px solid var(--border); white-space: nowrap;
+    }
+    .dict-table tbody tr { border-bottom: 1px solid var(--border); }
+    .dict-table tbody tr:last-child { border-bottom: none; }
+    .dict-table tbody tr:hover { background: #fafafa; }
+    .dict-table tbody td { padding: 12px 16px; vertical-align: top; font-size: 13px; }
+    .dict-table tbody td:first-child { font-weight: 600; color: var(--text); min-width: 160px; }
+    .dict-table tbody td:nth-child(2) { color: var(--text-2); max-width: 300px; }
+    .dict-table tbody td:nth-child(3) { font-family: var(--mono); font-size: 12px; color: var(--blue); background: var(--blue-bg); max-width: 220px; }
+    .dict-table tbody td:nth-child(4) { font-family: var(--mono); font-size: 12px; color: var(--text-2); max-width: 260px; }
+    .dict-table tbody td:nth-child(5) { color: var(--amber); font-size: 12px; max-width: 220px; }
+
+    .tag {
+      display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; padding: 2px 7px; border-radius: 4px; margin-right: 4px; margin-bottom: 2px;
+    }
+    .tag-live   { background: var(--green-bg);  color: var(--green); }
+    .tag-manual { background: var(--amber-bg);  color: var(--amber); }
+    .tag-calc   { background: var(--blue-bg);   color: var(--blue); }
+    .tag-static { background: #f3f4f6; color: #6b7280; }
+
+    /* FX TABLE */
+    .fx-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 40px; }
+    .fx-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+    .fx-pair { font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .fx-rate { font-family: var(--mono); font-size: 20px; font-weight: 500; color: var(--red); }
+    .fx-note { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+    /* THRESHOLD TABLE */
+    .threshold-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 40px; }
+    .threshold-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+    .threshold-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-3); margin-bottom: 8px; }
+    .threshold-value { font-family: var(--mono); font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+    .threshold-value.green  { color: var(--green); }
+    .threshold-value.amber  { color: var(--amber); }
+    .threshold-value.red    { color: var(--danger); }
+    .threshold-desc { font-size: 12px; color: var(--text-2); }
+
+    /* INFO BOXES */
+    .info-box { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--blue); border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; font-size: 13px; color: var(--text-2); line-height: 1.7; }
+    .info-box strong { color: var(--text); }
+    .info-box code { font-family: var(--mono); font-size: 12px; background: var(--blue-bg); color: var(--blue); padding: 1px 5px; border-radius: 3px; }
+
+    .warn-box { background: var(--amber-bg); border: 1px solid #fcd34d; border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: #78350f; }
+
+    .section-note { font-size: 12px; color: var(--text-3); margin-top: 8px; font-style: italic; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px;display:block;" onerror="this.style.display='none'">
+      <span style="color:rgba(255,255,255,.25);font-weight:300;font-size:20px;line-height:1;">|</span>
+      <span style="font-size:13px;color:#aaa;letter-spacing:.03em;">Data Dictionary</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <a href="finance-dashboard.html" class="back-link">← Finance Dashboard</a>
+  </div>
+</header>
+<nav style="background:#1a1a1a;border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px;overflow-x:auto;">
+  <a href="finance-dashboard.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Finance Dashboard</a>
+  <a href="finance-close.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Month-End Close</a>
+  <a href="finance-drilldown.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">AR Drilldown</a>
+  <a href="finance-data-dictionary.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:white;border-bottom:2px solid #D7063B;text-decoration:none;display:inline-block;margin-bottom:-1px;white-space:nowrap;">Data Dictionary</a>
+</nav>
+
+<main>
+  <div class="page-title">Finance Dashboard — Data Dictionary</div>
+  <div class="page-subtitle">For Finance Manager and CFO review. Documents every metric, its source, calculation method, FX treatment, and known limitations.</div>
+
+  <!-- ── DATA SOURCES ── -->
+  <div class="dict-section">
+    <div class="dict-section-title">Data Sources</div>
+    <table class="dict-table">
+      <thead><tr><th>Entity</th><th>Source</th><th>Connection</th><th>Currency</th><th>Refresh Method</th></tr></thead>
+      <tbody>
+        <tr><td>RSP (NZ)</td><td>Xero via Synchub MCP</td><td>xero_ricohsouthpacific_13512_5</td><td>NZD — no conversion needed</td><td>Live query on dashboard load</td></tr>
+        <tr><td>Samoa</td><td>Xero via Synchub MCP</td><td>xero_ricohsamoa_13512_1</td><td>WST → NZD via FX rate</td><td>Live query on dashboard load</td></tr>
+        <tr><td>Solomon Islands</td><td>Xero via Synchub MCP</td><td>xero_ricohsolomonislands_13512_4</td><td>SBD → NZD via FX rate</td><td>Live query on dashboard load</td></tr>
+        <tr><td>Tonga</td><td>Xero via Synchub MCP</td><td>xero_ricohtongalimited_13512_3</td><td>TOP → NZD via FX rate</td><td>Live query on dashboard load</td></tr>
+        <tr><td>Vanuatu</td><td>Xero via Synchub MCP</td><td>xero_ricohvanuatu_13512_2</td><td>VUV → NZD via FX rate</td><td>Live query on dashboard load</td></tr>
+        <tr><td>Alpine Print</td><td>Manual dashboard upload</td><td>Not connected to Synchub</td><td>NZD — no conversion needed</td><td>Manual update required each week</td></tr>
+      </tbody>
+    </table>
+    <p class="section-note">Synchub mirrors Xero data on a scheduled sync. There may be a lag of up to a few hours between a transaction in Xero and it appearing in Synchub. Dashboard data is as fresh as the last Synchub sync.</p>
+  </div>
+
+  <!-- ── FX RATES ── -->
+  <div class="dict-section">
+    <div class="dict-section-title">FX Rates Applied</div>
+    <div class="info-box">
+      All Pacific entity values are stored in Synchub in <strong>local currency</strong>. The dashboard multiplies each local value by the rate below to produce an NZD equivalent. Rates are <strong>static end-of-month mid-market rates</strong> — they are not live and must be updated manually each month. A 5% movement in VUV/NZD, for example, changes Vanuatu's AR value by ~5% in NZD terms without any underlying change in invoiced amounts.
+    </div>
+    <div class="fx-grid">
+      <div class="fx-card"><div class="fx-pair">WST → NZD</div><div class="fx-rate">× 0.6172</div><div class="fx-note">Samoa · Rate as at end-Feb 2026</div></div>
+      <div class="fx-card"><div class="fx-pair">SBD → NZD</div><div class="fx-rate">× 0.2076</div><div class="fx-note">Solomon Islands · Rate as at end-Feb 2026</div></div>
+      <div class="fx-card"><div class="fx-pair">TOP → NZD</div><div class="fx-rate">× 0.6931</div><div class="fx-note">Tonga · Rate as at end-Feb 2026</div></div>
+      <div class="fx-card"><div class="fx-pair">VUV → NZD</div><div class="fx-rate">× 0.0140</div><div class="fx-note">Vanuatu · Rate as at end-Feb 2026</div></div>
+      <div class="fx-card"><div class="fx-pair">NZD → NZD</div><div class="fx-rate">× 1.0000</div><div class="fx-note">RSP &amp; Alpine · No conversion</div></div>
+    </div>
+  </div>
+
+  <!-- ── AR AGEING ── -->
+  <div class="dict-section">
+    <div class="dict-section-title">AR Ageing — Source &amp; Bucket Definitions</div>
+    <div class="info-box">
+      <strong>Xero table:</strong> <code>Invoice</code> · <strong>Filter:</strong> <code>Type = 'ACCREC'</code> AND <code>Status IN ('AUTHORISED', 'PARTIALLYPAID')</code> AND <code>IsDeleted = FALSE</code><br>
+      <strong>Value field:</strong> <code>AmountDue</code> — this is the outstanding balance after any partial payments or credits. It is NOT the original invoice total.<br>
+      <strong>Age calculation:</strong> Based on <code>DueDate</code> compared to today's date in NZ Standard Time. Age = today − DueDate (in days). A positive value means overdue.
+    </div>
+    <table class="dict-table">
+      <thead><tr><th>Bucket</th><th>Definition</th><th>Filter Condition</th><th>Source</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Current (not yet due)</td>
+          <td>Invoices where the due date is today or in the future</td>
+          <td>DueDate &gt;= TODAY()</td>
+          <td><span class="tag tag-live">Live</span> Xero via Synchub</td>
+          <td>Includes invoices due today</td>
+        </tr>
+        <tr>
+          <td>30–60 Days Overdue</td>
+          <td>Invoices overdue by 31 to 60 days</td>
+          <td>DueDate BETWEEN TODAY()-60 AND TODAY()-31</td>
+          <td><span class="tag tag-live">Live</span> Xero via Synchub</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>60–90 Days Overdue</td>
+          <td>Invoices overdue by 61 to 90 days</td>
+          <td>DueDate BETWEEN TODAY()-90 AND TODAY()-61</td>
+          <td><span class="tag tag-live">Live</span> Xero via Synchub</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>90+ Days Overdue</td>
+          <td>Invoices overdue by more than 90 days</td>
+          <td>DueDate &lt; TODAY()-90</td>
+          <td><span class="tag tag-live">Live</span> Xero via Synchub</td>
+          <td>Primary risk indicator. &gt;30% of entity AR in this bucket triggers red status</td>
+        </tr>
+        <tr>
+          <td>Total AR</td>
+          <td>Sum of all four buckets above</td>
+          <td>All open ACCREC invoices</td>
+          <td><span class="tag tag-calc">Calculated</span></td>
+          <td>= Current + 30-60 + 60-90 + 90+</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="section-note">Note: The dashboard does not include a 0–30 day overdue bucket. Invoices 1–30 days overdue appear in the drilldown but are grouped into the 30–60 bucket range for summary purposes. This is consistent with the prior manual dashboard convention.</p>
+  </div>
+
+  <!-- ── DSO ── -->
+  <div class="dict-section">
+    <div class="dict-section-title">DSO — Days Sales Outstanding</div>
+    <div class="info-box">
+      <strong>Formula:</strong> <code>DSO = (Total AR ÷ 90-Day Revenue) × 90</code><br><br>
+      <strong>90-Day Revenue definition:</strong> Sum of <code>SubTotal</code> (excl. tax) from <code>Invoice</code> table where <code>Type = 'ACCREC'</code>, <code>Status IN ('AUTHORISED', 'PAID')</code>, and invoice <code>Date</code> falls within the trailing 90 days from today. This is invoiced revenue, not cash received.<br><br>
+      <strong>Interpretation:</strong> DSO represents the average number of days it takes to collect payment after an invoice is raised. A DSO of 60 means on average customers take 60 days to pay.
+    </div>
+    <div class="warn-box">
+      ⚠ <strong>RSP DSO caveat:</strong> RSP's Xero account contains intercompany invoices raised against Pacific Island subsidiaries. These inflate both Total AR and 90-Day Revenue, which can distort the DSO calculation. The Finance Manager should confirm whether intercompany invoices should be excluded before using RSP DSO for external benchmarking.
+    </div>
+    <table class="dict-table">
+      <thead><tr><th>Metric</th><th>Definition</th><th>Xero Source</th><th>Calculation</th><th>Limitations</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Current DSO</td>
+          <td>Average collection days based on current AR and trailing 90-day revenue</td>
+          <td>Invoice.AmountDue (open) + Invoice.SubTotal (paid/authorised, last 90 days)</td>
+          <td>(Total AR ÷ Rev90Day) × 90</td>
+          <td>Includes intercompany for RSP. Alpine uses manual revenue figure.</td>
+        </tr>
+        <tr>
+          <td>Prior DSO (trend)</td>
+          <td>Approximate prior period DSO used to show direction of travel</td>
+          <td>Invoice.SubTotal for invoices dated 91–180 days ago</td>
+          <td>(Current Total AR ÷ Rev90DayPrior) × 90</td>
+          <td>Uses current AR snapshot against prior revenue window — directional only, not a true point-in-time prior DSO. A rising DSO against lower prior revenue may overstate deterioration.</td>
+        </tr>
+        <tr>
+          <td>DSO Trend Arrow</td>
+          <td>Direction of DSO movement vs prior period</td>
+          <td>Calculated</td>
+          <td>Current DSO minus Prior DSO. &gt;+2d = worsening ↑, &lt;-2d = improving ↓, within ±2d = stable →</td>
+          <td>2-day dead band avoids noise from minor fluctuations</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── SCORECARD STATUS ── -->
+  <div class="dict-section">
+    <div class="dict-section-title">Scorecard Status Thresholds</div>
+    <div class="threshold-grid">
+      <div class="threshold-card">
+        <div class="threshold-label">DSO — Green</div>
+        <div class="threshold-value green">&lt; 60 days</div>
+        <div class="threshold-desc">Collection within standard terms. No action required.</div>
+      </div>
+      <div class="threshold-card">
+        <div class="threshold-label">DSO — Amber</div>
+        <div class="threshold-value amber">60–90 days</div>
+        <div class="threshold-desc">Collections slowing. Finance Manager review recommended.</div>
+      </div>
+      <div class="threshold-card">
+        <div class="threshold-label">DSO — Red</div>
+        <div class="threshold-value red">&gt; 90 days</div>
+        <div class="threshold-desc">Significant collection risk. SLT escalation required.</div>
+      </div>
+      <div class="threshold-card">
+        <div class="threshold-label">90+ Day AR — Green</div>
+        <div class="threshold-value green">&lt; 15% of Total AR</div>
+        <div class="threshold-desc">Acceptable level of long-dated debt.</div>
+      </div>
+      <div class="threshold-card">
+        <div class="threshold-label">90+ Day AR — Amber</div>
+        <div class="threshold-value amber">15–30% of Total AR</div>
+        <div class="threshold-desc">Elevated. Collection focus required on specific accounts.</div>
+      </div>
+      <div class="threshold-card">
+        <div class="threshold-label">90+ Day AR — Red</div>
+        <div class="threshold-value red">&gt; 30% of Total AR</div>
+        <div class="threshold-desc">High risk. Potential provisioning discussion with CFO.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WIG BANNER ── -->
+  <div class="dict-section">
+    <div class="dict-section-title">WIG Banner — Group Summary Metrics</div>
+    <table class="dict-table">
+      <thead><tr><th>Metric</th><th>Definition</th><th>Calculation</th><th>Source</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Group Total AR</td>
+          <td>Sum of all open ACCREC invoice balances across all entities, in NZD</td>
+          <td>Sum of entity Total AR values (FX applied)</td>
+          <td><span class="tag tag-live">Live</span> + <span class="tag tag-manual">Manual (Alpine)</span></td>
+          <td>Includes intercompany invoices in RSP</td>
+        </tr>
+        <tr>
+          <td>Group DSO</td>
+          <td>Weighted average DSO across all entities</td>
+          <td>(Sum of all entity AR) ÷ (Sum of all entity 90-day revenue) × 90</td>
+          <td><span class="tag tag-calc">Calculated</span></td>
+          <td>Weighted by AR volume, not simple average</td>
+        </tr>
+        <tr>
+          <td>90+ Day AR (Group)</td>
+          <td>Total value of invoices overdue by more than 90 days across all entities in NZD</td>
+          <td>Sum of entity 90+ day buckets</td>
+          <td><span class="tag tag-live">Live</span> + <span class="tag tag-manual">Manual (Alpine)</span></td>
+          <td>Primary collection risk indicator</td>
+        </tr>
+        <tr>
+          <td>% Overdue</td>
+          <td>Proportion of Total AR that is past due date (any bucket)</td>
+          <td>(30-60 + 60-90 + 90+) ÷ Total AR × 100</td>
+          <td><span class="tag tag-calc">Calculated</span></td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── COLLECTIONS LEADERBOARD ── -->
+  <div class="dict-section">
+    <div class="dict-section-title">Collections Leaderboard</div>
+    <div class="info-box">
+      Entities are <strong>ranked by 90+ day AR as a percentage of Total AR</strong> — highest risk at the top. This is a leading indicator of collection failure, not just a size measure. A small entity with 80% of AR in the 90+ bucket ranks higher than a large entity with 10% in that bucket.
+    </div>
+    <table class="dict-table">
+      <thead><tr><th>Column</th><th>Definition</th><th>Calculation</th><th>Source</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>AR Health Bar</td>
+          <td>Visual split of AR into current (green), mildly overdue 30–90d (amber), severely overdue 90+ (red)</td>
+          <td>Each segment = bucket ÷ Total AR as a percentage width</td>
+          <td><span class="tag tag-calc">Calculated</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>90+ Overdue $</td>
+          <td>NZD value of invoices overdue by more than 90 days</td>
+          <td>Sum of AmountDue where DueDate &lt; today − 90</td>
+          <td><span class="tag tag-live">Live</span></td>
+          <td>FX applied for Pacific entities</td>
+        </tr>
+        <tr>
+          <td>% of AR</td>
+          <td>90+ day overdue as a proportion of total AR for the entity</td>
+          <td>90+ day AR ÷ Total AR × 100</td>
+          <td><span class="tag tag-calc">Calculated</span></td>
+          <td>Primary ranking field</td>
+        </tr>
+        <tr>
+          <td>DSO</td>
+          <td>Entity DSO badge — colour-coded by threshold</td>
+          <td>See DSO section above</td>
+          <td><span class="tag tag-calc">Calculated</span></td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>Trend</td>
+          <td>Direction of DSO movement vs prior period</td>
+          <td>Current DSO − Prior DSO</td>
+          <td><span class="tag tag-calc">Calculated</span></td>
+          <td>Directional indicator only — see DSO caveats above</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── KNOWN LIMITATIONS ── -->
+  <div class="dict-section">
+    <div class="dict-section-title">Known Limitations &amp; Items for Finance Review</div>
+    <table class="dict-table">
+      <thead><tr><th>Item</th><th>Description</th><th>Impact</th><th>Action Required</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Alpine Print not in Synchub</td>
+          <td>Alpine's Xero account is not connected to Synchub. All Alpine figures are manually sourced from the weekly finance dashboard spreadsheet.</td>
+          <td>Alpine figures do not refresh automatically. If the spreadsheet is not updated, Alpine data may be stale.</td>
+          <td>Connect Alpine Xero to Synchub, or update the DATA object in finance-dashboard.html each week.</td>
+        </tr>
+        <tr>
+          <td>RSP intercompany invoices</td>
+          <td>RSP raises intercompany invoices against Pacific subsidiaries in Xero. These are included in both AR and 90-day revenue figures.</td>
+          <td>RSP's Total AR, DSO, and 90+ day overdue figures are inflated relative to third-party customer AR.</td>
+          <td>Finance Manager to confirm whether intercompany should be excluded. If so, a contact filter can be added to the Synchub queries.</td>
+        </tr>
+        <tr>
+          <td>FX rates are static</td>
+          <td>Rates are updated manually at month-end and hardcoded in the dashboard.</td>
+          <td>Mid-month currency movements are not reflected. NZD values may diverge from actuals if there is significant FX volatility.</td>
+          <td>Update FX rates in finance-dashboard.html at start of each month. Future enhancement: pull live rates from an FX API.</td>
+        </tr>
+        <tr>
+          <td>DSO trend is approximate</td>
+          <td>Prior DSO uses the current AR snapshot against prior-period revenue (91–180 days ago), not a true point-in-time prior AR balance.</td>
+          <td>The trend arrow shows direction reliably but the magnitude (e.g. +12 days) may overstate or understate the actual change.</td>
+          <td>For precise trend, maintain a weekly AR snapshot table. This is planned as part of the BC/data lake migration.</td>
+        </tr>
+        <tr>
+          <td>Synchub sync lag</td>
+          <td>Synchub mirrors Xero on a scheduled basis. During a sync job, queries may time out. Data may be up to a few hours behind Xero.</td>
+          <td>Dashboard figures may not reflect same-day transactions in Xero.</td>
+          <td>Refresh the dashboard after the nightly Synchub sync completes (typically overnight NZ time).</td>
+        </tr>
+        <tr>
+          <td>AmountDue vs invoice total</td>
+          <td>The dashboard uses AmountDue (outstanding balance) not the original invoice SubTotal for AR ageing.</td>
+          <td>A partially paid invoice shows only the remaining balance, which is correct for working capital purposes but differs from the original invoice value.</td>
+          <td>No action required — this is the correct treatment.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="font-size:11px;color:var(--text-3);margin-top:20px;font-family:'DM Mono',monospace;">
+    Last updated: 23 March 2026 · Maintained by: Finance Manager (Minoo Sigan) · Technical queries: Vijendra Singh
+  </p>
+</main>
+
+</body>
+</html>
