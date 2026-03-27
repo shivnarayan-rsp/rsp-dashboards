@@ -14,8 +14,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal)
 header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .wordmark{font-size:20px;font-weight:600;color:var(--red);letter-spacing:.15em;}
 .hd{width:1px;height:22px;background:#444;margin:0 16px;}
-.header-title{font-size:13px;color:#aaa;}.as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+.header-title{font-size:13px;color:#aaa;}
+.live-pill{display:flex;align-items:center;gap:5px;font-size:11px;color:#aaa;font-family:'DM Mono',monospace;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
 .back-link{font-size:11px;color:#666;text-decoration:none;}.back-link:hover{color:#aaa;}
+
 .page-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 63px);}
 .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:63px;height:calc(100vh - 63px);overflow-y:auto;}
 .sidebar-heading{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);padding:0 20px 6px;margin-top:14px;}
@@ -23,282 +28,465 @@ header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 3
 .sidebar-link:hover{color:var(--charcoal);background:var(--surface2);}
 .sidebar-link.active{color:var(--red);border-left-color:var(--red);background:#fdf0f3;}
 .sidebar-divider{height:1px;background:var(--border);margin:8px 0;}
-main{padding:32px 44px 80px;max-width:880px;}
-.nav-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
-.nav-pill{padding:6px 14px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;white-space:nowrap;}
-.nav-pill:hover{border-color:var(--red);color:var(--red);}
-.nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
-.hero{margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border);}
-.hero h1{font-size:26px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px;}
-.hero-sub{font-size:14px;color:var(--mid);line-height:1.6;max-width:640px;}
-.hero-meta{display:flex;gap:18px;margin-top:12px;flex-wrap:wrap;}
-.hero-meta-item{font-size:11px;color:var(--muted);}
-.hero-meta-item strong{color:var(--charcoal);}
-.section{margin-bottom:44px;scroll-margin-top:80px;}
-.section-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--charcoal);}
-.sn{font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);background:var(--danger-bg);padding:3px 8px;border-radius:3px;}
-.section-title{font-size:17px;font-weight:600;letter-spacing:-.01em;}
-.si{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:18px;}
-.callout{padding:13px 17px;border-radius:6px;margin-bottom:14px;border-left:4px solid;}
+
+main{padding:32px 44px 80px;max-width:960px;}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;position:relative;}
+.tile::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}
+.tile.red::after{background:var(--danger);}
+.tile.amber::after{background:var(--amber);}
+.tile.green::after{background:var(--green);}
+.tile.blue::after{background:var(--blue);}
+.tile.teal::after{background:var(--teal);}
+.tile-lbl{font-size:11px;color:var(--muted);margin-bottom:5px;line-height:1.3;}
+.tile-val{font-size:26px;font-weight:300;line-height:1;margin-bottom:3px;}
+.tile.red .tile-val{color:var(--danger);}
+.tile.amber .tile-val{color:var(--amber);}
+.tile.green .tile-val{color:var(--green);}
+.tile.blue .tile-val{color:var(--blue);}
+.tile.teal .tile-val{color:var(--teal);}
+.tile-sub{font-size:10px;color:var(--muted);}
+
+/* section label */
+.slabel{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.slabel::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* filter bar */
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.filter-lbl{font-size:11px;color:var(--muted);font-weight:500;}
+.chip{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:12px;color:var(--mid);cursor:pointer;transition:all .12s;white-space:nowrap;}
+.chip:hover{border-color:var(--charcoal);color:var(--charcoal);}
+.chip.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;font-weight:500;}
+.search-box{border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:12px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--charcoal);outline:none;width:200px;margin-left:auto;}
+.search-box:focus{border-color:var(--charcoal);}
+
+/* doc tabs */
+.doc-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.doc-tab{padding:9px 18px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;cursor:pointer;color:var(--muted);border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:'DM Sans',sans-serif;}
+.doc-tab.active{color:var(--red);border-bottom-color:var(--red);}
+.doc-tab .tc{display:inline-flex;align-items:center;justify-content:center;background:var(--surface2);color:var(--mid);border-radius:20px;font-size:10px;font-weight:600;padding:1px 6px;margin-left:5px;}
+.doc-tab.active .tc{background:var(--charcoal);color:#fff;}
+
+/* sum strip */
+.sum-strip{display:flex;gap:18px;margin-bottom:12px;flex-wrap:wrap;}
+.sum-item{font-size:12px;color:var(--muted);}
+.sum-item strong{color:var(--charcoal);font-weight:600;}
+.sum-item.alert strong{color:var(--danger);}
+.sum-item.warn strong{color:var(--amber);}
+
+/* table */
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:680px;}
+th{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface2);padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap;}
+th.r{text-align:right;}
+th.sorted{color:var(--charcoal);}
+td{padding:9px 14px;border-bottom:1px solid rgba(0,0,0,.04);color:var(--mid);vertical-align:middle;}
+td.r{text-align:right;font-variant-numeric:tabular-nums;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--surface2);}
+.td-name{font-weight:500;color:var(--charcoal);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.row-submitted td:first-child{border-left:3px solid var(--danger);}
+.row-draft td:first-child{border-left:3px solid var(--amber);}
+
+/* pills */
+.pill{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:3px;white-space:nowrap;}
+.p-submitted{background:var(--danger-bg);color:var(--danger);}
+.p-draft{background:var(--amber-bg);color:var(--amber);}
+.entity-pill{background:var(--surface2);color:var(--mid);font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;}
+
+/* age colour */
+.age-green{color:var(--green);font-weight:600;}
+.age-amber{color:var(--amber);font-weight:600;}
+.age-red{color:var(--danger);font-weight:600;}
+
+/* xero btn */
+.xero-btn{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:500;color:var(--blue);background:var(--blue-bg);border:1px solid var(--blue-border);padding:2px 7px;border-radius:3px;text-decoration:none;white-space:nowrap;}
+.xero-btn:hover{background:#c2d9f2;}
+
+/* due alert badge */
+.due-alert{background:var(--danger-bg);color:var(--danger);font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;font-family:'DM Mono',monospace;}
+
+/* empty */
+.empty{padding:40px;text-align:center;color:var(--muted);font-size:13px;}
+.empty strong{display:block;color:var(--charcoal);margin-bottom:4px;}
+
+/* callout */
+.callout{padding:12px 16px;border-radius:6px;margin-bottom:14px;border-left:3px solid;}
 .callout.info{background:var(--blue-bg);border-color:var(--blue);}
 .callout.warn{background:var(--amber-bg);border-color:var(--amber);}
 .callout.good{background:var(--green-bg);border-color:var(--green);}
-.callout.alert{background:var(--danger-bg);border-color:var(--danger);}
-.callout.scaffold{background:#f0f0ff;border-color:#9090cc;}
-.ct{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
-.ct-info{color:var(--blue);}.ct-warn{color:var(--amber);}.ct-good{color:var(--green);}.ct-alert{color:var(--danger);}.ct-sc{color:#5050aa;}
-.callout p{font-size:13px;color:var(--mid);line-height:1.6;}.callout p+p{margin-top:6px;}
-.wig-strip{background:var(--charcoal);border-radius:6px;padding:14px 18px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));}
-.wi{padding:8px 12px;}.wi+.wi{border-left:1px solid rgba(255,255,255,.1);}
-.wi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--teal-border);margin-bottom:4px;}
-.wi-title{font-size:12px;font-weight:500;color:#f5f4f0;margin-bottom:3px;}
-.wi-how{font-size:11px;color:rgba(255,255,255,.5);line-height:1.4;}
-.csf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
-.csf{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;}
-.csf-n{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px;}
-.csf-t{font-size:13px;font-weight:600;margin-bottom:8px;}
-.csf-b{font-size:12px;color:var(--mid);line-height:1.6;}
-.tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:3px;font-weight:500;margin-top:8px;}
-.t-bl{background:var(--blue-bg);color:var(--blue);}.t-tl{background:var(--teal-bg);color:var(--teal);}.t-am{background:var(--amber-bg);color:var(--amber);}
-.sc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
-.sc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;position:relative;overflow:hidden;}
-.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:#9090cc;}
-.sc-k{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;background:#f0f0ff;color:#5050aa;display:inline-block;margin-bottom:7px;}
-.sc-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px;line-height:1.3;}
-.sc-v{font-size:26px;font-weight:300;line-height:1;margin-bottom:4px;color:#9090cc;}
-.sc-tgt{font-size:11px;color:var(--muted);margin-bottom:8px;}
-.sc-note{font-size:11px;color:var(--mid);line-height:1.4;padding-top:8px;border-top:1px solid var(--border);}
-.sc-src{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:6px;}
-.checklist{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:14px;}
-.cl-h{padding:9px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.cl-ht{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
-.cl-hw{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
-.cl-i{display:flex;align-items:flex-start;gap:11px;padding:10px 16px;border-bottom:1px solid #f5f5f5;}
-.cl-i:last-child{border-bottom:none;}
-.cl-box{width:17px;height:17px;border:2px solid var(--border);border-radius:3px;flex-shrink:0;margin-top:2px;}
-.cl-t{font-size:13px;flex:1;line-height:1.4;}
-.cl-d{display:block;font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
-.cl-b{flex-shrink:0;font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;font-family:'DM Mono',monospace;margin-top:3px;}
-.b-jane{background:var(--teal-bg);color:var(--teal);}
-.b-minoo{background:var(--blue-bg);color:var(--blue);}
-.b-shikha{background:var(--danger-bg);color:var(--danger);}
-.q-ph{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px;}
-.q-h{background:var(--surface2);padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.q-ht{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
-.q-src{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
-.q-cols{display:grid;padding:8px 16px;background:var(--surface2);border-bottom:1px solid var(--border);gap:8px;}
-.q-col{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
-.q-row{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid #f5f5f5;}
-.q-row:last-child{border-bottom:none;}
-.sk{height:10px;border-radius:3px;background:linear-gradient(90deg,#ebebeb 25%,#f5f5f5 50%,#ebebeb 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;flex-shrink:0;}
-@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+.ct{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.ct-info{color:var(--blue);}.ct-warn{color:var(--amber);}.ct-good{color:var(--green);}
+.callout p{font-size:12.5px;color:var(--mid);line-height:1.6;}
+
 footer{text-align:center;padding:22px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
+
 @media(max-width:900px){.page-layout{grid-template-columns:1fr;}.sidebar{display:none;}main{padding:18px 16px 60px;}}
-@media(max-width:680px){.sc-grid,.csf-grid,.wig-strip{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
+
 <header>
-  <div style="display:flex;align-items:center;"><span class="wordmark">RSP</span><div class="hd"></div><span class="header-title">Jane Bacon — Operations Coordinator</span></div>
-  <div style="display:flex;align-items:center;gap:12px;"><span class="as-of">Scaffold v2 — data TBC</span><a href="shikha_ops_dashboard_v8.html" class="back-link">← Shikha's Dashboard</a></div>
+  <div style="display:flex;align-items:center;">
+    <span class="wordmark">RSP</span><div class="hd"></div>
+    <span class="header-title">Jane Bacon — Operations Coordinator</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <span class="live-pill"><span class="live-dot"></span>LIVE</span>
+    <span class="as-of">27 Mar 2026</span>
+    <a href="operations-dashboard.html" class="back-link">← Ops Dashboard</a>
+  </div>
 </header>
+
 <div class="page-layout">
 <aside class="sidebar">
   <div class="sidebar-heading">On this page</div>
-  <a href="#csf"       class="sidebar-link">CSFs</a>
-  <a href="#wigs"      class="sidebar-link">WIG contribution</a>
-  <a href="#scorecard" class="sidebar-link">Scorecard</a>
-  <a href="#queue"     class="sidebar-link">Approval queue</a>
-  <a href="#bills"     class="sidebar-link">Purchase invoices</a>
-  <a href="#rhythm"    class="sidebar-link">Daily rhythm</a>
+  <a href="#scorecard"  class="sidebar-link active">Scorecard</a>
+  <a href="#queue"      class="sidebar-link">Approval queue</a>
+  <a href="#bills"      class="sidebar-link">Purchase invoices</a>
   <div class="sidebar-divider"></div>
   <div class="sidebar-heading">Team dashboards</div>
-  <a href="shikha_ops_dashboard_v8.html" class="sidebar-link">Shikha — Ops Manager</a>
-  <a href="julia-scaffold.html"          class="sidebar-link">Julia — Tonga</a>
-  <a href="jack-scaffold.html"           class="sidebar-link">Jack — Vanuatu</a>
-  <a href="ops-rhythm.html"              class="sidebar-link">Operations Rhythm</a>
+  <a href="operations-dashboard.html" class="sidebar-link">Shikha — Ops Manager</a>
+  <a href="julia-scaffold.html"       class="sidebar-link">Julia — Tonga</a>
+  <a href="jack-scaffold.html"        class="sidebar-link">Jack — Vanuatu</a>
+  <a href="ops-rhythm.html"           class="sidebar-link">Operations Rhythm</a>
 </aside>
+
 <main>
-  <div class="nav-pills">
-    <a href="#csf"       class="nav-pill active">CSFs</a>
-    <a href="#wigs"      class="nav-pill">WIGs</a>
-    <a href="#scorecard" class="nav-pill">Scorecard</a>
-    <a href="#queue"     class="nav-pill">Approval queue</a>
-    <a href="#bills"     class="nav-pill">Purchase invoices</a>
-    <a href="#rhythm"    class="nav-pill">Daily rhythm</a>
-  </div>
 
-  <div class="hero">
-    <h1>🇳🇿 Jane Bacon</h1>
-    <p class="hero-sub">Operations Coordinator · RSP New Zealand. Owns the NZ-side approval gate for all Pacific entity sales invoices via ApprovalMax, AP triage for RSP NZ, and keeps the billing pipeline moving from SUBMITTED to AUTHORISED in Xero — enabling Minoo's payment workflow across five entities.</p>
-    <div class="hero-meta">
-      <span class="hero-meta-item">Reports to <strong>Shikha Sohal</strong></span>
-      <span class="hero-meta-item">Based <strong>East Tamaki, Auckland</strong></span>
-      <span class="hero-meta-item">Systems <strong>Xero · ApprovalMax · Unleashed</strong></span>
-    </div>
-  </div>
-
-  <div class="callout scaffold">
-    <div class="ct ct-sc">Prototype — scaffold v2</div>
-    <p>Updated from the Accounts/Administration Officer position agreement KPIs. Key change: queue tab shows SUBMITTED invoices only — DRAFTs belong to Julia and Jack in their own dashboards. Confirm final targets with Shikha before going live.</p>
-  </div>
-
-  <!-- 1. CSFs -->
-  <div class="section" id="csf">
-    <div class="section-header"><span class="sn">01</span><h2 class="section-title">Critical Success Factors</h2></div>
-    <p class="si">Jane's role is the NZ-side control function in the billing-to-cash chain. Her three CSFs define where she must be consistent for island team work to flow to recognised revenue.</p>
-    <div class="csf-grid">
-      <div class="csf">
-        <div class="csf-n">CSF 01</div>
-        <div class="csf-t">Approval speed and accuracy</div>
-        <div class="csf-b">100% of SUBMITTED sales invoices (all five entities) reviewed and approved — or explicitly flagged with a reason — within the same working day they arrive in ApprovalMax. Delay here is invisible to island teams and creates AR ageing problems downstream.</div>
-        <span class="tag t-tl">Feeds WIG 02</span>
-      </div>
-      <div class="csf">
-        <div class="csf-n">CSF 02</div>
-        <div class="csf-t">AP triage discipline</div>
-        <div class="csf-b">RSP NZ purchase invoices are logged into ApprovalMax Capture the same day they arrive, with correct entity, tracking category, and approval routing. No invoice sits unprocessed past 9am the following morning.</div>
-        <span class="tag t-bl">Supports AP SOP</span>
-      </div>
-      <div class="csf">
-        <div class="csf-n">CSF 03</div>
-        <div class="csf-t">Due-date vigilance</div>
-        <div class="csf-b">Any purchase invoice with a due date within 3 working days is flagged to Minoo — same day. Minoo owns the payment decision; Jane owns the early warning. Missed due dates are entirely preventable.</div>
-        <span class="tag t-am">Supports Minoo / AP SOP</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 2. WIG CONTRIBUTION -->
-  <div class="section" id="wigs">
-    <div class="section-header"><span class="sn">02</span><h2 class="section-title">WIG contribution</h2></div>
-    <p class="si">Jane is a lead measure owner, not a WIG owner. Her daily approval speed determines whether the billing pipeline across five entities flows or stalls.</p>
-    <div class="wig-strip">
-      <div class="wi">
-        <div class="wi-lbl">WIG 02 — Billing integrity</div>
-        <div class="wi-title">CPC billing 90.7% → 100%</div>
-        <div class="wi-how">SUBMITTED invoices sitting in ApprovalMax cannot post to AUTHORISED. Jane's same-day approval speed is the direct unlock for the billing completion rate.</div>
-      </div>
-      <div class="wi">
-        <div class="wi-lbl">WIG 03 — Payroll reliability</div>
-        <div class="wi-title">Processing 3.7d → ≤1.5d</div>
-        <div class="wi-how">Expense reimbursement approvals must clear before payroll close. Any approval delay extends the cycle time for all island entities.</div>
-      </div>
-      <div class="wi">
-        <div class="wi-lbl">WIG 01 — Order velocity</div>
-        <div class="wi-title">Open orders 49 → ≤10</div>
-        <div class="wi-how">Sales invoices linked to Unleashed orders need to reach AUTHORISED for some order closure workflows. Pending approval can block the final step.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3. SCORECARD -->
-  <div class="section" id="scorecard">
-    <div class="section-header"><span class="sn">03</span><h2 class="section-title">Scorecard — lead measures</h2></div>
-    <p class="si">Four lead measures drawn from the position agreement. Shikha reviews these weekly. Jane should know all four from memory before every Tuesday L10.</p>
-    <div class="sc-grid">
-      <div class="sc">
-        <div class="sc-k">KPI · daily</div>
-        <div class="sc-lbl">SUBMITTED invoices pending at COB</div>
-        <div class="sc-v">—</div>
-        <div class="sc-tgt">Target: 0 by close of business daily</div>
-        <div class="sc-note">Count of ACCREC SUBMITTED invoices across all five entities at 5pm. Should reach zero every working day without exception.</div>
-        <div class="sc-src">Xero · all entities · SyncHub</div>
-      </div>
-      <div class="sc">
-        <div class="sc-k">KPI · daily</div>
-        <div class="sc-lbl">Oldest unactioned SUBMITTED invoice</div>
-        <div class="sc-v">—</div>
-        <div class="sc-tgt">Target: ≤ 1 working day</div>
-        <div class="sc-note">Age in working days of the oldest SUBMITTED invoice not yet approved or flagged. Above 1 day means a specific record is being skipped — needs a named reason.</div>
-        <div class="sc-src">Xero · all entities · SyncHub</div>
-      </div>
-      <div class="sc">
-        <div class="sc-k">KPI · weekly</div>
-        <div class="sc-lbl">Purchase invoices due &lt;3 days — flagged same day</div>
-        <div class="sc-v">—</div>
-        <div class="sc-tgt">Target: 100% flagged to Minoo same day</div>
-        <div class="sc-note">Any RSP NZ bill with a due date within 3 working days must be flagged to Minoo before 9am on the day it enters that window. Zero exceptions.</div>
-        <div class="sc-src">Xero RSP NZ · SyncHub</div>
-      </div>
-      <div class="sc">
-        <div class="sc-k">KPI · weekly</div>
-        <div class="sc-lbl">Invoices requiring tracking category correction</div>
-        <div class="sc-v">—</div>
-        <div class="sc-tgt">Target: 0 per week</div>
-        <div class="sc-note">Invoices requiring a coding correction after initial entry. Each one is rework flowing through to Minoo's reports. The standard is accuracy on first entry.</div>
-        <div class="sc-src">Xero RSP NZ · manual count</div>
-      </div>
-    </div>
+  <!-- SCORECARD -->
+  <div id="scorecard" style="scroll-margin-top:80px;margin-bottom:36px;">
+    <p class="slabel">Scorecard — lead measures · 27 Mar 2026</p>
+    <div class="tiles" id="sc-tiles"></div>
     <div class="callout info">
-      <div class="ct ct-info">Scorecard cadence</div>
-      <p>Jane's primary rhythm is daily — the SUBMITTED queue resets every morning. The weekly Scorecard for Shikha's L10 shows the worst-case daily reading across the week. A week where Jane hit zero every day is a green tile with nothing to discuss.</p>
+      <div class="ct ct-info">How to read this</div>
+      <p>Green = on target, nothing to discuss in L10. Red = one sentence ready before Tuesday: what caused it and what you are doing today. The SUBMITTED queue should reach zero every working day.</p>
     </div>
   </div>
 
-  <!-- 4. APPROVAL QUEUE — SUBMITTED ONLY -->
-  <div class="section" id="queue">
-    <div class="section-header"><span class="sn">04</span><h2 class="section-title">Approval queue — SUBMITTED invoices</h2></div>
-    <p class="si">Jane's primary action view. Shows only SUBMITTED invoices across all five entities — these are awaiting Jane's ApprovalMax approval before they can move to AUTHORISED in Xero. DRAFTs do not appear here — they belong to Julia and Jack in their own dashboards.</p>
-    <div class="q-ph">
-      <div class="q-h"><span class="q-ht">SUBMITTED sales invoices — all entities</span><span class="q-src">Xero · all entities · SyncHub · live</span></div>
-      <div style="display:grid;grid-template-columns:1.1fr 1.5fr 0.9fr 0.6fr 1fr 0.5fr;padding:8px 16px;background:var(--surface2);border-bottom:1px solid var(--border);gap:8px;">
-        <span class="q-col">Invoice #</span><span class="q-col">Customer</span><span class="q-col">Entity</span><span class="q-col">Age</span><span class="q-col">Amount</span><span class="q-col">Xero</span>
+  <!-- APPROVAL QUEUE -->
+  <div id="queue" style="scroll-margin-top:80px;margin-bottom:36px;">
+    <p class="slabel">Approval queue — SUBMITTED sales invoices</p>
+
+    <div class="filter-bar">
+      <span class="filter-lbl">Entity</span>
+      <div id="si-chips" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
+      <input class="search-box" id="si-search" type="text" placeholder="Search invoice #, customer…" oninput="renderSI()">
+    </div>
+
+    <div class="doc-tabs">
+      <div class="doc-tab active" id="tab-si" onclick="setDocType('si')">
+        Sales invoices — SUBMITTED <span class="tc" id="si-count">0</span>
       </div>
-      <div class="q-row"><div class="sk" style="width:90px"></div><div class="sk" style="width:140px;margin-left:8px"></div><div class="sk" style="width:70px;margin-left:8px"></div><div class="sk" style="width:28px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:45px;margin-left:8px"></div></div>
-      <div class="q-row"><div class="sk" style="width:85px"></div><div class="sk" style="width:120px;margin-left:8px"></div><div class="sk" style="width:65px;margin-left:8px"></div><div class="sk" style="width:28px;margin-left:8px"></div><div class="sk" style="width:75px;margin-left:8px"></div><div class="sk" style="width:45px;margin-left:8px"></div></div>
-      <div class="q-row"><div class="sk" style="width:95px"></div><div class="sk" style="width:150px;margin-left:8px"></div><div class="sk" style="width:60px;margin-left:8px"></div><div class="sk" style="width:28px;margin-left:8px"></div><div class="sk" style="width:85px;margin-left:8px"></div><div class="sk" style="width:45px;margin-left:8px"></div></div>
     </div>
-    <div class="callout good">
-      <div class="ct ct-good">Queue scope — confirmed</div>
-      <p>SUBMITTED invoices only. Sorted by age descending by default. Aging colour: green &lt;1 day, amber = 1 day, red &gt;1 day. Entity filter chips. Xero deep-link per row. Summary strip: total count, total value, oldest record age.</p>
-      <p>DRAFTs are Julia's and Jack's responsibility — they must submit DRAFTs to ApprovalMax before they appear in this queue.</p>
-    </div>
+
+    <div class="sum-strip" id="si-sum"></div>
+    <div class="tbl-wrap"><table id="si-table"><tbody></tbody></table></div>
+    <p style="font-size:11px;color:var(--muted);">Data: SyncHub → Xero · all five entities · 27 Mar 2026 · SUBMITTED = awaiting Jane's ApprovalMax approval · DRAFTs stay with Julia / Jack in their dashboards</p>
   </div>
 
-  <!-- 5. PURCHASE INVOICES -->
-  <div class="section" id="bills">
-    <div class="section-header"><span class="sn">05</span><h2 class="section-title">Purchase invoices — RSP NZ</h2></div>
-    <p class="si">RSP NZ bills awaiting ApprovalMax processing. Jane's triage responsibility — not approval (Shikha or Reeta approves per the AP SOP). Jane codes, routes, and warns Minoo before due dates pass.</p>
-    <div class="q-ph">
-      <div class="q-h"><span class="q-ht">DRAFT purchase invoices — RSP NZ</span><span class="q-src">Xero RSP NZ · SyncHub · live</span></div>
-      <div style="display:grid;grid-template-columns:1.4fr 1.3fr 0.8fr 0.6fr 1fr 0.5fr;padding:8px 16px;background:var(--surface2);border-bottom:1px solid var(--border);gap:8px;">
-        <span class="q-col">Invoice #</span><span class="q-col">Supplier</span><span class="q-col">Due date</span><span class="q-col">Age</span><span class="q-col">Amount (NZD)</span><span class="q-col">Xero</span>
-      </div>
-      <div class="q-row"><div class="sk" style="width:110px"></div><div class="sk" style="width:130px;margin-left:8px"></div><div class="sk" style="width:75px;margin-left:8px"></div><div class="sk" style="width:28px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:45px;margin-left:8px"></div></div>
-      <div class="q-row"><div class="sk" style="width:95px"></div><div class="sk" style="width:140px;margin-left:8px"></div><div class="sk" style="width:75px;margin-left:8px"></div><div class="sk" style="width:28px;margin-left:8px"></div><div class="sk" style="width:75px;margin-left:8px"></div><div class="sk" style="width:45px;margin-left:8px"></div></div>
-    </div>
+  <!-- PURCHASE INVOICES -->
+  <div id="bills" style="scroll-margin-top:80px;margin-bottom:36px;">
+    <p class="slabel">Purchase invoices — RSP NZ · DRAFT</p>
+    <div class="sum-strip" id="pi-sum"></div>
+    <div class="tbl-wrap"><table id="pi-table"><tbody></tbody></table></div>
     <div class="callout warn">
-      <div class="ct ct-warn">Due-date alerting</div>
-      <p>Bills due within 3 working days will show a red due-date badge automatically. Sorted by due date ascending so the most urgent bills always appear first. These are Jane's immediate action — flag to Minoo same day, before 9am.</p>
+      <div class="ct ct-warn">Due-date rule</div>
+      <p>Any bill due within 3 working days is flagged <span class="due-alert">DUE SOON</span> and must be sent to Minoo before 9am the same day it enters that window. Bills marked in red are already overdue.</p>
     </div>
+    <p style="font-size:11px;color:var(--muted);">Data: SyncHub → Xero RSP NZ · 27 Mar 2026 · DRAFT purchase invoices awaiting ApprovalMax processing by Jane</p>
   </div>
 
-  <!-- 6. DAILY RHYTHM -->
-  <div class="section" id="rhythm">
-    <div class="section-header"><span class="sn">06</span><h2 class="section-title">Daily rhythm</h2></div>
-    <p class="si">Jane's rhythm is daily. The approval queue resets every morning. Target: zero SUBMITTED invoices by close of business, every day.</p>
-    <div class="checklist">
-      <div class="cl-h"><span class="cl-ht">Morning — first 30 minutes</span><span class="cl-hw">Owner: Jane · daily</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Work through every SUBMITTED invoice — oldest first<span class="cl-d">Approve what is in order. For anything that can't be approved, state a specific reason and flag to Shikha before 9:30am. "Queried" is not a status — every blocked invoice needs a named next action and owner.</span></div><span class="cl-b b-jane">Jane</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Check Purchase Invoices tab — any due within 3 working days?<span class="cl-d">Flag to Minoo immediately. Include invoice number, supplier, amount, and exact due date. Don't wait for end of day. Bills becoming overdue is a process failure, not a workload issue.</span></div><span class="cl-b b-minoo">→ Minoo</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Triage AP inbox — ap@ricohsouthpacific.com<span class="cl-d">Per AP SOP: log each new bill into ApprovalMax Capture with correct entity, tracking category, and approval routing. Inbox clear by 9am.</span></div><span class="cl-b b-jane">Jane</span></div>
-    </div>
-    <div class="checklist">
-      <div class="cl-h"><span class="cl-ht">Monday — L10 prep</span><span class="cl-hw">Owner: Jane · weekly</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Know all four Scorecard numbers before Shikha's Monday review<span class="cl-d">SUBMITTED queue count, oldest invoice age, bills due &lt;3 days, any coding corrections. Shikha may ask for a verbal update before the Tuesday L10.</span></div><span class="cl-b b-jane">Jane</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Flag any invoice SUBMITTED for more than 1 day — with reason and resolution status<span class="cl-d">A 1-day-old SUBMITTED invoice is already a red Scorecard tile. Don't surface it for the first time in the L10 — have the context and resolution status ready before Monday afternoon.</span></div><span class="cl-b b-shikha">→ Shikha</span></div>
-    </div>
-  </div>
 </main>
 </div>
-<footer>Ricoh South Pacific · Jane Bacon · Operations Coordinator · Scaffold v2 · 27 Mar 2026</footer>
+
+<footer>Ricoh South Pacific · Jane Bacon · Operations Coordinator · 27 Mar 2026</footer>
+
 <script>
-const sections=document.querySelectorAll('.section[id]');
-const links=document.querySelectorAll('.sidebar-link[href^="#"]');
-function updateActive(){let cur='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-100)cur=s.id;});links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+cur));}
-window.addEventListener('scroll',updateActive,{passive:true});updateActive();
-links.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});}));
+const TODAY = new Date('2026-03-27');
+
+function age(dateStr) {
+  if (!dateStr) return 0;
+  const d = new Date(dateStr);
+  return Math.round((TODAY - d) / 86400000);
+}
+
+function ageLbl(d) {
+  if (d <= 1) return `<span class="age-green">${d}d</span>`;
+  if (d <= 3) return `<span class="age-amber">${d}d</span>`;
+  return `<span class="age-red">${d}d</span>`;
+}
+
+function daysUntilDue(dateStr) {
+  if (!dateStr) return 999;
+  const d = new Date(dateStr);
+  return Math.round((d - TODAY) / 86400000);
+}
+
+function fmt(dateStr) {
+  if (!dateStr) return '—';
+  return new Date(dateStr).toLocaleDateString('en-NZ', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function fmtAmt(v, ccy) {
+  if (!v) return '—';
+  const n = parseFloat(v);
+  return new Intl.NumberFormat('en-NZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n)
+    + ' <span style="font-size:10px;color:var(--muted);">' + ccy + '</span>';
+}
+
+function xeroBtn(id, type) {
+  const base = type === 'si'
+    ? 'https://go.xero.com/AccountsReceivable/View.aspx?InvoiceID='
+    : 'https://go.xero.com/AccountsPayable/View.aspx?InvoiceID=';
+  return `<a class="xero-btn" href="${base}${id}" target="_blank" rel="noopener">Xero ↗</a>`;
+}
+
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const ENTITY = {
+  samoa:    { label: 'Samoa',    ccy: 'WST', flag: '🇼🇸' },
+  vanuatu:  { label: 'Vanuatu',  ccy: 'VUV', flag: '🇻🇺' },
+  tonga:    { label: 'Tonga',    ccy: 'TOP', flag: '🇹🇴' },
+  solomons: { label: 'Solomons', ccy: 'SBD', flag: '🇸🇧' },
+  rsp:      { label: 'RSP (NZ)', ccy: 'NZD', flag: '🇳🇿' },
+};
+
+const SI_DATA = [
+  // SAMOA — 7 records
+  { entity:'samoa',    num:'RSSI-00033065', contact:'Farm Supplies Limited',                        date:'2026-03-26', due:'2026-04-09', amt:903.21,    id:'rssi-33065' },
+  { entity:'samoa',    num:'RSSI-00033053', contact:'Central Bank of Samoa',                        date:'2026-03-26', due:'2026-04-09', amt:603.89,    id:'rssi-33053' },
+  { entity:'samoa',    num:'RSSI-00033051', contact:'Ministry of Works Transport & Infrastructure', date:'2026-03-25', due:'2026-04-20', amt:228.85,    id:'rssi-33051' },
+  { entity:'samoa',    num:'RSSI-00033042', contact:'Ministry of Finance (Samoa)',                  date:'2026-03-25', due:'2026-04-20', amt:228.85,    id:'rssi-33042' },
+  { entity:'samoa',    num:'RSSI-00033002/2',contact:'Ministry of Finance (Samoa)',                 date:'2026-03-24', due:'2026-04-20', amt:3396.80,   id:'rssi-33002' },
+  { entity:'samoa',    num:'RSSI-00033027', contact:'SIO-OFOIA Law Office',                         date:'2026-03-24', due:'2026-04-07', amt:209.65,    id:'rssi-33027' },
+  { entity:'samoa',    num:'RSSI-00033011', contact:'Leota & Niumata Chartered Accountants',        date:'2026-03-23', due:'2026-04-06', amt:228.85,    id:'rssi-33011' },
+  // VANUATU — 4 records
+  { entity:'vanuatu',  num:'RVSI-00034634', contact:'National Archives of Vanuatu',                 date:'2026-03-17', due:'2026-03-31', amt:1472000,   id:'rvsi-34634' },
+  { entity:'vanuatu',  num:'RVSI-00034700', contact:'Molbaleh & Taiva Lawyers Limited',             date:'2026-03-25', due:'2026-04-08', amt:299000,    id:'rvsi-34700' },
+  { entity:'vanuatu',  num:'RVSI-00034391', contact:'Sun Productions Printers',                     date:'2026-02-11', due:'2026-03-20', amt:323817,    id:'rvsi-34391' },
+  { entity:'vanuatu',  num:'RVSI-00034673', contact:'Sun Productions Printers',                     date:'2026-03-20', due:'2026-04-20', amt:9775,      id:'rvsi-34673' },
+  // TONGA — 0 (no SUBMITTED invoices)
+  // SOLOMONS — 1 record
+  { entity:'solomons', num:'RSI-00020168',  contact:'Santa Ana Community High School',              date:'2026-03-19', due:'2026-03-19', amt:4500,      id:'rsi-20168' },
+  // RSP NZ — 1 record
+  { entity:'rsp',      num:'RSPSI-00126719',contact:'Holloway Hudson Burgess',                      date:'2026-03-25', due:'2026-04-20', amt:4053.75,   id:'rspsi-126719' },
+];
+
+const PI_DATA = [
+  { num:'RSPPO-00014978 - INV1199946', contact:'Ricoh New Zealand Limited',         date:'2026-03-23', due:'2026-04-20', amt:10517.17, id:'pi-978' },
+  { num:'RSPPO-00014956 - 9929251880', contact:'Ingram Micro (NZ) Limited',         date:'2026-03-10', due:'2026-04-20', amt:2907.91,  id:'pi-956' },
+  { num:'INV007416',                   contact:'Alpine Print Limited',               date:'2026-03-18', due:'2026-04-20', amt:2125.20,  id:'pi-007416' },
+  { num:'RSPPO-00014979 - INV1200595', contact:'Ricoh New Zealand Limited',         date:'2026-03-24', due:'2026-04-20', amt:5223.39,  id:'pi-979' },
+  { num:'RSPPO-00014982 - INV1200556', contact:'Ricoh New Zealand Limited',         date:'2026-03-24', due:'2026-04-20', amt:2066.36,  id:'pi-982' },
+  { num:'RSPPO-00014966 - INV1197501', contact:'Ricoh New Zealand Limited',         date:'2026-03-18', due:'2026-04-20', amt:3390.86,  id:'pi-966' },
+  { num:'RSPPO-00014973 - INV1197534', contact:'Ricoh New Zealand Limited',         date:'2026-03-18', due:'2026-04-20', amt:1309.74,  id:'pi-973' },
+  { num:'5072573264',                  contact:'Mercury Energy',                     date:'2026-03-05', due:'2026-04-10', amt:1422.38,  id:'pi-mercury' },
+  { num:'RSPPO-00014938/1 - INV1197536',contact:'Ricoh New Zealand Limited',        date:'2026-03-18', due:'2026-04-20', amt:1423.90,  id:'pi-938' },
+  { num:'RSPPO-00014941/1 - 219346',   contact:'Parts Overnight',                   date:'2026-03-10', due:'2026-04-20', amt:772.80,   id:'pi-941' },
+  { num:'RSPPO-00014980 - INV1199942', contact:'Ricoh New Zealand Limited',         date:'2026-03-23', due:'2026-04-20', amt:911.58,   id:'pi-980' },
+  { num:'RSPPO-00014974 - INV1198190', contact:'Ricoh New Zealand Limited',         date:'2026-03-19', due:'2026-04-20', amt:1059.37,  id:'pi-974' },
+  { num:'RSPPO-00014987 - INV346711184',contact:'Zoom Communications, Inc.',        date:'2026-03-21', due:'2026-03-21', amt:259.74,   id:'pi-987' },
+  { num:'AirNZ ZEBRA Service March',   contact:'Cook Islands Printing Services Ltd',date:'2026-03-05', due:'2026-03-20', amt:303.60,   id:'pi-airnz' },
+  { num:'RSPPO-00014922/1 - INV1198251',contact:'Ricoh New Zealand Limited',        date:'2026-03-19', due:'2026-04-20', amt:89.26,    id:'pi-922' },
+  { num:'RSPPO-00014969 - INV1196640', contact:'Ricoh New Zealand Limited',         date:'2026-03-17', due:'2026-04-20', amt:66.79,    id:'pi-969' },
+  { num:'RSPPO-00014970 - INV1199943', contact:'Ricoh New Zealand Limited',         date:'2026-03-23', due:'2026-04-20', amt:66.79,    id:'pi-970' },
+  { num:'RSPPO-00014975 - INV1199921', contact:'Ricoh New Zealand Limited',         date:'2026-03-23', due:'2026-04-20', amt:65.19,    id:'pi-975' },
+];
+
+// ── SCORECARD ─────────────────────────────────────────────────────────────────
+
+function buildScorecard() {
+  const submitted = SI_DATA.length;
+  const oldest = submitted > 0 ? Math.max(...SI_DATA.map(r => age(r.date))) : 0;
+  const piDue3 = PI_DATA.filter(r => { const d = daysUntilDue(r.due); return d >= 0 && d <= 3; }).length;
+  const piOverdue = PI_DATA.filter(r => daysUntilDue(r.due) < 0).length;
+
+  const tiles = [
+    { cls: submitted === 0 ? 'green' : 'red',
+      lbl: 'SUBMITTED invoices pending',
+      val: submitted,
+      sub: submitted === 0 ? 'Target met — queue clear' : 'Target: 0 by COB daily' },
+    { cls: oldest <= 1 ? 'green' : oldest <= 3 ? 'amber' : 'red',
+      lbl: 'Oldest SUBMITTED invoice',
+      val: oldest + 'd',
+      sub: 'Target: ≤ 1 working day' },
+    { cls: piDue3 === 0 ? 'green' : 'red',
+      lbl: 'Bills due within 3 days',
+      val: piDue3,
+      sub: piDue3 === 0 ? 'None — no action needed' : 'Flag to Minoo before 9am' },
+    { cls: piOverdue === 0 ? 'green' : 'red',
+      lbl: 'Bills overdue',
+      val: piOverdue,
+      sub: piOverdue === 0 ? 'None overdue' : 'Escalate to Minoo immediately' },
+    { cls: 'teal',
+      lbl: 'Purchase invoices in queue',
+      val: PI_DATA.length,
+      sub: 'RSP NZ · all DRAFT' },
+  ];
+
+  document.getElementById('sc-tiles').innerHTML = tiles.map(t => `
+    <div class="tile ${t.cls}">
+      <div class="tile-lbl">${t.lbl}</div>
+      <div class="tile-val">${t.val}</div>
+      <div class="tile-sub">${t.sub}</div>
+    </div>`).join('');
+}
+
+// ── SALES INVOICE TABLE ───────────────────────────────────────────────────────
+
+let siEntity = 'all';
+let siSortCol = 'age'; let siSortAsc = false;
+
+function buildEntityChips() {
+  const counts = {};
+  SI_DATA.forEach(r => counts[r.entity] = (counts[r.entity] || 0) + 1);
+  const chips = [{ key:'all', label:'All', count: SI_DATA.length }];
+  Object.entries(ENTITY).forEach(([k, v]) => {
+    if (counts[k]) chips.push({ key: k, label: v.flag + ' ' + v.label, count: counts[k] });
+  });
+  document.getElementById('si-chips').innerHTML = chips.map(c =>
+    `<button class="chip ${c.key === 'all' ? 'active' : ''}" onclick="setEntityFilter('${c.key}', this)">${c.label} <span style="font-size:10px;opacity:.7;">(${c.count})</span></button>`
+  ).join('');
+}
+
+function setEntityFilter(key, el) {
+  document.querySelectorAll('#si-chips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  siEntity = key;
+  renderSI();
+}
+
+function setSISort(col) {
+  if (siSortCol === col) siSortAsc = !siSortAsc;
+  else { siSortCol = col; siSortAsc = col === 'contact'; }
+  renderSI();
+}
+
+function renderSI() {
+  const q = document.getElementById('si-search').value.toLowerCase();
+  let rows = siEntity === 'all' ? [...SI_DATA] : SI_DATA.filter(r => r.entity === siEntity);
+  if (q) rows = rows.filter(r => r.contact.toLowerCase().includes(q) || r.num.toLowerCase().includes(q));
+
+  rows.sort((a, b) => {
+    let va, vb;
+    if (siSortCol === 'age')     { va = age(a.date);  vb = age(b.date); }
+    else if (siSortCol === 'due') { va = new Date(a.due||'9999'); vb = new Date(b.due||'9999'); }
+    else if (siSortCol === 'amt') { va = a.amt; vb = b.amt; }
+    else if (siSortCol === 'contact') { va = a.contact; vb = b.contact; }
+    else if (siSortCol === 'entity')  { va = a.entity;  vb = b.entity; }
+    else return 0;
+    if (va < vb) return siSortAsc ? -1 : 1;
+    if (va > vb) return siSortAsc ? 1 : -1;
+    return 0;
+  });
+
+  document.getElementById('si-count').textContent = rows.length;
+
+  const totalEntities = [...new Set(rows.map(r => r.entity))].length;
+  const oldest = rows.length ? Math.max(...rows.map(r => age(r.date))) : 0;
+  document.getElementById('si-sum').innerHTML = `
+    <div class="sum-item">Showing <strong>${rows.length}</strong> invoices</div>
+    <div class="sum-item ${rows.length > 0 ? 'alert' : ''}">Awaiting approval: <strong>${rows.length}</strong></div>
+    <div class="sum-item">Entities: <strong>${totalEntities}</strong></div>
+    <div class="sum-item ${oldest > 1 ? 'warn' : ''}">Oldest: <strong>${oldest}d</strong></div>`;
+
+  const arr = col => `<span style="font-size:9px;margin-left:2px;opacity:${siSortCol===col?1:.3}">${siSortCol===col?(siSortAsc?'▲':'▼'):'▼'}</span>`;
+  const showEntity = siEntity === 'all';
+
+  if (!rows.length) {
+    document.querySelector('#si-table tbody').innerHTML = `<tr><td colspan="${showEntity ? 6 : 5}" class="empty"><strong>Queue is clear</strong>No SUBMITTED invoices for this filter.</td></tr>`;
+    return;
+  }
+
+  document.querySelector('#si-table').innerHTML = `
+    <thead><tr>
+      <th class="sorted" onclick="setSISort('age')">Invoice # ${arr('age')}</th>
+      ${showEntity ? `<th onclick="setSISort('entity')">Entity ${arr('entity')}</th>` : ''}
+      <th onclick="setSISort('contact')">Customer ${arr('contact')}</th>
+      <th class="r" onclick="setSISort('due')">Due date ${arr('due')}</th>
+      <th class="r" onclick="setSISort('age')">Age ${arr('age')}</th>
+      <th class="r" onclick="setSISort('amt')">Amount ${arr('amt')}</th>
+      <th>Xero</th>
+    </tr></thead>
+    <tbody>${rows.map(r => {
+      const a = age(r.date);
+      const ent = ENTITY[r.entity];
+      const dueDays = daysUntilDue(r.due);
+      const dueClass = dueDays < 0 ? 'age-red' : dueDays <= 3 ? 'age-amber' : '';
+      return `<tr class="row-submitted">
+        <td style="font-size:11px;font-weight:600;color:var(--charcoal);">${r.num}</td>
+        ${showEntity ? `<td><span class="entity-pill">${ent.flag} ${ent.label}</span></td>` : ''}
+        <td class="td-name" title="${r.contact}">${r.contact}</td>
+        <td class="r ${dueClass}">${fmt(r.due)}</td>
+        <td class="r">${ageLbl(a)}</td>
+        <td class="r">${fmtAmt(r.amt, ent.ccy)}</td>
+        <td>${xeroBtn(r.id, 'si')}</td>
+      </tr>`;
+    }).join('')}</tbody>`;
+}
+
+// ── PURCHASE INVOICES TABLE ───────────────────────────────────────────────────
+
+function renderPI() {
+  const rows = [...PI_DATA].sort((a, b) => new Date(a.due) - new Date(b.due));
+  const overdue = rows.filter(r => daysUntilDue(r.due) < 0).length;
+  const due3 = rows.filter(r => { const d = daysUntilDue(r.due); return d >= 0 && d <= 3; }).length;
+  const total = rows.reduce((s, r) => s + r.amt, 0);
+
+  document.getElementById('pi-sum').innerHTML = `
+    <div class="sum-item">${rows.length} bills</div>
+    <div class="sum-item ${overdue > 0 ? 'alert' : ''}">Overdue: <strong>${overdue}</strong></div>
+    <div class="sum-item ${due3 > 0 ? 'warn' : ''}">Due within 3 days: <strong>${due3}</strong></div>
+    <div class="sum-item">Total: <strong>NZD ${new Intl.NumberFormat('en-NZ',{minimumFractionDigits:2}).format(total)}</strong></div>`;
+
+  document.getElementById('pi-table').innerHTML = `
+    <thead><tr>
+      <th>Invoice #</th>
+      <th>Supplier</th>
+      <th class="r">Due date</th>
+      <th class="r">Age</th>
+      <th class="r">Amount (NZD)</th>
+      <th></th>
+    </tr></thead>
+    <tbody>${rows.map(r => {
+      const dueDays = daysUntilDue(r.due);
+      const isOverdue = dueDays < 0;
+      const isDueSoon = dueDays >= 0 && dueDays <= 3;
+      const dueCls = isOverdue ? 'age-red' : isDueSoon ? 'age-amber' : '';
+      const a = age(r.date);
+      return `<tr class="row-draft">
+        <td style="font-size:11px;font-weight:600;color:var(--charcoal);">${r.num}</td>
+        <td class="td-name" title="${r.contact}">${r.contact}</td>
+        <td class="r">
+          <span class="${dueCls}">${fmt(r.due)}</span>
+          ${isDueSoon ? ' <span class="due-alert">DUE SOON</span>' : ''}
+          ${isOverdue ? ' <span class="due-alert">OVERDUE</span>' : ''}
+        </td>
+        <td class="r">${ageLbl(a)}</td>
+        <td class="r">${fmtAmt(r.amt, 'NZD')}</td>
+        <td>${xeroBtn(r.id, 'pi')}</td>
+      </tr>`;
+    }).join('')}</tbody>`;
+}
+
+// ── SIDEBAR SCROLLSPY ─────────────────────────────────────────────────────────
+const sections = document.querySelectorAll('[id][style*="scroll-margin"]');
+const links = document.querySelectorAll('.sidebar-link[href^="#"]');
+function updateActive() {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + cur));
+}
+window.addEventListener('scroll', updateActive, { passive: true });
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildScorecard();
+buildEntityChips();
+renderSI();
+renderPI();
 </script>
 </body>
 </html>
