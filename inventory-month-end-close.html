@@ -4,7 +4,7 @@
   <script src="auth.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RSP Inventory — Month-End Close (Ranika)</title>
+  <title>RSP Inventory — Month-End Close</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,11 +20,9 @@
     }
     body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-    /* HEADER */
+    /* HEADER — matches service-dashboard.html exactly */
     header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
     .header-left{display:flex;align-items:center;gap:16px;}
-    .header-brand{font-size:18px;font-weight:700;color:white;}
-    .header-brand span{color:var(--red);}
     .hd{width:1px;height:22px;background:#444;}
     .header-title{font-size:13px;color:#aaa;letter-spacing:.03em;}
     .header-right{display:flex;align-items:center;gap:16px;}
@@ -33,7 +31,7 @@
     .back-link{font-size:11px;color:#666;text-decoration:none;transition:color .15s;}
     .back-link:hover{color:#aaa;}
 
-    /* PILL NAV — matches inventory-dashboard.html */
+    /* PILL NAV */
     .pill-nav{background:var(--charcoal);border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px;}
     .pill-btn{padding:8px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;}
     .pill-btn:hover{color:rgba(255,255,255,.85);}
@@ -45,13 +43,9 @@
     .section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
     .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
 
-    /* CALLOUT */
-    .callout{padding:14px 18px;border-radius:6px;margin-bottom:24px;border-left:4px solid;background:var(--green-bg);border-color:var(--green);}
-    .callout p{font-size:13px;color:var(--mid);line-height:1.6;}
-    .callout strong{color:var(--charcoal);}
-
     /* PROGRESS BANNER */
-    .progress-banner{background:var(--charcoal);border-radius:6px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .progress-banner{background:var(--charcoal);border-radius:6px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;overflow:hidden;}
+    .progress-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red);}
     .pb-left strong{font-size:15px;font-weight:600;color:white;display:block;margin-bottom:2px;}
     .pb-left span{font-size:12px;color:rgba(255,255,255,.5);}
     .pb-right{text-align:right;}
@@ -104,24 +98,19 @@
     .fx-notice{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:6px;padding:10px 16px;font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.5;}
     .dash-footer{text-align:center;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;padding-top:12px;border-top:1px solid var(--border);}
 
-    .spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;}
-    @keyframes spin{to{transform:rotate(360deg);}}
-
     @media(max-width:1000px){.stock-grid{grid-template-columns:1fr 1fr;}.kpi-grid{grid-template-columns:repeat(3,1fr);}}
-    @media(max-width:600px){.stock-grid{grid-template-columns:1fr;}main{padding:16px;}}
+    @media(max-width:600px){.stock-grid{grid-template-columns:1fr;}main{padding:16px;}.pill-nav{overflow-x:auto;}}
   </style>
 </head>
 <body>
+
 <header>
   <div class="header-left">
-    <div class="header-brand" style="display:flex;align-items:center;gap:12px;">
+    <div style="display:flex;align-items:center;gap:14px;">
       <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px;display:block;" onerror="this.style.display='none'">
-      <span style="color:rgba(255,255,255,.3);font-weight:300;font-size:18px;">|</span>
-      <span style="font-size:13px;font-weight:400;color:rgba(255,255,255,.7);letter-spacing:.03em;">South Pacific</span>
+      <span style="color:rgba(255,255,255,.25);font-weight:300;font-size:20px;line-height:1;">|</span>
+      <span class="header-title">Inventory — Month-End Close</span>
     </div>
-    <div class="hd"></div>
-    <span class="header-title">Inventory Dashboard</span>
-  </div>
   <div class="header-right">
     <span class="period-chip" id="periodChip">Loading…</span>
     <span class="header-meta" id="asOfMeta">As at 25 Mar 2026</span>
@@ -129,13 +118,12 @@
   </div>
 </header>
 
-<!-- PILL NAV — matches inventory-dashboard.html exactly -->
 <nav class="pill-nav">
-  <a href="inventory-dashboard.html"   class="pill-btn">Summary</a>
-  <a href="inventory-worklist.html"    class="pill-btn">Work List</a>
-  <a href="inventory-drilldown.html"   class="pill-btn">Drill-Down</a>
-  <a href="ranika-dashboard.html"      class="pill-btn active">Month-End Close</a>
-  <a href="inventory-dictionary.html"  class="pill-btn">Data Dictionary</a>
+  <a href="inventory-dashboard.html"        class="pill-btn">Summary</a>
+  <a href="inventory-worklist.html"         class="pill-btn">Work List</a>
+  <a href="inventory-drilldown.html"        class="pill-btn">Drill-Down</a>
+  <a href="inventory-month-end-close.html"  class="pill-btn active">Month-End Close</a>
+  <a href="inventory-dictionary.html"       class="pill-btn">Data Dictionary</a>
 </nav>
 
 <main>
@@ -173,14 +161,14 @@ const SUPABASE_URL = 'https://dztsgkpqgcnebqhkuyeu.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_ozzi1WvvklaFYx_Fx3JuPQ_tmkkJ8kz';
 const ENTITIES = ['RSP','Alpine','Samoa','Solomons','Tonga','Vanuatu'];
 
-// Inventory data — from inventory-dashboard.html
+// Inventory data — aligned with inventory-dashboard.html (25 Mar 2026)
 const INV = {
-  RSP:      {valueNZD:385491.63, lines:296, slowMoving:37,  negative:3,  slobPct:15.5},
-  Alpine:   {valueNZD:10027,     lines:84,  slowMoving:6,   negative:0,  slobPct:8.1 },
-  Samoa:    {valueNZD:186472.25, lines:247, slowMoving:22,  negative:2,  slobPct:59.7},
-  Solomons: {valueNZD:534479.33, lines:246, slowMoving:14,  negative:5,  slobPct:43.3},
-  Tonga:    {valueNZD:242229.17, lines:185, slowMoving:5,   negative:1,  slobPct:57.2},
-  Vanuatu:  {valueNZD:416179.23, lines:289, slowMoving:8,   negative:8,  slobPct:57.9},
+  RSP:      { valueNZD:385491.63, lines:296, slowMoving:37,  negative:3,  slobPct:15.5 },
+  Alpine:   { valueNZD:10027,     lines:84,  slowMoving:6,   negative:0,  slobPct:8.1  },
+  Samoa:    { valueNZD:186472.25, lines:247, slowMoving:22,  negative:2,  slobPct:59.7 },
+  Solomons: { valueNZD:534479.33, lines:246, slowMoving:14,  negative:5,  slobPct:43.3 },
+  Tonga:    { valueNZD:242229.17, lines:185, slowMoving:5,   negative:1,  slobPct:57.2 },
+  Vanuatu:  { valueNZD:416179.23, lines:289, slowMoving:8,   negative:8,  slobPct:57.9 },
 };
 
 const HINTS = {
@@ -197,7 +185,7 @@ let statusMap = {};
 
 async function sb(path, opts={}) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...opts.headers},
+    headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...(opts.headers||{})},
     ...opts,
   });
   if (!res.ok) throw new Error(await res.text());
@@ -206,16 +194,17 @@ async function sb(path, opts={}) {
 
 async function init() {
   try {
-    const [periods] = await Promise.all([
-      sb('month_close_periods?status=eq.open&order=month_label.desc&limit=1'),
-    ]);
+    const periods = await sb('month_close_periods?status=eq.open&order=month_label.desc&limit=1');
     period = periods[0];
     document.getElementById('periodChip').textContent = period ? period.display_label+' Close' : 'No open period';
     if (period) {
       const myStatuses = await sb(`month_close_status?period_id=eq.${period.id}&task_number=eq.3`);
       myStatuses.forEach(r => { statusMap[r.entity] = r; });
     }
-  } catch(err) { console.error('Supabase init failed:', err.message); }
+  } catch(err) {
+    console.error('Supabase init failed:', err.message);
+    document.getElementById('periodChip').textContent = 'Offline';
+  }
   renderStockGrid();
   renderInventoryHealth();
 }
@@ -247,36 +236,34 @@ function renderStockGrid() {
 function renderInventoryHealth() {
   const fmt = n => '$'+Math.round(n).toLocaleString('en-NZ');
   const alerts = [];
-
   Object.entries(INV).forEach(([e,d]) => {
     if (d.slobPct > 50) alerts.push({entity:e,label:`SLOB ${d.slobPct}%`,level:'alert'});
     else if (d.slobPct > 25) alerts.push({entity:e,label:`SLOB ${d.slobPct}%`,level:'warn'});
     if (d.negative > 3) alerts.push({entity:e,label:`${d.negative} negative stock lines`,level:'alert'});
   });
-
   const strip = document.getElementById('alertStrip');
-  if (!alerts.length) {
-    strip.innerHTML = `<div class="alert-badge ab-ok">✓ All entities within benchmark thresholds</div>`;
-  } else {
-    strip.innerHTML = alerts.map(a=>`<div class="alert-badge ${a.level==='alert'?'ab-alert':'ab-warn'}"><strong>${a.entity}</strong> — ${a.label}</div>`).join('');
-  }
+  strip.innerHTML = alerts.length
+    ? alerts.map(a=>`<div class="alert-badge ${a.level==='alert'?'ab-alert':'ab-warn'}"><strong>${a.entity}</strong> — ${a.label}</div>`).join('')
+    : `<div class="alert-badge ab-ok">✓ All entities within benchmark thresholds</div>`;
 
-  // KPI grid — exclude Alpine (too small)
-  document.getElementById('kpiGrid').innerHTML = Object.entries(INV).filter(([e])=>e!=='Alpine').map(([entity,d]) => {
-    const negClass = d.negative>5?'v-danger':d.negative>0?'v-warn':'v-ok';
-    const slowClass = d.slowMoving>80?'v-danger':d.slowMoving>40?'v-warn':'v-ok';
-    const slobClass = d.slobPct>50?'v-danger':d.slobPct>25?'v-warn':'v-ok';
-    return `<div class="kpi-card">
-      <div class="kpi-entity">${entity}</div>
-      <div class="kpi-value">${fmt(d.valueNZD)}</div>
-      <div class="kpi-sub">${d.lines} product lines · NZD</div>
-      <div class="kpi-row"><span class="kpi-row-label">Slow-moving lines</span><span class="kpi-row-val ${slowClass}">${d.slowMoving}</span></div>
-      <div class="kpi-row"><span class="kpi-row-label">Negative stock</span><span class="kpi-row-val ${negClass}">${d.negative}</span></div>
-      <div class="kpi-row"><span class="kpi-row-label">SLOB %</span><span class="kpi-row-val ${slobClass}">${d.slobPct}%</span></div>
-    </div>`;
-  }).join('');
+  document.getElementById('kpiGrid').innerHTML = Object.entries(INV)
+    .filter(([e])=>e!=='Alpine')
+    .map(([entity,d]) => {
+      const negClass = d.negative>5?'v-danger':d.negative>0?'v-warn':'v-ok';
+      const slowClass = d.slowMoving>80?'v-danger':d.slowMoving>40?'v-warn':'v-ok';
+      const slobClass = d.slobPct>50?'v-danger':d.slobPct>25?'v-warn':'v-ok';
+      return `<div class="kpi-card">
+        <div class="kpi-entity">${entity}</div>
+        <div class="kpi-value">${fmt(d.valueNZD)}</div>
+        <div class="kpi-sub">${d.lines} product lines · NZD</div>
+        <div class="kpi-row"><span class="kpi-row-label">Slow-moving lines</span><span class="kpi-row-val ${slowClass}">${d.slowMoving}</span></div>
+        <div class="kpi-row"><span class="kpi-row-label">Negative stock</span><span class="kpi-row-val ${negClass}">${d.negative}</span></div>
+        <div class="kpi-row"><span class="kpi-row-label">SLOB %</span><span class="kpi-row-val ${slobClass}">${d.slobPct}%</span></div>
+      </div>`;
+    }).join('');
 
-  document.getElementById('dashFooter').textContent = 'Unleashed via Synchub · Salesforce Assets · 25 Mar 2026 · FX: VUV 0.0141 · SBD 0.2119 · WST 0.6181 · TOP 0.7191';
+  document.getElementById('dashFooter').textContent =
+    'Unleashed via Synchub · Salesforce Assets · 25 Mar 2026 · FX: VUV 0.0141 · SBD 0.2119 · WST 0.6181 · TOP 0.7191';
 }
 
 async function saveStockReview() {
