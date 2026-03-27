@@ -224,16 +224,24 @@
 
 <main>
   
-  <a href="finance-close.html" class="close-strip" id="closeStrip" style="display:flex;align-items:center;gap:20px;background:var(--charcoal);border-radius:10px;padding:14px 20px;margin-bottom:20px;text-decoration:none;">
-    <div>
-      <div class="cs-label">Month-End Close</div>
-      <div class="cs-period" id="csPeriod">Loading…</div>
+  <a href="finance-close.html" id="closeStrip" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:#1e2124;border-radius:10px;padding:14px 22px;margin-bottom:20px;text-decoration:none;color:white;transition:opacity .15s;cursor:pointer;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+    <div style="flex-shrink:0;">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace;">Month-End Close</div>
+      <div id="csPeriod" style="font-size:14px;font-weight:600;color:white;margin-top:3px;white-space:nowrap;">Loading…</div>
     </div>
-    <div class="cs-bar-wrap"><div class="cs-bar-fill" id="csBarFill" style="width:0%"></div></div>
-    <div class="cs-stat"><div class="cs-stat-val" id="csDone">—</div><div class="cs-stat-label">Done</div></div>
-    <div class="cs-stat"><div class="cs-stat-val" id="csTotal">—</div><div class="cs-stat-label">Total</div></div>
-    <div class="cs-blocking" id="csBlocking"></div>
-    <div class="cs-arrow">→</div>
+    <div style="flex:1;min-width:120px;height:6px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;">
+      <div id="csBarFill" style="width:0%;height:100%;background:#D7063B;border-radius:99px;transition:width .5s;"></div>
+    </div>
+    <div style="text-align:center;flex-shrink:0;">
+      <div id="csDone" style="font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:white;line-height:1;">—</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-top:2px;">Done</div>
+    </div>
+    <div style="text-align:center;flex-shrink:0;">
+      <div id="csTotal" style="font-family:'DM Mono',monospace;font-size:20px;font-weight:500;color:white;line-height:1;">—</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-top:2px;">Total</div>
+    </div>
+    <div id="csBlocking" style="font-size:11px;color:#fbbf24;font-weight:600;white-space:nowrap;flex-shrink:0;"></div>
+    <div style="font-size:18px;color:rgba(255,255,255,.3);margin-left:auto;flex-shrink:0;">→</div>
   </a>
 
   <div class="wig-banner" id="wigBanner"></div>
