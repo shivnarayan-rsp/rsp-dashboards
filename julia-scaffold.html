@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Julia — Admin Officer · Ricoh Tonga</title>
+<title>Julia — Administration Officer · Ricoh Tonga</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -14,8 +14,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal)
 header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .wordmark{font-size:20px;font-weight:600;color:var(--red);letter-spacing:.15em;}
 .hd{width:1px;height:22px;background:#444;margin:0 16px;}
-.header-title{font-size:13px;color:#aaa;}.as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+.header-title{font-size:13px;color:#aaa;}
+.live-pill{display:flex;align-items:center;gap:5px;font-size:11px;color:#aaa;font-family:'DM Mono',monospace;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#4caf50;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
 .back-link{font-size:11px;color:#666;text-decoration:none;}.back-link:hover{color:#aaa;}
+
 .page-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 63px);}
 .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:63px;height:calc(100vh - 63px);overflow-y:auto;}
 .sidebar-heading{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);padding:0 20px 6px;margin-top:14px;}
@@ -23,395 +28,309 @@ header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 3
 .sidebar-link:hover{color:var(--charcoal);background:var(--surface2);}
 .sidebar-link.active{color:var(--red);border-left-color:var(--red);background:#fdf0f3;}
 .sidebar-divider{height:1px;background:var(--border);margin:8px 0;}
-main{padding:32px 44px 80px;max-width:880px;}
-.nav-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
-.nav-pill{padding:6px 14px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;white-space:nowrap;}
-.nav-pill:hover{border-color:var(--red);color:var(--red);}
-.nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
-.hero{margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border);}
-.hero h1{font-size:26px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px;}
-.hero-sub{font-size:14px;color:var(--mid);line-height:1.6;max-width:640px;}
-.hero-meta{display:flex;gap:18px;margin-top:12px;flex-wrap:wrap;}
-.hero-meta-item{font-size:11px;color:var(--muted);}
-.hero-meta-item strong{color:var(--charcoal);}
-.section{margin-bottom:44px;scroll-margin-top:80px;}
-.section-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--charcoal);}
-.sn{font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);background:var(--danger-bg);padding:3px 8px;border-radius:3px;}
-.section-title{font-size:17px;font-weight:600;letter-spacing:-.01em;}
-.si{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:18px;}
-.callout{padding:13px 17px;border-radius:6px;margin-bottom:14px;border-left:4px solid;}
-.callout.info{background:var(--blue-bg);border-color:var(--blue);}
-.callout.warn{background:var(--amber-bg);border-color:var(--amber);}
-.callout.good{background:var(--green-bg);border-color:var(--green);}
+
+main{padding:32px 44px 80px;max-width:960px;}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:20px;}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 16px;position:relative;}
+.tile::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}
+.tile.red::after{background:var(--danger);}
+.tile.amber::after{background:var(--amber);}
+.tile.green::after{background:var(--green);}
+.tile.blue::after{background:var(--blue);}
+.tile.teal::after{background:var(--teal);}
+.tile-lbl{font-size:11px;color:var(--muted);margin-bottom:5px;line-height:1.3;}
+.tile-val{font-size:26px;font-weight:300;line-height:1;margin-bottom:3px;}
+.tile.red .tile-val{color:var(--danger);}
+.tile.amber .tile-val{color:var(--amber);}
+.tile.green .tile-val{color:var(--green);}
+.tile.teal .tile-val{color:var(--teal);}
+.tile-sub{font-size:10px;color:var(--muted);}
+
+.slabel{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.slabel::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.tbl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:560px;}
+th{font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--surface2);padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+th.r{text-align:right;}
+td{padding:9px 14px;border-bottom:1px solid rgba(0,0,0,.04);color:var(--mid);vertical-align:middle;}
+td.r{text-align:right;font-variant-numeric:tabular-nums;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--surface2);}
+.td-name{font-weight:500;color:var(--charcoal);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+tfoot td{background:var(--surface2);font-weight:600;color:var(--charcoal);border-top:1px solid var(--border);}
+
+.pill{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:3px;white-space:nowrap;}
+.p-parked{background:var(--amber-bg);color:var(--amber);}
+.p-draft{background:var(--amber-bg);color:var(--amber);}
+.p-escalate{background:var(--danger-bg);color:var(--danger);}
+.p-urgent{background:var(--danger-bg);color:var(--danger);}
+.p-chase{background:var(--amber-bg);color:var(--amber);}
+.p-monitor{background:var(--blue-bg);color:var(--blue);}
+
+.age-green{color:var(--green);font-weight:600;}
+.age-amber{color:var(--amber);font-weight:600;}
+.age-red{color:var(--danger);font-weight:600;}
+
+.xero-btn{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:500;color:var(--blue);background:var(--blue-bg);border:1px solid var(--blue-border);padding:2px 7px;border-radius:3px;text-decoration:none;white-space:nowrap;}
+.xero-btn:hover{background:#c2d9f2;}
+
+.callout{padding:12px 16px;border-radius:6px;margin-bottom:14px;border-left:3px solid;}
 .callout.alert{background:var(--danger-bg);border-color:var(--danger);}
-.callout.scaffold{background:#f0f0ff;border-color:#9090cc;}
-.callout.growth{background:#f0fff4;border-color:#38a169;border-left-width:4px;}
-.ct{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
-.ct-info{color:var(--blue);}.ct-warn{color:var(--amber);}.ct-good{color:var(--green);}.ct-alert{color:var(--danger);}.ct-sc{color:#5050aa;}.ct-growth{color:#276749;}
-.callout p{font-size:13px;color:var(--mid);line-height:1.6;}.callout p+p{margin-top:6px;}
-.wig-strip{background:var(--charcoal);border-radius:6px;padding:14px 18px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));}
-.wi{padding:8px 12px;}.wi+.wi{border-left:1px solid rgba(255,255,255,.1);}
-.wi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--teal-border);margin-bottom:4px;}
-.wi-title{font-size:12px;font-weight:500;color:#f5f4f0;margin-bottom:3px;}
-.wi-how{font-size:11px;color:rgba(255,255,255,.5);line-height:1.4;}
-.csf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
-.csf{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;}
-.csf-n{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px;}
-.csf-t{font-size:13px;font-weight:600;margin-bottom:8px;}
-.csf-b{font-size:12px;color:var(--mid);line-height:1.6;}
-.tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:3px;font-weight:500;margin-top:8px;}
-.t-bl{background:var(--blue-bg);color:var(--blue);}.t-tl{background:var(--teal-bg);color:var(--teal);}.t-am{background:var(--amber-bg);color:var(--amber);}.t-rd{background:var(--danger-bg);color:var(--danger);}
-/* KPI TABLE */
-.kpi-table{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:20px;}
-.kpi-table table{width:100%;border-collapse:collapse;}
-.kpi-table th{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--surface2);padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);}
-.kpi-table td{padding:10px 14px;font-size:12px;border-bottom:1px solid #f5f5f5;vertical-align:top;color:var(--mid);}
-.kpi-table tr:last-child td{border-bottom:none;}
-.kpi-table td:first-child{font-weight:500;color:var(--charcoal);}
-.kpi-num{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--green);}
-.kpi-val{font-size:9px;font-weight:600;padding:2px 7px;border-radius:3px;background:#f0f0ff;color:#5050aa;display:inline-block;}
-.checklist{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:14px;}
-.cl-h{padding:9px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.callout.warn{background:var(--amber-bg);border-color:var(--amber);}
+.callout.info{background:var(--blue-bg);border-color:var(--blue);}
+.ct{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.ct-alert{color:var(--danger);}.ct-warn{color:var(--amber);}.ct-info{color:var(--blue);}
+.callout p{font-size:12.5px;color:var(--mid);line-height:1.6;}
+
+/* nav tabs */
+.nav-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.nav-tab{padding:10px 18px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;cursor:pointer;color:var(--muted);border:none;background:transparent;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:'DM Sans',sans-serif;}
+.nav-tab.active{color:var(--red);border-bottom-color:var(--red);}
+.page{display:none;}.page.active{display:block;}
+
+/* daily checklist */
+.checklist{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+.cl-head{padding:9px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .cl-ht{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
 .cl-hw{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
-.cl-i{display:flex;align-items:flex-start;gap:11px;padding:10px 16px;border-bottom:1px solid #f5f5f5;}
+.cl-i{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(0,0,0,.04);}
 .cl-i:last-child{border-bottom:none;}
-.cl-box{width:17px;height:17px;border:2px solid var(--border);border-radius:3px;flex-shrink:0;margin-top:2px;}
-.cl-t{font-size:13px;flex:1;line-height:1.4;}
+.cl-box{width:16px;height:16px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;margin-top:2px;}
+.cl-t{font-size:12.5px;flex:1;line-height:1.4;}
 .cl-d{display:block;font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
-.cl-b{flex-shrink:0;font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;font-family:'DM Mono',monospace;margin-top:3px;}
-.b-julia{background:var(--teal-bg);color:var(--teal);}
-.b-jane{background:var(--amber-bg);color:var(--amber);}
-.b-shikha{background:var(--danger-bg);color:var(--danger);}
-.q-ph{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px;}
-.q-h{background:var(--surface2);padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.q-ht{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
-.q-src{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
-.q-row{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid #f5f5f5;}
-.q-row:last-child{border-bottom:none;}
-.sk{height:10px;border-radius:3px;background:linear-gradient(90deg,#ebebeb 25%,#f5f5f5 50%,#ebebeb 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;flex-shrink:0;}
-@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-/* GROWTH PATH */
-.growth-path{background:var(--surface);border:1px solid var(--green-border);border-radius:6px;padding:18px 20px;margin-bottom:20px;position:relative;overflow:hidden;}
-.growth-path::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:var(--green);}
-.gp-title{font-size:12px;font-weight:600;color:var(--green);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
-.gp-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px;background:var(--green-bg);color:var(--green);letter-spacing:.06em;text-transform:uppercase;}
-.gp-body{font-size:12.5px;color:var(--mid);line-height:1.65;}
-.gp-steps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
-.gp-step{background:var(--green-bg);border-radius:4px;padding:10px 13px;}
-.gp-step-title{font-size:11px;font-weight:600;color:var(--green);margin-bottom:4px;}
-.gp-step-body{font-size:11px;color:var(--mid);line-height:1.5;}
+.cl-b{flex-shrink:0;font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;font-family:'DM Mono',monospace;margin-top:2px;background:var(--teal-bg);color:var(--teal);}
+.cl-b.shikha{background:var(--danger-bg);color:var(--danger);}
+.cl-b.jane{background:var(--amber-bg);color:var(--amber);}
+
 footer{text-align:center;padding:22px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
 @media(max-width:900px){.page-layout{grid-template-columns:1fr;}.sidebar{display:none;}main{padding:18px 16px 60px;}}
-@media(max-width:680px){.csf-grid,.wig-strip,.gp-steps{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
+
 <header>
-  <div style="display:flex;align-items:center;"><span class="wordmark">RSP</span><div class="hd"></div><span class="header-title">Julia — Administration Officer · Ricoh Tonga</span></div>
-  <div style="display:flex;align-items:center;gap:12px;"><span class="as-of">Scaffold v2 — data TBC</span><a href="shikha_ops_dashboard_v8.html" class="back-link">← Shikha's Dashboard</a></div>
+  <div style="display:flex;align-items:center;">
+    <span class="wordmark">RSP</span><div class="hd"></div>
+    <span class="header-title">🇹🇴 Julia — Administration Officer · Ricoh Tonga</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <span class="live-pill"><span class="live-dot"></span>LIVE</span>
+    <span class="as-of">27 Mar 2026</span>
+    <a href="operations-dashboard.html" class="back-link">← Ops Dashboard</a>
+  </div>
 </header>
+
 <div class="page-layout">
 <aside class="sidebar">
   <div class="sidebar-heading">On this page</div>
-  <a href="#csf"       class="sidebar-link">CSFs</a>
-  <a href="#wigs"      class="sidebar-link">WIG contribution</a>
-  <a href="#scorecard" class="sidebar-link">Scorecard (KPIs)</a>
-  <a href="#orders"    class="sidebar-link">Open orders</a>
-  <a href="#invoices"  class="sidebar-link">Draft invoices</a>
-  <a href="#ar"        class="sidebar-link">AR — top debtors</a>
-  <a href="#rhythm"    class="sidebar-link">Daily rhythm</a>
-  <a href="#growth"    class="sidebar-link">Growth path</a>
+  <a href="#" onclick="setTab('scorecard');return false;" class="sidebar-link active">Scorecard</a>
+  <a href="#" onclick="setTab('orders');return false;"    class="sidebar-link">Open orders</a>
+  <a href="#" onclick="setTab('invoices');return false;"  class="sidebar-link">Draft invoices</a>
+  <a href="#" onclick="setTab('ar');return false;"        class="sidebar-link">AR — top debtors</a>
+  <a href="#" onclick="setTab('rhythm');return false;"    class="sidebar-link">Daily rhythm</a>
   <div class="sidebar-divider"></div>
   <div class="sidebar-heading">Team dashboards</div>
-  <a href="shikha_ops_dashboard_v8.html" class="sidebar-link">Shikha — Ops Manager</a>
-  <a href="jane-scaffold.html"           class="sidebar-link">Jane — NZ Coordinator</a>
-  <a href="jack-scaffold.html"           class="sidebar-link">Jack — Vanuatu</a>
-  <a href="ops-rhythm.html"              class="sidebar-link">Operations Rhythm</a>
+  <a href="operations-dashboard.html" class="sidebar-link">Shikha — Ops Manager</a>
+  <a href="jane-scaffold.html"        class="sidebar-link">Jane — NZ Coordinator</a>
+  <a href="jack-scaffold.html"        class="sidebar-link">Jack — Vanuatu</a>
+  <a href="ops-rhythm.html"           class="sidebar-link">Operations Rhythm</a>
 </aside>
+
 <main>
-  <div class="nav-pills">
-    <a href="#csf"       class="nav-pill active">CSFs</a>
-    <a href="#wigs"      class="nav-pill">WIGs</a>
-    <a href="#scorecard" class="nav-pill">Scorecard</a>
-    <a href="#orders"    class="nav-pill">Open orders</a>
-    <a href="#invoices"  class="nav-pill">Draft invoices</a>
-    <a href="#ar"        class="nav-pill">AR debtors</a>
-    <a href="#rhythm"    class="nav-pill">Daily rhythm</a>
-    <a href="#growth"    class="nav-pill">Growth path</a>
+  <div class="nav-tabs">
+    <button class="nav-tab active" id="t-scorecard" onclick="setTab('scorecard')">Scorecard</button>
+    <button class="nav-tab" id="t-orders"    onclick="setTab('orders')">Open orders <span style="font-size:10px;background:var(--danger-bg);color:var(--danger);padding:1px 5px;border-radius:3px;margin-left:4px;">13</span></button>
+    <button class="nav-tab" id="t-invoices"  onclick="setTab('invoices')">Draft invoices <span style="font-size:10px;background:var(--amber-bg);color:var(--amber);padding:1px 5px;border-radius:3px;margin-left:4px;">2</span></button>
+    <button class="nav-tab" id="t-ar"        onclick="setTab('ar')">AR debtors <span style="font-size:10px;background:var(--danger-bg);color:var(--danger);padding:1px 5px;border-radius:3px;margin-left:4px;">10</span></button>
+    <button class="nav-tab" id="t-rhythm"    onclick="setTab('rhythm')">Daily rhythm</button>
   </div>
 
-  <div class="hero">
-    <h1>🇹🇴 Julia</h1>
-    <p class="hero-sub">Administration Officer · Ricoh Tonga. Owns billing-to-cash for the Tonga branch: invoices raised correctly and on time, credit control enforced, AR collectible, meter readings submitted, and documentation quality maintained so NZ is not dragged into rework. Measured on cash collection speed, billing accuracy, and cycle-time.</p>
-    <div class="hero-meta">
-      <span class="hero-meta-item">Reports to <strong>Shikha Sohal</strong></span>
-      <span class="hero-meta-item">Entity <strong>Ricoh Tonga Limited</strong></span>
-      <span class="hero-meta-item">Currency <strong>TOP (Tongan Pa'anga)</strong></span>
-      <span class="hero-meta-item">Systems <strong>Xero · Unleashed · ApprovalMax · BMS</strong></span>
+  <!-- SCORECARD -->
+  <div class="page active" id="page-scorecard">
+    <p class="slabel">Scorecard — lead measures · 27 Mar 2026</p>
+    <div class="tiles">
+      <div class="tile red">
+        <div class="tile-lbl">Open / parked orders — Tonga</div>
+        <div class="tile-val">13</div>
+        <div class="tile-sub">Target: 0 at week-end · WIG 01</div>
+      </div>
+      <div class="tile amber">
+        <div class="tile-lbl">Oldest parked order</div>
+        <div class="tile-val">35d</div>
+        <div class="tile-sub">Statistics Dept · 20 Feb 2026</div>
+      </div>
+      <div class="tile amber">
+        <div class="tile-lbl">Draft invoices pending submission</div>
+        <div class="tile-val">2</div>
+        <div class="tile-sub">Target: submit within 48hrs · WIG 02</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">AR debtors &gt; 60 days</div>
+        <div class="tile-val">2</div>
+        <div class="tile-sub">Escalate to Shikha immediately</div>
+      </div>
+      <div class="tile red">
+        <div class="tile-lbl">Total AR — top 10</div>
+        <div class="tile-val" style="font-size:18px;">TOP 60.2K</div>
+        <div class="tile-sub">10 debtors · target ≤30 debtor days</div>
+      </div>
+    </div>
+    <div class="callout alert">
+      <div class="ct ct-alert">Two escalations required today</div>
+      <p>Ministry of Police (TOP 6,757 · 8 invoices · 119 days) and LDS Havelu Middle School (TOP 4,183 · 7 invoices · 119 days) are both over 60 days. These must be escalated to Shikha today — not queued for the weekly huddle. Contact both debtors and report outcome to Shikha by end of day.</p>
+    </div>
+    <div class="callout warn">
+      <div class="ct ct-warn">Orders — Statistics Dept is the priority</div>
+      <p>RTSO-00026306 (Statistics Department · TOP 40,249) has been parked for 35 days. RTSO-00026350 (Pacific Australia Skills · TOP 48,774) has been parked for 18 days. Check whether POs have been received and progress both this week.</p>
     </div>
   </div>
 
-  <div class="callout scaffold">
-    <div class="ct ct-sc">Prototype — scaffold v2</div>
-    <p>KPIs updated directly from the Accounts/Administration Officer position agreement (debtor days, invoice accuracy, billing cycle-time, dispute cycle-time, stop-credit compliance). Meter reading added as a CSF — confirmed by Shiv. Growth path to Operations Lead included at the end.</p>
-  </div>
-
-  <!-- 1. CSFs -->
-  <div class="section" id="csf">
-    <div class="section-header"><span class="sn">01</span><h2 class="section-title">Critical Success Factors</h2></div>
-    <p class="si">Five structural obligations. These are not quarterly goals — they are the ongoing requirements for the Tonga branch to function. A failure in any one of these creates rework for NZ, lost revenue, or compliance exposure.</p>
-    <div class="csf-grid">
-      <div class="csf">
-        <div class="csf-n">CSF 01</div>
-        <div class="csf-t">Invoicing governance</div>
-        <div class="csf-b">Every billable job in Tonga is invoiced within 2 working days of completion or proof-of-delivery. Correct pricing, correct tax, correct customer reference. Right-first-time — no credits issued due to internal error.</div>
-        <span class="tag t-tl">Feeds WIG 02</span>
-      </div>
-      <div class="csf">
-        <div class="csf-n">CSF 02</div>
-        <div class="csf-t">Credit control and AR</div>
-        <div class="csf-b">Weekly AR ageing review. Dunning cadence maintained. Debtor days ≤30 days monthly average. Disputes resolved within 5 working days. Stop-credit release is Julia's sole gate — 100% compliance, no exceptions.</div>
-        <span class="tag t-rd">Revenue risk</span>
-      </div>
-      <div class="csf">
-        <div class="csf-n">CSF 03</div>
-        <div class="csf-t">Meter reading collection</div>
-        <div class="csf-b">≥98% of Tonga BMS meter readings received by the 3rd working day of each month. Exceptions report issued same day. This is the data that drives CPC billing — no readings means no invoices, no revenue.</div>
-        <span class="tag t-tl">Feeds WIG 02 · BMS</span>
-      </div>
-      <div class="csf">
-        <div class="csf-n">CSF 04</div>
-        <div class="csf-t">Record and approval submission</div>
-        <div class="csf-b">100% of Tonga sale and purchase records submitted to ApprovalMax within 48 hours of creation. Julia is the submission trigger — delays here block Jane's approval and stall the entire billing pipeline.</div>
-        <span class="tag t-bl">Feeds Jane's queue</span>
-      </div>
-      <div class="csf">
-        <div class="csf-n">CSF 05</div>
-        <div class="csf-t">Payroll and timesheet discipline</div>
-        <div class="csf-b">Tonga staff timesheets and expense claims submitted by the agreed cut-off, every cycle. Julia coordinates submission and is accountable to Shikha for the Tonga payroll cycle time.</div>
-        <span class="tag t-am">Feeds WIG 03</span>
-      </div>
+  <!-- OPEN ORDERS -->
+  <div class="page" id="page-orders">
+    <p class="slabel">Open / parked orders — Unleashed Tonga · 27 Mar 2026</p>
+    <div class="tiles" style="margin-bottom:16px;">
+      <div class="tile red"><div class="tile-lbl">Parked orders</div><div class="tile-val">13</div><div class="tile-sub">All stale · WIG 01</div></div>
+      <div class="tile amber"><div class="tile-lbl">Oldest order</div><div class="tile-val">35d</div><div class="tile-sub">Statistics Dept · 20 Feb</div></div>
+      <div class="tile blue"><div class="tile-lbl">Total value (TOP)</div><div class="tile-val" style="font-size:18px;">149K+</div><div class="tile-sub">Excl. zero-value orders</div></div>
     </div>
-  </div>
-
-  <!-- 2. WIG CONTRIBUTION -->
-  <div class="section" id="wigs">
-    <div class="section-header"><span class="sn">02</span><h2 class="section-title">WIG contribution</h2></div>
-    <p class="si">Julia's daily actions in Tonga are direct inputs to all three of Shikha's WIGs. Tonga is the most critical entity for WIG 02 — at 69.7% billing completion it is the biggest drag on the team-wide target.</p>
-    <div class="wig-strip">
-      <div class="wi">
-        <div class="wi-lbl">WIG 01 — Order velocity</div>
-        <div class="wi-title">Open orders 49 → ≤10</div>
-        <div class="wi-how">5 parked Tonga orders currently. Julia clearing these moves the team-wide count. Each closed order is a direct contribution.</div>
-      </div>
-      <div class="wi">
-        <div class="wi-lbl">WIG 02 — Billing integrity</div>
-        <div class="wi-title">Billing completion 90.7% → 100%</div>
-        <div class="wi-how">Tonga at 69.7% — worst entity, dragging the overall rate from ~97% to 90.7%. Julia's invoice submission and meter reading discipline is the single biggest lever for WIG 02.</div>
-      </div>
-      <div class="wi">
-        <div class="wi-lbl">WIG 03 — Payroll reliability</div>
-        <div class="wi-title">Processing 3.7d → ≤1.5d</div>
-        <div class="wi-how">Tonga is one of four island entities contributing to payroll lag. On-time timesheets are Julia's direct contribution.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3. SCORECARD — from PD -->
-  <div class="section" id="scorecard">
-    <div class="section-header"><span class="sn">03</span><h2 class="section-title">Scorecard — KPIs from position agreement</h2></div>
-    <p class="si">Five KPIs drawn directly from the position agreement. Shikha reviews these weekly. Julia should be able to state every number from memory in the daily huddle.</p>
-    <div class="kpi-table">
+    <div class="tbl-wrap">
       <table>
         <thead><tr>
-          <th>KPI</th><th>Target</th><th>Cadence</th><th>What it measures</th><th>Source</th>
+          <th>Order #</th><th>Customer</th><th class="r">Order date</th><th class="r">Age</th><th class="r">Value (TOP)</th><th>Status</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026306</td><td class="td-name" title="Statistics Department - Tonga">Statistics Department - Tonga</td><td class="r">20 Feb 2026</td><td class="r"><span class="age-red">35d</span></td><td class="r">40,248.87</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026350</td><td class="td-name">Pacific Australia Skills</td><td class="r">9 Mar 2026</td><td class="r"><span class="age-red">18d</span></td><td class="r">48,773.80</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026282</td><td class="td-name">MEIDECC</td><td class="r">4 Mar 2026</td><td class="r"><span class="age-red">23d</span></td><td class="r">3,612.80</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026337</td><td class="td-name">Ministry of Education - CDU</td><td class="r">4 Mar 2026</td><td class="r"><span class="age-red">23d</span></td><td class="r">10,473.51</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026366</td><td class="td-name">Pacific Australia Skills</td><td class="r">17 Mar 2026</td><td class="r"><span class="age-amber">10d</span></td><td class="r">—</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026376</td><td class="td-name" title="LDS - Liahona High School">LDS — Liahona High School</td><td class="r">19 Mar 2026</td><td class="r"><span class="age-amber">8d</span></td><td class="r">—</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026380</td><td class="td-name" title="LDS - Saineha High School">LDS — Saineha High School</td><td class="r">20 Mar 2026</td><td class="r"><span class="age-amber">7d</span></td><td class="r">—</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026386</td><td class="td-name">University of the South Pacific</td><td class="r">24 Mar 2026</td><td class="r"><span class="age-amber">3d</span></td><td class="r">—</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026389</td><td class="td-name">Pacific Australia Skills</td><td class="r">25 Mar 2026</td><td class="r"><span class="age-amber">2d</span></td><td class="r">27,473.50</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026390</td><td class="td-name">Pacific Australia Skills</td><td class="r">25 Mar 2026</td><td class="r"><span class="age-amber">2d</span></td><td class="r">5,169.25</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026394</td><td class="td-name">Tonga Tourism Authority</td><td class="r">25 Mar 2026</td><td class="r"><span class="age-amber">2d</span></td><td class="r">7,452.00</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026395</td><td class="td-name">United Nations Population Fund</td><td class="r">26 Mar 2026</td><td class="r"><span class="age-green">1d</span></td><td class="r">—</td><td><span class="pill p-parked">Parked</span></td></tr>
+          <tr><td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSO-00026398</td><td class="td-name">Cowley &amp; Sons Ltd</td><td class="r">27 Mar 2026</td><td class="r"><span class="age-green">0d</span></td><td class="r">5,978.85</td><td><span class="pill p-parked">Parked</span></td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">Total value — non-zero orders</td><td class="r">149,182.58</td><td></td></tr></tfoot>
+      </table>
+    </div>
+    <p style="font-size:11px;color:var(--muted);">Data: SyncHub → Unleashed Tonga · 27 Mar 2026 · All open/parked orders</p>
+  </div>
+
+  <!-- DRAFT INVOICES -->
+  <div class="page" id="page-invoices">
+    <p class="slabel">Draft invoices — Xero Ricoh Tonga · 27 Mar 2026</p>
+    <div class="callout info">
+      <div class="ct ct-info">Submission rule</div>
+      <p>Every DRAFT invoice must be submitted to ApprovalMax within 48 hours of creation. Once submitted it goes to Jane in NZ for approval. Billing cycle-time KPI: 95% of billable jobs invoiced within 2 working days.</p>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Invoice #</th><th>Customer</th><th class="r">Invoice date</th><th class="r">Due date</th><th class="r">Age</th><th class="r">Amount (TOP)</th><th>Xero</th>
         </tr></thead>
         <tbody>
           <tr>
-            <td>Debtor days</td>
-            <td><span class="kpi-num">≤ 30 days</span></td>
-            <td><span class="kpi-val">Monthly</span></td>
-            <td>Monthly average days from invoice date to payment. Ministry of Police and LDS Havelu are currently 119 days — these alone are breaking this KPI.</td>
-            <td style="font-size:11px;color:var(--muted);">Xero Tonga · SyncHub</td>
+            <td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSI-00026387</td>
+            <td class="td-name">Ministry of Revenue &amp; Customs (Tonga)</td>
+            <td class="r">24 Mar 2026</td><td class="r">7 Apr 2026</td>
+            <td class="r"><span class="age-amber">3d</span></td>
+            <td class="r">182.85</td>
+            <td><a class="xero-btn" href="https://go.xero.com/AccountsReceivable/View.aspx?InvoiceID=rtsi-26387" target="_blank" rel="noopener">Xero ↗</a></td>
           </tr>
           <tr>
-            <td>Invoice accuracy</td>
-            <td><span class="kpi-num">≥ 99%</span></td>
-            <td><span class="kpi-val">Monthly</span></td>
-            <td>% of invoices issued without rework or credit note due to internal error. Pricing, tax, customer reference — right first time.</td>
-            <td style="font-size:11px;color:var(--muted);">Xero Tonga · credit note count</td>
-          </tr>
-          <tr>
-            <td>Billing cycle-time</td>
-            <td><span class="kpi-num">95% within 2 working days</span></td>
-            <td><span class="kpi-val">Weekly</span></td>
-            <td>% of billable jobs invoiced within 2 working days of completion or delivery. DRAFT invoices sitting in Xero longer than 2 days are failing this KPI.</td>
-            <td style="font-size:11px;color:var(--muted);">Xero Tonga · job completion data</td>
-          </tr>
-          <tr>
-            <td>Dispute cycle-time</td>
-            <td><span class="kpi-num">90% within 5 working days</span></td>
-            <td><span class="kpi-val">As raised</span></td>
-            <td>% of customer billing disputes resolved within 5 working days of being raised. Each dispute has a named owner and resolution deadline.</td>
-            <td style="font-size:11px;color:var(--muted);">Dispute log · manual</td>
-          </tr>
-          <tr>
-            <td>Stop-credit compliance</td>
-            <td><span class="kpi-num">100%</span></td>
-            <td><span class="kpi-val">Daily</span></td>
-            <td>Zero service or dispatch to stop-credit accounts without an authorised release from Julia. Julia is the sole gatekeeper — no release without documented approval.</td>
-            <td style="font-size:11px;color:var(--muted);">Xero Tonga · manual</td>
-          </tr>
-          <tr>
-            <td>Meter reading collection</td>
-            <td><span class="kpi-num">≥ 98% by 3rd working day</span></td>
-            <td><span class="kpi-val">Monthly</span></td>
-            <td>% of Tonga BMS assets with meter readings received by the 3rd working day of the month. Tonga has zero automated reads — every reading is manual. Exceptions report issued same day.</td>
-            <td style="font-size:11px;color:var(--muted);">BMS · Tonga asset list</td>
+            <td style="font-size:11px;font-weight:600;color:var(--charcoal);">RTSI-00026377</td>
+            <td class="td-name" title="LDS - Liahona High School - Printing">LDS — Liahona High School - Printing</td>
+            <td class="r">19 Mar 2026</td><td class="r">2 Apr 2026</td>
+            <td class="r"><span class="age-red">8d</span></td>
+            <td class="r">—</td>
+            <td><a class="xero-btn" href="https://go.xero.com/AccountsReceivable/View.aspx?InvoiceID=rtsi-26377" target="_blank" rel="noopener">Xero ↗</a></td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="callout info">
-      <div class="ct ct-info">Daily huddle format — Julia</div>
-      <p>Each morning Julia gives Shikha a three-sentence update: (1) orders — count and any blocked, (2) invoices — any drafts outstanding or submitted, (3) AR — any debtor action or escalation. The Scorecard is the weekly summary of these daily updates — it should never contain a surprise.</p>
-    </div>
-  </div>
-
-  <!-- 4. OPEN ORDERS -->
-  <div class="section" id="orders">
-    <div class="section-header"><span class="sn">04</span><h2 class="section-title">Open orders — Unleashed Tonga</h2></div>
-    <p class="si">Julia's daily order queue. Sort by age. Any order parked more than 48 hours needs a reason in the daily huddle. Any order parked more than 7 days goes on the L10 Issues List.</p>
-    <div class="q-ph">
-      <div class="q-h"><span class="q-ht">Parked / open orders — Tonga</span><span class="q-src">Unleashed Tonga · SyncHub · live</span></div>
-      <div style="display:grid;grid-template-columns:1fr 1.5fr 0.7fr 0.5fr 1fr 0.6fr;padding:8px 16px;background:var(--surface2);border-bottom:1px solid var(--border);gap:8px;">
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Order #</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Customer</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Date</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Age</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Value (TOP)</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Status</span>
-      </div>
-      <div class="q-row"><div class="sk" style="width:100px"></div><div class="sk" style="width:150px;margin-left:8px"></div><div class="sk" style="width:70px;margin-left:8px"></div><div class="sk" style="width:30px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:55px;margin-left:8px"></div></div>
-      <div class="q-row"><div class="sk" style="width:95px"></div><div class="sk" style="width:140px;margin-left:8px"></div><div class="sk" style="width:70px;margin-left:8px"></div><div class="sk" style="width:30px;margin-left:8px"></div><div class="sk" style="width:75px;margin-left:8px"></div><div class="sk" style="width:55px;margin-left:8px"></div></div>
-      <div class="q-row"><div class="sk" style="width:100px"></div><div class="sk" style="width:130px;margin-left:8px"></div><div class="sk" style="width:70px;margin-left:8px"></div><div class="sk" style="width:30px;margin-left:8px"></div><div class="sk" style="width:85px;margin-left:8px"></div><div class="sk" style="width:55px;margin-left:8px"></div></div>
-    </div>
-  </div>
-
-  <!-- 5. DRAFT INVOICES -->
-  <div class="section" id="invoices">
-    <div class="section-header"><span class="sn">05</span><h2 class="section-title">Draft invoices — Xero Tonga</h2></div>
-    <p class="si">Tonga invoices in DRAFT status. Julia must submit these to ApprovalMax within 48 hours of creation — the billing cycle-time KPI depends on it. Once submitted, Jane approves in NZ and the invoice moves to AUTHORISED. Julia's goal is to keep this tab empty.</p>
-    <div class="q-ph">
-      <div class="q-h"><span class="q-ht">DRAFT invoices — Xero Ricoh Tonga</span><span class="q-src">Xero Tonga · SyncHub · live</span></div>
-      <div style="display:grid;grid-template-columns:1fr 1.5fr 0.8fr 0.7fr 1fr 0.6fr;padding:8px 16px;background:var(--surface2);border-bottom:1px solid var(--border);gap:8px;">
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Invoice #</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Customer</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Invoice date</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Age</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Amount (TOP)</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Xero</span>
-      </div>
-      <div class="q-row"><div class="sk" style="width:100px"></div><div class="sk" style="width:150px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:30px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:55px;margin-left:8px"></div></div>
-      <div class="q-row"><div class="sk" style="width:95px"></div><div class="sk" style="width:130px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:30px;margin-left:8px"></div><div class="sk" style="width:70px;margin-left:8px"></div><div class="sk" style="width:55px;margin-left:8px"></div></div>
-    </div>
     <div class="callout warn">
-      <div class="ct ct-warn">Billing cycle-time KPI</div>
-      <p>Any DRAFT invoice aged more than 2 working days is already failing the billing cycle-time KPI (95% within 2 working days). The age badge on each row will show red at day 2. Julia must submit or explain — not just leave it in DRAFT.</p>
+      <div class="ct ct-warn">RTSI-00026377 — 8 days in DRAFT</div>
+      <p>The LDS Liahona High School invoice has been in DRAFT for 8 days without being submitted. The billing cycle-time KPI requires submission within 2 working days. This invoice is failing that target. Submit today or confirm with Shikha if there is a reason it is being held.</p>
     </div>
+    <p style="font-size:11px;color:var(--muted);">Data: SyncHub → Xero Ricoh Tonga · 27 Mar 2026 · DRAFT sales invoices awaiting Julia's submission to ApprovalMax</p>
   </div>
 
-  <!-- 6. AR DEBTORS -->
-  <div class="section" id="ar">
-    <div class="section-header"><span class="sn">06</span><h2 class="section-title">AR — top debtors · Tonga</h2></div>
-    <p class="si">Julia's weekly AR action list. Target: debtor days ≤30 days monthly average. Sorted by age. Any debtor over 30 days gets a written follow-up this week. Any debtor over 60 days is escalated to Shikha the same day — not queued for the L10.</p>
-    <div class="q-ph">
-      <div class="q-h"><span class="q-ht">Top AR debtors — Xero Ricoh Tonga</span><span class="q-src">Xero Tonga · SyncHub · live</span></div>
-      <div style="display:grid;grid-template-columns:1.5fr 1fr 0.6fr 0.8fr 0.7fr 0.8fr;padding:8px 16px;background:var(--surface2);border-bottom:1px solid var(--border);gap:8px;">
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Customer</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Total due (TOP)</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Invoices</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Oldest invoice</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Age</span>
-        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Priority</span>
-      </div>
-      <div class="q-row"><div class="sk" style="width:150px"></div><div class="sk" style="width:90px;margin-left:8px"></div><div class="sk" style="width:30px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:35px;margin-left:8px"></div><div class="sk" style="width:60px;margin-left:8px"></div></div>
-      <div class="q-row"><div class="sk" style="width:140px"></div><div class="sk" style="width:85px;margin-left:8px"></div><div class="sk" style="width:30px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:35px;margin-left:8px"></div><div class="sk" style="width:60px;margin-left:8px"></div></div>
-      <div class="q-row"><div class="sk" style="width:130px"></div><div class="sk" style="width:90px;margin-left:8px"></div><div class="sk" style="width:30px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:35px;margin-left:8px"></div><div class="sk" style="width:60px;margin-left:8px"></div></div>
+  <!-- AR DEBTORS -->
+  <div class="page" id="page-ar">
+    <p class="slabel">AR — top debtors · Xero Ricoh Tonga · 27 Mar 2026</p>
+    <div class="tiles" style="margin-bottom:16px;">
+      <div class="tile red"><div class="tile-lbl">Total AR — top 10</div><div class="tile-val" style="font-size:18px;">TOP 60.2K</div><div class="tile-sub">10 debtors</div></div>
+      <div class="tile red"><div class="tile-lbl">Debtors &gt; 60 days</div><div class="tile-val">2</div><div class="tile-sub">Escalate to Shikha today</div></div>
+      <div class="tile amber"><div class="tile-lbl">Debtors 30–60 days</div><div class="tile-val">3</div><div class="tile-sub">Written follow-up this week</div></div>
+      <div class="tile amber"><div class="tile-lbl">Oldest debtor</div><div class="tile-val">119d</div><div class="tile-sub">Ministry of Police · Nov 2025</div></div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>Customer</th><th class="r">Total due (TOP)</th><th class="r">Invoices</th><th class="r">Oldest invoice</th><th class="r">Age</th><th>Priority</th>
+        </tr></thead>
+        <tbody>
+          <tr><td class="td-name">Friendly Island Bookshop</td>            <td class="r">12,460.46</td><td class="r">4</td><td class="r">28 Feb 2026</td><td class="r"><span class="age-amber">27d</span></td><td><span class="pill p-chase">Chase</span></td></tr>
+          <tr><td class="td-name">Prime Minister's Office (Tonga)</td>      <td class="r">11,436.39</td><td class="r">2</td><td class="r">3 Mar 2026</td> <td class="r"><span class="age-amber">24d</span></td><td><span class="pill p-chase">Chase</span></td></tr>
+          <tr><td class="td-name">Ministry of Commerce &amp; Labour</td>    <td class="r">8,248.95</td> <td class="r">3</td><td class="r">17 Feb 2026</td><td class="r"><span class="age-red">38d</span></td><td><span class="pill p-urgent">Urgent</span></td></tr>
+          <tr><td class="td-name">Ministry of Police</td>                   <td class="r">6,757.22</td> <td class="r">8</td><td class="r">30 Nov 2025</td><td class="r"><span class="age-red">119d</span></td><td><span class="pill p-escalate">Escalate</span></td></tr>
+          <tr><td class="td-name">Ministry of Health</td>                   <td class="r">4,424.02</td> <td class="r">1</td><td class="r">13 Mar 2026</td><td class="r"><span class="age-amber">14d</span></td><td><span class="pill p-monitor">Monitor</span></td></tr>
+          <tr><td class="td-name">Bank South Pacific (Tonga)</td>           <td class="r">4,245.43</td> <td class="r">2</td><td class="r">28 Feb 2026</td><td class="r"><span class="age-amber">27d</span></td><td><span class="pill p-chase">Chase</span></td></tr>
+          <tr><td class="td-name" title="LDS — Havelu Middle School">LDS — Havelu Middle School</td><td class="r">4,182.88</td><td class="r">7</td><td class="r">30 Nov 2025</td><td class="r"><span class="age-red">119d</span></td><td><span class="pill p-escalate">Escalate</span></td></tr>
+          <tr><td class="td-name">Office of Ombudsman (Tonga)</td>          <td class="r">3,742.53</td> <td class="r">1</td><td class="r">19 Feb 2026</td><td class="r"><span class="age-red">36d</span></td><td><span class="pill p-urgent">Urgent</span></td></tr>
+          <tr><td class="td-name">Free Wesleyan Church of Tonga</td>        <td class="r">2,397.83</td> <td class="r">1</td><td class="r">6 Mar 2026</td> <td class="r"><span class="age-amber">21d</span></td><td><span class="pill p-monitor">Monitor</span></td></tr>
+          <tr><td class="td-name" title="Ministry of Education - TIHE">Ministry of Education — TIHE</td><td class="r">2,307.03</td><td class="r">1</td><td class="r">23 Feb 2026</td><td class="r"><span class="age-amber">32d</span></td><td><span class="pill p-chase">Chase</span></td></tr>
+        </tbody>
+        <tfoot><tr><td>Total — top 10</td><td class="r">60,202.74</td><td class="r">30</td><td colspan="3"></td></tr></tfoot>
+      </table>
     </div>
     <div class="callout alert">
       <div class="ct ct-alert">Escalation rule</div>
-      <p>Any Tonga AR debtor aged over 60 days is an immediate escalation to Shikha — not a weekly agenda item. Julia contacts the debtor the same day she spots it and reports to Shikha by end of day with amount, age, and contact made. Ministry of Police and LDS Havelu (both 119+ days) are currently in this category.</p>
+      <p>Ministry of Police (TOP 6,757 · 119 days) and LDS Havelu Middle School (TOP 4,183 · 119 days) are both over 60 days. Contact both debtors today and report the outcome to Shikha by end of day. Do not wait for the weekly huddle — this is an immediate escalation.</p>
+    </div>
+    <p style="font-size:11px;color:var(--muted);">Data: SyncHub → Xero Ricoh Tonga · 27 Mar 2026 · AUTHORISED and SUBMITTED invoices with amount due &gt; 0 · sorted by total outstanding</p>
+  </div>
+
+  <!-- DAILY RHYTHM -->
+  <div class="page" id="page-rhythm">
+    <p class="slabel">Daily rhythm — Julia · Ricoh Tonga</p>
+    <div class="checklist">
+      <div class="cl-head"><span class="cl-ht">Morning — before 9am</span><span class="cl-hw">Owner: Julia · daily</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Check open orders tab — any new or progressed?<span class="cl-d">For each parked order: can it be fulfilled today? If blocked, note the specific reason in Unleashed with a date. Flag any order blocked &gt;7 days to Shikha in the daily huddle.</span></div><span class="cl-b">Julia</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Check draft invoices — submit anything ready<span class="cl-d">Submit every DRAFT invoice to ApprovalMax. It goes to Jane in NZ immediately. If it can't be submitted, note the reason and flag to Shikha. Billing cycle-time KPI starts from creation date.</span></div><span class="cl-b jane">→ Jane</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Check AR — any new debtors over 60 days?<span class="cl-d">60 days = escalate to Shikha same day. 30–60 days = written follow-up this week. Note date, method, and response in Xero after each contact.</span></div><span class="cl-b shikha">→ Shikha if &gt;60d</span></div>
+    </div>
+    <div class="checklist">
+      <div class="cl-head"><span class="cl-ht">Daily huddle with Shikha — 3 sentences</span><span class="cl-hw">Every morning</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Orders: count, any blocked, what moves today<span class="cl-d">"I have X parked orders. Y is blocked because [reason]. I will clear Z today."</span></div><span class="cl-b">Julia</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Invoices: drafts submitted or outstanding<span class="cl-d">"I submitted X invoices. Y is still in draft because [reason]."</span></div><span class="cl-b">Julia</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">AR: any chase actions or escalations<span class="cl-d">"I chased [customer] this week. [Customer] is now 60+ days — escalating now."</span></div><span class="cl-b shikha">→ Shikha</span></div>
+    </div>
+    <div class="checklist">
+      <div class="cl-head"><span class="cl-ht">Monthly — meter readings</span><span class="cl-hw">By 3rd working day of each month</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Collect and submit all Tonga BMS meter readings<span class="cl-d">≥98% of Tonga assets must have readings submitted by the 3rd working day. Issue an exceptions report the same day for any asset not yet read. Tonga has zero automated reads — every reading is manually collected.</span></div><span class="cl-b">Julia</span></div>
     </div>
   </div>
 
-  <!-- 7. DAILY RHYTHM -->
-  <div class="section" id="rhythm">
-    <div class="section-header"><span class="sn">07</span><h2 class="section-title">Daily rhythm</h2></div>
-    <p class="si">Julia's operating rhythm is a daily loop. The goal is a clear queue at close of business — no parked orders without a reason, no drafts older than 48 hours, no debtor chase overdue.</p>
-    <div class="checklist">
-      <div class="cl-h"><span class="cl-ht">Morning — before 9am</span><span class="cl-hw">Owner: Julia · daily</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Check open orders — any new or progressed?<span class="cl-d">For each parked order: can it be fulfilled today? If blocked (waiting on customer PO, stock, delivery), note the specific reason in Unleashed. "Parked" without a reason is not acceptable. Flag any order blocked &gt;7 days to Shikha.</span></div><span class="cl-b b-julia">Julia</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Check draft invoices — submit anything ready<span class="cl-d">Submit every DRAFT invoice in Xero Tonga that is ready. It goes to Jane in NZ immediately. If it can't be submitted — note the reason (missing reference, pricing dispute) and flag to Shikha. Billing cycle-time KPI starts from creation date, not submission date.</span></div><span class="cl-b b-jane">→ Jane</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Check AR tab — any new debtors over 60 days?<span class="cl-d">60 days = escalate to Shikha the same day. 30–60 days = written follow-up this week. Any debtor that has been chased should have a note in Xero with date, method, and response.</span></div><span class="cl-b b-shikha">→ Shikha if &gt;60d</span></div>
-    </div>
-    <div class="checklist">
-      <div class="cl-h"><span class="cl-ht">Monthly — meter readings</span><span class="cl-hw">Owner: Julia · by 3rd working day</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Collect and submit all Tonga BMS meter readings by the 3rd working day<span class="cl-d">≥98% of Tonga assets must have readings submitted by the 3rd working day of each month. Any exceptions require an exceptions report issued the same day — not at end of week. Tonga has zero @remote automated reads so every reading is manually collected from each customer.</span></div><span class="cl-b b-julia">Julia</span></div>
-    </div>
-    <div class="checklist">
-      <div class="cl-h"><span class="cl-ht">Fortnightly payroll cycle</span><span class="cl-hw">Next: 1 Apr 2026</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Submit all Tonga staff timesheets by agreed cut-off<span class="cl-d">Cut-off is non-negotiable. Collect timesheets 2 days early to give buffer. Any staff member who is late: chase directly, don't wait and don't send a partial submission.</span></div><span class="cl-b b-julia">Julia</span></div>
-      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Submit expense reimbursement claims in the same cycle<span class="cl-d">Expense claims held over to the next cycle inflate payroll processing time and are disrespectful to staff. Submit with the timesheets — not separately.</span></div><span class="cl-b b-julia">Julia</span></div>
-    </div>
-  </div>
-
-  <!-- 8. GROWTH PATH -->
-  <div class="section" id="growth">
-    <div class="section-header"><span class="sn">08</span><h2 class="section-title">Growth path</h2></div>
-    <p class="si">Julia's current role is the Accounts/Administration Officer for Tonga. The Operations Lead (Branch Manager) role is a natural progression — she is already performing several of the required functions. This section maps the gap.</p>
-
-    <div class="growth-path">
-      <div class="gp-title">
-        <span>Operations Lead — Tonga</span>
-        <span class="gp-badge">Future state</span>
-      </div>
-      <div class="gp-body">The Operations Lead role is a multiplier — measured on the team's outputs, system quality, and resilience, not personal firefighting. Julia currently owns the admin and billing-to-cash functions. The step up requires taking ownership of service delivery, inventory availability, compliance, and people capability as a system — not as a series of individual tasks.</div>
-      <div class="gp-steps">
-        <div class="gp-step">
-          <div class="gp-step-title">What Julia already does</div>
-          <div class="gp-step-body">End-to-end invoicing governance, AR/credit control, stop-credit gating, meter reading collection, payroll coordination, document repository quality.</div>
-        </div>
-        <div class="gp-step">
-          <div class="gp-step-title">What the Operations Lead adds</div>
-          <div class="gp-step-body">Branch operating rhythm ownership (daily KPIs, team meetings, escalation handling), service and inventory coordination as a system, SOP library ownership, compliance and risk management, staff capability uplift, and continuous improvement cadence (1 measurable improvement per quarter).</div>
-        </div>
-        <div class="gp-step">
-          <div class="gp-step-title">KPI uplift required</div>
-          <div class="gp-step-body">Service SLA performance (response + resolution targets met monthly), inventory accuracy ≥98% and zero critical stockouts, quality and rework ≤1%, 100% staff with documented SOPs and quarterly skills plan.</div>
-        </div>
-        <div class="gp-step">
-          <div class="gp-step-title">Suggested development steps</div>
-          <div class="gp-step-body">Participate in Sridhar's service Scorecard reviews (Tonga). Co-develop Tonga SOPs with Shikha. Shadow the SC and inventory function during the Tonga entity maturity phase. Targeted readiness review at 6-month mark.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="callout growth">
-      <div class="ct ct-growth">Development signal to Shikha</div>
-      <p>Julia's performance on the current KPIs — particularly debtor days, billing cycle-time, and meter reading compliance — is the leading indicator for readiness for the Operations Lead role. Green across all five KPIs for two consecutive quarters is a reasonable bar for a formal conversation about progression.</p>
-    </div>
-  </div>
 </main>
 </div>
-<footer>Ricoh South Pacific · Julia · Administration Officer · Ricoh Tonga · Scaffold v2 · 27 Mar 2026</footer>
+
+<footer>Ricoh South Pacific · Julia · Administration Officer · Ricoh Tonga · 27 Mar 2026</footer>
+
 <script>
-const sections=document.querySelectorAll('.section[id]');
-const links=document.querySelectorAll('.sidebar-link[href^="#"]');
-function updateActive(){let cur='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-100)cur=s.id;});links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+cur));}
-window.addEventListener('scroll',updateActive,{passive:true});updateActive();
-links.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});}));
+function setTab(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('t-' + id).classList.add('active');
+  // sidebar
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+}
 </script>
 </body>
 </html>
