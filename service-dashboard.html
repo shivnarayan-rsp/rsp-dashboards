@@ -131,6 +131,34 @@
   .nav-pill{padding:7px 16px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;transition:all .15s;letter-spacing:.02em;}
   .nav-pill:hover{border-color:var(--red);color:var(--red);}
   .nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+
+  /* ── WIG SCOREBOARD ── */
+  .wig-banner{background:var(--charcoal);border-radius:8px;padding:18px 24px 10px;margin-bottom:28px;position:relative;overflow:hidden;}
+  .wig-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red);}
+  .wig-eyebrow{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--red);font-family:'DM Mono',monospace;margin-bottom:14px;}
+  .wig-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px;}
+  .wig-card{background:#242424;border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:14px 16px;}
+  .wig-card-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-family:'DM Mono',monospace;margin-bottom:6px;}
+  .wig-card-title{font-size:12px;font-weight:600;color:#fff;line-height:1.3;margin-bottom:2px;}
+  .wig-card-owners{font-size:10px;color:#666;margin-bottom:12px;}
+  .wig-track-wrap{margin-bottom:6px;}
+  .wig-track-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+  .wig-track-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#555;width:38px;flex-shrink:0;}
+  .wig-track{flex:1;height:8px;background:#111;border-radius:4px;position:relative;overflow:visible;}
+  .wig-fill{height:8px;border-radius:4px;position:absolute;top:0;left:0;}
+  .wig-target-marker{position:absolute;top:-3px;bottom:-3px;width:2px;border-radius:1px;background:#fff;opacity:.4;}
+  .wig-track-val{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;width:36px;text-align:right;flex-shrink:0;}
+  .wig-footer-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06);}
+  .wig-from{font-size:10px;color:#555;}
+  .wig-deadline{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:3px;}
+  .wig-deadline.jun{background:rgba(251,191,36,.15);color:#fbbf24;}
+  .wig-deadline.dec{background:rgba(74,222,128,.12);color:#4ade80;}
+  .wig-fill-good{background:var(--green);}
+  .wig-fill-warn{background:#f59e0b;}
+  .wig-fill-bad{background:var(--danger);}
+  .wig-fill-blue{background:var(--blue);}
+  @media(max-width:900px){.wig-cards{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media(max-width:500px){.wig-cards{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -156,12 +184,160 @@
     <a href="conversations.html" class="nav-pill">Conversations</a>
     <a href="service-rhythm.html" class="nav-pill">Service Rhythm</a>
     <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
+    <a href="callbacks.html" class="nav-pill">Callbacks</a>
     <a href="asset-downtime.html" class="nav-pill">Asset Downtime</a>
     <a href="case-origin.html" class="nav-pill">Case Origin</a>
     <a href="parts-consumption.html" class="nav-pill">Parts &amp; Revenue</a>
   </div>
 
-  <div class="section-label">Open cases snapshot</div>
+  <div class="wig-banner">
+    <div class="wig-eyebrow">4DX — Wildly Important Goals · 2026</div>
+    <div class="wig-cards">
+
+      <!-- WIG 1: Callback rate -->
+      <div class="wig-card">
+        <div class="wig-card-num">WIG 1</div>
+        <div class="wig-card-title">Callback rate ≤20% by June · ≤10% by December</div>
+        <div class="wig-card-owners">Owner: Sridhar Bhattacharjee</div>
+        <div class="wig-track-wrap">
+          <!-- Track: current 30.9% vs June target 20% vs Dec target 10% -->
+          <!-- Scale: 0–40%, current=30.9%, june_target=20%, dec_target=10% -->
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Now</div>
+            <div class="wig-track" style="flex:1">
+              <!-- fill: 30.9/40 = 77.25% — higher=worse so red -->
+              <div class="wig-fill wig-fill-bad" style="width:77%"></div>
+              <!-- June target line at 20/40 = 50% -->
+              <div class="wig-target-marker" style="left:50%" title="June target: 20%"></div>
+              <!-- Dec target line at 10/40 = 25% -->
+              <div class="wig-target-marker" style="left:25%;opacity:.25" title="Dec target: 10%"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--danger)">30.9%</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Jun 26</div>
+            <div class="wig-track" style="flex:1">
+              <div class="wig-fill wig-fill-warn" style="width:50%"></div>
+              <div class="wig-target-marker" style="left:50%"></div>
+            </div>
+            <div class="wig-track-val" style="color:#f59e0b">≤20%</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Dec 26</div>
+            <div class="wig-track" style="flex:1">
+              <div class="wig-fill wig-fill-good" style="width:25%"></div>
+              <div class="wig-target-marker" style="left:25%"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--green)">≤10%</div>
+          </div>
+        </div>
+        <div class="wig-footer-row">
+          <span class="wig-from">From 30.9% — need ↓11pp by June</span>
+          <span class="wig-deadline jun">June 2026</span>
+        </div>
+      </div>
+
+      <!-- WIG 2: First Time Fix -->
+      <div class="wig-card">
+        <div class="wig-card-num">WIG 2</div>
+        <div class="wig-card-title">First Time Fix ≥85% by June 2026</div>
+        <div class="wig-card-owners">Owner: Sridhar Bhattacharjee</div>
+        <div class="wig-track-wrap">
+          <!-- Scale: 60–100%, current=76.5%, target=85% -->
+          <!-- fill% = (val-60)/(100-60)*100 -->
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Now</div>
+            <div class="wig-track" style="flex:1">
+              <!-- (76.5-60)/40 = 41.25% -->
+              <div class="wig-fill wig-fill-warn" style="width:41%"></div>
+              <!-- target at (85-60)/40 = 62.5% -->
+              <div class="wig-target-marker" style="left:62.5%"></div>
+            </div>
+            <div class="wig-track-val" style="color:#f59e0b">76.5%</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Jun 26</div>
+            <div class="wig-track" style="flex:1">
+              <div class="wig-fill wig-fill-good" style="width:62.5%"></div>
+              <div class="wig-target-marker" style="left:62.5%"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--green)">≥85%</div>
+          </div>
+        </div>
+        <div class="wig-footer-row">
+          <span class="wig-from">From 76.5% — need ↑8.5pp by June</span>
+          <span class="wig-deadline jun">June 2026</span>
+        </div>
+      </div>
+
+      <!-- WIG 3: T&M / SLA ratio -->
+      <div class="wig-card">
+        <div class="wig-card-num">WIG 3</div>
+        <div class="wig-card-title">T&amp;M / SLA ratio ≥2.0× by December 2026</div>
+        <div class="wig-card-owners">Owner: Sridhar Bhattacharjee</div>
+        <div class="wig-track-wrap">
+          <!-- Scale: 0–2.5×, current=1.21×, target=2.0× -->
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Now</div>
+            <div class="wig-track" style="flex:1">
+              <!-- 1.21/2.5 = 48.4% -->
+              <div class="wig-fill wig-fill-warn" style="width:48%"></div>
+              <!-- target at 2.0/2.5 = 80% -->
+              <div class="wig-target-marker" style="left:80%"></div>
+            </div>
+            <div class="wig-track-val" style="color:#f59e0b">1.21×</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Dec 26</div>
+            <div class="wig-track" style="flex:1">
+              <div class="wig-fill wig-fill-good" style="width:80%"></div>
+              <div class="wig-target-marker" style="left:80%"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--green)">≥2.0×</div>
+          </div>
+        </div>
+        <div class="wig-footer-row">
+          <span class="wig-from">From 1.21× — need ↑0.79× by December</span>
+          <span class="wig-deadline dec">December 2026</span>
+        </div>
+      </div>
+
+      <!-- WIG 4: @remote active case rate -->
+      <div class="wig-card">
+        <div class="wig-card-num">WIG 4</div>
+        <div class="wig-card-title">@remote active cases ≥15% of case volume by Dec 2026</div>
+        <div class="wig-card-owners">Owners: Sridhar + Shikha (platform: Vijendra)</div>
+        <div class="wig-track-wrap">
+          <!-- Scale: 0–20%, current=0.5%, target=15% -->
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Now</div>
+            <div class="wig-track" style="flex:1">
+              <!-- 0.5/20 = 2.5% — effectively zero -->
+              <div class="wig-fill wig-fill-bad" style="width:2.5%"></div>
+              <!-- target at 15/20 = 75% -->
+              <div class="wig-target-marker" style="left:75%"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--danger)">0.5%</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Dec 26</div>
+            <div class="wig-track" style="flex:1">
+              <div class="wig-fill wig-fill-blue" style="width:75%"></div>
+              <div class="wig-target-marker" style="left:75%"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--blue)">≥15%</div>
+          </div>
+        </div>
+        <div class="wig-footer-row">
+          <span class="wig-from">746 assets registered · 4 cases YTD</span>
+          <span class="wig-deadline dec">December 2026</span>
+        </div>
+      </div>
+
+    </div><!-- /wig-cards -->
+  </div><!-- /wig-banner -->
+
+    <div class="section-label">Open cases snapshot</div>
   <div class="kpi-grid" id="kpiSnapshot"></div>
 
   <hr class="divider">
