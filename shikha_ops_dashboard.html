@@ -755,27 +755,49 @@
 
 <!-- ══════════════ PAYROLL ══════════════ -->
 <div class="page" id="page-payroll">
-  <p class="slabel">Payroll cycle tracker — all island entities · March 2026</p>
+  <p class="slabel">Payroll cycle tracker — all entities · fortnightly schedule</p>
 
-  <div class="pw-summary" style="margin-bottom:20px;">
-    <div class="slabel" style="margin-bottom:12px;">Cycle summary</div>
+  <!-- Schedule overview -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:18px;max-width:860px;">
+    <div style="background:var(--surface);border:0.5px solid var(--border-strong);border-radius:var(--radius-lg);padding:12px 14px;border-left:3px solid var(--teal-border);">
+      <div class="slabel" style="margin-bottom:6px;color:var(--teal);">Islands + RSP — next payday</div>
+      <div style="font-size:22px;font-weight:500;color:var(--text);line-height:1;margin-bottom:4px;">1 Apr 2026</div>
+      <div style="font-size:11px;color:var(--text-hint);">Fortnightly · Samoa, Vanuatu, Solomons, Tonga, RSP NZ</div>
+    </div>
+    <div style="background:var(--surface);border:0.5px solid var(--border-strong);border-radius:var(--radius-lg);padding:12px 14px;border-left:3px solid var(--blue-border);">
+      <div class="slabel" style="margin-bottom:6px;color:var(--blue);">Alpine Print — next payday</div>
+      <div style="font-size:22px;font-weight:500;color:var(--text);line-height:1;margin-bottom:4px;">8 Apr 2026</div>
+      <div style="font-size:11px;color:var(--text-hint);">Fortnightly · separate cycle · Shikha's sister manages</div>
+    </div>
+    <div style="background:var(--surface);border:0.5px solid var(--border-strong);border-radius:var(--radius-lg);padding:12px 14px;">
+      <div class="slabel" style="margin-bottom:6px;">RSP last pay run</div>
+      <div style="font-size:22px;font-weight:500;color:var(--text);line-height:1;margin-bottom:4px;">26 Mar</div>
+      <div style="font-size:11px;color:var(--text-hint);">NZD $44.0K · processed next day · ~1d lag</div>
+    </div>
+    <div style="background:var(--surface);border:0.5px solid var(--border-strong);border-radius:var(--radius-lg);padding:12px 14px;">
+      <div class="slabel" style="margin-bottom:6px;">Alpine last pay run</div>
+      <div style="font-size:22px;font-weight:500;color:var(--text);line-height:1;margin-bottom:4px;">24 Mar</div>
+      <div style="font-size:11px;color:var(--text-hint);">NZD $3.2K · processed same/next day · ~1d lag</div>
+    </div>
+  </div>
+
+  <div class="pw-summary" style="margin-bottom:18px;">
+    <div class="slabel" style="margin-bottom:10px;">Cycle summary — current</div>
     <div class="pw-summary-grid" id="pw-summary-grid"></div>
   </div>
 
-  <div class="filter-bar" style="margin-bottom:16px;">
+  <div class="filter-bar" style="margin-bottom:14px;">
     <span class="filter-label">Cycle</span>
-    <button class="chip active" onclick="pwSetCycle('mar-w3',this)">Mar W3 (current)</button>
-    <button class="chip" onclick="pwSetCycle('mar-w2',this)">Mar W2</button>
-    <button class="chip" onclick="pwSetCycle('mar-w1',this)">Mar W1</button>
+    <button class="chip active" onclick="pwSetCycle('apr-1',this)">1 Apr 2026 (next)</button>
+    <button class="chip" onclick="pwSetCycle('mar-26',this)">26 Mar 2026</button>
+    <button class="chip" onclick="pwSetCycle('mar-12',this)">12 Mar 2026</button>
   </div>
 
-  <div class="pw-grid" id="pw-cards"></div>
+  <div id="pw-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;"></div>
 
-  <div class="card" style="max-width:640px;">
+  <div class="card" style="max-width:640px;margin-top:16px;">
     <p class="slabel">Supabase write-back — scoped</p>
-    <p style="font-size:12px;color:var(--text-muted);line-height:1.7;">
-      Each task completion here records a timestamp. Once the GoPayroll MCP and Supabase write-back are live, this tracker will log: entity, cycle, task, opened_at, completed_at — allowing bottleneck analysis across the full payroll close workflow. The prototype uses localStorage for now so state persists across browser sessions.
-    </p>
+    <p style="font-size:12px;color:var(--text-muted);line-height:1.7;">Each task completion timestamps the action. Once GoPayroll MCP and Supabase write-back are live, this tracker will log: entity, cycle, task, opened_at, completed_at — enabling bottleneck analysis across the full workflow. The prototype uses localStorage so state persists across browser sessions.</p>
   </div>
 </div>
 
@@ -1296,24 +1318,27 @@ const ORDERS_DATA = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const PW_ENTITIES = [
-  { key:'samoa',    flag:'🇼🇸', name:'Ricoh Samoa',        cycle:'15–16 Mar' },
-  { key:'vanuatu',  flag:'🇻🇺', name:'Ricoh Vanuatu',       cycle:'11–18 Mar' },
-  { key:'solomons', flag:'🇸🇧', name:'Ricoh Solomon Islands', cycle:'9–16 Mar' },
-  { key:'tonga',    flag:'🇹🇴', name:'Ricoh Tonga',          cycle:'16–17 Mar' },
+  { key:'samoa',    flag:'🇼🇸', name:'Ricoh Samoa',          cycle:'1 Apr 2026', payday:'1 Apr', system:'GoPayroll', ccy:'WST' },
+  { key:'vanuatu',  flag:'🇻🇺', name:'Ricoh Vanuatu',         cycle:'1 Apr 2026', payday:'1 Apr', system:'GoPayroll', ccy:'VUV' },
+  { key:'solomons', flag:'🇸🇧', name:'Ricoh Solomons',        cycle:'1 Apr 2026', payday:'1 Apr', system:'GoPayroll', ccy:'SBD' },
+  { key:'tonga',    flag:'🇹🇴', name:'Ricoh Tonga',            cycle:'1 Apr 2026', payday:'1 Apr', system:'GoPayroll', ccy:'TOP' },
+  { key:'rsp',      flag:'🇳🇿', name:'RSP (NZ)',               cycle:'1 Apr 2026', payday:'1 Apr', system:'Xero Payroll', ccy:'NZD' },
+  { key:'alpine',   flag:'🖨️',  name:'Alpine Print',           cycle:'8 Apr 2026', payday:'8 Apr', system:'Xero Payroll', ccy:'NZD' },
 ];
 
 const PW_STEPS = [
-  { id:'timesheet',    label:'Timesheet collection from managers',           desc:'Managers submit hours for pay period' },
-  { id:'commissions',  label:'Commissions calculation',                      desc:'Sales commissions calculated and verified' },
-  { id:'deductions',   label:'Deductions & corrections',                     desc:'Statutory deductions, adjustments, corrections applied' },
-  { id:'dataentry',    label:'Payroll data entry & preparation',             desc:'Data entered into GoPayroll, headcount verified' },
-  { id:'review',       label:'Review & approval — in-country manager',      desc:'Manager reviews and signs off payroll run' },
-  { id:'submission',   label:'Submission to GoPayroll',                      desc:'Payroll submitted for processing' },
-  { id:'posting',      label:'Confirmation & posting in Xero',               desc:'Pay run confirmed and posted to Xero' },
-  { id:'exceptions',   label:'Exception handling / corrections',             desc:'Any post-submission corrections resolved' },
+  { id:'timesheet',    label:'Timesheet collection',              desc:'Managers / staff submit hours for pay period' },
+  { id:'expenses',     label:'Expense reimbursements',            desc:'All expense claims submitted, receipts attached, approved' },
+  { id:'commissions',  label:'Commissions calculation',           desc:'Sales commissions calculated and verified' },
+  { id:'deductions',   label:'Deductions & corrections',          desc:'Statutory deductions, adjustments, corrections applied' },
+  { id:'dataentry',    label:'Payroll data entry & prep',         desc:'Data entered into payroll system, headcount verified' },
+  { id:'review',       label:'Review & approval — manager',       desc:'Manager reviews and signs off payroll run' },
+  { id:'submission',   label:'Submission to payroll system',      desc:'Payroll submitted for processing (GoPayroll / Xero)' },
+  { id:'posting',      label:'Confirmation & posting in Xero',    desc:'Pay run confirmed and posted to Xero GL' },
+  { id:'exceptions',   label:'Exception handling / corrections',  desc:'Any post-submission corrections resolved' },
 ];
 
-let pwCycle = 'mar-w3';
+let pwCycle = 'apr-1';
 
 function pwStateKey(entityKey, cycle) { return `pw_${cycle}_${entityKey}`; }
 
@@ -1344,7 +1369,7 @@ function pwReset(entityKey) {
 }
 
 function pwSetCycle(cycle, el) {
-  document.querySelectorAll('#page-payroll .chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('#page-payroll .filter-bar .chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   pwCycle = cycle;
   renderPayroll();
@@ -1367,32 +1392,37 @@ function renderPayroll() {
   let totalDone = 0, totalEntities = PW_ENTITIES.length;
   let fullyDone = 0;
 
-  // Summary
-  PW_ENTITIES.forEach(e => {
+  // Filter entities shown based on cycle — Alpine has different payday
+  const visibleEntities = pwCycle === 'apr-1'
+    ? PW_ENTITIES
+    : PW_ENTITIES.filter(e => e.key !== 'alpine' || pwCycle === 'mar-26' ? true : false);
+
+  visibleEntities.forEach(e => {
     const state = pwLoad(e.key, pwCycle);
     const done = PW_STEPS.filter(s => state[s.id]?.done).length;
     totalDone += done;
     if (done === allSteps) fullyDone++;
   });
 
-  const totalTasks = totalEntities * allSteps;
+  const totalTasks = visibleEntities.length * allSteps;
   const pct = Math.round((totalDone / totalTasks) * 100);
-  const avgDays = '3.7d'; // live baseline from Xero
   document.getElementById('pw-summary-grid').innerHTML = `
     <div class="pw-summary-item"><div class="pw-summary-val">${totalDone}/${totalTasks}</div><div class="pw-summary-lbl">Tasks completed</div></div>
     <div class="pw-summary-item"><div class="pw-summary-val">${pct}%</div><div class="pw-summary-lbl">Overall progress</div></div>
-    <div class="pw-summary-item"><div class="pw-summary-val">${fullyDone}/${totalEntities}</div><div class="pw-summary-lbl">Entities fully closed</div></div>
-    <div class="pw-summary-item"><div class="pw-summary-val">${avgDays}</div><div class="pw-summary-lbl">Avg cycle time (baseline)</div></div>
+    <div class="pw-summary-item"><div class="pw-summary-val">${fullyDone}/${visibleEntities.length}</div><div class="pw-summary-lbl">Entities fully closed</div></div>
+    <div class="pw-summary-item"><div class="pw-summary-val">3.7d</div><div class="pw-summary-lbl">Islands avg (baseline)</div></div>
+    <div class="pw-summary-item"><div class="pw-summary-val">~1d</div><div class="pw-summary-lbl">RSP / Alpine (Xero)</div></div>
   `;
 
-  // Cards
-  document.getElementById('pw-cards').innerHTML = PW_ENTITIES.map(e => {
+  document.getElementById('pw-cards').innerHTML = visibleEntities.map(e => {
     const state = pwLoad(e.key, pwCycle);
     const done = PW_STEPS.filter(s => state[s.id]?.done).length;
     const pctDone = Math.round((done / allSteps) * 100);
     const elapsed = pwElapsed(state);
     const statusCls = done === 0 ? 'pill-neutral' : done === allSteps ? 'pill-teal' : 'pill-amber';
     const statusLbl = done === 0 ? 'Not started' : done === allSteps ? 'Complete' : `${done}/${allSteps} done`;
+    const isAlpine = e.key === 'alpine';
+    const headerBg = isAlpine ? 'var(--blue)' : 'var(--text)';
 
     const stepsHtml = PW_STEPS.map(s => {
       const isDone = state[s.id]?.done;
@@ -1411,17 +1441,20 @@ function renderPayroll() {
 
     return `
       <div class="pw-card">
-        <div class="pw-card-head">
-          <div class="pw-entity">${e.flag} ${e.name}</div>
-          <div class="pw-cycle">Cycle: ${e.cycle}</div>
+        <div class="pw-card-head" style="background:${headerBg};">
+          <div class="pw-entity" style="color:#f5f4f0;">${e.flag} ${e.name}</div>
+          <div class="pw-cycle" style="color:rgba(255,255,255,0.5);">Payday: ${e.payday}</div>
+        </div>
+        <div style="padding:5px 14px 0;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:9px;color:var(--text-hint);font-family:monospace;">${e.system} · ${e.ccy}</span>
         </div>
         <div class="pw-progress-wrap">
           <div class="pw-progress-lbl"><span>${pctDone}% complete</span><span>${done}/${allSteps} tasks</span></div>
-          <div class="pw-progress"><div class="pw-progress-fill" style="width:${pctDone}%"></div></div>
+          <div class="pw-progress"><div class="pw-progress-fill" style="width:${pctDone}%;background:${isAlpine?'var(--blue-border)':'var(--teal-border)'};"></div></div>
         </div>
         <ul class="pw-steps">${stepsHtml}</ul>
         <div class="pw-card-foot">
-          <div class="pw-elapsed">${elapsed ? 'Session time: <strong>'+elapsed+'</strong>' : '<span style="color:var(--text-hint)">Not started</span>'}</div>
+          <div class="pw-elapsed">${elapsed ? 'Session: <strong>'+elapsed+'</strong>' : '<span style="color:var(--text-hint)">Not started</span>'}</div>
           <div style="display:flex;align-items:center;gap:8px;">
             <span class="pill ${statusCls}">${statusLbl}</span>
             ${done > 0 ? `<button class="pw-reset-btn" onclick="event.stopPropagation();pwReset('${e.key}')">Reset</button>` : ''}
