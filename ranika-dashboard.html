@@ -114,7 +114,11 @@
 <body>
 <header>
   <div class="header-left">
-    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
+    <div class="header-brand" style="display:flex;align-items:center;gap:12px;">
+      <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px;display:block;" onerror="this.style.display='none'">
+      <span style="color:rgba(255,255,255,.3);font-weight:300;font-size:18px;">|</span>
+      <span style="font-size:13px;font-weight:400;color:rgba(255,255,255,.7);letter-spacing:.03em;">South Pacific</span>
+    </div>
     <div class="hd"></div>
     <span class="header-title">Inventory Dashboard</span>
   </div>
@@ -165,8 +169,8 @@
 </main>
 
 <script>
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://dztsgkpqgcnebqhkuyeu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_ozzi1WvvklaFYx_Fx3JuPQ_tmkkJ8kz';
 const ENTITIES = ['RSP','Alpine','Samoa','Solomons','Tonga','Vanuatu'];
 
 // Inventory data — from inventory-dashboard.html
