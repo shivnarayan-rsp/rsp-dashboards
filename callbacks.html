@@ -71,6 +71,7 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
     <a href="conversations.html" class="nav-pill">Conversations</a>
     <a href="service-rhythm.html" class="nav-pill">Service Rhythm</a>
     <a href="data-dictionary.html" class="nav-pill">Data Dictionary</a>
+    <a href="callbacks.html" class="nav-pill active">Callbacks</a>
     <a href="asset-downtime.html" class="nav-pill">Asset Downtime</a>
     <a href="case-origin.html" class="nav-pill">Case Origin</a>
     <a href="parts-consumption.html" class="nav-pill">Parts &amp; Revenue</a>
@@ -80,6 +81,7 @@ footer{text-align:center;padding:20px;font-size:11px;color:var(--muted);border-t
 
   <div class="filter-bar">
     <input type="text" id="searchInput" placeholder="Search case, account, serial…" oninput="render()">
+    <button id="groupToggle" onclick="toggleGroup()" style="height:32px;padding:0 14px;font-size:12px;font-family:'DM Sans',sans-serif;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--mid);cursor:pointer;transition:all .15s;" title="Group rows by asset serial number">Group by serial</button>
     <select id="filterTerritory" onchange="onTerrFilter()">
       <option value="">All territories</option>
       <option>NZ</option><option>Vanuatu</option><option>Solomons</option>
@@ -262,7 +264,7 @@ function getRows() {
   return CALLBACKS.filter(c => {
     if (terr && c[3] !== terr) return false;
     if (tech && c[4] !== tech) return false;
-    if (search && !(c[1]+c[2]+c[6]+c[8]).toLowerCase().includes(search)) return false;
+    if (search && !(c[1]+c[2]+c[7]+c[8]).toLowerCase().includes(search)) return false;
     return true;
   }).sort((a,b) => {
     let av=a[sortCol], bv=b[sortCol];
@@ -310,6 +312,10 @@ function populateTechFilter() {
   const techs = [...new Set(CALLBACKS.map(c=>c[4]).filter(Boolean))].sort();
   const sel = document.getElementById('filterTech');
   techs.forEach(t => { const o=document.createElement('option'); o.value=o.textContent=t; sel.appendChild(o); });
+  if (window._initTech) {
+    sel.value = window._initTech;
+    window._initTech = null;
+  }
 }
 
 function render() {
@@ -319,6 +325,11 @@ function render() {
     th.classList.remove('sorted-asc','sorted-desc');
     if (+th.dataset.col===sortCol) th.classList.add(sortDir===1?'sorted-asc':'sorted-desc');
   });
+  if (groupBySerial) {
+    document.getElementById('tableBody').innerHTML = renderGrouped(rows) ||
+      '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No callbacks match filters.</td></tr>';
+    return;
+  }
   document.getElementById('tableBody').innerHTML = rows.map(c => {
     const [cId,cNum,acct,terr,tech,date,assetId,serial,assetName] = c;
     const assetLink = assetId
@@ -341,10 +352,73 @@ function sortBy(col){if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}re
 // Init from URL params
 const params = new URLSearchParams(window.location.search);
 if (params.get('territory')) document.getElementById('filterTerritory').value = params.get('territory');
+if (params.get('tech')) {
+  // Wait for populateTechFilter to run first
+  window._initTech = params.get('tech');
+}
 
 populateTechFilter();
 renderKPIs();
 render();
+
+let groupBySerial = false;
+
+function toggleGroup() {
+  groupBySerial = !groupBySerial;
+  const btn = document.getElementById('groupToggle');
+  if (btn) {
+    btn.style.background = groupBySerial ? 'var(--charcoal)' : 'var(--surface)';
+    btn.style.color = groupBySerial ? '#fff' : 'var(--mid)';
+    btn.style.borderColor = groupBySerial ? 'var(--charcoal)' : 'var(--border)';
+  }
+  render();
+}
+
+function renderGrouped(rows) {
+  const SF = "https://clearedgepacific.my.salesforce.com/";
+  // Group by serial (index 7)
+  const groups = {};
+  rows.forEach(c => {
+    const serial = c[7] || '—';
+    if (!groups[serial]) groups[serial] = {serial, assetName: c[8], assetId: c[6], territory: c[3], cases: []};
+    groups[serial].cases.push(c);
+  });
+  // Sort groups by case count desc
+  const sorted = Object.values(groups).sort((a,b) => b.cases.length - a.cases.length);
+  
+  let html = '';
+  sorted.forEach(g => {
+    const repeatCls = g.cases.length >= 4 ? 'style="color:var(--danger);font-weight:600"' :
+                      g.cases.length >= 2 ? 'style="color:var(--amber);font-weight:500"' : '';
+    const assetLink = g.assetId
+      ? `<a href="${SF}${g.assetId}" target="_blank" class="asset-link">${g.serial}</a>`
+      : `<span style="color:var(--muted);font-size:11px">${g.serial}</span>`;
+    const territories = [...new Set(g.cases.map(c => c[3]))].map(t =>
+      `<span class="terr-pill t-${t}">${t}</span>`).join(' ');
+    const techs = [...new Set(g.cases.map(c => c[4]).filter(Boolean))].join(', ');
+
+    // Group header row
+    html += `<tr style="background:var(--surface2);border-top:2px solid var(--border)">
+      <td colspan="2">${assetLink} <span style="font-size:12px;color:var(--mid);margin-left:6px">${g.assetName||'—'}</span></td>
+      <td>${territories}</td>
+      <td style="font-size:12px;color:var(--mid)">${techs}</td>
+      <td colspan="2"><span ${repeatCls} style="font-family:'DM Mono',monospace;font-size:12px">${g.cases.length} callback${g.cases.length!==1?'s':''}</span></td>
+    </tr>`;
+    // Detail rows
+    g.cases.forEach(c => {
+      const [cId,cNum,acct,terr,tech,date,aId,serial,assetName] = c;
+      html += `<tr>
+        <td style="padding-left:24px"><a href="${SF}${cId}" target="_blank" class="case-link">${cNum}</a></td>
+        <td style="font-size:12px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${acct}</td>
+        <td></td>
+        <td style="font-size:12px">${tech||'—'}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:12px">${date}</td>
+        <td></td>
+      </tr>`;
+    });
+  });
+  return html;
+}
 </script>
 </body>
 </html>
