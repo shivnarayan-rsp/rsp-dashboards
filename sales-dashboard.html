@@ -1,861 +1,403 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RSP — Sales Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-:root {
-  --red: #D7063B; --red-bg: #fff1f3; --red-border: rgba(215,6,59,0.22);
-  --charcoal: #1e2022; --body: #f7f7f6; --surface: #ffffff;
-  --border: #e4e4e2; --border2: #d1d5db;
-  --t1: #1e2022; --t2: #6b7280; --t3: #9ca3af;
-  --green: #16a34a; --green-bg: #f0fdf4; --green-border: rgba(22,163,74,0.2);
-  --amber: #d97706; --amber-bg: #fffbeb; --amber-border: rgba(217,119,6,0.2);
-  --blue: #2563eb; --blue-bg: #eff6ff;
-  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--sans);background:var(--body);color:var(--t1);font-size:14px;line-height:1.5}
-
-/* HEADER */
-header{background:var(--charcoal);color:#fff;padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 1px 0 rgba(255,255,255,.05)}
-.hb{display:flex;align-items:center;gap:12px}
-.brand{font-size:15px;font-weight:600;color:#fff}.brand span{color:var(--red)}
-.hdiv{width:1px;height:20px;background:rgba(255,255,255,.15)}
-.hsub{font-size:13px;color:rgba(255,255,255,.5)}
-.hback{font-size:12px;color:rgba(255,255,255,.45);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .15s}
-.hback:hover{color:rgba(255,255,255,.8)}.hback::before{content:'←'}
-
-/* FILTER BAR */
-.fbar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:10px;position:sticky;top:56px;z-index:190;flex-wrap:wrap}
-.flabel{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);white-space:nowrap}
-.fsel{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--t1);background:var(--body);border:1px solid var(--border);border-radius:6px;padding:5px 28px 5px 10px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;cursor:pointer;min-width:160px}
-.fsel:focus{outline:none;border-color:var(--red)}
-.fsep{width:1px;height:18px;background:var(--border);margin:0 2px}
-.fxnote{margin-left:auto;font-size:10.5px;color:var(--t3);font-family:var(--mono)}
-
-/* MAIN */
-main{padding:24px 32px 48px;max-width:1400px;margin:0 auto}
-
-/* SECTION HEADER */
-.sh{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;margin-top:28px}
-.sh-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);white-space:nowrap}
-.sh-line{flex:1;height:1px;background:var(--border)}
-
-/* KPI GRID */
-.kg{display:grid;gap:12px}
-.kg4{grid-template-columns:repeat(4,1fr)}
-.kg3{grid-template-columns:repeat(3,1fr)}
-
-.kc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;position:relative;overflow:hidden;transition:box-shadow .15s}
-.kc:hover{box-shadow:0 2px 12px rgba(0,0,0,.06)}
-.kc.alert{border-color:var(--red-border);background:var(--red-bg)}
-.kc.warn{border-color:var(--amber-border);background:var(--amber-bg)}
-.kc.good{border-color:var(--green-border);background:var(--green-bg)}
-.kc::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:10px 0 0 10px}
-.kc.ar::before{background:var(--red)}.kc.ag::before{background:var(--green)}
-.kc.aa::before{background:var(--amber)}.kc.am::before{background:var(--t3)}
-.kc.ab::before{background:var(--blue)}
-
-.kl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.dr{background:var(--red)}.dg{background:var(--green)}.da{background:var(--amber)}.dm{background:var(--t3)}.db{background:var(--blue)}
-
-.kv{font-family:var(--mono);font-size:26px;font-weight:500;color:var(--t1);letter-spacing:-.02em;line-height:1.1}
-.kv.rv{color:var(--red)}.kv.tbc{color:var(--t3);font-size:16px;font-weight:400}
-.ks{font-size:12px;color:var(--t2);margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.tu{color:var(--green);font-weight:600}.td{color:var(--red);font-weight:600}
-
-.pb{margin-top:10px;height:4px;background:var(--border);border-radius:99px;overflow:hidden}
-.pbf{height:100%;border-radius:99px;background:var(--red);transition:width .5s}
-.pbf.g{background:var(--green)}.pbf.a{background:var(--amber)}.pbf.m{background:var(--t3)}
-
-/* TABS */
-.tnav{display:flex;border-bottom:2px solid var(--border);margin-bottom:20px;gap:0}
-.tbtn{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--t2);background:none;border:none;padding:10px 18px;cursor:pointer;position:relative;transition:color .15s;white-space:nowrap}
-.tbtn::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--red);opacity:0;transition:opacity .15s}
-.tbtn.active{color:var(--red)}.tbtn.active::after{opacity:1}
-.tbtn:hover:not(.active){color:var(--t1)}
-
-/* TABLE */
-.dt{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;width:100%}
-.dt table{width:100%;border-collapse:collapse}
-.dt thead th{background:var(--body);font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
-.dt thead th.r{text-align:right}
-.dt tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
-.dt tbody tr:last-child{border-bottom:none}
-.dt tbody tr:hover{background:var(--body)}
-.dt tbody td{padding:12px 16px;font-size:13px;color:var(--t1);vertical-align:middle}
-.dt tbody td.r{text-align:right;font-family:var(--mono);font-size:12.5px}
-.en{font-weight:600}.es{font-size:11px;color:var(--t2);margin-top:1px}
-
-.spill{display:inline-block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:4px;margin-right:3px;margin-bottom:2px}
-.sProposal{background:#eff6ff;color:#1d4ed8}.sNegotiation{background:#fff7ed;color:#c2410c}
-.sQualification{background:#f0fdf4;color:#15803d}.sNeedsAnalysis{background:#faf5ff;color:#7e22ce}
-
-.sbar{display:flex;height:5px;border-radius:99px;overflow:hidden;background:var(--border);min-width:80px;max-width:120px}
-.sbseg{height:100%}
-
-/* TERRITORY TILES */
-.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
-.ttile{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;transition:box-shadow .15s}
-.ttile:hover{box-shadow:0 2px 12px rgba(0,0,0,.06)}
-.tname{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.tval{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--t1);letter-spacing:-.02em}
-.tmeta{font-size:11px;color:var(--t3);margin-top:4px}
-.trow{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
-.trl{font-size:11px;color:var(--t2)}.trv{font-family:var(--mono);font-size:11px;color:var(--t1);font-weight:500}
-
-/* COVERAGE GAUGE */
-.gauge-wrap{display:flex;align-items:center;gap:10px;margin-top:8px}
-.gauge-track{flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden;position:relative}
-.gauge-fill{height:100%;border-radius:99px;transition:width .5s}
-.gauge-markers{position:relative;height:12px;margin-top:2px}
-.gauge-marker{position:absolute;font-size:9px;color:var(--t3);transform:translateX(-50%)}
-
-/* QUOTA TABLE */
-.quota-badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px}
-.qb-over{background:#f0fdf4;color:#16a34a}
-.qb-warn{background:#fffbeb;color:#d97706}
-.qb-under{background:#fff1f3;color:#D7063B}
-.qb-none{background:#f1f5f9;color:#64748b}
-.attain-bar{height:4px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:4px;min-width:60px}
-.attain-fill{height:100%;border-radius:99px;transition:width .4s}
-
-/* FX BADGE */
-.fxb{font-size:9px;color:var(--t3);background:var(--body);border:1px solid var(--border);border-radius:3px;padding:1px 4px;font-family:var(--mono)}
-
-/* DATA DICTIONARY PANEL */
-.dict-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:0}
-.dict-header{background:var(--charcoal);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:10px}
-.dict-header-title{font-size:13px;font-weight:600}
-.dict-header-sub{font-size:11px;color:rgba(255,255,255,.45);font-family:var(--mono)}
-.dict-row{border-bottom:1px solid var(--border);padding:16px 20px;display:grid;grid-template-columns:220px 1fr;gap:20px}
-.dict-row:last-child{border-bottom:none}
-.dict-row:hover{background:var(--body)}
-.dict-kpi-name{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:4px}
-.dict-kpi-tag{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 6px;border-radius:3px;display:inline-block;margin-bottom:6px}
-.tag-lead{background:#eff6ff;color:#2563eb}
-.tag-lag{background:#f1f5f9;color:#475569}
-.tag-hygiene{background:#faf5ff;color:#7e22ce}
-.dict-content{display:flex;flex-direction:column;gap:8px}
-.dict-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
-.dict-text{font-size:13px;color:var(--t2);line-height:1.5}
-.dict-soql{font-family:var(--mono);font-size:11px;background:#1e2022;color:#a8d8a8;border-radius:6px;padding:10px 14px;line-height:1.7;overflow-x:auto;white-space:pre}
-.dict-formula{font-family:var(--mono);font-size:11px;color:var(--t2);background:var(--body);border:1px solid var(--border);border-radius:6px;padding:8px 12px}
-
-.empty{text-align:center;padding:40px;color:var(--t3);font-size:13px}
-
-@media(max-width:1100px){.kg4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){main{padding:16px}header,.fbar{padding-left:16px;padding-right:16px}.kg4,.kg3{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.kg4,.kg3{grid-template-columns:1fr}}
-</style>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>RSP Sales — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--red:#D7063B;--charcoal:#1e1f22;--bg:#f7f7f6;--surface:#fff;--border:#e4e4e2;--tx:#1a1a1a;--tm:#6b6b6b;--tl:#9a9a9a;--green:#16a34a;--amber:#d97706;--sans:'DM Sans',sans-serif;--mono:'DM Mono',monospace;--r:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04)}
+    body{font-family:var(--sans);background:var(--bg);color:var(--tx);min-height:100vh}
+    header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+    .hl{display:flex;align-items:center;gap:14px}
+    .hdiv{color:rgba(255,255,255,.25);font-weight:300;font-size:20px;line-height:1}
+    .htitle{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em}
+    .hr{display:flex;align-items:center;gap:20px}
+    .hmeta{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4)}
+    .back{color:rgba(255,255,255,.6);text-decoration:none;font-size:13px}.back:hover{color:#fff}
+    .pill-nav{background:var(--charcoal);border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px;overflow-x:auto}
+    .pn{padding:8px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap}
+    .pn:hover{color:rgba(255,255,255,.85)}.pn.active{color:#fff;border-bottom-color:var(--red)}
+    main{max-width:1400px;margin:0 auto;padding:28px 24px 60px}
+    .slabel{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:12px}
+    /* WIG BANNER */
+    .wig-banner{background:var(--charcoal);border-radius:8px;padding:18px 24px 16px;margin-bottom:28px;position:relative;overflow:hidden}
+    .wig-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red)}
+    .wig-eye{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--red);font-family:var(--mono);margin-bottom:14px}
+    .wig-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .wig-card{background:#242424;border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:14px 16px}
+    .wig-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-family:var(--mono);margin-bottom:4px}
+    .wig-title{font-size:12px;font-weight:600;color:#fff;line-height:1.3;margin-bottom:2px}
+    .wig-owners{font-size:10px;color:#555;margin-bottom:12px}
+    .wig-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+    .wig-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#555;width:38px;flex-shrink:0}
+    .wig-track{flex:1;height:8px;background:#111;border-radius:4px;position:relative;overflow:visible}
+    .wig-fill{height:8px;border-radius:4px;position:absolute;top:0;left:0}
+    .wig-marker{position:absolute;top:-3px;bottom:-3px;width:2px;border-radius:1px;background:#fff;opacity:.35}
+    .wig-val{font-size:10px;font-family:var(--mono);font-weight:600;width:50px;text-align:right;flex-shrink:0}
+    .wig-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}
+    .wig-from{font-size:10px;color:#555}
+    .wig-dl{font-size:10px;font-family:var(--mono);font-weight:600;padding:2px 7px;border-radius:3px}
+    .dl-mar{background:rgba(251,191,36,.15);color:#fbbf24}
+    .dl-apr{background:rgba(239,68,68,.15);color:#f87171}
+    .fill-good{background:var(--green)}.fill-warn{background:var(--amber)}.fill-bad{background:var(--red)}
+    /* SLOB territory mini grid */
+    .slob-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+    .slob-cell{background:#111;border:1px solid rgba(255,255,255,.07);border-radius:4px;padding:5px 7px;text-align:center}
+    .slob-cell-lbl{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+    .slob-cell-val{font-family:var(--mono);font-size:11px;font-weight:600}
+    /* KPI CARDS */
+    .kpi-grid{display:grid;gap:12px;margin-bottom:8px}
+    .g4{grid-template-columns:repeat(4,1fr)}
+    .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:box-shadow .15s}
+    .kpi.clickable{cursor:pointer}.kpi.clickable:hover{box-shadow:0 2px 16px rgba(215,6,59,.15);border-color:rgba(215,6,59,.4)}
+    .kpi.alert{border-color:rgba(215,6,59,.35);background:rgba(215,6,59,.04)}
+    .kpi::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:var(--r) 0 0 var(--r)}
+    .kpi.ar::before{background:var(--red)}.kpi.ag::before{background:var(--green)}.kpi.aa::before{background:var(--amber)}.kpi.am::before{background:var(--tl)}
+    .kl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--tm);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+    .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;display:inline-block}
+    .kv{font-family:var(--mono);font-size:26px;font-weight:500;letter-spacing:-.02em;line-height:1.1}
+    .rv{color:var(--red)}.tbc{color:var(--tl);font-size:15px;font-weight:400}
+    .ks{font-size:12px;color:var(--tm);margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .tu{color:var(--green);font-weight:600}.td{color:var(--red);font-weight:600}
+    .pb{margin-top:10px;height:4px;background:var(--border);border-radius:99px;overflow:hidden}
+    .pf{height:100%;border-radius:99px;background:var(--red);transition:width .6s}
+    .pf.g{background:var(--green)}.pf.a{background:var(--amber)}.pf.m{background:var(--tl)}
+    /* COVERAGE GAUGE */
+    .cov-wrap{display:flex;align-items:center;gap:10px;margin-top:8px}
+    .cov-lbl{font-size:11px;color:var(--tl);white-space:nowrap}
+    .cov-outer{flex:1;height:8px;background:var(--border);border-radius:99px;position:relative;overflow:hidden}
+    .cov-fill{height:100%;border-radius:99px}
+    .cov-mark{position:absolute;top:0;height:100%;width:2px;background:rgba(0,0,0,.2)}
+    /* TERRITORY TILES */
+    .ter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:28px}
+    .ter{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow)}
+    .ter-name{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--tm);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .ter-val{font-family:var(--mono);font-size:21px;font-weight:500;letter-spacing:-.02em}
+    .ter-meta{font-size:11px;color:var(--tl);margin-top:3px}
+    .ter-row{display:flex;justify-content:space-between;align-items:center;margin-top:7px;padding-top:7px;border-top:1px solid var(--border)}
+    .trl{font-size:11px;color:var(--tm)}.trv{font-family:var(--mono);font-size:11px;font-weight:500}
+    .fxb{font-size:9px;color:var(--tl);background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:1px 4px;font-family:var(--mono)}
+    /* TABS */
+    .tab-bar{display:flex;border-bottom:2px solid var(--border);margin-bottom:20px}
+    .tab{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--tm);background:none;border:none;padding:10px 18px;cursor:pointer;position:relative;white-space:nowrap;transition:color .15s}
+    .tab::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--red);opacity:0;transition:opacity .15s}
+    .tab.active{color:var(--red)}.tab.active::after{opacity:1}.tab:hover:not(.active){color:var(--tx)}
+    /* TABLE CARD */
+    .tcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);margin-bottom:4px}
+    .tcard table{width:100%;border-collapse:collapse;font-size:12.5px}
+    .tcard thead th{background:#f9f9f8;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--tl);padding:9px 16px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+    .tcard thead th.r{text-align:right}
+    .tcard tbody tr{border-bottom:1px solid var(--border)}.tcard tbody tr:last-child{border-bottom:none}.tcard tbody tr:hover{background:var(--bg)}
+    .tcard tbody td{padding:10px 16px;vertical-align:middle}.tcard tbody td.r{text-align:right;font-family:var(--mono);font-size:12px}
+    .en{font-weight:600}.es{font-size:11px;color:var(--tm);margin-top:1px}
+    .sp{display:inline-block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:4px;margin-right:3px;margin-bottom:2px}
+    .sp-P{background:#eff6ff;color:#1d4ed8}.sp-N{background:#fff7ed;color:#c2410c}.sp-Q{background:#f0fdf4;color:#15803d}.sp-A{background:#faf5ff;color:#7e22ce}
+    .shr{display:flex;height:5px;border-radius:99px;overflow:hidden;background:var(--border);min-width:80px;max-width:120px}
+    .ss{height:100%}
+    .mb{width:80px;height:5px;background:var(--border);border-radius:99px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
+    .mf{height:100%;border-radius:99px;background:var(--green)}
+    .mf.under{background:var(--red)}.mf.amber{background:var(--amber)}
+    .bq{background:var(--bg);color:var(--tl);font-size:10px;font-weight:600;padding:1px 6px;border-radius:4px;font-family:var(--mono);border:1px solid var(--border)}
+    .foot{text-align:center;font-size:11px;color:var(--tl);font-family:var(--mono);padding-top:12px;border-top:1px solid var(--border);margin-top:32px}
+    @media(max-width:1100px){.g4{grid-template-columns:repeat(2,1fr)}.wig-cards{grid-template-columns:1fr}}
+    @media(max-width:700px){main{padding:16px 12px 40px}header,.pill-nav{padding-left:16px;padding-right:16px}.g4{grid-template-columns:1fr 1fr}.slob-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:480px){.g4{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
-
 <header>
-  <div class="hb">
-    <div class="brand">Ricoh South Pacific</div>
-    <div class="hdiv"></div>
-    <div class="hsub">Sales Dashboard</div>
+  <div class="hl">
+    <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px" onerror="this.style.display='none'">
+    <span class="hdiv">|</span>
+    <span class="htitle">Sales — Dashboard</span>
   </div>
-  <a href="index.html" class="hback">Overview</a>
+  <div class="hr">
+    <span class="hmeta" id="asOf"></span>
+    <a href="index.html" class="back">← Scorecards</a>
+  </div>
 </header>
+<nav class="pill-nav">
+  <a href="sales-dashboard.html" class="pn active">Dashboard</a>
+  <a href="sales-opportunities.html" class="pn">Deal List</a>
+  <a href="sales-rep-scorecard.html" class="pn">Rep Scorecards</a>
+  <a href="sales-data-dictionary.html" class="pn">Data Dictionary</a>
+  <a href="sales-operating-rhythm.html" class="pn">Operating Rhythm</a>
+</nav>
+<main>
 
-<div class="fbar">
-  <span class="flabel">Territory</span>
-  <select class="fsel" id="fTerritory">
-    <option value="all">All Territories</option>
-    <option value="01s7F00000IZVgzQAH">New Zealand</option>
-    <option value="01s7F00000IZVhOQAX">Samoa</option>
-    <option value="01s7F00000IZVhTQAX">Solomon Islands</option>
-    <option value="01s7F00000IZVhJQAX">Tonga</option>
-    <option value="01s7F00000IZVh4QAH">Vanuatu</option>
-  </select>
-  <div class="fsep"></div>
-  <span class="flabel">Sales Rep</span>
-  <select class="fsel" id="fRep"><option value="all">All Reps</option></select>
-  <span class="fxnote" id="fxNote"></span>
+<!-- WIG BANNER -->
+<div class="wig-banner">
+  <div class="wig-eye">4DX — Wildly Important Goals · Avi Sharma · Sales Manager · New Equipment</div>
+  <div class="wig-cards">
+
+    <div class="wig-card">
+      <div class="wig-num">WIG 1 — Monthly Sales Quota</div>
+      <div class="wig-title">Hit Mar 2026 sales quota — all territories — by 31 March</div>
+      <div class="wig-owners">Owner: Avi Sharma · 9 quota-bearing reps · Measure: Closed Won Opportunity value vs ForecastingQuota</div>
+      <div class="wig-row">
+        <div class="wig-lbl">Mar CW</div>
+        <div class="wig-track" id="wig1Track">
+          <div class="wig-fill" id="wig1Fill" style="width:0%"></div>
+          <div class="wig-marker" style="left:100%" title="Mar quota"></div>
+        </div>
+        <div class="wig-val" id="wig1Val">—</div>
+      </div>
+      <div class="wig-row">
+        <div class="wig-lbl">Target</div>
+        <div class="wig-track"><div class="wig-fill fill-good" style="width:100%"></div></div>
+        <div class="wig-val" id="wig1Target" style="color:var(--green)">—</div>
+      </div>
+      <div class="wig-foot">
+        <span class="wig-from">ForecastingQuota · 9 reps · Mar 2026 · NZD converted</span>
+        <span class="wig-dl dl-mar">31 Mar 2026</span>
+      </div>
+    </div>
+
+    <div class="wig-card">
+      <div class="wig-num">WIG 2 — SLOB Copier Equipment Clearance</div>
+      <div class="wig-title">Clear all Ricoh Copier Equipment SLOB stock — all territories — by 30 April</div>
+      <div class="wig-owners">Owner: Avi Sharma · Connects to: Ranika (inventory) · Action: sell, upgrade, or transfer each machine</div>
+      <div class="wig-row">
+        <div class="wig-lbl">Cleared</div>
+        <div class="wig-track">
+          <div class="wig-fill fill-bad" style="width:0%"></div>
+          <div class="wig-marker" style="left:100%"></div>
+        </div>
+        <div class="wig-val" style="color:var(--red)">NZ$0</div>
+      </div>
+      <div class="wig-row">
+        <div class="wig-lbl">Target</div>
+        <div class="wig-track"><div class="wig-fill fill-good" style="width:100%"></div></div>
+        <div class="wig-val" style="color:var(--green)">NZ$176K</div>
+      </div>
+      <div class="slob-grid" id="slobGrid"></div>
+      <div class="wig-foot">
+        <span class="wig-from">37 machines · 5 territories · SI dominates at NZ$125.9K</span>
+        <span class="wig-dl dl-apr">30 Apr 2026 — 33 days</span>
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<main id="app"></main>
+<!-- ROW 1: SALES ACTUALS -->
+<div class="slabel">Sales Actuals — Orders (New, Activated) · NZD</div>
+<div class="kpi-grid g4" id="row1"></div>
 
+<!-- ROW 2: 4DX SCOREBOARD -->
+<div class="slabel" style="margin-top:20px">4DX Scoreboard — Pipeline Health · Click any red tile to view those deals</div>
+<div class="kpi-grid g4" id="row2"></div>
+
+<!-- TERRITORY QUOTA -->
+<div class="slabel" style="margin-top:20px">Mar 2026 Quota Attainment by Territory</div>
+<div class="ter-grid" id="terGrid"></div>
+
+<!-- BREAKDOWN -->
+<div class="slabel">Pipeline Breakdown</div>
+<div class="tab-bar">
+  <button class="tab active" onclick="setTab('territory',this)">By Territory</button>
+  <button class="tab" onclick="setTab('stage',this)">Pipeline by Stage</button>
+  <button class="tab" onclick="setTab('rep',this)">By Sales Rep</button>
+  <button class="tab" onclick="setTab('cw',this)">Closed Won Trend</button>
+</div>
+<div id="tabContent"></div>
+
+<div class="foot" id="foot"></div>
+</main>
 <script>
-// ─── FX RATES (Salesforce CurrencyType — units of local per 1 NZD) ───
-const FX = {NZD:1,WST:1.86,SBD:5.64,TOP:1.61,VUV:79.11,FJD:1.48,USD:0.72};
-const toNZD = (v,c) => (!v||isNaN(v)) ? 0 : v/(FX[c]||1);
+const FX={NZD:1,WST:1.86,SBD:5.64,TOP:1.61,VUV:79.11};
+const toNZD=(v,c)=>(!v||isNaN(v))?0:v/(FX[c]||1);
+const fmt=v=>'NZ$'+Math.round(v||0).toLocaleString('en-NZ');
+const fmtR=v=>Math.round(v||0).toLocaleString('en-NZ');
+const fmtP=v=>(v||0).toFixed(1)+'%';
+const mN=m=>['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1];
+const sNZD=a=>a.reduce((s,r)=>s+toNZD(r.lv||0,r.cu),0);
+const sCt=a=>a.reduce((s,r)=>s+(r.ct||0),0);
+const PBM={'01s7F00000IZVgzQAH':'New Zealand','01s7F00000IZVh4QAH':'Vanuatu','01s7F00000IZVhJQAX':'Tonga','01s7F00000IZVhOQAX':'Samoa','01s7F00000IZVhTQAX':'Solomon Islands'};
+const PBCU={'01s7F00000IZVgzQAH':'NZD','01s7F00000IZVhOQAX':'WST','01s7F00000IZVhJQAX':'TOP','01s7F00000IZVh4QAH':'VUV','01s7F00000IZVhTQAX':'SBD'};
+const PB_IDS=Object.keys(PBM);
+const SLOB_DATA=[['NZ',2847.55,4],['Samoa',8005.90,9],['Solomons',125949.40,9],['Vanuatu',31654.68,10],['Tonga',7668.86,5]];
+const QUOTA=[
+  {ow:'0057F000004tzjEQAQ',cu:'WST',la:78540},
+  {ow:'0057F000003GciYQAS',cu:'NZD',la:400000},
+  {ow:'005Mp00000BUnxpIAD',cu:'NZD',la:100000},
+  {ow:'005Mp000008od81IAA',cu:'WST',la:40460},
+  {ow:'005Mp00000BGnuTIAT',cu:'VUV',la:3696000},
+  {ow:'0057F000008XjrTQAS',cu:'TOP',la:58000},
+  {ow:'0057F000004u88WQAQ',cu:'NZD',la:250000},
+  {ow:'0057F000004tzzkQAA',cu:'SBD',la:132600},
+  {ow:'0057F000004tzziQAA',cu:'SBD',la:132600}
+];
+const UM={'0057F000004tzhSQAQ':'Sekone Tyrell','0057F000004tzjEQAQ':'Ronaldo Mercado','0057F000004tzm0QAA':'Lavilaiti Lasitani','0057F000004tzm1QAA':'Julia Sifa','0057F000004tzm2QAA':'Tui Amone','0057F000004tzpSQAQ':'Gideon Malto','0057F000004tzpUQAQ':'Phelisa D. Molisa','0057F000004tzpXQAQ':'Junriel Andoy','0057F000004tzziQAA':'Victor Geonzon','0057F000004tzzkQAA':'Samson Ragaruma','0057F000004u88WQAQ':'Avi Sharma','0057F000005AuKzQAK':'Priscilla Aulanga','0057F000005B9L9QAK':'Brenda Peter','0057F000006JcvKQAS':'Shikha Sohal','0057F000008O6vVQAS':'Via Reyna','0057F000008XjrTQAS':'Aisea Fakaosi','005Mp00000BGnuTIAT':'Jester Bernardino','005Mp00000BUnxpIAD':'Max Lyness','0057F000003GciYQAS':'Pradeep Narayan','005Mp000008od81IAA':'Josef Petelo'};
+const rN=id=>UM[id]||id;
+const totalQ=()=>QUOTA.reduce((s,q)=>s+toNZD(q.la,q.cu),0);
+const qForOwner=id=>{const q=QUOTA.find(q=>q.ow===id);return q?toNZD(q.la,q.cu):null};
 
-// ─── DATA ───
-const DATA = {
-  asOf: '24 March 2026',
-  pricebookMap: {
-    '01s7F00000IZVgzQAH':'New Zealand','01s7F00000IZVh4QAH':'Vanuatu',
-    '01s7F00000IZVhJQAX':'Tonga','01s7F00000IZVhOQAX':'Samoa',
-    '01s7F00000IZVhTQAX':'Solomon Islands'
-  },
-  pbCurrency: {
-    '01s7F00000IZVgzQAH':'NZD','01s7F00000IZVhOQAX':'WST',
-    '01s7F00000IZVhJQAX':'TOP','01s7F00000IZVh4QAH':'VUV',
-    '01s7F00000IZVhTQAX':'SBD'
-  },
-  userMap: {
-    '0057F000004tzhSQAQ':'Sekone Tyrell','0057F000004tzjEQAQ':'Ronaldo Mercado',
-    '0057F000004tzm0QAA':'Lavilaiti Lasitani','0057F000004tzm1QAA':'Julia Sifa',
-    '0057F000004tzm2QAA':'Tui Amone','0057F000004tzpSQAQ':'Gideon Malto',
-    '0057F000004tzpUQAQ':'Phelisa Daniel Molisa','0057F000004tzpXQAQ':'Junriel Andoy',
-    '0057F000004tzziQAA':'Victor Geonzon','0057F000004tzzkQAA':'Samson Ragaruma',
-    '0057F000004u88WQAQ':'Avi Sharma','0057F000005AuKzQAK':'Priscilla Aulanga',
-    '0057F000005B9L9QAK':'Brenda Peter','0057F000006JcvKQAS':'Shikha Sohal',
-    '0057F000008O6vVQAS':'Via Reyna','0057F000008XjrTQAS':'Aisea Fakaosi',
-    '005Mp00000BGnuTIAT':'Jester Bernardino','005Mp00000BUnxpIAD':'Max Lyness',
-    '0057F000003GciYQAS':'Pradeep Narayan'
-  },
-
-  // ── QUOTA (ForecastingQuota, StartDate = 2026-03-01, local currency) ──
-  // Unchanged — quota records not affected by Order filter changes
-  quotaMar: [
-    {owner:'0057F000004tzjEQAQ', name:'Ronaldo Mercado',   currency:'WST', localQuota:78540},
-    {owner:'0057F000003GciYQAS', name:'Pradeep Narayan',   currency:'NZD', localQuota:400000},
-    {owner:'005Mp00000BUnxpIAD', name:'Max Lyness',         currency:'NZD', localQuota:100000},
-    {owner:'005Mp000008od81IAA', name:'Josef Petelo',        currency:'WST', localQuota:40460},
-    {owner:'005Mp00000BGnuTIAT', name:'Jester Bernardino',  currency:'VUV', localQuota:3696000},
-    {owner:'0057F000008XjrTQAS', name:'Aisea Fakaosi',       currency:'TOP', localQuota:58000},
-    {owner:'0057F000004u88WQAQ', name:'Avi Sharma',          currency:'NZD', localQuota:250000},
-    {owner:'0057F000004tzzkQAA', name:'Samson Ragaruma',     currency:'SBD', localQuota:132600},
-    {owner:'0057F000004tzziQAA', name:'Victor Geonzon',      currency:'SBD', localQuota:132600},
-  ],
-
-  // ── ORDERS: Type=New, Activated, TotalAmount > 0, excl. Auckland Order Queue ──
-  // WTD = 16–24 Mar 2026 (live from Salesforce 24 Mar 2026)
-  salesWtd:[
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:2,localValue:8397.48},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:2,localValue:1595.74}
-  ],
-  // MTD = 1–24 Mar 2026
-  salesMtd:[
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:3,localValue:9741.56},
-    {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:3,localValue:12631.76},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:1,localValue:12091.03},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:2,localValue:1595.74}
-  ],
-  // Prior month = Feb 2026
-  salesPrior:[
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:6,localValue:27043.01},
-    {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:3,localValue:19586.81},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:1,localValue:3349.77},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:1,localValue:3014.18}
-  ],
-  // YTD = Jan–Mar 2026
-  salesYtd:[
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:20,localValue:38281.35},
-    {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:10,localValue:50657.16},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:4, localValue:18480.86},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:8, localValue:43191.49}
-  ],
-
-  // ── OPEN PIPELINE (IsClosed=false AND StageName != 'Closed') ──
-  pipeline:[
-    {pb:'01s7F00000IZVgzQAH',currency:'NZD',count:25, localValue:116433.02},
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',count:97, localValue:1258835.81},
-    {pb:'01s7F00000IZVhJQAX',currency:'TOP',count:203,localValue:1863370.60},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',count:53, localValue:520168.28},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',count:254,localValue:3706817.21},
-    {pb:null,currency:'NZD',count:28, localValue:384200.00},
-    {pb:null,currency:'WST',count:25, localValue:214006.72},
-    {pb:null,currency:'TOP',count:21, localValue:134501.75},
-    {pb:null,currency:'VUV',count:13, localValue:293262.55},
-    {pb:null,currency:'SBD',count:31, localValue:207405.27},
-    {pb:'01s7F00000BU3IfQAL',currency:'NZD',count:1,localValue:36889.89}
-  ],
-
-  pipelineByStage:[
-    {pb:'01s7F00000IZVgzQAH',currency:'NZD',stage:'Proposal',     count:21, localValue:89159.88},
-    {pb:'01s7F00000IZVgzQAH',currency:'NZD',stage:'Qualification',count:1,  localValue:3000.00},
-    {pb:'01s7F00000IZVgzQAH',currency:'NZD',stage:'Negotiation',  count:3,  localValue:24273.14},
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',stage:'Proposal',     count:96, localValue:1247970.90},
-    {pb:'01s7F00000IZVhOQAX',currency:'WST',stage:'Negotiation',  count:1,  localValue:10864.90},
-    {pb:'01s7F00000IZVhJQAX',currency:'TOP',stage:'Proposal',     count:190,localValue:1758398.90},
-    {pb:'01s7F00000IZVhJQAX',currency:'TOP',stage:'Negotiation',  count:13, localValue:104971.70},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',stage:'Proposal',     count:52, localValue:507662.25},
-    {pb:'01s7F00000IZVh4QAH',currency:'VUV',stage:'Negotiation',  count:1,  localValue:12506.03},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',stage:'Proposal',     count:243,localValue:3608682.81},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',stage:'Negotiation',  count:10, localValue:78563.48},
-    {pb:'01s7F00000IZVhTQAX',currency:'SBD',stage:'Qualification',count:1,  localValue:19570.92}
-  ],
-
-  pipelineByRep:[
-    {owner:'005Mp00000BGnuTIAT',pb:null,                 currency:'VUV',count:12, localValue:128934.40},
-    {owner:'0057F000004tzm2QAA',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:92, localValue:760604.63},
-    {owner:'0057F000004tzpXQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:14, localValue:153493.91},
-    {owner:'0057F000004u88WQAQ',pb:null,                 currency:'WST',count:3,  localValue:33870.97},
-    {owner:'0057F000004u88WQAQ',pb:null,                 currency:'NZD',count:1,  localValue:60000.00},
-    {owner:'0057F000004u88WQAQ',pb:null,                 currency:'TOP',count:1,  localValue:0},
-    {owner:'005Mp00000BUnxpIAD',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:1,  localValue:51.83},
-    {owner:'0057F000004tzm2QAA',pb:null,                 currency:'TOP',count:16, localValue:124347.83},
-    {owner:'0057F000003GciYQAS',pb:null,                 currency:'NZD',count:3,  localValue:205000.00},
-    {owner:'0057F000004tzpSQAQ',pb:null,                 currency:'VUV',count:1,  localValue:164328.15},
-    {owner:'0057F000004tzjEQAQ',pb:'01s7F00000IZVhOQAX', currency:'WST',count:67, localValue:1019764.80},
-    {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:6,  localValue:95652.55},
-    {owner:'0057F000004u88WQAQ',pb:'01s7F00000BU3IfQAL', currency:'NZD',count:1,  localValue:36889.89},
-    {owner:'0057F000004tzhSQAQ',pb:null,                 currency:'WST',count:7,  localValue:48860.22},
-    {owner:'0057F000004tzzkQAA',pb:null,                 currency:'SBD',count:11, localValue:47583.11},
-    {owner:'0057F000004tzzkQAA',pb:null,                 currency:'NZD',count:1,  localValue:2200.00},
-    {owner:'0057F000004tzhSQAQ',pb:'01s7F00000IZVhOQAX', currency:'WST',count:22, localValue:189866.41},
-    {owner:'0057F000004tzpSQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:2,  localValue:34847.04},
-    {owner:'0057F000004tzm0QAA',pb:null,                 currency:'TOP',count:1,  localValue:10153.93},
-    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhOQAX', currency:'WST',count:3,  localValue:21619.55},
-    {owner:'0057F000005AuKzQAK',pb:null,                 currency:'SBD',count:12, localValue:94857.62},
-    {owner:'005Mp00000BUnxpIAD',pb:null,                 currency:'NZD',count:23, localValue:117000.00},
-    {owner:'005Mp00000BGnuTIAT',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:18, localValue:147122.80},
-    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:9,  localValue:166951.30},
-    {owner:'0057F000008O6vVQAS',pb:null,                 currency:'SBD',count:1,  localValue:10000.00},
-    {owner:'0057F000004tzm0QAA',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:17, localValue:167789.09},
-    {owner:'0057F000006JcvKQAS',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:2,  localValue:32591.22},
-    {owner:'0057F000004tzziQAA',pb:null,                 currency:'SBD',count:7,  localValue:54964.54},
-    {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:2,  localValue:21383.17},
-    {owner:'0057F000004tzziQAA',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:44, localValue:791397.82},
-    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:13, localValue:122002.53},
-    {owner:'0057F000005B9L9QAK',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:2,  localValue:17552.93},
-    {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVhOQAX', currency:'WST',count:5,  localValue:27585.05},
-    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:10, localValue:801719.87},
-    {owner:'0057F000004tzpUQAQ',pb:'01s7F00000IZVh4QAH', currency:'VUV',count:1,  localValue:12506.03},
-    {owner:'0057F000004tzzkQAA',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:62, localValue:691030.36},
-    {owner:'0057F000004tzm1QAA',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:39, localValue:325784.20},
-    {owner:'0057F000008XjrTQAS',pb:'01s7F00000IZVhJQAX', currency:'TOP',count:44, localValue:420858.20},
-    {owner:'0057F000004tzjEQAQ',pb:null,                 currency:'WST',count:15, localValue:131275.54},
-    {owner:'0057F000008XjrTQAS',pb:null,                 currency:'TOP',count:3,  localValue:0},
-    {owner:'0057F000005AuKzQAK',pb:'01s7F00000IZVhTQAX', currency:'SBD',count:132,localValue:1327016.62},
-    {owner:'005Mp00000BUnxpIAD',pb:'01s7F00000IZVgzQAH', currency:'NZD',count:17, localValue:68059.87},
-    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVgzQAH', currency:'NZD',count:7,  localValue:39328.65},
-    {owner:'0057F000008O6vVQAS',pb:'01s7F00000IZVgzQAH', currency:'NZD',count:1,  localValue:9044.50}
-  ],
-
-  closedWonMtdByRep:[
-    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVgzQAH',currency:'NZD',count:1, localValue:1999.00},
-    {owner:'0057F000004tzjEQAQ',pb:'01s7F00000IZVhOQAX',currency:'WST',count:4, localValue:23548.39},
-    {owner:'0057F000004u88WQAQ',pb:'01s7F00000IZVhOQAX',currency:'WST',count:1, localValue:21376.44},
-    {owner:'005Mp00000BGnuTIAT',pb:'01s7F00000IZVh4QAH',currency:'VUV',count:2, localValue:19675.40},
-    {owner:'005Mp00000BGnuTIAT',pb:null,                currency:'VUV',count:1, localValue:507.76},
-    {owner:'0057F000005AuKzQAK',pb:'01s7F00000IZVhTQAX',currency:'SBD',count:2, localValue:1595.74},
-    {owner:'0057F000008XjrTQAS',pb:'01s7F00000IZVhJQAX',currency:'TOP',count:3, localValue:20247.20}
-  ],
-
-  closedWonTrend:[
-    {year:2025,month:10,currency:'SBD',count:4,  localValue:18931.68},
-    {year:2025,month:10,currency:'WST',count:9,  localValue:80215.05},
-    {year:2025,month:10,currency:'TOP',count:3,  localValue:31677.02},
-    {year:2025,month:10,currency:'VUV',count:9,  localValue:37669.07},
-    {year:2025,month:11,currency:'SBD',count:1,  localValue:4432.62},
-    {year:2025,month:11,currency:'WST',count:3,  localValue:13494.62},
-    {year:2025,month:11,currency:'TOP',count:5,  localValue:34753.32},
-    {year:2025,month:11,currency:'VUV',count:6,  localValue:66435.98},
-    {year:2025,month:11,currency:'NZD',count:1,  localValue:175.00},
-    {year:2025,month:12,currency:'VUV',count:4,  localValue:14769.06},
-    {year:2025,month:12,currency:'WST',count:6,  localValue:40133.33},
-    {year:2025,month:12,currency:'TOP',count:1,  localValue:1333.54},
-    {year:2025,month:12,currency:'SBD',count:3,  localValue:25628.40},
-    {year:2026,month:1, currency:'SBD',count:5,  localValue:29184.40},
-    {year:2026,month:1, currency:'TOP',count:5,  localValue:23245.50},
-    {year:2026,month:1, currency:'WST',count:2,  localValue:2445.70},
-    {year:2026,month:1, currency:'VUV',count:2,  localValue:5309.06},
-    {year:2026,month:2, currency:'NZD',count:1,  localValue:5000.00},
-    {year:2026,month:2, currency:'VUV',count:3,  localValue:4140.64},
-    {year:2026,month:2, currency:'TOP',count:5,  localValue:41822.25},
-    {year:2026,month:2, currency:'WST',count:10, localValue:82698.55},
-    {year:2026,month:2, currency:'SBD',count:1,  localValue:15070.92},
-    {year:2026,month:3, currency:'TOP',count:3,  localValue:20247.20},
-    {year:2026,month:3, currency:'WST',count:5,  localValue:44924.83},
-    {year:2026,month:3, currency:'NZD',count:1,  localValue:1999.00},
-    {year:2026,month:3, currency:'VUV',count:3,  localValue:20183.16},
-    {year:2026,month:3, currency:'SBD',count:2,  localValue:1595.74}
-  ],
-
-  winRate:{mar:{total:23,won:14},feb:{total:39,won:20}},
-
-  overdueByTerritory:[
-    {pb:null,                 count:100},
-    {pb:'01s7F00000IZVhTQAX', count:239},
-    {pb:'01s7F00000IZVhJQAX', count:190},
-    {pb:'01s7F00000IZVhOQAX', count:62},
-    {pb:'01s7F00000IZVh4QAH', count:35},
-    {pb:'01s7F00000IZVgzQAH', count:25},
-    {pb:'01s7F00000BU3IfQAL', count:1}
-  ],
-
-  // Lead measures — counts, no FX needed
-  nextStepCompliance:{totalOpen:751, withFutureNextStep:62},
-  agedPipeline:{total:624, inProposal:551}
+const D={
+  asOf:'28 March 2026',
+  wtd:[{pb:'01s7F00000IZVhOQAX',cu:'WST',ct:1,lv:1344.09},{pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:1,lv:0}],
+  mtd:[{pb:'01s7F00000IZVhOQAX',cu:'WST',ct:1,lv:1344.09},{pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:3,lv:12631.76},{pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:2,lv:12091.03}],
+  prior:[{pb:'01s7F00000IZVhOQAX',cu:'WST',ct:6,lv:27043.01},{pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:3,lv:19586.81},{pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:1,lv:3349.77},{pb:'01s7F00000IZVhTQAX',cu:'SBD',ct:1,lv:3014.18},{pb:'01s7F00000IZVgzQAH',cu:'NZD',ct:2,lv:0}],
+  ytd:[{pb:'01s7F00000IZVhOQAX',cu:'WST',ct:18,lv:29883.87},{pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:10,lv:50657.16},{pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:5,lv:18480.86},{pb:'01s7F00000IZVhTQAX',cu:'SBD',ct:13,lv:41595.74},{pb:'01s7F00000IZVgzQAH',cu:'NZD',ct:7,lv:0}],
+  cw:[{ow:'0057F000004u88WQAQ',pb:'01s7F00000IZVgzQAH',cu:'NZD',ct:1,lv:1999},{ow:'0057F000004tzjEQAQ',pb:'01s7F00000IZVhOQAX',cu:'WST',ct:3,lv:23279.57},{ow:'005Mp00000BGnuTIAT',pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:2,lv:19675.40},{ow:'005Mp00000BGnuTIAT',pb:null,cu:'VUV',ct:1,lv:507.76},{ow:'0057F000008XjrTQAS',pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:3,lv:20247.20}],
+  pip:[{pb:'01s7F00000IZVgzQAH',cu:'NZD',ct:25,lv:116433.02},{pb:'01s7F00000IZVhOQAX',cu:'WST',ct:96,lv:1250771.29},{pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:203,lv:1863370.60},{pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:53,lv:526956.30},{pb:'01s7F00000IZVhTQAX',cu:'SBD',ct:254,lv:3706817.21},{pb:null,cu:'NZD',ct:28,lv:384200},{pb:null,cu:'WST',ct:26,lv:220995.97},{pb:null,cu:'TOP',ct:21,lv:134501.75},{pb:null,cu:'VUV',ct:13,lv:293262.55},{pb:null,cu:'SBD',ct:31,lv:207405.27},{pb:'01s7F00000BU3IfQAL',cu:'NZD',ct:1,lv:36889.89}],
+  pipStage:[{pb:'01s7F00000IZVgzQAH',cu:'NZD',st:'Proposal',ct:21,lv:89159.88},{pb:'01s7F00000IZVgzQAH',cu:'NZD',st:'Qualification',ct:1,lv:3000},{pb:'01s7F00000IZVgzQAH',cu:'NZD',st:'Negotiation',ct:3,lv:24273.14},{pb:'01s7F00000IZVhOQAX',cu:'WST',st:'Proposal',ct:97,lv:1246785.27},{pb:'01s7F00000IZVhOQAX',cu:'WST',st:'Negotiation',ct:1,lv:10864.90},{pb:'01s7F00000IZVhJQAX',cu:'TOP',st:'Proposal',ct:191,lv:1734174.30},{pb:'01s7F00000IZVhJQAX',cu:'TOP',st:'Negotiation',ct:13,lv:104971.70},{pb:'01s7F00000IZVh4QAH',cu:'VUV',st:'Proposal',ct:73,lv:662389.68},{pb:'01s7F00000IZVh4QAH',cu:'VUV',st:'Negotiation',ct:3,lv:42241.25},{pb:'01s7F00000IZVhTQAX',cu:'SBD',st:'Proposal',ct:240,lv:3589001.96},{pb:'01s7F00000IZVhTQAX',cu:'SBD',st:'Negotiation',ct:10,lv:78563.48},{pb:'01s7F00000IZVhTQAX',cu:'SBD',st:'Qualification',ct:1,lv:19570.92}],
+  pipRep:[{ow:'005Mp00000BGnuTIAT',pb:null,cu:'VUV',ct:11,lv:127670.33},{ow:'0057F000004tzm2QAA',pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:92,lv:760604.63},{ow:'0057F000004tzpXQAQ',pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:14,lv:152447.26},{ow:'0057F000004u88WQAQ',pb:null,cu:'WST',ct:3,lv:33870.97},{ow:'0057F000004u88WQAQ',pb:null,cu:'NZD',ct:1,lv:60000},{ow:'0057F000004u88WQAQ',pb:null,cu:'TOP',ct:1,lv:0},{ow:'005Mp00000BUnxpIAD',pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:1,lv:51.83},{ow:'0057F000004tzm2QAA',pb:null,cu:'TOP',ct:16,lv:124347.83},{ow:'0057F000003GciYQAS',pb:null,cu:'NZD',ct:3,lv:205000},{ow:'0057F000004tzpSQAQ',pb:null,cu:'VUV',ct:1,lv:164328.15},{ow:'0057F000004tzjEQAQ',pb:'01s7F00000IZVhOQAX',cu:'WST',ct:69,lv:1018955.51},{ow:'0057F000008O6vVQAS',pb:'01s7F00000IZVhTQAX',cu:'SBD',ct:6,lv:95652.55},{ow:'0057F000004u88WQAQ',pb:'01s7F00000BU3IfQAL',cu:'NZD',ct:1,lv:36889.89},{ow:'0057F000004tzhSQAQ',pb:null,cu:'WST',ct:7,lv:48860.22},{ow:'0057F000004tzzkQAA',pb:null,cu:'SBD',ct:11,lv:47583.11},{ow:'0057F000004tzzkQAA',pb:null,cu:'NZD',ct:1,lv:2200},{ow:'0057F000004tzhSQAQ',pb:'01s7F00000IZVhOQAX',cu:'WST',ct:22,lv:189866.41},{ow:'0057F000004tzpSQAQ',pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:2,lv:34847.04},{ow:'0057F000004tzm0QAA',pb:null,cu:'TOP',ct:1,lv:10153.93},{ow:'0057F000004u88WQAQ',pb:'01s7F00000IZVhOQAX',cu:'WST',ct:3,lv:21619.55},{ow:'0057F000005AuKzQAK',pb:null,cu:'SBD',ct:12,lv:94857.62},{ow:'005Mp00000BUnxpIAD',pb:null,cu:'NZD',ct:23,lv:117000},{ow:'005Mp00000BGnuTIAT',pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:41,lv:327487.36},{ow:'0057F000004u88WQAQ',pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:9,lv:166951.30},{ow:'0057F000008O6vVQAS',pb:null,cu:'SBD',ct:1,lv:10000},{ow:'0057F000004tzm0QAA',pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:17,lv:167789.09},{ow:'0057F000006JcvKQAS',pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:2,lv:32591.22},{ow:'0057F000004tzziQAA',pb:null,cu:'SBD',ct:7,lv:54964.54},{ow:'0057F000008O6vVQAS',pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:2,lv:21383.17},{ow:'0057F000004tzziQAA',pb:'01s7F00000IZVhTQAX',cu:'SBD',ct:43,lv:777922.64},{ow:'0057F000004u88WQAQ',pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:13,lv:127147.26},{ow:'0057F000005B9L9QAK',pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:2,lv:17552.93},{ow:'0057F000008O6vVQAS',pb:'01s7F00000IZVhOQAX',cu:'WST',ct:5,lv:27585.05},{ow:'0057F000004u88WQAQ',pb:'01s7F00000IZVhTQAX',cu:'SBD',ct:10,lv:801719.87},{ow:'0057F000004tzpUQAQ',pb:'01s7F00000IZVh4QAH',cu:'VUV',ct:1,lv:12506.03},{ow:'0057F000004tzzkQAA',pb:'01s7F00000IZVhTQAX',cu:'SBD',ct:60,lv:684824.69},{ow:'0057F000004tzm1QAA',pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:39,lv:325784.20},{ow:'0057F000008XjrTQAS',pb:'01s7F00000IZVhJQAX',cu:'TOP',ct:45,lv:396633.61},{ow:'0057F000004tzjEQAQ',pb:null,cu:'WST',ct:16,lv:171329.30},{ow:'0057F000008XjrTQAS',pb:null,cu:'TOP',ct:3,lv:0},{ow:'0057F000005AuKzQAK',pb:'01s7F00000IZVhTQAX',cu:'SBD',ct:132,lv:1327016.62},{ow:'005Mp00000BUnxpIAD',pb:'01s7F00000IZVgzQAH',cu:'NZD',ct:17,lv:68059.87},{ow:'0057F000004u88WQAQ',pb:'01s7F00000IZVgzQAH',cu:'NZD',ct:7,lv:39328.65},{ow:'0057F000008O6vVQAS',pb:'01s7F00000IZVgzQAH',cu:'NZD',ct:1,lv:9044.50}],
+  cwTrend:[{y:2025,m:10,cu:'SBD',ct:4,lv:18931.68},{y:2025,m:10,cu:'WST',ct:9,lv:80215.05},{y:2025,m:10,cu:'TOP',ct:3,lv:31677.02},{y:2025,m:10,cu:'VUV',ct:9,lv:37669.07},{y:2025,m:11,cu:'SBD',ct:1,lv:4432.62},{y:2025,m:11,cu:'WST',ct:3,lv:13494.62},{y:2025,m:11,cu:'TOP',ct:5,lv:34753.32},{y:2025,m:11,cu:'VUV',ct:6,lv:66435.98},{y:2025,m:11,cu:'NZD',ct:1,lv:175},{y:2025,m:12,cu:'VUV',ct:4,lv:14769.06},{y:2025,m:12,cu:'WST',ct:6,lv:40133.33},{y:2025,m:12,cu:'TOP',ct:1,lv:1333.54},{y:2025,m:12,cu:'SBD',ct:3,lv:25628.40},{y:2026,m:1,cu:'SBD',ct:5,lv:29184.40},{y:2026,m:1,cu:'TOP',ct:5,lv:23245.50},{y:2026,m:1,cu:'WST',ct:2,lv:2445.70},{y:2026,m:1,cu:'VUV',ct:2,lv:5309.06},{y:2026,m:2,cu:'NZD',ct:1,lv:5000},{y:2026,m:2,cu:'VUV',ct:3,lv:4140.64},{y:2026,m:2,cu:'TOP',ct:6,lv:60454.55},{y:2026,m:2,cu:'WST',ct:9,lv:74569.89},{y:2026,m:2,cu:'SBD',ct:1,lv:15070.92},{y:2026,m:3,cu:'TOP',ct:3,lv:20247.20},{y:2026,m:3,cu:'WST',ct:3,lv:23279.57},{y:2026,m:3,cu:'NZD',ct:1,lv:1999},{y:2026,m:3,cu:'VUV',ct:3,lv:20183.16}],
+  wr:{mar:{t:12,w:10},feb:{t:36,w:20}},
+  ns:{total:751,ok:62,over:674,none:15},
+  aged:{total:624,of:751},
+  ov:[{pb:null,ct:103},{pb:'01s7F00000IZVhTQAX',ct:241},{pb:'01s7F00000IZVhJQAX',ct:188},{pb:'01s7F00000IZVhOQAX',ct:76},{pb:'01s7F00000IZVh4QAH',ct:65},{pb:'01s7F00000IZVgzQAH',ct:24},{pb:'01s7F00000BU3IfQAL',ct:1}]
 };
 
-// ─── HELPERS ───
-const PB_IDS = Object.keys(DATA.pricebookMap);
-const fmt    = n => 'NZ$'+Math.round(n||0).toLocaleString('en-NZ');
-const fmtRaw = n => Math.round(n||0).toLocaleString('en-NZ');
-const fmtPct = n => (n||0).toFixed(1)+'%';
-const mName  = m => ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1];
-const repName= id => DATA.userMap[id]||id;
-const sumNZD = arr => arr.reduce((s,r) => s+toNZD(r.localValue||0,r.currency),0);
-const sumCt  = arr => arr.reduce((s,r) => s+(r.count||0),0);
+function tH(c,p){if(!p)return'';const x=((c-p)/p)*100;return`<span class="${x>=0?'tu':'td'}">${x>=0?'▲':'▼'} ${Math.abs(x).toFixed(1)}% vs Feb</span>`}
+function ppH(c,p){const x=c-p;return`<span class="${x>=0?'tu':'td'}">${x>=0?'▲':'▼'} ${Math.abs(x).toFixed(1)}pp vs Feb</span>`}
 
-function trendHtml(cur,prior){
-  if(!prior) return '';
-  const p=((cur-prior)/prior)*100,sign=p>=0?'▲':'▼',cls=p>=0?'tu':'td';
-  return `<span class="${cls}">${sign} ${Math.abs(p).toFixed(1)}% vs Feb</span>`;
+// WIG 1
+function renderWIG1(){
+  const cw=sNZD(D.cw),q=totalQ(),pct=q>0?Math.min((cw/q)*100,100):0;
+  const cl=pct>=80?'fill-good':pct>=50?'fill-warn':'fill-bad';
+  document.getElementById('wig1Fill').className=`wig-fill ${cl}`;
+  document.getElementById('wig1Fill').style.width=pct+'%';
+  document.getElementById('wig1Val').textContent=fmt(cw);
+  document.getElementById('wig1Val').style.color=pct>=80?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+  document.getElementById('wig1Target').textContent=fmt(q);
 }
-function ppHtml(cur,prior){
-  const p=cur-prior,sign=p>=0?'▲':'▼',cls=p>=0?'tu':'td';
-  return `<span class="${cls}">${sign} ${Math.abs(p).toFixed(1)}pp vs Feb</span>`;
-}
-
-// Total quota NZD (all reps, March)
-const totalQuotaNZD = DATA.quotaMar.reduce((s,q) => s+toNZD(q.localQuota,q.currency),0);
-
-// ─── STATE ───
-let S = {territory:'all', rep:'all', tab:'territory'};
-
-function populateReps(){
-  const sel=document.getElementById('fRep');
-  const ids=[...new Set(DATA.pipelineByRep.map(r=>r.owner))].sort((a,b)=>repName(a).localeCompare(repName(b)));
-  ids.forEach(id=>{const o=document.createElement('option');o.value=id;o.textContent=repName(id);sel.appendChild(o);});
+// SLOB cells
+function renderSLOB(){
+  const g=document.getElementById('slobGrid');
+  SLOB_DATA.forEach(([lbl,nzd,lines])=>{
+    const big=nzd>30000;
+    g.innerHTML+=`<div class="slob-cell"><div class="slob-cell-lbl">${lbl}</div><div class="slob-cell-val" style="color:${big?'#f87171':'#aaa'}">${fmt(nzd)}</div><div style="font-size:9px;color:#555;margin-top:2px">${lines} machines</div></div>`;
+  });
 }
 
-// ─── COMPUTE ───
-function calc(){
-  const {territory:pb,rep} = S;
-  const f = arr => pb==='all' ? arr : arr.filter(r=>r.pb===pb);
-
-  const wtdNZD  = sumNZD(f(DATA.salesWtd));
-  const mtdNZD  = sumNZD(f(DATA.salesMtd));
-  const priorNZD= sumNZD(f(DATA.salesPrior));
-  const ytdNZD  = sumNZD(f(DATA.salesYtd));
-  const wtdCt   = sumCt(f(DATA.salesWtd));
-  const mtdCt   = sumCt(f(DATA.salesMtd));
-
-  // Quota for selected territory
-  let quotaMtdNZD = null;
-  if(pb !== 'all'){
-    const pbCur = DATA.pbCurrency[pb];
-    const pbQuotas = DATA.quotaMar.filter(q => q.currency === pbCur);
-    if(pbQuotas.length) quotaMtdNZD = pbQuotas.reduce((s,q)=>s+toNZD(q.localQuota,q.currency),0);
-  } else {
-    quotaMtdNZD = totalQuotaNZD;
-  }
-  const mtdPct = quotaMtdNZD ? (mtdNZD/quotaMtdNZD)*100 : null;
-
-  let pipRows = DATA.pipelineByRep;
-  if(pb!=='all') pipRows=pipRows.filter(r=>r.pb===pb);
-  if(rep!=='all') pipRows=pipRows.filter(r=>r.owner===rep);
-  const pipNZD = sumNZD(pipRows), pipCt = sumCt(pipRows);
-
-  // Pipeline coverage = pipeline / quota (need 3x)
-  const coverageRatio = quotaMtdNZD ? pipNZD/quotaMtdNZD : null;
-
-  const overdueCt = sumCt(pb==='all' ? DATA.overdueByTerritory : DATA.overdueByTerritory.filter(r=>r.pb===pb));
-  const marRate = (DATA.winRate.mar.won/DATA.winRate.mar.total)*100;
-  const febRate = (DATA.winRate.feb.won/DATA.winRate.feb.total)*100;
-
-  let cwRows = DATA.closedWonMtdByRep;
-  if(pb!=='all') cwRows=cwRows.filter(r=>r.pb===pb);
-  if(rep!=='all') cwRows=cwRows.filter(r=>r.owner===rep);
-  const cwNZD = sumNZD(cwRows), cwCt = sumCt(cwRows);
-
-  const febCw = DATA.closedWonTrend.filter(r=>r.year===2026&&r.month===2);
-  const febCwNZD = sumNZD(febCw), febCwCt = sumCt(febCw);
-
-  const nsCt = DATA.nextStepCompliance;
-  const nsPct = (nsCt.withFutureNextStep/nsCt.totalOpen)*100;
-  const aged = DATA.agedPipeline;
-
-  return {wtdNZD,mtdNZD,priorNZD,ytdNZD,wtdCt,mtdCt,
-          quotaMtdNZD,mtdPct,coverageRatio,
-          pipNZD,pipCt,overdueCt,marRate,febRate,
-          cwNZD,cwCt,febCwNZD,febCwCt,
-          nsCt,nsPct,aged};
+function renderRow1(){
+  const wtd=sNZD(D.wtd),mtd=sNZD(D.mtd),prior=sNZD(D.prior),ytd=sNZD(D.ytd),wtdCt=sCt(D.wtd);
+  const marR=(D.wr.mar.w/D.wr.mar.t)*100,febR=(D.wr.feb.w/D.wr.feb.t)*100;
+  document.getElementById('row1').innerHTML=`
+  <div class="kpi ar"><div class="kl"><span class="dot" style="background:var(--red)"></span>Sales This Week</div><div class="kv">${fmt(wtd)}</div><div class="ks">9–16 Mar · ${wtdCt} order${wtdCt!==1?'s':''}</div></div>
+  <div class="kpi aa"><div class="kl"><span class="dot" style="background:var(--amber)"></span>MTD Actual vs Budget</div><div class="kv">${fmt(mtd)}</div><div class="ks">Budget: <span style="color:var(--tl)">TBC</span> &nbsp;${tH(mtd,prior)}</div><div class="pb"><div class="pf m" style="width:0%"></div></div></div>
+  <div class="kpi aa"><div class="kl"><span class="dot" style="background:var(--amber)"></span>YTD Actual vs Budget</div><div class="kv">${fmt(ytd)}</div><div class="ks">Budget: <span style="color:var(--tl)">TBC — enter in script</span></div><div class="pb"><div class="pf m" style="width:0%"></div></div></div>
+  <div class="kpi ag"><div class="kl"><span class="dot" style="background:var(--green)"></span>Win Rate — Mar MTD</div><div class="kv">${fmtP(marR)}</div><div class="ks">${D.wr.mar.w}/${D.wr.mar.t} opps &nbsp;${ppH(marR,febR)}</div><div class="pb"><div class="pf g" style="width:${marR}%"></div></div></div>`;
 }
 
-// ─── KPIs ───
-function renderKPIs(t){
-  const covPct = t.coverageRatio ? Math.min(t.coverageRatio/3*100,100) : 0;
-  const covClass = !t.coverageRatio ? 'am' : t.coverageRatio>=3?'ag':t.coverageRatio>=2?'aa':'ar';
-  const covDot   = !t.coverageRatio ? 'dm' : t.coverageRatio>=3?'dg':t.coverageRatio>=2?'da':'dr';
-  const covLabel = !t.coverageRatio ? 'No quota set' : t.coverageRatio>=3?'On track':'Below 3× target';
-  const nsBg = t.nsPct<30 ? 'var(--red)' : 'var(--amber)';
-  return `
-  <div class="sh"><span class="sh-title">Sales Actuals — Orders (New, Activated) · NZD</span><div class="sh-line"></div><a href="orders-ytd-2026.html" style="font-size:11px;font-weight:500;color:var(--t3);text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:4px;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--t3)'">View all orders ↗</a></div>
-  <div class="kg kg4">
-    <div class="kc ar">
-      <div class="kl"><span class="dot dr"></span>Sales This Week</div>
-      <div class="kv">${fmt(t.wtdNZD)}</div>
-      <div class="ks">9–16 Mar · ${t.wtdCt} order${t.wtdCt!==1?'s':''}</div>
-    </div>
-    <div class="kc aa">
-      <div class="kl"><span class="dot da"></span>MTD Actual vs Quota</div>
-      <div class="kv">${fmt(t.mtdNZD)}</div>
-      <div class="ks">Quota: ${t.quotaMtdNZD?fmt(t.quotaMtdNZD):'<span style="color:var(--t3)">TBC</span>'}&nbsp;${trendHtml(t.mtdNZD,t.priorNZD)}</div>
-      <div class="pb"><div class="pbf a" style="width:${Math.min(t.mtdPct||0,100)}%"></div></div>
-    </div>
-    <div class="kc aa">
-      <div class="kl"><span class="dot da"></span>YTD Actual</div>
-      <div class="kv">${fmt(t.ytdNZD)}</div>
-      <div class="ks">Jan–Mar 2026 · ${sumCt(DATA.salesYtd)} orders</div>
-    </div>
-    <div class="kc ${t.mtdPct&&t.mtdPct>=80?'ag':'aa'}">
-      <div class="kl"><span class="dot ${t.mtdPct&&t.mtdPct>=80?'dg':'da'}"></span>MTD % of Quota</div>
-      <div class="kv ${!t.mtdPct?'tbc':''}">${t.mtdPct?fmtPct(t.mtdPct):'Quota TBC'}</div>
-      <div class="ks">Mar 2026 orders vs monthly quota</div>
-    </div>
+function renderRow2(){
+  const pipNZD=sNZD(D.pip),pipCt=sCt(D.pip),q=totalQ();
+  const cov=q>0?pipNZD/q:null;
+  const covC=!cov?'var(--tl)':cov>=3?'var(--green)':cov>=2?'var(--amber)':'var(--red)';
+  const ovCt=D.ov.reduce((s,r)=>s+r.ct,0);
+  const nsP=(D.ns.ok/D.ns.total)*100,agP=(D.aged.total/D.aged.of)*100;
+  document.getElementById('row2').innerHTML=`
+  <div class="kpi ${cov&&cov>=3?'ag':cov&&cov>=2?'aa':'ar'}">
+    <div class="kl"><span class="dot" style="background:${covC}"></span>Pipeline Coverage</div>
+    <div class="kv">${cov?cov.toFixed(1)+'×':'N/A'}</div>
+    <div class="ks">${fmt(pipNZD)} · Quota ${fmt(q)}</div>
+    <div class="cov-wrap"><span class="cov-lbl">0×</span><div class="cov-outer"><div class="cov-fill" style="width:${cov?Math.min((cov/4)*100,100):0}%;background:${covC}"></div><div class="cov-mark" style="left:75%"></div></div><span class="cov-lbl">4×</span></div>
   </div>
-
-  <div class="sh" style="margin-top:20px"><span class="sh-title">4DX Lead Measures · Pipeline Health</span><div class="sh-line"></div></div>
-  <div class="kg kg4">
-    <div class="kc ${covClass}">
-      <div class="kl"><span class="dot ${covDot}"></span>Pipeline Coverage Ratio</div>
-      <div class="kv">${t.coverageRatio?t.coverageRatio.toFixed(1)+'×':'—'}</div>
-      <div class="ks">${covLabel} · Target ≥ 3×</div>
-      <div class="pb"><div class="pbf ${t.coverageRatio>=3?'g':t.coverageRatio>=2?'a':''}" style="width:${covPct}%"></div></div>
-    </div>
-    <div class="kc ${t.nsPct>=50?'aa':'ar'} ${t.nsPct<30?'alert':''}">
-      <div class="kl"><span class="dot ${t.nsPct>=50?'da':'dr'}"></span>Next Step Compliance</div>
-      <div class="kv ${t.nsPct<30?'rv':''}">${fmtPct(t.nsPct)}</div>
-      <div class="ks">${fmtRaw(t.nsCt.withFutureNextStep)} of ${fmtRaw(t.nsCt.totalOpen)} opps have a future next step</div>
-      <div class="pb"><div class="pbf" style="width:${t.nsPct}%;background:${nsBg}"></div></div>
-    </div>
-    <div class="kc ar alert">
-      <div class="kl"><span class="dot dr"></span>Aged Pipeline (&gt;90 days)</div>
-      <div class="kv rv">${fmtRaw(t.aged.total)}</div>
-      <div class="ks">${fmtRaw(t.aged.inProposal)} stuck in Proposal · ${fmtRaw(t.overdueCt)} overdue close date</div>
-    </div>
-    <div class="kc ag">
-      <div class="kl"><span class="dot dg"></span>Win Rate — Mar MTD</div>
-      <div class="kv">${fmtPct(t.marRate)}</div>
-      <div class="ks">${DATA.winRate.mar.won}/${DATA.winRate.mar.total} opps &nbsp;${ppHtml(t.marRate,t.febRate)}</div>
-      <div class="pb"><div class="pbf g" style="width:${t.marRate}%"></div></div>
-    </div>
+  <div class="kpi ar alert clickable" onclick="window.location='sales-opportunities.html?flag=OC'">
+    <div class="kl"><span class="dot" style="background:var(--red)"></span>Overdue Close Dates ↗</div>
+    <div class="kv rv">${fmtR(ovCt)}</div>
+    <div class="ks">${fmtP((ovCt/751)*100)} of pipeline · tap to view</div>
+  </div>
+  <div class="kpi ${nsP>=80?'ag':nsP>=50?'aa':'ar'} alert clickable" onclick="window.location='sales-opportunities.html?flag=ST'">
+    <div class="kl"><span class="dot" style="background:${nsP>=80?'var(--green)':nsP>=50?'var(--amber)':'var(--red)'}"></span>Next Step Compliance ↗</div>
+    <div class="kv rv">${fmtP(nsP)}</div>
+    <div class="ks">${D.ns.ok} current · ${D.ns.over} overdue · ${D.ns.none} unset</div>
+    <div class="pb"><div class="pf ${nsP>=80?'g':nsP>=50?'a':''}" style="width:${nsP}%"></div></div>
+  </div>
+  <div class="kpi ${agP>=70?'ar':'aa'} clickable" onclick="window.location='sales-opportunities.html?flag=AG'">
+    <div class="kl"><span class="dot" style="background:${agP>=70?'var(--red)':'var(--amber)'}"></span>Aged Pipeline &gt;90 Days ↗</div>
+    <div class="kv ${agP>=70?'rv':''}">${fmtR(D.aged.total)}</div>
+    <div class="ks">${fmtP(agP)} of ${fmtR(D.aged.of)} open opps</div>
+    <div class="pb"><div class="pf ${agP>=70?'':agP>=40?'a':'g'}" style="width:${agP}%"></div></div>
   </div>`;
 }
 
-// ─── TAB: TERRITORY ───
-function renderTerritory(){
-  const selPb=S.territory, pbs=selPb==='all'?PB_IDS:[selPb];
-  return `<div class="tgrid">${pbs.map(pb=>{
-    const cur=DATA.pbCurrency[pb]||'NZD';
-    const wtd=sumNZD(DATA.salesWtd.filter(r=>r.pb===pb));
-    const mtd=sumNZD(DATA.salesMtd.filter(r=>r.pb===pb));
-    const ytd=sumNZD(DATA.salesYtd.filter(r=>r.pb===pb));
-    const pip=sumNZD(DATA.pipeline.filter(r=>r.pb===pb));
-    const cw=sumNZD(DATA.closedWonMtdByRep.filter(r=>r.pb===pb));
-    const cwCt=sumCt(DATA.closedWonMtdByRep.filter(r=>r.pb===pb));
-    const mtdCt=sumCt(DATA.salesMtd.filter(r=>r.pb===pb));
-    const q=DATA.quotaMar.filter(r=>r.currency===cur);
-    const qNZD=q.length?q.reduce((s,r)=>s+toNZD(r.localQuota,r.currency),0):null;
-    const qPct=qNZD&&mtd?(mtd/qNZD*100):null;
-    return `<div class="ttile">
-      <div class="tname">${DATA.pricebookMap[pb]}<span class="fxb">${cur}</span></div>
-      <div class="tval">${fmt(mtd)}</div>
-      <div class="tmeta">MTD Sales · ${mtdCt} order${mtdCt!==1?'s':''}</div>
-      <div class="trow"><span class="trl">vs Quota MTD</span><span class="trv">${qNZD?(fmtPct(qPct||0)+' of '+fmt(qNZD)):'TBC'}</span></div>
-      <div class="trow"><span class="trl">This week</span><span class="trv">${fmt(wtd)}</span></div>
-      <div class="trow"><span class="trl">YTD Sales</span><span class="trv">${fmt(ytd)}</span></div>
-      <div class="trow"><span class="trl">Pipeline</span><span class="trv">${fmt(pip)}</span></div>
-      <div class="trow"><span class="trl">CW MTD</span><span class="trv">${cwCt?fmt(cw):'—'}</span></div>
-    </div>`;
-  }).join('')}</div>`;
+function renderTerGrid(){
+  const g=document.getElementById('terGrid');g.innerHTML='';
+  PB_IDS.forEach(pb=>{
+    const cu=PBCU[pb],ter=PBM[pb];
+    const mtd=sNZD(D.mtd.filter(r=>r.pb===pb)),wtd=sNZD(D.wtd.filter(r=>r.pb===pb));
+    const ytd=sNZD(D.ytd.filter(r=>r.pb===pb)),pip=sNZD(D.pip.filter(r=>r.pb===pb));
+    const cwNZD=sNZD(D.cw.filter(r=>r.pb===pb)),cwCt=sCt(D.cw.filter(r=>r.pb===pb));
+    const mtdCt=sCt(D.mtd.filter(r=>r.pb===pb));
+    const slob=[['New Zealand',2847.55],['Samoa',8005.90],['Solomon Islands',125949.40],['Vanuatu',31654.68],['Tonga',7668.86]].find(([t])=>t===ter);
+    const d=document.createElement('div');d.className='ter';
+    d.innerHTML=`<div class="ter-name">${ter} <span class="fxb">${cu}</span></div>
+    <div class="ter-val">${fmt(mtd)}</div>
+    <div class="ter-meta">MTD Sales · ${mtdCt} order${mtdCt!==1?'s':''}</div>
+    <div class="ter-row"><span class="trl">This week</span><span class="trv">${fmt(wtd)}</span></div>
+    <div class="ter-row"><span class="trl">YTD Sales</span><span class="trv">${fmt(ytd)}</span></div>
+    <div class="ter-row"><span class="trl">Pipeline</span><span class="trv">${fmt(pip)}</span></div>
+    <div class="ter-row"><span class="trl">CW MTD</span><span class="trv">${cwCt?fmt(cwNZD):'—'}</span></div>
+    ${slob?`<div class="ter-row" style="border-top-color:rgba(215,6,59,.3)"><span class="trl" style="color:var(--red);font-weight:600">SLOB Equip</span><span class="trv" style="color:var(--red)">${fmt(slob[1])}</span></div>`:''}`;
+    g.appendChild(d);
+  });
 }
 
-// ─── TAB: STAGE ───
-function renderStage(){
-  const selPb=S.territory,pbs=selPb==='all'?PB_IDS:[selPb];
-  const SC={'Proposal':'#3b82f6','Negotiation':'#f97316','Qualification':'#22c55e','Needs Analysis':'#a855f7'};
+let CUR_TAB='territory';
+function setTab(t,btn){
+  CUR_TAB=t;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderTab();
+}
+function renderTab(){
+  const el=document.getElementById('tabContent');
+  if(CUR_TAB==='territory') el.innerHTML=renderTerTab();
+  else if(CUR_TAB==='stage') el.innerHTML=renderStageTab();
+  else if(CUR_TAB==='rep') el.innerHTML=renderRepTab();
+  else el.innerHTML=renderCWTab();
+}
+
+function renderTerTab(){
+  const SC={Proposal:'#3b82f6',Negotiation:'#f97316',Qualification:'#22c55e','Needs Analysis':'#a855f7'};
   const STAGES=['Proposal','Negotiation','Qualification','Needs Analysis'];
-  const rows=pbs.map(pb=>{
-    const sd=DATA.pipelineByStage.filter(r=>r.pb===pb);
-    const tot=sumNZD(sd),totCt=sumCt(sd);
-    const bd=STAGES.map(s=>{const d=sd.filter(r=>r.stage===s);return{stage:s,nzd:sumNZD(d),count:sumCt(d)};});
-    const segs=bd.map(s=>`<div class="sbseg" style="width:${tot>0?(s.nzd/tot*100):0}%;background:${SC[s.stage]}"></div>`).join('');
-    const pills=bd.filter(s=>s.count>0).map(s=>`<span class="spill s${s.stage.replace(/\s/,'')}">${s.stage} ${s.count}</span>`).join('');
-    return `<tr><td><div class="en">${DATA.pricebookMap[pb]}</div><div class="es">${totCt} opps</div></td><td class="r">${fmt(tot)}</td><td><div class="sbar">${segs}</div></td><td>${pills}</td></tr>`;
-  });
-  return `<div class="dt"><table><thead><tr><th>Territory</th><th class="r">Pipeline (NZD)</th><th>Mix</th><th>Stage Breakdown</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+  const rows=PB_IDS.map(pb=>{
+    const sd=D.pipStage.filter(r=>r.pb===pb),tot=sNZD(sd),totCt=sCt(sd);
+    const bk=STAGES.map(s=>{const d=sd.filter(r=>r.st===s);return{s,nzd:sNZD(d),ct:sCt(d)}});
+    const segs=bk.map(s=>`<div class="ss" style="width:${tot>0?(s.nzd/tot)*100:0}%;background:${SC[s.s]}"></div>`).join('');
+    const pills=bk.filter(s=>s.ct>0).map(s=>`<span class="sp sp-${s.s[0]}">${s.s} ${s.ct}</span>`).join('');
+    return`<tr><td><div class="en">${PBM[pb]}</div><div class="es">${totCt} opps</div></td><td class="r">${fmt(tot)}</td><td><div class="shr">${segs}</div></td><td>${pills}</td></tr>`;
+  }).join('');
+  return`<div class="tcard"><table><thead><tr><th>Territory</th><th class="r">Pipeline (NZD)</th><th>Mix</th><th>By Stage</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function renderStageTab(){
+  const STAGES=['Proposal','Negotiation','Qualification','Needs Analysis'];
+  const tot=sNZD(D.pipStage);
+  const bk=STAGES.map(s=>{const d=D.pipStage.filter(r=>r.st===s);return{s,nzd:sNZD(d),ct:sCt(d)}});
+  const rows=bk.map(s=>`<tr><td><span class="sp sp-${s.s[0]}">${s.s}</span></td><td class="r">${fmt(s.nzd)}</td><td class="r">${fmtR(s.ct)}</td><td class="r">${fmtP(tot>0?(s.nzd/tot)*100:0)}</td></tr>`).join('');
+  return`<div class="tcard"><table><thead><tr><th>Stage</th><th class="r">NZD</th><th class="r">Count</th><th class="r">Share</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function renderRepTab(){
+  const rP={};D.pipRep.forEach(r=>{if(!rP[r.ow])rP[r.ow]={nzd:0,ct:0};rP[r.ow].nzd+=toNZD(r.lv||0,r.cu);rP[r.ow].ct+=r.ct});
+  const rC={};D.cw.forEach(r=>{if(!rC[r.ow])rC[r.ow]={nzd:0,ct:0};rC[r.ow].nzd+=toNZD(r.lv||0,r.cu);rC[r.ow].ct+=r.ct});
+  const owners=[...new Set([...Object.keys(rP),...Object.keys(rC)])].sort((a,b)=>(rP[b]?.nzd||0)-(rP[a]?.nzd||0));
+  const rows=owners.map(id=>{
+    const pip=rP[id]||{nzd:0,ct:0},cw=rC[id]||{nzd:0,ct:0};
+    const q=qForOwner(id),att=q&&cw.nzd?(cw.nzd/q)*100:null;
+    const bc=att===null?'':(att>=100?'':att>=60?'amber':'under');
+    return`<tr><td><div class="en">${rN(id)}</div></td><td class="r">${fmt(pip.nzd)}</td><td class="r">${fmtR(pip.ct)}</td><td>${q?`<span class="bq">${fmt(q)}</span>`:'<span style="color:var(--tl);font-size:11px">No quota</span>'}</td><td class="r">${cw.ct?fmt(cw.nzd):'<span style="color:var(--tl)">—</span>'}</td><td><span style="font-family:var(--mono);font-size:12px;color:${att===null?'var(--tl)':att>=100?'var(--green)':att>=60?'var(--amber)':'var(--red)'}">${att!==null?fmtP(att):'—'}</span>${att!==null?`<div class="mb"><div class="mf ${bc}" style="width:${Math.min(att,100)}%"></div></div>`:''}</td></tr>`;
+  }).join('');
+  return`<div class="tcard"><table><thead><tr><th>Rep</th><th class="r">Pipeline</th><th class="r">Opps</th><th>Mar Quota</th><th class="r">CW MTD</th><th>Attainment</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function renderCWTab(){
+  const MO=[{y:2025,m:10},{y:2025,m:11},{y:2025,m:12},{y:2026,m:1},{y:2026,m:2},{y:2026,m:3}];
+  const agg=MO.map(x=>{const r=D.cwTrend.filter(r=>r.y===x.y&&r.m===x.m);return{...x,nzd:sNZD(r),ct:sCt(r)}});
+  const mx=Math.max(...agg.map(r=>r.nzd),1);
+  const bars=agg.map(r=>{const ic=r.y===2026&&r.m===3,p=(r.nzd/mx)*100;
+    return`<div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;min-width:0"><div style="font-family:var(--mono);font-size:10px;color:var(--tm);text-align:center">${fmt(r.nzd)}</div><div style="width:100%;background:var(--border);border-radius:4px;height:80px;display:flex;align-items:flex-end"><div style="width:100%;height:${Math.max(p,2)}%;background:${ic?'var(--red)':'#cbd5e1'};border-radius:4px 4px 0 0"></div></div><div style="font-size:10px;color:var(--tl);text-align:center;line-height:1.3">${mN(r.m)}<br>${r.y}${ic?'<br><b style="color:var(--red);font-size:9px">MTD</b>':''}</div><div style="font-family:var(--mono);font-size:10px;color:var(--tm)">${r.ct} won</div></div>`;}).join('');
+  const trows=[...agg].reverse().map(r=>{const ic=r.y===2026&&r.m===3;return`<tr><td style="font-weight:${ic?600:400}">${mN(r.m)} ${r.y}${ic?' <span style="font-size:10px;color:var(--red)">(MTD)</span>':''}</td><td class="r">${fmt(r.nzd)}</td><td class="r">${r.ct}</td></tr>`;}).join('');
+  return`<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px;box-shadow:var(--shadow)"><div style="display:flex;gap:10px;align-items:flex-end;height:140px">${bars}</div></div><div class="tcard"><table><thead><tr><th>Month</th><th class="r">Closed Won (NZD)</th><th class="r">Won</th></tr></thead><tbody>${trows}</tbody></table></div>`;
 }
 
-// ─── TAB: BY REP (with quota) ───
-function renderRep(){
-  const {territory:selPb,rep:selRep}=S;
-  let pipRows=DATA.pipelineByRep;
-  if(selPb!=='all') pipRows=pipRows.filter(r=>r.pb===selPb);
-  if(selRep!=='all') pipRows=pipRows.filter(r=>r.owner===selRep);
-  const rPip={};
-  pipRows.forEach(r=>{if(!rPip[r.owner])rPip[r.owner]={nzd:0,count:0};rPip[r.owner].nzd+=toNZD(r.localValue||0,r.currency);rPip[r.owner].count+=r.count;});
-
-  let cwRows=DATA.closedWonMtdByRep;
-  if(selPb!=='all') cwRows=cwRows.filter(r=>r.pb===selPb);
-  if(selRep!=='all') cwRows=cwRows.filter(r=>r.owner===selRep);
-  const rCw={};
-  cwRows.forEach(r=>{if(!rCw[r.owner])rCw[r.owner]={nzd:0,count:0};rCw[r.owner].nzd+=toNZD(r.localValue||0,r.currency);rCw[r.owner].count+=r.count;});
-
-  // Build quota map
-  const qMap={};
-  DATA.quotaMar.forEach(q=>{qMap[q.owner]={nzd:toNZD(q.localQuota,q.currency),currency:q.currency,local:q.localQuota};});
-
-  const allOwners=[...new Set([...Object.keys(rPip),...Object.keys(rCw)])].sort((a,b)=>(rPip[b]?.nzd||0)-(rPip[a]?.nzd||0));
-  if(!allOwners.length) return '<div class="empty">No data for selected filters.</div>';
-
-  const rows=allOwners.map(id=>{
-    const pip=rPip[id]||{nzd:0,count:0};
-    const cw=rCw[id]||{nzd:0,count:0};
-    const q=qMap[id];
-    const attain=q&&cw.nzd?(cw.nzd/q.nzd*100):null;
-    const badge=!q?`<span class="quota-badge qb-none">No quota</span>`:
-      attain>=100?`<span class="quota-badge qb-over">${fmtPct(attain)}</span>`:
-      attain>=50 ?`<span class="quota-badge qb-warn">${fmtPct(attain)}</span>`:
-                  `<span class="quota-badge qb-under">${fmtPct(attain||0)}</span>`;
-    const bar=q?`<div class="attain-bar"><div class="attain-fill" style="width:${Math.min(attain||0,100)}%;background:${attain>=100?'var(--green)':attain>=50?'var(--amber)':'var(--red)'}"></div></div>`:'';
-    return `<tr>
-      <td><div class="en">${repName(id)}</div></td>
-      <td class="r">${fmt(pip.nzd)}</td>
-      <td class="r">${fmtRaw(pip.count)}</td>
-      <td class="r">${cw.count?fmt(cw.nzd):'<span style="color:var(--t3)">—</span>'}</td>
-      <td class="r">${q?fmt(q.nzd):'<span style="color:var(--t3)">—</span>'}</td>
-      <td><div>${badge}</div>${bar}</td>
-    </tr>`;
-  });
-  return `<div class="dt"><table><thead><tr><th>Sales Rep</th><th class="r">Pipeline (NZD)</th><th class="r">Opps</th><th class="r">CW MTD (NZD)</th><th class="r">Mar Quota (NZD)</th><th>Attainment</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
-}
-
-// ─── TAB: CLOSED WON TREND ───
-function renderCW(){
-  const MONTHS=[{y:2025,m:10},{y:2025,m:11},{y:2025,m:12},{y:2026,m:1},{y:2026,m:2},{y:2026,m:3}];
-  const agg=MONTHS.map(mo=>{const r=DATA.closedWonTrend.filter(x=>x.year===mo.y&&x.month===mo.m);return{...mo,nzd:sumNZD(r),count:sumCt(r)};});
-  const maxNZD=Math.max(...agg.map(r=>r.nzd),1);
-  const bars=agg.map(r=>{const isCur=r.y===2026&&r.m===3;const pct=(r.nzd/maxNZD)*100;
-    return `<div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;min-width:0">
-      <div style="font-family:var(--mono);font-size:10px;color:var(--t2);text-align:center;white-space:nowrap">${fmt(r.nzd)}</div>
-      <div style="width:100%;background:var(--border);border-radius:4px;height:80px;display:flex;align-items:flex-end;overflow:hidden">
-        <div style="width:100%;height:${Math.max(pct,2)}%;background:${isCur?'var(--red)':'#cbd5e1'};border-radius:4px 4px 0 0"></div>
-      </div>
-      <div style="font-size:10px;color:var(--t3);text-align:center;line-height:1.3">${mName(r.m)}<br>${r.y}${isCur?'<br><b style="color:var(--red);font-size:9px">MTD</b>':''}</div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--t2)">${r.count} won</div>
-    </div>`;}).join('');
-  const trows=[...agg].reverse().map(r=>{const isCur=r.y===2026&&r.m===3;
-    return `<tr><td style="font-weight:${isCur?600:400}">${mName(r.m)} ${r.y}${isCur?' <span style="font-size:10px;color:var(--red)">(MTD)</span>':''}</td><td class="r">${fmt(r.nzd)}</td><td class="r">${r.count}</td></tr>`;}).join('');
-  return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px"><div style="display:flex;gap:10px;align-items:flex-end;height:140px">${bars}</div></div>
-  <div class="dt"><table><thead><tr><th>Month</th><th class="r">Closed Won (NZD)</th><th class="r">Won Count</th></tr></thead><tbody>${trows}</tbody></table></div>`;
-}
-
-// ─── TAB: DATA DICTIONARY ───
-function renderDict(){
-  const items=[
-    {
-      name:'Sales This Week',tag:'lag',
-      calc:'SUM(TotalAmount) from Orders where Type=New, Status=Activated, EffectiveDate in current ISO week. Converted to NZD using Salesforce FX rates.',
-      why:'Tracks revenue booked in the current week. In MPS, an Order is raised when a contract is signed or a device is shipped — this is the most timely revenue signal available.',
-      soql:`SELECT SUM(TotalAmount), COUNT(Id), CurrencyIsoCode
-FROM Order
-WHERE Type = 'New'
-  AND Status = 'Activated'
-  AND EffectiveDate >= 2026-03-09
-  AND EffectiveDate <= 2026-03-16
-GROUP BY CurrencyIsoCode`
-    },
-    {
-      name:'MTD Actual vs Quota',tag:'lag',
-      calc:'SUM(TotalAmount) from Orders (Type=New, Activated) with EffectiveDate in current month, converted to NZD. Compared against SUM of ForecastingQuota.QuotaAmount for matching reps in the current StartDate period, also converted to NZD.',
-      why:'The primary accountability metric. Quota is set per rep in local currency in Salesforce Forecasting — this converts all territories to a common NZD basis for comparison.',
-      soql:`-- Actuals
-SELECT SUM(TotalAmount), CurrencyIsoCode
-FROM Order
-WHERE Type = 'New' AND Status = 'Activated'
-  AND EffectiveDate >= 2026-03-01
-  AND EffectiveDate <= 2026-03-16
-GROUP BY CurrencyIsoCode
-
--- Quota
-SELECT QuotaOwner.Name, QuotaAmount, CurrencyIsoCode
-FROM ForecastingQuota
-WHERE StartDate = 2026-03-01`
-    },
-    {
-      name:'YTD Actual',tag:'lag',
-      calc:'SUM(TotalAmount) from Orders (Type=New, Activated) where CALENDAR_YEAR(EffectiveDate) = 2026, converted to NZD.',
-      why:'Cumulative revenue against the full-year target. Useful for pacing: if YTD is behind the pro-rata quota run rate by March, the full year is at risk.',
-      soql:`SELECT SUM(TotalAmount), CurrencyIsoCode
-FROM Order
-WHERE Type = 'New'
-  AND Status = 'Activated'
-  AND CALENDAR_YEAR(EffectiveDate) = 2026
-GROUP BY CurrencyIsoCode`
-    },
-    {
-      name:'Pipeline Coverage Ratio',tag:'lead',
-      calc:'Total open pipeline value (NZD) ÷ total monthly quota (NZD). Formula: SUM(open Opportunity.Amount converted to NZD) / SUM(ForecastingQuota.QuotaAmount converted to NZD for current month).',
-      why:'The single most predictive lead measure in MPS sales. A healthy pipeline should be 3–4× the monthly quota to account for the typical win rate of 25–33%. A ratio below 3× means the team cannot hit quota even with perfect execution — this is the signal to drive new pipeline generation.',
-      soql:`-- Pipeline (open opps, excluding orphaned 'Closed' stage records)
-SELECT SUM(Amount), COUNT(Id), CurrencyIsoCode, Pricebook2Id
-FROM Opportunity
-WHERE IsClosed = false
-  AND StageName != 'Closed'
-GROUP BY CurrencyIsoCode, Pricebook2Id
-
--- Then divide SUM(converted to NZD) by SUM(ForecastingQuota for current month, converted to NZD)`
-    },
-    {
-      name:'Next Step Compliance',tag:'lead',
-      calc:'COUNT of open Opportunities (IsClosed=false, StageName!="Closed") where Next_Step_Date__c >= today divided by total open opp count. Expressed as a percentage.',
-      why:'The highest-leverage activity lead measure available in Salesforce without requiring additional logging. A rep who has scheduled a next step on every open opp is managing their pipeline. An opp with no future next step is effectively stalled. At 8.3% compliance (62 of 751 opps), this signals a systemic pipeline hygiene problem and is a strong proxy for forecast accuracy.',
-      soql:`-- Total open
-SELECT COUNT(Id)
-FROM Opportunity
-WHERE IsClosed = false AND StageName != 'Closed'
-
--- With future next step date
-SELECT COUNT(Id)
-FROM Opportunity
-WHERE IsClosed = false
-  AND StageName != 'Closed'
-  AND Next_Step_Date__c >= TODAY`
-    },
-    {
-      name:'Aged Pipeline (>90 days)',tag:'hygiene',
-      calc:'COUNT of open Opportunities (IsClosed=false, StageName!="Closed") where CreatedDate < 90 days ago (i.e., < 2025-12-16 as of 16 Mar 2026). Sub-count for those specifically in Proposal stage.',
-      why:'624 of 751 open opps (83%) were created more than 90 days ago. In MPS sales cycles, a proposal that has not converted in 90 days is almost certainly dead weight — it inflates pipeline, distorts the coverage ratio, and masks real opportunities. The 551 aged proposals in particular should be reviewed and either progressed or closed lost.',
-      soql:`SELECT COUNT(Id), StageName
-FROM Opportunity
-WHERE IsClosed = false
-  AND StageName != 'Closed'
-  AND CreatedDate < 2025-12-16T00:00:00Z
-GROUP BY StageName`
-    },
-    {
-      name:'Win Rate',tag:'lag',
-      calc:'COUNT(Opportunities where IsWon=true AND CloseDate in month) / COUNT(Opportunities where IsClosed=true AND CloseDate in month). Calculated separately for March MTD and February.',
-      why:'Win rate is a lag measure but a critical pipeline planning input. At 83% in March (10/12), the team is converting well — but the sample is very small. February at 56% (20/36) is more statistically meaningful. Win rate directly drives the pipeline coverage target: if win rate is 33%, you need 3× coverage; if it falls to 25%, you need 4×.',
-      soql:`-- Won this month
-SELECT COUNT(Id)
-FROM Opportunity
-WHERE IsWon = true
-  AND CloseDate >= 2026-03-01
-  AND CloseDate <= 2026-03-16
-
--- Total closed this month (won + lost)
-SELECT COUNT(Id)
-FROM Opportunity
-WHERE IsClosed = true
-  AND CloseDate >= 2026-03-01
-  AND CloseDate <= 2026-03-16`
-    },
-    {
-      name:'Overdue Close Dates',tag:'hygiene',
-      calc:'COUNT of open Opportunities (IsClosed=false, StageName!="Closed") where CloseDate < today (2026-03-16).',
-      why:'An overdue close date means the rep has not updated their forecast. This is a data quality issue that makes the pipeline unreliable. In combination with the aged pipeline metric, it identifies the records most likely to need immediate review or closure.',
-      soql:`SELECT COUNT(Id), Pricebook2Id
-FROM Opportunity
-WHERE IsClosed = false
-  AND StageName != 'Closed'
-  AND CloseDate < 2026-03-16
-GROUP BY Pricebook2Id`
-    },
-    {
-      name:'Closed Won MTD (Opportunity-based)',tag:'lag',
-      calc:'SUM(Amount) and COUNT from Opportunities where IsWon=true AND CloseDate in current month, converted to NZD using Salesforce FX rates. This differs from Order-based Sales Actuals — Opportunities may be won before an Order is raised.',
-      why:'Provides a rep-level view of what has been won this month, including deals not yet converted to Orders. Used for quota attainment tracking per rep in the By Rep tab.',
-      soql:`SELECT OwnerId, Pricebook2Id, CurrencyIsoCode,
-       COUNT(Id), SUM(Amount)
-FROM Opportunity
-WHERE IsWon = true
-  AND CloseDate >= 2026-03-01
-  AND CloseDate <= 2026-03-16
-GROUP BY OwnerId, Pricebook2Id, CurrencyIsoCode`
-    },
-    {
-      name:'Territory / Pricebook mapping',tag:'hygiene',
-      calc:'Territory is determined by Pricebook2Id on the Opportunity or Order record. The five territory pricebooks are: NZ (01s7F00000IZVgzQAH), Samoa (01s7F00000IZVhOQAX), Solomon Islands (01s7F00000IZVhTQAX), Tonga (01s7F00000IZVhJQAX), Vanuatu (01s7F00000IZVh4QAH). Records without a pricebook or on the Standard Price Book are shown as Unassigned.',
-      why:'Pricebook2Id is the most reliable territory signal in this org — more consistently populated than Sharepoint__c. Each pricebook maps to a territory currency, which also drives FX conversion. 118+ open opps lack a pricebook assignment and are therefore excluded from territory-specific views.',
-      soql:`SELECT Id, Name, IsActive
-FROM Pricebook2
-WHERE IsActive = true`
-    },
-    {
-      name:'FX Conversion',tag:'hygiene',
-      calc:'All local amounts are divided by the Salesforce CurrencyType.ConversionRate to produce NZD. Rates as of dashboard date: 1 NZD = 1.86 WST · 5.64 SBD · 1.61 TOP · 79.11 VUV. NZD values are not converted. ConvertedAmount is not available in aggregate SOQL queries.',
-      why:'RSP operates in five currencies. Without conversion, pipeline and sales figures are meaningless as a cross-territory total. Salesforce stores conversion rates in the CurrencyType object — these are the rates actively maintained in your org.',
-      soql:`SELECT IsoCode, ConversionRate, IsCorporate
-FROM CurrencyType
-WHERE IsActive = true`
-    }
-  ];
-
-  const rows=items.map(item=>`
-  <div class="dict-row">
-    <div>
-      <div class="dict-kpi-name">${item.name}</div>
-      <span class="dict-kpi-tag tag-${item.tag}">${item.tag==='lead'?'Lead Measure':item.tag==='lag'?'Lag Measure':'Data Quality'}</span>
-    </div>
-    <div class="dict-content">
-      <div>
-        <div class="dict-section-label">Why it matters</div>
-        <div class="dict-text">${item.why}</div>
-      </div>
-      <div>
-        <div class="dict-section-label">How it's calculated</div>
-        <div class="dict-formula">${item.calc}</div>
-      </div>
-      <div>
-        <div class="dict-section-label">Salesforce SOQL</div>
-        <pre class="dict-soql">${item.soql}</pre>
-      </div>
-    </div>
-  </div>`).join('');
-
-  return `<div class="dict-panel">
-    <div class="dict-header">
-      <div>
-        <div class="dict-header-title">KPI Data Dictionary</div>
-        <div class="dict-header-sub">How every metric on this dashboard is calculated — reconcile against Salesforce</div>
-      </div>
-    </div>
-    ${rows}
-  </div>`;
-}
-
-// ─── RENDER ───
-function render(){
-  const t=calc();
-  const tab=S.tab;
-  let tabContent='';
-  if(tab==='territory') tabContent=renderTerritory();
-  else if(tab==='stage') tabContent=renderStage();
-  else if(tab==='rep') tabContent=renderRep();
-  else if(tab==='cw') tabContent=renderCW();
-  else if(tab==='dict') tabContent=renderDict();
-
-  document.getElementById('app').innerHTML=`
-    ${renderKPIs(t)}
-    <div style="margin-top:28px">
-      <div class="sh"><span class="sh-title">Breakdown</span><div class="sh-line"></div></div>
-      <div class="tnav">
-        <button class="tbtn ${tab==='territory'?'active':''}" onclick="setTab('territory')">By Territory</button>
-        <button class="tbtn ${tab==='stage'?'active':''}" onclick="setTab('stage')">Pipeline by Stage</button>
-        <button class="tbtn ${tab==='rep'?'active':''}" onclick="setTab('rep')">By Sales Rep</button>
-        <button class="tbtn ${tab==='cw'?'active':''}" onclick="setTab('cw')">Closed Won Trend</button>
-        <button class="tbtn ${tab==='dict'?'active':''}" onclick="setTab('dict')">Data Dictionary</button>
-      </div>
-      ${tabContent}
-    </div>`;
-}
-
-function setTab(t){S.tab=t;render();}
-
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('fxNote').textContent=`All values NZD · FX: 1 NZD = 1.86 WST · 5.64 SBD · 1.61 TOP · 79.11 VUV · As of ${DATA.asOf}`;
-  populateReps();
-  document.getElementById('fTerritory').addEventListener('change',e=>{S.territory=e.target.value;S.rep='all';document.getElementById('fRep').value='all';render();});
-  document.getElementById('fRep').addEventListener('change',e=>{S.rep=e.target.value;render();});
-  render();
-});
+renderWIG1();renderSLOB();renderRow1();renderRow2();renderTerGrid();renderTab();
+document.getElementById('asOf').textContent='As at '+D.asOf;
+document.getElementById('foot').textContent=`Salesforce (MCP) · Unleashed (SyncHub) · As at ${D.asOf} · NZD · FX: WST 1.86 · SBD 5.64 · TOP 1.61 · VUV 79.11`;
 </script>
 </body>
 </html>
