@@ -37,7 +37,7 @@
   body { font-family: 'DM Sans', sans-serif; background: var(--body-bg); color: var(--text); font-size: 14px; line-height: 1.5; }
 
   /* ── HEADER ── */
-  header { background: var(--charcoal); color: white; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  header { background: var(--charcoal); border-bottom: 3px solid #D7063B; border-bottom: 3px solid #D7063B; color: white; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
   .header-left { display: flex; align-items: center; gap: 16px; }
   .header-brand { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: white; }
   .header-brand span { color: var(--red); }
@@ -202,15 +202,21 @@
 
 <header>
   <div class="header-left">
-    <div class="header-brand">Ricoh South Pacific</div>
-    <div class="header-divider"></div>
-    <div class="header-subtitle">Finance Dashboard</div>
+    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
+    <div class="hd" style="width:1px;height:22px;background:#444;"></div>
+    <span style="font-size:13px;color:#aaa;letter-spacing:.03em;">Finance Dashboard</span>
   </div>
   <div class="header-right">
-    <span class="as-at-badge" id="asAtBadge"></span>
+    <span style="font-family:'DM Mono',monospace;font-size:11px;color:#666;" id="asAtBadge"></span>
     <a href="index.html" class="back-link">← Scorecards</a>
   </div>
 </header>
+<nav style="background:#1a1a1a;border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px;overflow-x:auto;">
+  <a href="finance-dashboard.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:white;border-bottom:2px solid #D7063B;text-decoration:none;display:inline-block;margin-bottom:-1px;white-space:nowrap;">Finance Dashboard</a>
+  <a href="finance-close.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Month-End Close</a>
+  <a href="finance-drilldown.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">AR Drilldown</a>
+  <a href="finance-data-dictionary.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Data Dictionary</a>
+</nav>
 
 <main>
   <div class="wig-banner" id="wigBanner"></div>

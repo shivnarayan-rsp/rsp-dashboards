@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSP Inventory — Month-End Close (Ranika)</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --red:#D7063B;--charcoal:#1a1a1a;--dark:#2a2a2a;--mid:#444;--muted:#888;
+      --border:#e5e5e5;--bg:#f7f7f6;--surface:#fff;--surface2:#f2f2f1;
+      --green:#1a6e2e;--green-bg:#e6f4ea;--green-border:#b7dfbe;
+      --amber:#8a5200;--amber-bg:#fef3dc;--amber-border:#f5d87e;
+      --danger:#c0392b;--danger-bg:#fdecea;--danger-border:#f5bcb7;
+    }
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+    /* HEADER */
+    header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .header-left{display:flex;align-items:center;gap:16px;}
+    .header-brand{font-size:18px;font-weight:700;color:white;}
+    .header-brand span{color:var(--red);}
+    .hd{width:1px;height:22px;background:#444;}
+    .header-title{font-size:13px;color:#aaa;letter-spacing:.03em;}
+    .header-right{display:flex;align-items:center;gap:16px;}
+    .period-chip{font-family:'DM Mono',monospace;font-size:11px;color:#aaa;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:4px 10px;border-radius:4px;}
+    .header-meta{font-family:'DM Mono',monospace;font-size:11px;color:#666;}
+    .back-link{font-size:11px;color:#666;text-decoration:none;transition:color .15s;}
+    .back-link:hover{color:#aaa;}
+
+    /* PILL NAV — matches inventory-dashboard.html */
+    .pill-nav{background:var(--charcoal);border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px;}
+    .pill-btn{padding:8px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;}
+    .pill-btn:hover{color:rgba(255,255,255,.85);}
+    .pill-btn.active{color:white;border-bottom-color:var(--red);}
+
+    main{max-width:1400px;margin:0 auto;padding:28px 24px 64px;}
+
+    /* SECTION LABEL */
+    .section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+    .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+    /* CALLOUT */
+    .callout{padding:14px 18px;border-radius:6px;margin-bottom:24px;border-left:4px solid;background:var(--green-bg);border-color:var(--green);}
+    .callout p{font-size:13px;color:var(--mid);line-height:1.6;}
+    .callout strong{color:var(--charcoal);}
+
+    /* PROGRESS BANNER */
+    .progress-banner{background:var(--charcoal);border-radius:6px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .pb-left strong{font-size:15px;font-weight:600;color:white;display:block;margin-bottom:2px;}
+    .pb-left span{font-size:12px;color:rgba(255,255,255,.5);}
+    .pb-right{text-align:right;}
+    .pb-deadline-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.4);}
+    .pb-deadline-val{font-family:'DM Mono',monospace;font-size:17px;color:#fbbf24;font-weight:500;}
+
+    /* STOCK REVIEW GRID */
+    .stock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+    .stock-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+    .sc-header{padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .sc-entity{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+    .sc-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;}
+    .sp-done{background:var(--green-bg);color:var(--green);}
+    .sp-flagged{background:var(--danger-bg);color:var(--danger);}
+    .sp-pending{background:var(--surface2);color:var(--muted);}
+    .sc-body{padding:14px 16px;}
+    .sc-hint{font-size:11.5px;color:var(--mid);line-height:1.5;margin-bottom:12px;}
+    .sc-select{width:100%;font-family:'DM Sans',sans-serif;font-size:13px;border:1px solid var(--border);border-radius:4px;padding:8px 10px;margin-bottom:10px;background:var(--bg);cursor:pointer;}
+    .sc-select:focus{outline:none;border-color:var(--green);}
+    .sc-notes{width:100%;font-family:'DM Sans',sans-serif;font-size:12px;border:1px solid var(--border);border-radius:4px;padding:8px 10px;resize:none;min-height:66px;color:var(--mid);}
+    .sc-notes:focus{outline:none;border-color:var(--green);}
+
+    /* SAVE ROW */
+    .save-row{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:32px;}
+    .submit-btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;background:var(--green);color:white;border:none;border-radius:5px;padding:10px 28px;cursor:pointer;transition:background .15s;}
+    .submit-btn:hover{background:#155724;}
+    .submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+    .save-status{font-size:12px;color:var(--green);font-weight:600;}
+
+    /* KPI GRID */
+    .kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:8px;}
+    .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;}
+    .kpi-entity{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px;}
+    .kpi-value{font-family:'DM Mono',monospace;font-size:20px;font-weight:400;color:var(--charcoal);margin-bottom:3px;}
+    .kpi-sub{font-size:11px;color:var(--muted);margin-bottom:10px;}
+    .kpi-row{display:flex;justify-content:space-between;margin-bottom:4px;}
+    .kpi-row-label{font-size:11px;color:var(--mid);}
+    .kpi-row-val{font-family:'DM Mono',monospace;font-size:11.5px;font-weight:500;}
+    .v-warn{color:var(--amber);}
+    .v-danger{color:var(--danger);}
+    .v-ok{color:var(--green);}
+
+    /* ALERT STRIP */
+    .alert-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+    .alert-badge{display:flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:600;}
+    .ab-warn{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(138,82,0,.2);}
+    .ab-alert{background:var(--danger-bg);color:var(--danger);border:1px solid rgba(192,57,43,.2);}
+    .ab-ok{background:var(--green-bg);color:var(--green);border:1px solid rgba(26,110,46,.2);}
+
+    .fx-notice{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:6px;padding:10px 16px;font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+    .dash-footer{text-align:center;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;padding-top:12px;border-top:1px solid var(--border);}
+
+    .spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    @media(max-width:1000px){.stock-grid{grid-template-columns:1fr 1fr;}.kpi-grid{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:600px){.stock-grid{grid-template-columns:1fr;}main{padding:16px;}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
+    <div class="hd"></div>
+    <span class="header-title">Inventory Dashboard</span>
+  </div>
+  <div class="header-right">
+    <span class="period-chip" id="periodChip">Loading…</span>
+    <span class="header-meta" id="asOfMeta">As at 25 Mar 2026</span>
+    <a href="index.html" class="back-link">← Scorecards</a>
+  </div>
+</header>
+
+<!-- PILL NAV — matches inventory-dashboard.html exactly -->
+<nav class="pill-nav">
+  <a href="inventory-dashboard.html"   class="pill-btn">Summary</a>
+  <a href="inventory-worklist.html"    class="pill-btn">Work List</a>
+  <a href="inventory-drilldown.html"   class="pill-btn">Drill-Down</a>
+  <a href="ranika-dashboard.html"      class="pill-btn active">Month-End Close</a>
+  <a href="inventory-dictionary.html"  class="pill-btn">Data Dictionary</a>
+</nav>
+
+<main>
+  <div class="progress-banner">
+    <div class="pb-left">
+      <strong>Hi Ranika — month-end close task</strong>
+      <span>Review stock movements for each entity and submit your confirmation to Minoo. He can't close COGS until this is done.</span>
+    </div>
+    <div class="pb-right">
+      <div class="pb-deadline-label">Close deadline</div>
+      <div class="pb-deadline-val" id="deadlineVal">5th of month</div>
+    </div>
+  </div>
+
+  <div class="section-label">Task 3 of 18 — Stock Movement Review</div>
+  <div class="stock-grid" id="stockGrid"></div>
+  <div class="save-row">
+    <span class="save-status" id="saveStatus"></span>
+    <button class="submit-btn" id="submitBtn" onclick="saveStockReview()">Submit to Minoo</button>
+  </div>
+
+  <div class="fx-notice">
+    <strong>Currency conversion applied post-query.</strong> All inventory values converted to NZD for comparison. FX: VUV×0.0141 · SBD×0.2119 · WST×0.6181 · TOP×0.7191 · NZD×1.0 (XE mid-market 25 Mar 2026).
+  </div>
+
+  <div class="section-label">Inventory Health — Live from Unleashed</div>
+  <div id="alertStrip" class="alert-strip"></div>
+  <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div class="dash-footer" id="dashFooter"></div>
+</main>
+
+<script>
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const ENTITIES = ['RSP','Alpine','Samoa','Solomons','Tonga','Vanuatu'];
+
+// Inventory data — from inventory-dashboard.html
+const INV = {
+  RSP:      {valueNZD:385491.63, lines:296, slowMoving:37,  negative:3,  slobPct:15.5},
+  Alpine:   {valueNZD:10027,     lines:84,  slowMoving:6,   negative:0,  slobPct:8.1 },
+  Samoa:    {valueNZD:186472.25, lines:247, slowMoving:22,  negative:2,  slobPct:59.7},
+  Solomons: {valueNZD:534479.33, lines:246, slowMoving:14,  negative:5,  slobPct:43.3},
+  Tonga:    {valueNZD:242229.17, lines:185, slowMoving:5,   negative:1,  slobPct:57.2},
+  Vanuatu:  {valueNZD:416179.23, lines:289, slowMoving:8,   negative:8,  slobPct:57.9},
+};
+
+const HINTS = {
+  RSP:      'Check Unleashed stock movements. Flag negative stock, unexplained adjustments, and slow-moving items not yet provisioned.',
+  Alpine:   'Review Alpine stock movements. Flag unusual print consumables or equipment movement.',
+  Samoa:    'Review Samoa Unleashed. Copier parts and toner — highest slow-moving risk. SLOB at 59.7% — flag anything that has moved.',
+  Solomons: 'Highest inventory value ($534k). Review all movements carefully. SLOB at 43.3% and 5 negative stock lines — priority entity.',
+  Tonga:    'Review Tonga Unleashed stock movements. SLOB at 57.2% — flag any slow-moving items and negative stock.',
+  Vanuatu:  'Largest negative stock count (8 lines). SLOB at 57.9%. Review movements carefully and flag all variances to Minoo.',
+};
+
+let period = null;
+let statusMap = {};
+
+async function sb(path, opts={}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...opts.headers},
+    ...opts,
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.status===204 ? null : res.json();
+}
+
+async function init() {
+  try {
+    const [periods] = await Promise.all([
+      sb('month_close_periods?status=eq.open&order=month_label.desc&limit=1'),
+    ]);
+    period = periods[0];
+    document.getElementById('periodChip').textContent = period ? period.display_label+' Close' : 'No open period';
+    if (period) {
+      const myStatuses = await sb(`month_close_status?period_id=eq.${period.id}&task_number=eq.3`);
+      myStatuses.forEach(r => { statusMap[r.entity] = r; });
+    }
+  } catch(err) { console.error('Supabase init failed:', err.message); }
+  renderStockGrid();
+  renderInventoryHealth();
+}
+
+function renderStockGrid() {
+  document.getElementById('stockGrid').innerHTML = ENTITIES.map(entity => {
+    const st = statusMap[entity] || {status:'not_started',notes:''};
+    const pillClass = st.status==='done'?'sp-done':st.status==='flagged'?'sp-flagged':'sp-pending';
+    const pillLabel = st.status==='done'?'Reviewed ✓':st.status==='flagged'?'Variances flagged':'Pending';
+    return `<div class="stock-card">
+      <div class="sc-header">
+        <span class="sc-entity">${entity}</span>
+        <span class="sc-pill ${pillClass}">${pillLabel}</span>
+      </div>
+      <div class="sc-body">
+        <div class="sc-hint">${HINTS[entity]}</div>
+        <select class="sc-select" id="sel-${entity}">
+          <option value="not_started" ${st.status==='not_started'?'selected':''}>— Not yet reviewed</option>
+          <option value="done"        ${st.status==='done'       ?'selected':''}>✓ Reviewed — all clear</option>
+          <option value="flagged"     ${st.status==='flagged'    ?'selected':''}>⚑ Reviewed — variances flagged</option>
+          <option value="na"          ${st.status==='na'         ?'selected':''}>N/A this period</option>
+        </select>
+        <textarea class="sc-notes" id="notes-${entity}" placeholder="If flagging: describe the issue, stock code(s), estimated value impact…">${st.notes||''}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderInventoryHealth() {
+  const fmt = n => '$'+Math.round(n).toLocaleString('en-NZ');
+  const alerts = [];
+
+  Object.entries(INV).forEach(([e,d]) => {
+    if (d.slobPct > 50) alerts.push({entity:e,label:`SLOB ${d.slobPct}%`,level:'alert'});
+    else if (d.slobPct > 25) alerts.push({entity:e,label:`SLOB ${d.slobPct}%`,level:'warn'});
+    if (d.negative > 3) alerts.push({entity:e,label:`${d.negative} negative stock lines`,level:'alert'});
+  });
+
+  const strip = document.getElementById('alertStrip');
+  if (!alerts.length) {
+    strip.innerHTML = `<div class="alert-badge ab-ok">✓ All entities within benchmark thresholds</div>`;
+  } else {
+    strip.innerHTML = alerts.map(a=>`<div class="alert-badge ${a.level==='alert'?'ab-alert':'ab-warn'}"><strong>${a.entity}</strong> — ${a.label}</div>`).join('');
+  }
+
+  // KPI grid — exclude Alpine (too small)
+  document.getElementById('kpiGrid').innerHTML = Object.entries(INV).filter(([e])=>e!=='Alpine').map(([entity,d]) => {
+    const negClass = d.negative>5?'v-danger':d.negative>0?'v-warn':'v-ok';
+    const slowClass = d.slowMoving>80?'v-danger':d.slowMoving>40?'v-warn':'v-ok';
+    const slobClass = d.slobPct>50?'v-danger':d.slobPct>25?'v-warn':'v-ok';
+    return `<div class="kpi-card">
+      <div class="kpi-entity">${entity}</div>
+      <div class="kpi-value">${fmt(d.valueNZD)}</div>
+      <div class="kpi-sub">${d.lines} product lines · NZD</div>
+      <div class="kpi-row"><span class="kpi-row-label">Slow-moving lines</span><span class="kpi-row-val ${slowClass}">${d.slowMoving}</span></div>
+      <div class="kpi-row"><span class="kpi-row-label">Negative stock</span><span class="kpi-row-val ${negClass}">${d.negative}</span></div>
+      <div class="kpi-row"><span class="kpi-row-label">SLOB %</span><span class="kpi-row-val ${slobClass}">${d.slobPct}%</span></div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('dashFooter').textContent = 'Unleashed via Synchub · Salesforce Assets · 25 Mar 2026 · FX: VUV 0.0141 · SBD 0.2119 · WST 0.6181 · TOP 0.7191';
+}
+
+async function saveStockReview() {
+  if (!period) { alert('No open period found. Contact Minoo.'); return; }
+  const btn=document.getElementById('submitBtn'), statusEl=document.getElementById('saveStatus');
+  btn.disabled=true; btn.textContent='Submitting…';
+  const now=new Date().toISOString();
+  const rows = ENTITIES.map(entity => ({
+    period_id:period.id, task_number:3, entity,
+    status:document.getElementById(`sel-${entity}`).value,
+    notes:document.getElementById(`notes-${entity}`).value,
+    completed_by:'Ranika',
+    completed_at:document.getElementById(`sel-${entity}`).value!=='not_started'?now:null,
+    updated_at:now,
+  }));
+  try {
+    await sb('month_close_status',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:JSON.stringify(rows)});
+    rows.forEach(r=>{ statusMap[r.entity]=r; });
+    renderStockGrid();
+    statusEl.textContent='✓ Submitted — Minoo has been updated';
+    btn.textContent='Submit to Minoo'; btn.disabled=false;
+    setTimeout(()=>{statusEl.textContent='';},5000);
+  } catch(err) {
+    statusEl.style.color='var(--danger)'; statusEl.textContent='Save failed: '+err.message;
+    btn.textContent='Retry'; btn.disabled=false;
+  }
+}
+
+init();
+</script>
+</body>
+</html>

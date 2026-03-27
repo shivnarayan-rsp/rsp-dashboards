@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSP — Month-End Inputs (Shikha)</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red:#D7063B; --charcoal:#1a1a1a; --dark:#2a2a2a; --mid:#444; --muted:#888;
+      --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
+      --green:#1a6e2e; --green-bg:#e6f4ea; --green-border:#b7dfbe;
+      --amber:#8a5200; --amber-bg:#fef3dc; --amber-border:#f5d87e;
+      --danger:#c0392b; --danger-bg:#fdecea; --danger-border:#f5bcb7;
+      --purple:#5b21b6; --purple-bg:#ede9fe; --purple-border:#c4b5fd;
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--charcoal); min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+    header { background:var(--charcoal); border-bottom:3px solid var(--red); padding:0 32px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:16px; }
+    .header-brand { font-size:18px; font-weight:700; color:white; }
+    .header-brand span { color:var(--red); }
+    .hd { width:1px; height:22px; background:#444; }
+    .header-title { font-size:13px; color:#aaa; letter-spacing:.03em; }
+    .header-right { display:flex; align-items:center; gap:16px; }
+    .period-chip { font-family:'DM Mono',monospace; font-size:11px; color:#aaa; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); padding:4px 10px; border-radius:4px; }
+    .back-link { font-size:11px; color:#666; text-decoration:none; }
+    .back-link:hover { color:#aaa; }
+
+    main { max-width:1100px; margin:0 auto; padding:28px 24px 80px; }
+
+    .section-label { font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:24px 0 12px; display:flex; align-items:center; gap:10px; }
+    .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* CALLOUT */
+    .callout { padding:14px 18px; border-radius:6px; margin-bottom:24px; border-left:4px solid; }
+    .callout.info { background:var(--purple-bg); border-color:var(--purple); }
+    .callout p { font-size:13px; color:var(--mid); line-height:1.6; }
+    .callout strong { color:var(--charcoal); }
+
+    /* BILLING CARDS */
+    .billing-card { background:var(--surface); border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-bottom:12px; }
+    .bc-header { padding:14px 18px; background:var(--surface2); border-bottom:1px solid var(--border); }
+    .bc-title { font-size:13px; font-weight:600; color:var(--charcoal); }
+    .bc-desc { font-size:12px; color:var(--mid); margin-top:3px; line-height:1.5; }
+    .bc-body { padding:16px 18px; }
+    .entity-checks { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-bottom:12px; }
+    .entity-check { display:flex; flex-direction:column; align-items:center; gap:5px; }
+    .ec-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); }
+    .check-box { width:34px; height:34px; border:2px solid var(--border); border-radius:5px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:17px; transition:all .12s; background:white; }
+    .check-box:hover { border-color:var(--green); }
+    .check-box.checked { border-color:var(--green); background:var(--green-bg); color:var(--green); }
+    .bc-notes { width:100%; font-family:'DM Sans',sans-serif; font-size:12px; border:1px solid var(--border); border-radius:4px; padding:7px 10px; resize:none; min-height:36px; color:var(--mid); background:var(--bg); }
+    .bc-notes:focus { outline:none; border-color:var(--red); background:white; }
+
+    /* STATUTORY GRID */
+    .statutory-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+    .stat-entity { padding:10px 16px; background:var(--surface2); border-bottom:1px solid var(--border); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+    .stat-task { padding:12px 16px; border-bottom:1px solid var(--border); }
+    .stat-task:last-child { border-bottom:none; }
+    .stat-name { font-size:13px; font-weight:600; color:var(--charcoal); margin-bottom:3px; }
+    .stat-type { font-size:11px; color:var(--muted); margin-bottom:6px; }
+
+    .badge-direct  { display:inline-block; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; padding:2px 7px; border-radius:3px; background:var(--purple-bg); color:var(--purple); margin-bottom:6px; }
+    .badge-confirm { display:inline-block; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; padding:2px 7px; border-radius:3px; background:var(--amber-bg); color:var(--amber); margin-bottom:6px; }
+
+    .stat-check-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+    .stat-checkbox { width:16px; height:16px; accent-color:var(--green); cursor:pointer; }
+    .stat-check-label { font-size:12px; color:var(--mid); }
+    .stat-notes { width:100%; font-family:'DM Sans',sans-serif; font-size:11px; border:1px solid var(--border); border-radius:4px; padding:6px 9px; resize:none; min-height:36px; color:var(--mid); background:var(--bg); }
+    .stat-notes:focus { outline:none; border-color:var(--red); background:white; }
+
+    /* STICKY FOOTER */
+    .save-footer { position:sticky; bottom:0; background:white; border-top:1px solid var(--border); padding:12px 24px; display:flex; align-items:center; justify-content:space-between; }
+    .save-all-btn { font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; background:var(--red); color:white; border:none; border-radius:5px; padding:10px 28px; cursor:pointer; transition:background .15s; }
+    .save-all-btn:hover { background:var(--red-dark); }
+    .save-all-btn:disabled { opacity:.5; cursor:not-allowed; }
+    .save-status { font-size:12px; color:var(--green); font-weight:600; }
+
+    .spinner { width:22px; height:22px; border:3px solid var(--border); border-top-color:var(--red); border-radius:50%; animation:spin .7s linear infinite; display:inline-block; vertical-align:middle; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    @media(max-width:900px) { .statutory-grid { grid-template-columns:1fr 1fr; } .entity-checks { grid-template-columns:repeat(3,1fr); } }
+    @media(max-width:600px) { .statutory-grid { grid-template-columns:1fr; } main { padding:16px; } }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
+    <div class="hd"></div>
+    <span class="header-title">Month-End Inputs — Shikha</span>
+  </div>
+  <div class="header-right">
+    <span class="period-chip" id="periodChip">Loading…</span>
+    <a href="javascript:history.back()" class="back-link">← Back</a>
+  </div>
+</header>
+
+<main>
+  <div class="callout info">
+    <p><strong>Hi Shikha.</strong> Complete your month-end inputs below before the close deadline. Your confirmations unblock Minoo's close checklist — revenue and statutory tasks are held until these are done. Tick each item, add notes where needed, then hit <strong>Save All</strong> at the bottom.</p>
+  </div>
+
+  <div id="mainContent"><div style="text-align:center;padding:40px;"><div class="spinner"></div></div></div>
+
+  <div class="save-footer">
+    <span class="save-status" id="saveStatus"></span>
+    <button class="save-all-btn" id="saveBtn" onclick="saveAll()">Save All Inputs</button>
+  </div>
+</main>
+
+<script>
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const ENTITIES = ['RSP','Alpine','Samoa','Solomons','Tonga','Vanuatu'];
+
+let period = null;
+let statutory = {};
+let statusMap = {};
+
+async function sb(path, opts={}) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers:{'apikey':SUPABASE_KEY,'Authorization':`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...opts.headers},
+    ...opts,
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.status===204 ? null : res.json();
+}
+
+async function init() {
+  const [periods, statRows] = await Promise.all([
+    sb('month_close_periods?status=eq.open&order=month_label.desc&limit=1'),
+    sb('month_close_statutory?order=entity.asc,task_number.asc'),
+  ]);
+  period = periods[0];
+  document.getElementById('periodChip').textContent = period ? period.display_label+' Close' : 'No open period';
+  statRows.forEach(r => { statutory[`${r.entity}_${r.task_number}`] = r; });
+  if (period) {
+    const myStatuses = await sb(`month_close_status?period_id=eq.${period.id}&task_number=in.(1,2,15,16,17)`);
+    myStatuses.forEach(r => { statusMap[`${r.task_number}_${r.entity}`] = r; });
+  }
+  render();
+}
+
+function getStatus(n, e) { return statusMap[`${n}_${e}`] || {status:'not_started',notes:''}; }
+
+function render() {
+  let html = '';
+
+  // BILLING TASKS
+  html += `<div class="section-label">Billing Confirmations</div>`;
+  [{num:1,title:'Service Callout Billing',desc:'Run the Salesforce report for the month. Confirm all chargeable service callouts have been invoiced in Xero for each entity.'}, {num:2,title:'CPC / MPS Meter Billing',desc:'Confirm all meter reads submitted and BMS billing processed and invoiced in Xero for all MPS clients per entity.'}].forEach(task => {
+    html += `<div class="billing-card">
+      <div class="bc-header"><div class="bc-title">${task.title}</div><div class="bc-desc">${task.desc}</div></div>
+      <div class="bc-body">
+        <div class="entity-checks">`;
+    ENTITIES.forEach(entity => {
+      const st = getStatus(task.num, entity);
+      const checked = st.status==='done';
+      html += `<div class="entity-check">
+        <div class="ec-label">${entity}</div>
+        <div class="check-box ${checked?'checked':''}" id="cb-${task.num}-${entity}" onclick="toggleBilling(${task.num},'${entity}')">${checked?'✓':''}</div>
+      </div>`;
+    });
+    html += `</div>
+        <textarea class="bc-notes" id="notes-${task.num}-all" placeholder="Notes for all entities (optional)…">${getStatus(task.num,'RSP').notes||''}</textarea>
+      </div></div>`;
+  });
+
+  // STATUTORY
+  html += `<div class="section-label">Statutory & Compliance — by Entity</div>`;
+  html += `<div class="statutory-grid">`;
+  ENTITIES.forEach(entity => {
+    html += `<div class="stat-card"><div class="stat-entity">${entity}</div>`;
+    [{num:15,label:'Indirect Tax'},{num:16,label:'PAYE'},{num:17,label:'Provident Fund'}].forEach(t => {
+      const stat = statutory[`${entity}_${t.num}`];
+      const st   = getStatus(t.num, entity);
+      const localName = stat ? stat.local_name : `Task ${t.num}`;
+      const direct    = stat ? stat.shikha_lodges_directly : false;
+      const contact   = stat ? stat.local_contact_label : 'local contact';
+      const checked   = st.status==='done';
+      html += `<div class="stat-task">
+        <div class="stat-name">${localName}</div>
+        <div class="stat-type">${t.label}</div>
+        <div>${direct?`<span class="badge-direct">You lodge directly</span>`:`<span class="badge-confirm">Confirm with ${contact}</span>`}</div>
+        <div class="stat-check-row">
+          <input type="checkbox" class="stat-checkbox" id="sc-${t.num}-${entity}" ${checked?'checked':''} onchange="toggleStatutory(${t.num},'${entity}')">
+          <label class="stat-check-label" for="sc-${t.num}-${entity}">${direct?'Lodged ✓':'Confirmed with local contact ✓'}</label>
+        </div>
+        <textarea class="stat-notes" id="notes-${t.num}-${entity}" placeholder="${direct?'Reference number, date lodged…':'Contact name, date confirmed, any notes…'}">${st.notes||''}</textarea>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  html += `</div>`;
+  document.getElementById('mainContent').innerHTML = html;
+}
+
+function toggleBilling(n, entity) {
+  const el = document.getElementById(`cb-${n}-${entity}`);
+  const isChecked = el.classList.contains('checked');
+  el.classList.toggle('checked', !isChecked);
+  el.textContent = !isChecked ? '✓' : '';
+  statusMap[`${n}_${entity}`] = {...(statusMap[`${n}_${entity}`]||{}), status:!isChecked?'done':'not_started'};
+}
+function toggleStatutory(n, entity) {
+  const el = document.getElementById(`sc-${n}-${entity}`);
+  statusMap[`${n}_${entity}`] = {...(statusMap[`${n}_${entity}`]||{}), status:el.checked?'done':'not_started'};
+}
+
+async function saveAll() {
+  if (!period) return;
+  const btn=document.getElementById('saveBtn'), statusEl=document.getElementById('saveStatus');
+  btn.disabled=true; btn.textContent='Saving…';
+  const now=new Date().toISOString(), rows=[];
+  [1,2].forEach(n => {
+    const notesEl = document.getElementById(`notes-${n}-all`);
+    ENTITIES.forEach(entity => {
+      const st = statusMap[`${n}_${entity}`]||{};
+      rows.push({period_id:period.id,task_number:n,entity,status:st.status||'not_started',notes:notesEl?notesEl.value:'',completed_by:'Shikha',completed_at:st.status==='done'?now:null,updated_at:now});
+    });
+  });
+  [15,16,17].forEach(n => {
+    ENTITIES.forEach(entity => {
+      const st = statusMap[`${n}_${entity}`]||{};
+      const notesEl = document.getElementById(`notes-${n}-${entity}`);
+      rows.push({period_id:period.id,task_number:n,entity,status:st.status||'not_started',notes:notesEl?notesEl.value:'',completed_by:'Shikha',completed_at:st.status==='done'?now:null,updated_at:now});
+    });
+  });
+  try {
+    await sb('month_close_status',{method:'POST',prefer:'resolution=merge-duplicates,return=minimal',body:JSON.stringify(rows)});
+    statusEl.textContent='✓ Saved — Minoo\'s checklist has been updated';
+    btn.textContent='Save All Inputs'; btn.disabled=false;
+    setTimeout(()=>{statusEl.textContent='';},5000);
+  } catch(err) {
+    statusEl.style.color='var(--danger)'; statusEl.textContent='Save failed: '+err.message;
+    btn.textContent='Retry'; btn.disabled=false;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
