@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jack — Service Controller · Ricoh Vanuatu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--red:#D7063B;--charcoal:#1a1a1a;--mid:#444;--muted:#888;--border:#e5e5e5;--bg:#f7f7f6;--surface:#fff;--surface2:#f2f2f1;--green:#1a6e2e;--green-bg:#e6f4ea;--green-border:#b7dfbe;--amber:#8a5200;--amber-bg:#fef3dc;--amber-border:#f5d87e;--danger:#c0392b;--danger-bg:#fdecea;--danger-border:#f5bcb7;--blue:#0057b8;--blue-bg:#e8f0fb;--blue-border:#b3cfee;--teal:#0F6E56;--teal-bg:#E1F5EE;--teal-border:#1D9E75;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.wordmark{font-size:20px;font-weight:600;color:var(--red);letter-spacing:.15em;}
+.hd{width:1px;height:22px;background:#444;margin:0 16px;}
+.header-title{font-size:13px;color:#aaa;}.as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+.back-link{font-size:11px;color:#666;text-decoration:none;}.back-link:hover{color:#aaa;}
+.page-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 63px);}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:63px;height:calc(100vh - 63px);overflow-y:auto;}
+.sidebar-heading{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);padding:0 20px 6px;margin-top:14px;}
+.sidebar-link{display:block;padding:7px 20px;font-size:12px;color:var(--mid);text-decoration:none;border-left:2px solid transparent;transition:all .12s;}
+.sidebar-link:hover{color:var(--charcoal);background:var(--surface2);}
+.sidebar-link.active{color:var(--red);border-left-color:var(--red);background:#fdf0f3;}
+.sidebar-divider{height:1px;background:var(--border);margin:8px 0;}
+main{padding:32px 44px 80px;max-width:880px;}
+.nav-pills{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.nav-pill{padding:6px 14px;font-size:12px;font-weight:500;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--mid);text-decoration:none;white-space:nowrap;}
+.nav-pill:hover{border-color:var(--red);color:var(--red);}
+.nav-pill.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+.hero{margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--border);}
+.hero h1{font-size:26px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px;}
+.hero-sub{font-size:14px;color:var(--mid);line-height:1.6;max-width:640px;}
+.hero-meta{display:flex;gap:18px;margin-top:12px;flex-wrap:wrap;}
+.hero-meta-item{font-size:11px;color:var(--muted);}
+.hero-meta-item strong{color:var(--charcoal);}
+.section{margin-bottom:44px;scroll-margin-top:80px;}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--charcoal);}
+.sn{font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red);background:var(--danger-bg);padding:3px 8px;border-radius:3px;}
+.section-title{font-size:17px;font-weight:600;letter-spacing:-.01em;}
+.si{font-size:13px;color:var(--mid);line-height:1.7;margin-bottom:18px;}
+.callout{padding:13px 17px;border-radius:6px;margin-bottom:14px;border-left:4px solid;}
+.callout.info{background:var(--blue-bg);border-color:var(--blue);}
+.callout.warn{background:var(--amber-bg);border-color:var(--amber);}
+.callout.good{background:var(--green-bg);border-color:var(--green);}
+.callout.alert{background:var(--danger-bg);border-color:var(--danger);}
+.callout.scaffold{background:#f0f0ff;border-color:#9090cc;}
+.callout.reporting{background:#fff8e1;border-color:#f59e0b;}
+.ct{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
+.ct-info{color:var(--blue);}.ct-warn{color:var(--amber);}.ct-good{color:var(--green);}.ct-alert{color:var(--danger);}.ct-sc{color:#5050aa;}.ct-rep{color:#b45309;}
+.callout p{font-size:13px;color:var(--mid);line-height:1.6;}.callout p+p{margin-top:6px;}
+.wig-strip{background:var(--charcoal);border-radius:6px;padding:14px 18px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));}
+.wi{padding:8px 12px;}.wi+.wi{border-left:1px solid rgba(255,255,255,.1);}
+.wi-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--teal-border);margin-bottom:4px;}
+.wi-title{font-size:12px;font-weight:500;color:#f5f4f0;margin-bottom:3px;}
+.wi-how{font-size:11px;color:rgba(255,255,255,.5);line-height:1.4;}
+.csf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
+.csf{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;}
+.csf-n{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px;}
+.csf-t{font-size:13px;font-weight:600;margin-bottom:8px;}
+.csf-b{font-size:12px;color:var(--mid);line-height:1.6;}
+.tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:3px;font-weight:500;margin-top:8px;}
+.t-bl{background:var(--blue-bg);color:var(--blue);}.t-tl{background:var(--teal-bg);color:var(--teal);}.t-am{background:var(--amber-bg);color:var(--amber);}.t-rd{background:var(--danger-bg);color:var(--danger);}
+.kpi-table{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:20px;}
+.kpi-table table{width:100%;border-collapse:collapse;}
+.kpi-table th{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--surface2);padding:9px 14px;text-align:left;border-bottom:1px solid var(--border);}
+.kpi-table td{padding:10px 14px;font-size:12px;border-bottom:1px solid #f5f5f5;vertical-align:top;color:var(--mid);}
+.kpi-table tr:last-child td{border-bottom:none;}
+.kpi-table td:first-child{font-weight:500;color:var(--charcoal);}
+.kn{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;color:var(--green);}
+.kv{font-size:9px;font-weight:600;padding:2px 7px;border-radius:3px;background:#f0f0ff;color:#5050aa;display:inline-block;}
+.kv-s{font-size:9px;font-weight:600;padding:2px 7px;border-radius:3px;background:var(--danger-bg);color:var(--danger);display:inline-block;}
+/* STATUS FILTER PILLS */
+.sf-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.sf-p{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--mid);}
+.sf-p.pi{border-color:var(--danger-border);background:var(--danger-bg);color:var(--danger);}
+.sf-p.woi{border-color:var(--amber-border);background:var(--amber-bg);color:var(--amber);}
+.sf-p.woc{border-color:var(--blue-border);background:var(--blue-bg);color:var(--blue);}
+.checklist{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:14px;}
+.cl-h{padding:9px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.cl-ht{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
+.cl-hw{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+.cl-i{display:flex;align-items:flex-start;gap:11px;padding:10px 16px;border-bottom:1px solid #f5f5f5;}
+.cl-i:last-child{border-bottom:none;}
+.cl-box{width:17px;height:17px;border:2px solid var(--border);border-radius:3px;flex-shrink:0;margin-top:2px;}
+.cl-t{font-size:13px;flex:1;line-height:1.4;}
+.cl-d{display:block;font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
+.cl-b{flex-shrink:0;font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;font-family:'DM Mono',monospace;margin-top:3px;}
+.b-jack{background:var(--teal-bg);color:var(--teal);}
+.b-sridhar{background:var(--danger-bg);color:var(--danger);}
+.b-shikha{background:var(--blue-bg);color:var(--blue);}
+.q-ph{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px;}
+.q-h{background:var(--surface2);padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.q-ht{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
+.q-src{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+.q-row{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid #f5f5f5;}
+.q-row:last-child{border-bottom:none;}
+.sk{height:10px;border-radius:3px;background:linear-gradient(90deg,#ebebeb 25%,#f5f5f5 50%,#ebebeb 75%);background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;flex-shrink:0;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+footer{text-align:center;padding:22px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
+@media(max-width:900px){.page-layout{grid-template-columns:1fr;}.sidebar{display:none;}main{padding:18px 16px 60px;}}
+@media(max-width:680px){.csf-grid,.wig-strip{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div style="display:flex;align-items:center;"><span class="wordmark">RSP</span><div class="hd"></div><span class="header-title">Jack — Service Controller · Ricoh Vanuatu</span></div>
+  <div style="display:flex;align-items:center;gap:12px;"><span class="as-of">Scaffold v2 — data TBC</span><a href="shikha_ops_dashboard_v8.html" class="back-link">← Shikha's Dashboard</a></div>
+</header>
+<div class="page-layout">
+<aside class="sidebar">
+  <div class="sidebar-heading">On this page</div>
+  <a href="#reporting" class="sidebar-link">Reporting line</a>
+  <a href="#csf"       class="sidebar-link">CSFs</a>
+  <a href="#wigs"      class="sidebar-link">WIG contribution</a>
+  <a href="#scorecard" class="sidebar-link">Scorecard (KPIs)</a>
+  <a href="#cases"     class="sidebar-link">Cases — action needed</a>
+  <a href="#orders"    class="sidebar-link">Open orders</a>
+  <a href="#rhythm"    class="sidebar-link">Daily rhythm</a>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-heading">Team dashboards</div>
+  <a href="shikha_ops_dashboard_v8.html" class="sidebar-link">Shikha — Ops Manager</a>
+  <a href="jane-scaffold.html"           class="sidebar-link">Jane — NZ Coordinator</a>
+  <a href="julia-scaffold.html"          class="sidebar-link">Julia — Tonga</a>
+  <a href="ops-rhythm.html"              class="sidebar-link">Operations Rhythm</a>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-heading">Service team</div>
+  <a href="service-dashboard.html"       class="sidebar-link">Service Dashboard</a>
+  <a href="service-rhythm.html"          class="sidebar-link">Service Rhythm</a>
+</aside>
+<main>
+  <div class="nav-pills">
+    <a href="#reporting" class="nav-pill active">Reporting line</a>
+    <a href="#csf"       class="nav-pill">CSFs</a>
+    <a href="#wigs"      class="nav-pill">WIGs</a>
+    <a href="#scorecard" class="nav-pill">Scorecard</a>
+    <a href="#cases"     class="nav-pill">Cases</a>
+    <a href="#orders"    class="nav-pill">Open orders</a>
+    <a href="#rhythm"    class="nav-pill">Daily rhythm</a>
+  </div>
+
+  <div class="hero">
+    <h1>🇻🇺 Jack</h1>
+    <p class="hero-sub">Service Controller · Ricoh Vanuatu. Owns the service control tower: every service request logged, prioritised, scheduled, executed, work orders completed for case closure, and billed where applicable. Measured on response time, resolution time, backlog health, and closure quality.</p>
+    <div class="hero-meta">
+      <span class="hero-meta-item">Currently reports to <strong>Shikha Sohal</strong> (onboarding)</span>
+      <span class="hero-meta-item">Entity <strong>Ricoh Vanuatu Limited</strong></span>
+      <span class="hero-meta-item">Currency <strong>VUV</strong></span>
+      <span class="hero-meta-item">Systems <strong>Salesforce · Unleashed · Xero · BMS</strong></span>
+    </div>
+  </div>
+
+  <div class="callout scaffold">
+    <div class="ct ct-sc">Prototype — scaffold v2</div>
+    <p>KPIs updated directly from the Service Controller position agreement (response time, resolution time, backlog ageing, first-time fix enablement, billable capture). Reporting line recommendation included — Jack's natural home is with Sridhar once onboarding is complete.</p>
+  </div>
+
+  <!-- 0. REPORTING LINE -->
+  <div class="section" id="reporting">
+    <div class="section-header"><span class="sn">00</span><h2 class="section-title">Reporting line — current and recommended</h2></div>
+
+    <div class="callout reporting">
+      <div class="ct ct-rep">Reporting line recommendation</div>
+      <p><strong>Current:</strong> Jack reports to Shikha Sohal (Operations Manager) during onboarding. This is appropriate while Jack is getting established in the role and building familiarity with RSP systems and customers.</p>
+      <p><strong>Recommended future state:</strong> Jack should report to Sridhar Bhattacharjee (Service Manager) once onboarding is complete — typically 3–6 months. The Service Controller role is defined by service KPIs (response time, resolution time, backlog ageing, billable capture) that sit entirely within Sridhar's domain. Shikha's ops metrics (order velocity, payroll) are secondary obligations, not the primary accountability structure.</p>
+      <p><strong>Rationale from the position agreement:</strong> The PD places the Service Controller within Sridhar's service Scorecard — response time, FTF enablement, and billable capture are all service management outcomes. Shikha retains accountability for operations lead measures (open orders, payroll) from any Vanuatu entity role, but Jack's primary line manager should be the person who can coach the service dimension of the role.</p>
+      <p><strong>Transition signal:</strong> Jack is ready to move to Sridhar's reporting line when the Processing Invoice backlog is consistently below 5 cases, the WOI stale case count is consistently zero, and Jack is demonstrating proactive case logging discipline without prompting.</p>
+    </div>
+  </div>
+
+  <!-- 1. CSFs -->
+  <div class="section" id="csf">
+    <div class="section-header"><span class="sn">01</span><h2 class="section-title">Critical Success Factors</h2></div>
+    <p class="si">Four structural obligations from the position agreement. These are not targets — they are the baseline conditions for the Vanuatu service operation to function.</p>
+    <div class="csf-grid">
+      <div class="csf">
+        <div class="csf-n">CSF 01</div>
+        <div class="csf-t">Service control tower — intake to closure</div>
+        <div class="csf-b">Every service request is logged the moment it is received, triaged within 1 hour, scheduled, executed, and closed with complete work order notes and a billing trigger where applicable. No case moves without Jack's visibility.</div>
+        <span class="tag t-rd">Primary function</span>
+      </div>
+      <div class="csf">
+        <div class="csf-n">CSF 02</div>
+        <div class="csf-t">Billable capture — 100%</div>
+        <div class="csf-b">Every chargeable job (T&M, call-out fees, deposits, non-contract work) has correct case notes and a billing trigger within 1 working day of completion. Zero unpaid call-outs. Zero unbilled T&M jobs. Jack enforces charging rules — not the technician.</div>
+        <span class="tag t-tl">Feeds WIG 02</span>
+      </div>
+      <div class="csf">
+        <div class="csf-n">CSF 03</div>
+        <div class="csf-t">Order fulfilment velocity</div>
+        <div class="csf-b">Vanuatu has 26 parked orders — more than any other entity. Jack owns the daily check and follow-up. Parked without a reason is not a status — every parked order needs a named blocker or an action today. WIG 01 depends on this.</div>
+        <span class="tag t-tl">Feeds WIG 01</span>
+      </div>
+      <div class="csf">
+        <div class="csf-n">CSF 04</div>
+        <div class="csf-t">Asset and case data accuracy</div>
+        <div class="csf-b">Cases logged the moment a call is received — not retrospectively. Asset detail changes updated in Salesforce within 24 hours. Stop-credit service block enforced with zero exceptions. Status kept current so Sridhar's dashboard reflects reality, not lag.</div>
+        <span class="tag t-bl">Feeds both scorecards</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. WIG CONTRIBUTION -->
+  <div class="section" id="wigs">
+    <div class="section-header"><span class="sn">02</span><h2 class="section-title">WIG contribution</h2></div>
+    <p class="si">Jack's daily actions feed Shikha's WIGs and Sridhar's service Scorecard simultaneously. Vanuatu has the highest order count and highest case backlog of any entity — Jack's performance has outsized impact on both.</p>
+    <div class="wig-strip">
+      <div class="wi">
+        <div class="wi-lbl">WIG 01 — Order velocity</div>
+        <div class="wi-title">Open orders 49 → ≤10</div>
+        <div class="wi-how">26 of 49 parked orders are Vanuatu. Jack clearing these is the single biggest lever available on WIG 01 for the entire team.</div>
+      </div>
+      <div class="wi">
+        <div class="wi-lbl">WIG 02 — Billing integrity</div>
+        <div class="wi-title">Billing completion 90.7% → 100%</div>
+        <div class="wi-how">Processing Invoice cases that stay open block invoice posting. Jack's admin close speed directly affects Vanuatu's billing completion rate in BMS.</div>
+      </div>
+      <div class="wi">
+        <div class="wi-lbl">Service Scorecard — Sridhar</div>
+        <div class="wi-title">Vanuatu: PI cases → 0 stale &gt;1 day</div>
+        <div class="wi-how">7 of 13 Vanuatu cases are in Processing Invoice. Sridhar tracks billable capture weekly. Jack's speed to close is Vanuatu's contribution to the service Scorecard.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. SCORECARD — from PD -->
+  <div class="section" id="scorecard">
+    <div class="section-header"><span class="sn">03</span><h2 class="section-title">Scorecard — KPIs from position agreement</h2></div>
+    <p class="si">Five KPIs drawn directly from the Service Controller position agreement. Sridhar reviews service KPIs (1–4) weekly. Shikha reviews the ops KPI (5) weekly. Jack should know all five from memory in every daily huddle.</p>
+    <div class="kpi-table">
+      <table>
+        <thead><tr>
+          <th>KPI</th><th>Target</th><th>Cadence</th><th>What it measures</th><th>Reviewer</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td>Response time</td>
+            <td><span class="kn">95% within 1 hour</span></td>
+            <td><span class="kv">Daily</span></td>
+            <td>% of cases triaged and scheduled within 1 hour of receipt. Customer communications within 2 hours. Cases logged at end of day do not meet this standard — timestamp is from actual call receipt.</td>
+            <td style="font-size:11px;color:var(--danger);font-weight:500;">Sridhar</td>
+          </tr>
+          <tr>
+            <td>Resolution time</td>
+            <td><span class="kn">90% within 4 hours</span></td>
+            <td><span class="kv">Weekly</span></td>
+            <td>% of cases resolved within 4 hours of scheduling, or documented with an exception reason. Logistics delays in Vanuatu are a legitimate exception — but must be documented, not assumed.</td>
+            <td style="font-size:11px;color:var(--danger);font-weight:500;">Sridhar</td>
+          </tr>
+          <tr>
+            <td>Backlog ageing</td>
+            <td><span class="kn">&lt;5% cases &gt;2 working days</span></td>
+            <td><span class="kv">Weekly</span></td>
+            <td>% of open cases older than 2 working days. Currently 7 Processing Invoice cases and 4 WOI cases are stale — significantly above this threshold. This is the most immediate KPI to address.</td>
+            <td style="font-size:11px;color:var(--danger);font-weight:500;">Sridhar</td>
+          </tr>
+          <tr>
+            <td>First-time fix enablement</td>
+            <td><span class="kn">≥ 85% jobs without repeat visit</span></td>
+            <td><span class="kv">Monthly</span></td>
+            <td>% of jobs completed without a repeat visit due to coordination or parts failure (as distinct from technician fault). Jack owns parts availability coordination and pre-job preparation — this is the measure of that discipline.</td>
+            <td style="font-size:11px;color:var(--danger);font-weight:500;">Sridhar</td>
+          </tr>
+          <tr>
+            <td>Billable capture</td>
+            <td><span class="kn">100% within 1 working day</span></td>
+            <td><span class="kv-s">Daily · critical</span></td>
+            <td>% of chargeable jobs with correct case notes and billing trigger within 1 working day of completion. This is a revenue metric — every missed capture is unbilled T&M or an unpaid call-out. Zero tolerance.</td>
+            <td style="font-size:11px;color:var(--danger);font-weight:500;">Sridhar + Shikha</td>
+          </tr>
+          <tr>
+            <td>Parked orders — Vanuatu</td>
+            <td><span class="kn">&lt;5 at week-end (June target)</span></td>
+            <td><span class="kv">Weekly</span></td>
+            <td>Count of Unleashed orders in Parked status for the Vanuatu entity. Currently 26. RVSO-00032353 (351 days, VUV 578K) requires an immediate decision — valid, fulfil, or cancel.</td>
+            <td style="font-size:11px;color:var(--blue);font-weight:500;">Shikha</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout info">
+      <div class="ct ct-info">Daily huddle — two lines</div>
+      <p>Each morning Jack gives Shikha a 2-sentence ops update (orders cleared / blocked) and Sridhar a 2-sentence service update (PI cases closed / WOI stale cases updated). Both updates should contain a number and an action — not a description of the problem.</p>
+    </div>
+  </div>
+
+  <!-- 4. CASES -->
+  <div class="section" id="cases">
+    <div class="section-header"><span class="sn">04</span><h2 class="section-title">Cases — action required · Salesforce · Vanuatu</h2></div>
+    <p class="si">Jack's primary action view. The three statuses that require Jack's direct action. Sorted by age — oldest first. A Processing Invoice case older than 1 working day is already failing the backlog ageing KPI.</p>
+    <div class="sf-bar">
+      <span class="sf-p pi">Processing Invoice</span>
+      <span class="sf-p woi">Work Order Issued</span>
+      <span class="sf-p woc">Waiting on Customer</span>
+    </div>
+    <div class="q-ph">
+      <div class="q-h"><span class="q-ht">Open cases — action needed · Vanuatu</span><span class="q-src">Salesforce · Vanuatu · live</span></div>
+      <div style="display:grid;grid-template-columns:0.8fr 1.5fr 1.2fr 0.8fr 0.5fr 0.5fr;padding:8px 16px;background:var(--surface2);border-bottom:1px solid var(--border);gap:8px;">
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Case #</span>
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Subject</span>
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Customer</span>
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Status</span>
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Age</span>
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">SF</span>
+      </div>
+      <div class="q-row"><div class="sk" style="width:80px"></div><div class="sk" style="width:160px;margin-left:8px"></div><div class="sk" style="width:130px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:35px;margin-left:8px"></div><div class="sk" style="width:40px;margin-left:8px"></div></div>
+      <div class="q-row"><div class="sk" style="width:80px"></div><div class="sk" style="width:140px;margin-left:8px"></div><div class="sk" style="width:120px;margin-left:8px"></div><div class="sk" style="width:75px;margin-left:8px"></div><div class="sk" style="width:35px;margin-left:8px"></div><div class="sk" style="width:40px;margin-left:8px"></div></div>
+      <div class="q-row"><div class="sk" style="width:80px"></div><div class="sk" style="width:150px;margin-left:8px"></div><div class="sk" style="width:140px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:35px;margin-left:8px"></div><div class="sk" style="width:40px;margin-left:8px"></div></div>
+    </div>
+    <div class="callout alert">
+      <div class="ct ct-alert">Critical case — LDS Port Vila Mission</div>
+      <p>Case 00075950 has been in Work Order Issued since 5 January 2026 — 81 days. This is the longest-stale case in Vanuatu. Jack must establish the current status (has work been done?), update Salesforce accordingly, and either close the case or document the specific external hold. This case should not survive the next L10 without a decision.</p>
+    </div>
+  </div>
+
+  <!-- 5. OPEN ORDERS -->
+  <div class="section" id="orders">
+    <div class="section-header"><span class="sn">05</span><h2 class="section-title">Open orders — Unleashed Vanuatu</h2></div>
+    <p class="si">26 parked orders. More than any other entity. Sort by age. The goal by June 2026 is fewer than 5. Each week the count should fall — a week where it rises or stays flat needs a named explanation in the L10.</p>
+    <div class="q-ph">
+      <div class="q-h"><span class="q-ht">Parked / open orders — Vanuatu</span><span class="q-src">Unleashed Vanuatu · SyncHub · live</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1.5fr 0.7fr 0.5fr 1fr 0.6fr;padding:8px 16px;background:var(--surface2);border-bottom:1px solid var(--border);gap:8px;">
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Order #</span>
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Customer</span>
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Date</span>
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Age</span>
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Value (VUV)</span>
+        <span style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);">Status</span>
+      </div>
+      <div class="q-row"><div class="sk" style="width:100px"></div><div class="sk" style="width:150px;margin-left:8px"></div><div class="sk" style="width:70px;margin-left:8px"></div><div class="sk" style="width:35px;margin-left:8px"></div><div class="sk" style="width:90px;margin-left:8px"></div><div class="sk" style="width:55px;margin-left:8px"></div></div>
+      <div class="q-row"><div class="sk" style="width:95px"></div><div class="sk" style="width:140px;margin-left:8px"></div><div class="sk" style="width:70px;margin-left:8px"></div><div class="sk" style="width:35px;margin-left:8px"></div><div class="sk" style="width:80px;margin-left:8px"></div><div class="sk" style="width:55px;margin-left:8px"></div></div>
+      <div class="q-row"><div class="sk" style="width:100px"></div><div class="sk" style="width:130px;margin-left:8px"></div><div class="sk" style="width:70px;margin-left:8px"></div><div class="sk" style="width:35px;margin-left:8px"></div><div class="sk" style="width:95px;margin-left:8px"></div><div class="sk" style="width:55px;margin-left:8px"></div></div>
+    </div>
+    <div class="callout alert">
+      <div class="ct ct-alert">RVSO-00032353 — 351 days · VUV 578,496</div>
+      <p>Vanuatu Financial Services Commission. Parked since 10 April 2025. This is not a backlog item — it requires a decision this week: is the order still valid? Should it be fulfilled, amended, or cancelled? Jack confirms the status with the customer and reports to Shikha with a recommendation before the next L10.</p>
+    </div>
+  </div>
+
+  <!-- 6. DAILY RHYTHM -->
+  <div class="section" id="rhythm">
+    <div class="section-header"><span class="sn">06</span><h2 class="section-title">Daily rhythm</h2></div>
+    <p class="si">Jack's morning covers two systems. Salesforce first — the service control tower is the primary function. Unleashed second — orders are the operations contribution. The goal is zero stale records across both.</p>
+    <div class="checklist">
+      <div class="cl-h"><span class="cl-ht">Morning — Salesforce first</span><span class="cl-hw">Owner: Jack · daily</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Log any overnight or early calls immediately<span class="cl-d">Timestamp is from actual call receipt, not from when Jack opens Salesforce. Every hour of delay inflates Vanuatu's apparent response time on Sridhar's Scorecard. Response time KPI target is 95% within 1 hour.</span></div><span class="cl-b b-jack">Jack</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Work through Processing Invoice cases — any &gt;1 working day?<span class="cl-d">For each PI case: has the invoice been raised? If yes, update the status and close the case. If no, raise it now. If blocked, state the exact blocker to Sridhar today — not in tomorrow's update. Billable capture KPI is 100% within 1 working day.</span></div><span class="cl-b b-sridhar">→ Sridhar</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Check Work Order Issued cases — status current?<span class="cl-d">Any WOI case where work has been completed must be updated immediately. If waiting on parts or customer approval, update the status to the correct hold reason. Do not leave WOI as a catch-all status.</span></div><span class="cl-b b-jack">Jack</span></div>
+    </div>
+    <div class="checklist">
+      <div class="cl-h"><span class="cl-ht">Morning — Unleashed second</span><span class="cl-hw">Owner: Jack · daily</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Check parked orders — any progressed, any new?<span class="cl-d">For each parked order: can it be fulfilled today? If blocked, note the specific reason in Unleashed with a date. "Parked" without a dated reason is not a status. Any order blocked &gt;7 days gets flagged to Shikha.</span></div><span class="cl-b b-shikha">→ Shikha if &gt;7d</span></div>
+    </div>
+    <div class="checklist">
+      <div class="cl-h"><span class="cl-ht">Weekly — asset and monitoring cadence</span><span class="cl-hw">Owner: Jack · weekly</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Issue AMS/@remote asset status report — every week<span class="cl-d">Per position agreement: weekly reporting issued on time, exceptions escalated within 24 hours. Target: 95% of SLA active customers on @remote/mailparser or 3manager. Vanuatu currently has 3manager active — report must reflect current state, not assumed state.</span></div><span class="cl-b b-sridhar">→ Sridhar</span></div>
+      <div class="cl-i"><div class="cl-box"></div><div class="cl-t">Update any Salesforce Asset records with detail changes<span class="cl-d">Any change to an asset (installation, decommission, serial update, location change) must be reflected in the Salesforce Asset record within 24 hours. This is a position agreement requirement — not optional.</span></div><span class="cl-b b-jack">Jack</span></div>
+    </div>
+  </div>
+</main>
+</div>
+<footer>Ricoh South Pacific · Jack · Service Controller · Ricoh Vanuatu · Scaffold v2 · 27 Mar 2026</footer>
+<script>
+const sections=document.querySelectorAll('.section[id]');
+const links=document.querySelectorAll('.sidebar-link[href^="#"]');
+function updateActive(){let cur='';sections.forEach(s=>{if(window.scrollY>=s.offsetTop-100)cur=s.id;});links.forEach(l=>l.classList.toggle('active',l.getAttribute('href')==='#'+cur));}
+window.addEventListener('scroll',updateActive,{passive:true});updateActive();
+links.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(l.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'});}));
+</script>
+</body>
+</html>
