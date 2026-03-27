@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>RSP Sales — Data Dictionary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--red:#D7063B;--charcoal:#1e1f22;--bg:#f7f7f6;--surface:#fff;--border:#e4e4e2;--tx:#1a1a1a;--tm:#6b6b6b;--tl:#9a9a9a;--green:#16a34a;--amber:#d97706;--sans:'DM Sans',sans-serif;--mono:'DM Mono',monospace;--r:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04)}
+    body{font-family:var(--sans);background:var(--bg);color:var(--tx);min-height:100vh}
+    header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+    .hl{display:flex;align-items:center;gap:14px}
+    .hdiv{color:rgba(255,255,255,.25);font-weight:300;font-size:20px;line-height:1}
+    .htitle{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em}
+    .hr{display:flex;align-items:center;gap:20px}
+    .back{color:rgba(255,255,255,.6);text-decoration:none;font-size:13px}.back:hover{color:#fff}
+    .pill-nav{background:var(--charcoal);border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px;overflow-x:auto}
+    .pn{padding:8px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap}
+    .pn:hover{color:rgba(255,255,255,.85)}.pn.active{color:#fff;border-bottom-color:var(--red)}
+    main{max-width:900px;margin:0 auto;padding:28px 24px 60px}
+    h2{font-size:15px;font-weight:600;margin:28px 0 12px;padding-top:28px;border-top:1px solid var(--border)}
+    h2:first-of-type{margin-top:0;padding-top:0;border-top:none}
+    .kpi-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:12px;box-shadow:var(--shadow)}
+    .kpi-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+    .kpi-name{font-size:13px;font-weight:600}
+    .kpi-tag{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:2px 7px;border-radius:3px}
+    .tag-lag{background:#e0e7ff;color:#3730a3}
+    .tag-lead{background:#dcfce7;color:#15803d}
+    .tag-health{background:#fef3c7;color:#92400e}
+    .kpi-calc{font-size:12.5px;color:var(--tm);margin-bottom:6px;line-height:1.6}
+    .kpi-why{font-size:12.5px;color:var(--tm);margin-bottom:10px;line-height:1.6}
+    .kpi-why::before{content:'Why it matters: ';font-weight:600;color:var(--tx)}
+    .soql-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--tl);margin-bottom:6px}
+    .soql{font-family:var(--mono);font-size:11px;background:#f9f9f8;border:1px solid var(--border);border-radius:6px;padding:12px 14px;color:var(--tx);white-space:pre;overflow-x:auto;line-height:1.7}
+    .slob-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+    .slob-table th{background:#f9f9f8;padding:8px 12px;text-align:left;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tl);border-bottom:1px solid var(--border)}
+    .slob-table td{padding:9px 12px;border-bottom:1px solid #f0f0ef;vertical-align:middle}
+    .slob-table tr:last-child td{border-bottom:none}
+    .slob-table .mono{font-family:var(--mono)}
+    .slob-highlight{color:var(--red);font-weight:600}
+    .fn-box{background:#f9f9f8;border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;font-size:12px;color:var(--tm);line-height:1.7;margin-top:20px}
+    .fn-box strong{color:var(--tx)}
+    .foot{text-align:center;font-size:11px;color:var(--tl);font-family:var(--mono);padding-top:12px;border-top:1px solid var(--border);margin-top:32px}
+    @media(max-width:700px){header,.pill-nav,main{padding-left:16px;padding-right:16px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="hl">
+    <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px" onerror="this.style.display='none'">
+    <span class="hdiv">|</span>
+    <span class="htitle">Sales — Data Dictionary</span>
+  </div>
+  <div class="hr">
+    <a href="index.html" class="back">← Scorecards</a>
+  </div>
+</header>
+<nav class="pill-nav">
+  <a href="sales-dashboard.html" class="pn">Dashboard</a>
+  <a href="sales-opportunities.html" class="pn">Deal List</a>
+  <a href="sales-rep-scorecard.html" class="pn">Rep Scorecards</a>
+  <a href="sales-data-dictionary.html" class="pn active">Data Dictionary</a>
+  <a href="sales-operating-rhythm.html" class="pn">Operating Rhythm</a>
+</nav>
+<main>
+
+<h2>Sales Actuals — Orders object</h2>
+
+<div class="kpi-block">
+  <div class="kpi-header"><span class="kpi-name">Sales This Week / MTD / YTD</span><span class="kpi-tag tag-lag">Lag measure</span></div>
+  <div class="kpi-calc"><strong>Calculation:</strong> SUM(Order.TotalAmount) where Type = 'New' AND Status = 'Activated', filtered by EffectiveDate range and Pricebook2Id for territory. Raw local currency returned; converted to NZD client-side (local ÷ FX rate).</div>
+  <div class="kpi-why">This is actual committed revenue — not pipeline aspiration. Orders represent booked MPS hardware or services. NZ YTD shows $0 — verify NZ orders are assigned to the correct Pricebook2Id (01s7F00000IZVgzQAH).</div>
+  <div class="soql-label">Verification SOQL</div>
+  <pre class="soql">SELECT Pricebook2Id, CurrencyIsoCode, COUNT(Id) Orders, SUM(TotalAmount) Total
+FROM Order
+WHERE Type = 'New'
+  AND Status = 'Activated'
+  AND EffectiveDate >= 2026-03-01
+  AND EffectiveDate &lt;= 2026-03-28
+GROUP BY Pricebook2Id, CurrencyIsoCode</pre>
+</div>
+
+<h2>4DX Scoreboard — Pipeline Health</h2>
+
+<div class="kpi-block">
+  <div class="kpi-header"><span class="kpi-name">Pipeline Coverage Ratio</span><span class="kpi-tag tag-lead">Lead measure</span></div>
+  <div class="kpi-calc"><strong>Calculation:</strong> SUM(Opportunity.Amount in NZD, open opps) ÷ SUM(ForecastingQuota.QuotaAmount in NZD, Mar 2026). Open opps = IsClosed=false AND StageName != 'Closed'. 2 orphaned records with IsClosed=false but StageName='Closed' are excluded. Target: 3×. Gauge runs 0–4×.</div>
+  <div class="kpi-why">The most important lead measure for a sales manager. In MPS, deal cycles require 3–4× pipeline to make quota. Below 2× means the WIG is already at risk regardless of rep activity this week. Currently showing ~2.7×.</div>
+  <pre class="soql">-- Pipeline (open opps):
+SELECT Pricebook2Id, CurrencyIsoCode, SUM(Amount) Pipeline
+FROM Opportunity
+WHERE IsClosed = false AND StageName != 'Closed'
+GROUP BY Pricebook2Id, CurrencyIsoCode
+
+-- Mar 2026 quota:
+SELECT QuotaOwnerId, QuotaOwner.Name, QuotaAmount, CurrencyIsoCode
+FROM ForecastingQuota
+WHERE StartDate = 2026-03-01</pre>
+</div>
+
+<div class="kpi-block">
+  <div class="kpi-header"><span class="kpi-name">Overdue Close Dates</span><span class="kpi-tag tag-health">Pipeline hygiene</span></div>
+  <div class="kpi-calc"><strong>Calculation:</strong> COUNT(Opportunity) where IsClosed=false AND StageName != 'Closed' AND CloseDate &lt; today. Currently 649 of 751 open opps (86%).</div>
+  <div class="kpi-why">High overdue count means reps are not maintaining close dates. It inflates pipeline and makes forecasting unreliable. Target: &lt;10% of open opps. Recommend a monthly close-date hygiene sweep during 1:1s. Clicking this tile in the dashboard opens the full list filtered to overdue deals.</div>
+  <pre class="soql">SELECT OwnerId, COUNT(Id) Overdue
+FROM Opportunity
+WHERE IsClosed = false
+  AND StageName != 'Closed'
+  AND CloseDate &lt; TODAY
+GROUP BY OwnerId</pre>
+</div>
+
+<div class="kpi-block">
+  <div class="kpi-header"><span class="kpi-name">Next Step Compliance</span><span class="kpi-tag tag-lead">Lead measure</span></div>
+  <div class="kpi-calc"><strong>Calculation:</strong> Open opps with Next_Step_Date__c >= today ÷ total open opps. Currently 62/751 = 8.3%. 674 have an overdue next step; 15 have none set.</div>
+  <div class="kpi-why">The most actionable lead measure in this Salesforce org. A rep who books the next step owns the deal. A deal with no future next step is stalled. In 4DX terms, this is the weekly behaviour score — it predicts win rate 4–6 weeks out. 8.3% is critically low. Target: above 80%. Addressed in the 1:1 agenda: "For each flagged deal, what is the next action and when will you do it?"</div>
+  <pre class="soql">-- Future next step (compliant):
+SELECT COUNT(Id) FROM Opportunity
+WHERE IsClosed = false AND StageName != 'Closed'
+  AND Next_Step_Date__c != null
+  AND Next_Step_Date__c >= TODAY
+
+-- Overdue next step:
+SELECT COUNT(Id) FROM Opportunity
+WHERE IsClosed = false AND StageName != 'Closed'
+  AND Next_Step_Date__c != null
+  AND Next_Step_Date__c &lt; TODAY</pre>
+</div>
+
+<div class="kpi-block">
+  <div class="kpi-header"><span class="kpi-name">Aged Pipeline &gt;90 Days</span><span class="kpi-tag tag-health">Pipeline hygiene</span></div>
+  <div class="kpi-calc"><strong>Calculation:</strong> COUNT(Opportunity) where CreatedDate &lt; (today minus 90 days = 2025-12-28). Currently 624 of 751 open opps (83%).</div>
+  <div class="kpi-why">In MPS, a deal not progressed in 90+ days is almost certainly dead weight. 83% aged pipeline means the total pipeline figure (NZ$2.58M) is significantly overstated. Recommend a quarterly pipeline purge — review each aged deal with the rep; either re-engage with a new next step date, or mark Closed Lost. This is a pre-BC data hygiene priority.</div>
+  <pre class="soql">SELECT OwnerId, CurrencyIsoCode, COUNT(Id) Aged, SUM(Amount) Value
+FROM Opportunity
+WHERE IsClosed = false
+  AND StageName != 'Closed'
+  AND CreatedDate &lt; 2025-12-28T00:00:00Z
+GROUP BY OwnerId, CurrencyIsoCode</pre>
+</div>
+
+<div class="kpi-block">
+  <div class="kpi-header"><span class="kpi-name">Win Rate</span><span class="kpi-tag tag-lag">Lag measure</span></div>
+  <div class="kpi-calc"><strong>Calculation:</strong> IsWon=true COUNT ÷ IsClosed=true COUNT for the period. Mar MTD: 10/12 = 83.3%. Feb: 20/36 = 55.6%.</div>
+  <div class="kpi-why">Directional quality indicator. A jump from 55.6% to 83.3% in one month is large — verify all Mar losses have been logged and not left open. A high win rate on low pipeline means qualifying well but not prospecting enough.</div>
+  <pre class="soql">SELECT IsWon, COUNT(Id) Total
+FROM Opportunity
+WHERE IsClosed = true
+  AND CloseDate >= 2026-03-01
+  AND CloseDate &lt;= 2026-03-28
+GROUP BY IsWon</pre>
+</div>
+
+<h2>Quota Attainment</h2>
+
+<div class="kpi-block">
+  <div class="kpi-header"><span class="kpi-name">Quota Attainment per Rep</span><span class="kpi-tag tag-lag">Lag measure</span></div>
+  <div class="kpi-calc"><strong>Calculation:</strong> Rep Closed Won MTD (Opportunity.Amount, IsWon=true, CloseDate in Mar 2026) in NZD ÷ ForecastingQuota.QuotaAmount in NZD for that rep (StartDate=2026-03-01). 9 reps have quotas set. Reps without a ForecastingQuota record show "No quota."</div>
+  <div class="kpi-why">The individual 4DX scoreboard. Without a quota per rep there is no accountability number. Reps missing quotas: Tui Amone, Julia Sifa, Sekone Tyrell, Priscilla Aulanga, Lavilaiti Lasitani, Via Reyna, Junriel Andoy, Gideon Malto. Recommend resolving before the next review cycle.</div>
+  <pre class="soql">-- Closed Won MTD by rep:
+SELECT OwnerId, CurrencyIsoCode, COUNT(Id) Won, SUM(Amount) Value
+FROM Opportunity
+WHERE IsWon = true
+  AND CloseDate >= 2026-03-01
+  AND CloseDate &lt;= 2026-03-28
+GROUP BY OwnerId, CurrencyIsoCode
+
+-- Mar quota:
+SELECT QuotaOwnerId, QuotaOwner.Name, QuotaAmount, CurrencyIsoCode
+FROM ForecastingQuota
+WHERE StartDate = 2026-03-01</pre>
+</div>
+
+<h2>WIG 2 — SLOB Copier Equipment Clearance</h2>
+
+<div class="kpi-block">
+  <div class="kpi-header"><span class="kpi-name">Ricoh Copier Equipment SLOB Stock by Territory</span><span class="kpi-tag tag-health">Pipeline hygiene</span></div>
+  <div class="kpi-calc"><strong>Calculation:</strong> From Unleashed inventory via SyncHub. Product Group = 'Ricoh Copier Equipment', stock age &gt;12 months (FIFO receipt date method). Converted to NZD using Wise mid-market rates. Data as at 25 Mar 2026 from inventory dashboard.</div>
+  <div class="kpi-why">Avi is accountable to Ranika for clearing this stock by 30 April. Each machine must be sold to a new customer, offered as an upgrade to an existing customer, or transferred to a territory where a machine is in MIF. The SLOB amount per territory is shown on each territory tile on the dashboard.</div>
+  <table class="slob-table">
+    <thead><tr><th>Territory</th><th>NZD Value</th><th>Machine Lines</th><th>Action</th></tr></thead>
+    <tbody>
+      <tr><td>RSP (New Zealand)</td><td class="mono">NZ$2,847.55</td><td class="mono">4</td><td>Check MIF — transfer or write-off candidate</td></tr>
+      <tr><td>Samoa</td><td class="mono">NZ$8,005.90</td><td class="mono">9</td><td>Check MIF — upgrade existing customers</td></tr>
+      <tr><td class="slob-highlight">Solomon Islands</td><td class="mono slob-highlight">NZ$125,949.40</td><td class="mono slob-highlight">9</td><td><strong>Priority — 71% of total SLOB. Assign to Priscilla and Victor immediately.</strong></td></tr>
+      <tr><td>Vanuatu</td><td class="mono">NZ$31,654.68</td><td class="mono">10</td><td>Check active MIF platforms — Jester to progress</td></tr>
+      <tr><td>Tonga</td><td class="mono">NZ$7,668.86</td><td class="mono">5</td><td>Aisea to review with local accounts</td></tr>
+      <tr style="background:#f9f9f8"><td><strong>Total</strong></td><td class="mono slob-highlight"><strong>NZ$176,126.39</strong></td><td class="mono"><strong>37</strong></td><td><strong>Deadline: 30 April 2026 — 33 days</strong></td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:10px;font-size:12px;color:var(--tm)">Source: <a href="inventory-drilldown.html" style="color:var(--red)">inventory-drilldown.html</a> → SLOB tab → Ricoh Copier Equipment product group · Verified against Unleashed BI.</div>
+</div>
+
+<h2>Deal Status Badges — Deal List page</h2>
+
+<div class="kpi-block">
+  <div class="kpi-calc">
+    <strong>OC — Overdue Close:</strong> CloseDate &lt; today (28 Mar 2026). The rep has not updated the close date.<br><br>
+    <strong>ST — Stalled Proposal:</strong> StageName = 'Proposal' AND (Next_Step_Date__c is null OR Next_Step_Date__c &lt; today). A proposal has been sent with no logged next step.<br><br>
+    <strong>NS — No Next Step:</strong> Next_Step_Date__c is null regardless of stage.<br><br>
+    <strong>AG — Aged &gt;90 Days:</strong> CreatedDate &lt; 28 Dec 2025 (90 days ago). Deal has been open more than 3 months without closing.<br><br>
+    <strong>On Track:</strong> None of the above flags apply. Currently 36 of 600 deals (6%) are on track.
+  </div>
+</div>
+
+<div class="fn-box">
+  <strong>FX rates (Salesforce CurrencyType, as of 16 Mar 2026):</strong> All values NZD. Conversion: local amount ÷ rate. NZD=1 · WST=1.86 · SBD=5.64 · TOP=1.61 · VUV=79.11.<br>
+  <strong>Opp count note:</strong> 2 records have IsClosed=false but StageName='Closed' — excluded via StageName != 'Closed' filter.<br>
+  <strong>Data snapshot:</strong> 28 March 2026. Refresh by running a new session with Salesforce MCP connected.
+</div>
+
+<div class="foot">RSP Sales Dashboard Suite · Salesforce org: clearedgepacific · Data as at 28 March 2026</div>
+</main>
+</body>
+</html>

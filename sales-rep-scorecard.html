@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>RSP Sales — Rep Scorecards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--red:#D7063B;--charcoal:#1e1f22;--bg:#f7f7f6;--surface:#fff;--border:#e4e4e2;--tx:#1a1a1a;--tm:#6b6b6b;--tl:#9a9a9a;--green:#16a34a;--amber:#d97706;--sans:'DM Sans',sans-serif;--mono:'DM Mono',monospace;--r:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04)}
+    body{font-family:var(--sans);background:var(--bg);color:var(--tx);min-height:100vh}
+    header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+    .hl{display:flex;align-items:center;gap:14px}
+    .hdiv{color:rgba(255,255,255,.25);font-weight:300;font-size:20px;line-height:1}
+    .htitle{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em}
+    .hr{display:flex;align-items:center;gap:20px}
+    .back{color:rgba(255,255,255,.6);text-decoration:none;font-size:13px}.back:hover{color:#fff}
+    .pill-nav{background:var(--charcoal);border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px;overflow-x:auto}
+    .pn{padding:8px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap}
+    .pn:hover{color:rgba(255,255,255,.85)}.pn.active{color:#fff;border-bottom-color:var(--red)}
+    main{max-width:1200px;margin:0 auto;padding:28px 24px 60px}
+    .intro{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--amber);border-radius:var(--r);padding:12px 18px;font-size:12.5px;color:var(--tm);margin-bottom:24px;line-height:1.6}
+    .intro strong{color:var(--tx)}
+    .slabel{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:14px}
+    /* REP CARD */
+    .rep-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden;transition:box-shadow .15s}
+    .rep-card:hover{box-shadow:0 2px 16px rgba(0,0,0,.1)}
+    .rep-card.expanded .card-body{display:block}
+    .card-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:16px;user-select:none}
+    .card-header:hover{background:#fafaf9}
+    .rep-rank{font-family:var(--mono);font-size:11px;color:var(--tl);width:20px;flex-shrink:0}
+    .rep-name{font-size:14px;font-weight:600;flex:1}
+    .rep-territory{font-size:11px;color:var(--tm);margin-top:1px}
+    .quota-wrap{text-align:right;min-width:180px}
+    .quota-num{font-family:var(--mono);font-size:13px;font-weight:600}
+    .quota-meta{font-size:10.5px;color:var(--tl);margin-top:2px}
+    .att-bar{width:120px;height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin:6px 0 0 auto}
+    .att-fill{height:100%;border-radius:99px}
+    .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .chevron{font-size:12px;color:var(--tl);transition:transform .2s;flex-shrink:0}
+    .rep-card.expanded .chevron{transform:rotate(180deg)}
+    .card-body{display:none;border-top:1px solid var(--border)}
+    /* LEAD MEASURES */
+    .lm-section{padding:16px 20px;border-bottom:1px solid var(--border)}
+    .lm-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--tl);margin-bottom:10px}
+    .lm-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+    .lm-label{font-size:12px;color:var(--tm);flex:1}
+    .lm-val{font-family:var(--mono);font-size:12px;font-weight:600;min-width:44px;text-align:right}
+    .lm-bar{width:80px;height:5px;background:var(--border);border-radius:99px;overflow:hidden;flex-shrink:0}
+    .lm-fill{height:100%;border-radius:99px}
+    /* ACTIVITY SECTION */
+    .act-section{padding:16px 20px;border-bottom:1px solid var(--border);background:#fafaf9}
+    .act-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .act-cell{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 12px;text-align:center}
+    .act-val{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--tx)}
+    .act-val.tbc{color:var(--tl);font-size:14px}
+    .act-label{font-size:10px;color:var(--tl);margin-top:3px;text-transform:uppercase;letter-spacing:.07em}
+    .act-note{font-size:10px;color:var(--tl);margin-top:8px;font-style:italic}
+    /* TOP DEALS */
+    .deals-section{padding:16px 20px;border-bottom:1px solid var(--border)}
+    .deal-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+    .deal-row:last-child{border-bottom:none}
+    .deal-info{flex:1;min-width:0}
+    .deal-name{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .deal-meta{font-size:11px;color:var(--tm);margin-top:1px}
+    .deal-amt{font-family:var(--mono);font-size:12px;font-weight:600;white-space:nowrap}
+    .badge{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:1px 5px;border-radius:3px;margin-right:2px}
+    .b-OC{background:rgba(215,6,59,.1);color:var(--red);border:1px solid rgba(215,6,59,.2)}
+    .b-ST{background:rgba(249,115,22,.1);color:#ea580c;border:1px solid rgba(249,115,22,.2)}
+    .b-NS{background:rgba(217,119,6,.1);color:var(--amber);border:1px solid rgba(217,119,6,.2)}
+    .b-AG{background:#f5f5f4;color:var(--tl);border:1px solid var(--border)}
+    .sf-link{color:var(--red);text-decoration:none;font-size:11px;font-weight:600;opacity:.7;white-space:nowrap}
+    .sf-link:hover{opacity:1}
+    /* COMMITMENTS */
+    .commit-section{padding:16px 20px}
+    .commit-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--tl);margin-bottom:12px}
+    .commit-rows{margin-bottom:12px}
+    .commit-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+    .commit-check{width:16px;height:16px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;cursor:pointer;appearance:none;-webkit-appearance:none}
+    .commit-check:checked{background:var(--green);border-color:var(--green)}
+    .commit-input{flex:1;border:1px solid var(--border);border-radius:5px;padding:6px 10px;font-family:var(--sans);font-size:12.5px;color:var(--tx);background:var(--bg);outline:none}
+    .commit-input:focus{border-color:var(--red);background:var(--surface)}
+    .commit-date{border:1px solid var(--border);border-radius:5px;padding:6px 8px;font-family:var(--mono);font-size:11.5px;color:var(--tm);background:var(--bg);outline:none;width:120px}
+    .commit-date:focus{border-color:var(--red)}
+    .copy-btn{font-family:var(--sans);font-size:12px;font-weight:600;background:var(--charcoal);color:#fff;border:none;padding:7px 16px;border-radius:6px;cursor:pointer;transition:background .15s}
+    .copy-btn:hover{background:#333}
+    .view-all-link{display:inline-block;font-size:12px;font-weight:600;color:var(--red);text-decoration:none;margin-top:4px}
+    .view-all-link:hover{text-decoration:underline}
+    .no-quota-note{font-size:11.5px;color:var(--tl);font-style:italic;padding:12px 20px}
+    .foot{text-align:center;font-size:11px;color:var(--tl);font-family:var(--mono);padding-top:12px;border-top:1px solid var(--border);margin-top:32px}
+    @media(max-width:900px){.act-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:600px){header,.pill-nav,main{padding-left:16px;padding-right:16px}.quota-wrap{min-width:120px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="hl">
+    <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px" onerror="this.style.display='none'">
+    <span class="hdiv">|</span>
+    <span class="htitle">Sales — Rep Scorecards</span>
+  </div>
+  <div class="hr">
+    <a href="index.html" class="back">← Scorecards</a>
+  </div>
+</header>
+<nav class="pill-nav">
+  <a href="sales-dashboard.html" class="pn">Dashboard</a>
+  <a href="sales-opportunities.html" class="pn">Deal List</a>
+  <a href="sales-rep-scorecard.html" class="pn active">Rep Scorecards</a>
+  <a href="sales-data-dictionary.html" class="pn">Data Dictionary</a>
+  <a href="sales-operating-rhythm.html" class="pn">Operating Rhythm</a>
+</nav>
+<main>
+
+<div class="intro">
+  <strong>1:1 Prep Tool.</strong> Open this page before each weekly rep meeting. Cards are sorted by quota attainment ascending — the rep furthest behind appears first. Expand a card to see lead measures, this week's activity, the top flagged deals, and a commitments section to capture what the rep agrees to do before your next meeting.
+</div>
+
+<div class="slabel">Rep Scorecards — Mar 2026 · Sorted by attainment (lowest first)</div>
+<div id="cards"></div>
+<div class="foot" id="foot"></div>
+</main>
+<script>
+const FX={NZD:1,WST:1.86,SBD:5.64,TOP:1.61,VUV:79.11};
+const toNZD=(v,c)=>(!v||isNaN(v))?0:v/(FX[c]||1);
+const fmt=v=>'NZ$'+Math.round(v||0).toLocaleString('en-NZ');
+const fmtP=v=>(v||0).toFixed(1)+'%';
+const TODAY='2026-03-28';
+const SF_BASE='https://clearedgepacific.my.salesforce.com/';
+
+const QUOTA=[
+  {ow:'0057F000004tzjEQAQ',name:'Ronaldo Mercado',cu:'WST',la:78540,ter:'Samoa'},
+  {ow:'0057F000003GciYQAS',name:'Pradeep Narayan',cu:'NZD',la:400000,ter:'New Zealand'},
+  {ow:'005Mp00000BUnxpIAD',name:'Max Lyness',cu:'NZD',la:100000,ter:'New Zealand'},
+  {ow:'005Mp000008od81IAA',name:'Josef Petelo',cu:'WST',la:40460,ter:'Samoa'},
+  {ow:'005Mp00000BGnuTIAT',name:'Jester Bernardino',cu:'VUV',la:3696000,ter:'Vanuatu'},
+  {ow:'0057F000008XjrTQAS',name:'Aisea Fakaosi',cu:'TOP',la:58000,ter:'Tonga'},
+  {ow:'0057F000004u88WQAQ',name:'Avi Sharma',cu:'NZD',la:250000,ter:'NZ / Multi-territory'},
+  {ow:'0057F000004tzzkQAA',name:'Samson Ragaruma',cu:'SBD',la:132600,ter:'Solomon Islands'},
+  {ow:'0057F000004tzziQAA',name:'Victor Geonzon',cu:'SBD',la:132600,ter:'Solomon Islands'}
+];
+
+// CW MTD by rep (from SF data)
+const CW_MTD={
+  '0057F000004u88WQAQ':  {nzd:1999,ct:1},
+  '0057F000004tzjEQAQ':  {nzd:toNZD(23279.57,'WST'),ct:3},
+  '005Mp00000BGnuTIAT':  {nzd:toNZD(19675.40+507.76,'VUV'),ct:3},
+  '0057F000008XjrTQAS':  {nzd:toNZD(20247.20,'TOP'),ct:3}
+};
+
+// Pipeline by rep (aggregated NZD)
+const PIP_REP={
+  '0057F000004tzjEQAQ':  {nzd:779002,ct:82},
+  '0057F000004tzm2QAA':  {nzd:564719,ct:96},
+  '0057F000005AuKzQAK':  {nzd:942675,ct:121},
+  '0057F000004tzzkQAA':  {nzd:320422,ct:52},
+  '0057F000008XjrTQAS':  {nzd:342577,ct:42},
+  '0057F000004tzm1QAA':  {nzd:291488,ct:37},
+  '0057F000004u88WQAQ':  {nzd:216410,ct:33},
+  '0057F000004tzziQAA':  {nzd:225916,ct:29},
+  '005Mp00000BGnuTIAT':  {nzd:toNZD(127670.33+327487.36,'VUV'),ct:52},
+  '005Mp00000BUnxpIAD':  {nzd:117000+68059.87,ct:41},
+  '0057F000003GciYQAS':  {nzd:205000,ct:3}
+};
+
+// Flag counts by rep (computed from OPPS data — hardcoded from last query)
+const REP_FLAGS={
+  '0057F000004tzjEQAQ':  {total:82,oc:33,st:53,ag:65},
+  '0057F000004tzm2QAA':  {total:96,oc:96,st:88,ag:93},
+  '0057F000005AuKzQAK':  {total:121,oc:116,st:118,ag:116},
+  '0057F000004tzzkQAA':  {total:52,oc:48,st:43,ag:48},
+  '0057F000008XjrTQAS':  {total:42,oc:38,st:33,ag:35},
+  '0057F000004tzm1QAA':  {total:37,oc:37,st:37,ag:35},
+  '0057F000004u88WQAQ':  {total:33,oc:32,st:31,ag:28},
+  '0057F000004tzziQAA':  {total:29,oc:28,st:29,ag:26},
+  '005Mp00000BGnuTIAT':  {total:52,oc:14,st:30,ag:22},
+  '005Mp00000BUnxpIAD':  {total:41,oc:36,st:36,ag:38},
+  '0057F000003GciYQAS':  {total:3,oc:2,st:1,ag:1}
+};
+
+// Activities this week (Salesforce Events MTD + Tasks completed)
+// Events 9-28 Mar: Ronaldo=86, Victor=66, Samson=75, Avi=8, Jester=107, Aisea=2
+// Tasks completed MTD: Aisea=26, others sparse
+const ACT={
+  '0057F000004tzjEQAQ': {events:86,tasks:0,note:'Events = logged meetings/calls in Salesforce'},
+  '0057F000004tzziQAA': {events:66,tasks:0,note:'Events = logged meetings/calls in Salesforce'},
+  '0057F000004tzzkQAA': {events:75,tasks:0,note:'Events = logged meetings/calls in Salesforce'},
+  '0057F000004u88WQAQ': {events:8, tasks:0,note:'Events = logged meetings/calls in Salesforce'},
+  '005Mp00000BGnuTIAT': {events:107,tasks:0,note:'Events = logged meetings/calls in Salesforce'},
+  '0057F000008XjrTQAS': {events:2, tasks:26,note:'26 tasks completed MTD + 2 events logged'},
+};
+
+// Top 5 flagged deals per rep (hardcoded from opps query — top by NZD with most flags)
+const TOP_DEALS={
+  '0057F000004tzjEQAQ':[
+    {id:'006Mp00000ckNesIAE',n:'New Fleet machine 2026 36 months',ac:'National Bank of Samoa',nzd:toNZD(147500,'WST'),flags:['OC','ST']},
+    {id:'006GA00001GRL9VYAX',n:'Booklet Maker & Trimmer (DBM-150)',ac:'Seventh-day Adventist Church Samoa',nzd:toNZD(80000,'WST'),flags:['OC','ST','AG']},
+    {id:'006Mp00000bLV3WIAW',n:'Ricoh Fleet machine 2026 60 months',ac:'National Bank of Samoa',nzd:toNZD(118853.77,'WST'),flags:['OC','ST']},
+    {id:'006GA00001GCdEwYAL',n:'Ricoh IM 4000 under lease agreement',ac:'South Pacific Business Development',nzd:toNZD(79000,'WST'),flags:['OC']},
+    {id:'006Mp00000ZhmBhIAJ',n:'Ricoh IM C8010 3 months lease to Own',ac:'Malua Printing Press',nzd:toNZD(45999,'WST'),flags:['OC','ST','AG']}
+  ],
+  '0057F000008XjrTQAS':[
+    {id:'006Mp00000ZQWZZIA5',n:'IM C3010 x 2 - Outright Purchase',ac:'McConnell Dowell Corporation',nzd:toNZD(35238,'TOP'),flags:['OC','ST','AG']},
+    {id:'006Mp00000WnL7KIAV',n:'IM CW2200 - Outright Purchase',ac:'Ministry of Education CDU Tonga',nzd:toNZD(26876.98,'TOP'),flags:['OC','ST','AG']},
+    {id:'006Mp00000clmkrIAA',n:'IM C4510',ac:'St Joseph Business College Tonga',nzd:toNZD(27500,'TOP'),flags:['OC','ST']},
+    {id:'006Mp00000dDdQAIA0',n:'IM C4510 - Outright Purchase',ac:'Ministry of Revenue & Customs',nzd:toNZD(28000,'TOP'),flags:['OC','ST']},
+    {id:'006Mp00000d1C3tIAE',n:'IM C4510 - Outright Purchase',ac:'Prime Minister Office Tonga',nzd:toNZD(24000,'TOP'),flags:['OC','ST']}
+  ],
+  '0057F000004u88WQAQ':[
+    {id:'006GA00001G2bJVYAZ',n:'Procurement of Rugged Tablets',ac:'Ministry of Provincial Govt (SI)',nzd:toNZD(3850713.16,'SBD'),flags:['OC','ST','AG']},
+    {id:'006Mp00000WsRATIA3',n:'Renewal',ac:'RSE Limited',nzd:toNZD(129007.91,'SBD'),flags:['OC','ST','AG']},
+    {id:'006Mp00000baH54IAE',n:'SUPPLY/PROVISION OF MICROSOFT 365',ac:'Samoa Water Authority',nzd:toNZD(55000,'WST'),flags:['OC','ST']},
+    {id:'006Mp00000QFD7fIAH',n:'IM C6010 - SLA 1 Year',ac:'University of the South Pacific Vanuatu',nzd:toNZD(1667875.80,'VUV'),flags:['OC','ST','AG']},
+    {id:'006Mp00000e6rk9IAA',n:'Ricoh Pro C9500 CIP',ac:'Sun Productions Printers',nzd:toNZD(16625124.72,'VUV'),flags:[]}
+  ],
+  '0057F000004tzziQAA':[
+    {id:'006Mp00000ThuXpIAJ',n:'Duplo Binder DB-290',ac:'National Parliament Office (SI)',nzd:toNZD(432172.90,'SBD'),flags:['OC','ST','AG']},
+    {id:'006Mp00000SgKtWIAV',n:'IM C8010 - Hansard Office',ac:'National Parliament Office (SI)',nzd:toNZD(355000,'SBD'),flags:['OC','ST','AG']},
+    {id:'006Mp00000WGkSgIAL',n:'IM C8000',ac:'Absolute Graphics Limited',nzd:toNZD(190000,'SBD'),flags:['OC','ST','AG']},
+    {id:'006Mp00000SZcDZIA1',n:'IM C6010 / Clerk Office',ac:'National Parliament Office (SI)',nzd:toNZD(260000,'SBD'),flags:['OC','ST','AG']},
+    {id:'006Mp00000TUqGhIAL',n:'IM C4510 with Finisher',ac:'Guadalcanal Plains Palm Oil',nzd:toNZD(175000,'SBD'),flags:['OC','ST','AG']}
+  ],
+  '0057F000004tzzkQAA':[
+    {id:'006Mp00000YCjqcIAD',n:'MP CW2201SP T&M',ac:'Kitano Construction Honiara',nzd:toNZD(140000,'SBD'),flags:['OC','ST','AG']},
+    {id:'006Mp00000bZHFGIA4',n:'IM C4510',ac:'GPPOL',nzd:toNZD(120000,'SBD'),flags:['OC','ST']},
+    {id:'006Mp00000cvjLtIAI',n:'IM C3010 T&M',ac:'SIART',nzd:toNZD(85000,'SBD'),flags:['OC']},
+    {id:'006Mp00000U3pRLIAZ',n:'IM C3010 T&M',ac:'Absolute Graphics',nzd:toNZD(90000,'SBD'),flags:['OC','ST','AG']},
+    {id:'006Mp00000clM5iIAE',n:'IM C4510',ac:'Tourism Solomons',nzd:toNZD(115000,'SBD'),flags:['OC','ST']}
+  ],
+  '005Mp00000BGnuTIAT':[
+    {id:'006Mp00000e25hMIAQ',n:'IM C8010 with Finisher - SLA',ac:'Teouma Christian Academy',nzd:toNZD(3561763.85,'VUV'),flags:['ST']},
+    {id:'006Mp00000bZlraIAC',n:'IM C6010 with Finisher - SLA',ac:'Vanuatu Financial Services Commission',nzd:toNZD(1430000,'VUV'),flags:['OC','ST']},
+    {id:'006Mp00000db3lIIAQ',n:'IM C6010 with Finisher - T&M',ac:'Pacific Australia Skills (Vanuatu)',nzd:toNZD(1200000,'VUV'),flags:['ST']},
+    {id:'006Mp00000dEqI4IAK',n:'RICOH IM 9000',ac:'Central School',nzd:toNZD(1400000,'VUV'),flags:['OC','ST']},
+    {id:'006Mp00000bZmR3IAK',n:'IT Services - Automation',ac:'Vanuatu Financial Services Commission',nzd:toNZD(1500000,'VUV'),flags:[]}
+  ]
+};
+
+function attColor(att){
+  if(att===null) return'var(--tl)';
+  return att>=100?'var(--green)':att>=60?'var(--amber)':'var(--red)';
+}
+function attFill(att){
+  if(att===null) return'var(--tl)';
+  return att>=100?'var(--green)':att>=60?'var(--amber)':'var(--red)';
+}
+
+function buildCard(qr,rank){
+  const ow=qr.ow,name=qr.name,ter=qr.ter;
+  const qNZD=toNZD(qr.la,qr.cu);
+  const cw=CW_MTD[ow]||{nzd:0,ct:0};
+  const att=qNZD>0?(cw.nzd/qNZD)*100:0;
+  const pip=PIP_REP[ow]||{nzd:0,ct:0};
+  const fl=REP_FLAGS[ow]||{total:0,oc:0,st:0,ag:0};
+  const act=ACT[ow]||null;
+  const deals=TOP_DEALS[ow]||[];
+  const nsComp=fl.total>0?Math.round(((fl.total-fl.oc-fl.st)/fl.total)*100):0;
+
+  const attPct=Math.min(att,100);
+  const dotColor=att>=80?'var(--green)':att>=40?'var(--amber)':'var(--red)';
+
+  const div=document.createElement('div');
+  div.className='rep-card';
+  div.id='card-'+ow;
+
+  // Collapsed header
+  div.innerHTML=`
+  <div class="card-header" onclick="toggleCard('${ow}')">
+    <div class="rep-rank">#${rank}</div>
+    <div style="flex:1">
+      <div class="rep-name" style="display:flex;align-items:center;gap:8px">
+        <span class="status-dot" style="background:${dotColor}"></span>
+        ${name}
+      </div>
+      <div class="rep-territory">${ter} · ${pip.ct} open opps · ${fmt(pip.nzd)} pipeline</div>
+    </div>
+    <div class="quota-wrap">
+      <div class="quota-num" style="color:${attColor(att)}">${att>0?fmtP(att):'0.0%'} of quota</div>
+      <div class="quota-meta">${fmt(cw.nzd)} / ${fmt(qNZD)} target</div>
+      <div class="att-bar"><div class="att-fill" style="width:${attPct}%;background:${attFill(att)}"></div></div>
+    </div>
+    <div class="chevron">▼</div>
+  </div>
+
+  <div class="card-body">
+
+    <!-- LEAD MEASURES -->
+    <div class="lm-section">
+      <div class="lm-title">4DX Lead Measures — this week</div>
+
+      <div class="lm-row">
+        <div class="lm-label">Next step compliance</div>
+        <div class="lm-bar"><div class="lm-fill" style="width:${Math.min(nsComp,100)}%;background:${nsComp>=80?'var(--green)':nsComp>=40?'var(--amber)':'var(--red)'}"></div></div>
+        <div class="lm-val" style="color:${nsComp>=80?'var(--green)':nsComp>=40?'var(--amber)':'var(--red)'}">${fmtP(nsComp)}</div>
+      </div>
+
+      <div class="lm-row">
+        <div class="lm-label">Overdue close dates</div>
+        <div class="lm-bar"><div class="lm-fill" style="width:${fl.total>0?Math.min((fl.oc/fl.total)*100,100):0}%;background:${fl.total>0&&(fl.oc/fl.total)>0.5?'var(--red)':'var(--amber)'}"></div></div>
+        <div class="lm-val" style="color:var(--red)">${fl.oc}/${fl.total}</div>
+      </div>
+
+      <div class="lm-row">
+        <div class="lm-label">Stalled proposals</div>
+        <div class="lm-bar"><div class="lm-fill" style="width:${fl.total>0?Math.min((fl.st/fl.total)*100,100):0}%;background:${fl.total>0&&(fl.st/fl.total)>0.5?'var(--red)':'var(--amber)'}"></div></div>
+        <div class="lm-val" style="color:var(--red)">${fl.st}/${fl.total}</div>
+      </div>
+
+      <div class="lm-row">
+        <div class="lm-label">Aged pipeline (&gt;90 days)</div>
+        <div class="lm-bar"><div class="lm-fill" style="width:${fl.total>0?Math.min((fl.ag/fl.total)*100,100):0}%;background:${fl.total>0&&(fl.ag/fl.total)>0.6?'var(--red)':'var(--amber)'}"></div></div>
+        <div class="lm-val" style="color:var(--tm)">${fl.ag}/${fl.total}</div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY -->
+    <div class="act-section">
+      <div class="lm-title">Activity This Week (logged in Salesforce)</div>
+      <div class="act-grid">
+        <div class="act-cell">
+          <div class="act-val ${act?'':'tbc'}">${act?act.events:'—'}</div>
+          <div class="act-label">Events / Meetings</div>
+        </div>
+        <div class="act-cell">
+          <div class="act-val ${act&&act.tasks>0?'':'tbc'}">${act&&act.tasks>0?act.tasks:'—'}</div>
+          <div class="act-label">Tasks Completed</div>
+        </div>
+        <div class="act-cell">
+          <div class="act-val tbc">—</div>
+          <div class="act-label">New Opps Created</div>
+        </div>
+        <div class="act-cell">
+          <div class="act-val tbc">—</div>
+          <div class="act-label">Proposals Sent</div>
+        </div>
+      </div>
+      ${act?`<div class="act-note">${act.note} · Refresh this page in a new session to update activity counts</div>`:'<div class="act-note">Activity data not available for this rep in the current data snapshot. Reconnect Salesforce MCP and refresh.</div>'}
+    </div>
+
+    <!-- TOP DEALS -->
+    <div class="deals-section">
+      <div class="lm-title">Top Flagged Deals (by value)</div>
+      ${deals.length?deals.map(d=>`
+      <div class="deal-row">
+        <div class="deal-info">
+          <div class="deal-name" title="${d.n}">${d.n}</div>
+          <div class="deal-meta">${d.ac}</div>
+          <div style="margin-top:3px">${d.flags.map(f=>{const l={OC:'Overdue Close',ST:'Stalled',NS:'No Next Step',AG:'Aged'};return`<span class="badge b-${f}">${l[f]||f}</span>`}).join('')}${!d.flags.length?'<span class="badge b-OK" style="background:rgba(22,163,74,.1);color:var(--green);border-color:rgba(22,163,74,.2)">On Track</span>':''}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="deal-amt">${fmt(d.nzd)}</div>
+          <div style="margin-top:4px"><a href="https://clearedgepacific.my.salesforce.com/${d.id}" target="_blank" class="sf-link">Open in SF →</a></div>
+        </div>
+      </div>`).join(''):'<div style="font-size:12px;color:var(--tl);padding:8px 0">No top deals data available for this rep in current snapshot.</div>'}
+      <div style="margin-top:10px"><a href="sales-opportunities.html?rep=${ow}" class="view-all-link">View all ${name.split(' ')[0]}'s open deals →</a></div>
+    </div>
+
+    <!-- COMMITMENTS -->
+    <div class="commit-section">
+      <div class="commit-title">1:1 Commitments — capture what ${name.split(' ')[0]} commits to today</div>
+      <div class="commit-rows">
+        ${[0,1,2].map(i=>`
+        <div class="commit-row">
+          <input type="checkbox" class="commit-check">
+          <input type="text" class="commit-input" placeholder="Commitment ${i+1} (e.g. Will follow up Ministry of Finance by…)" id="c_${ow}_${i}">
+          <input type="date" class="commit-date" id="d_${ow}_${i}">
+        </div>`).join('')}
+      </div>
+      <button class="copy-btn" onclick="copyCommits('${ow}','${name}')">Copy commitments to clipboard</button>
+    </div>
+
+  </div>`;
+
+  return div;
+}
+
+function toggleCard(ow){
+  const c=document.getElementById('card-'+ow);
+  c.classList.toggle('expanded');
+}
+
+function copyCommits(ow,name){
+  const rows=[];
+  for(let i=0;i<3;i++){
+    const txt=document.getElementById(`c_${ow}_${i}`)?.value||'';
+    const dt=document.getElementById(`d_${ow}_${i}`)?.value||'';
+    if(txt) rows.push(`• ${txt}${dt?' (by '+dt+')':''}`);
+  }
+  if(!rows.length){alert('No commitments entered yet.');return;}
+  const text=`1:1 Commitments — ${name} — ${new Date().toLocaleDateString('en-NZ')}\n\n${rows.join('\n')}`;
+  navigator.clipboard.writeText(text).then(()=>alert('Copied to clipboard.'));
+}
+
+// Build cards sorted by attainment ASC (lowest first = most at risk)
+function buildAll(){
+  const container=document.getElementById('cards');
+  const withQuota=QUOTA.map(q=>{
+    const cw=CW_MTD[q.ow]||{nzd:0,ct:0};
+    const qNZD=toNZD(q.la,q.cu);
+    const att=qNZD>0?(cw.nzd/qNZD)*100:0;
+    return{...q,att,qNZD,cw};
+  }).sort((a,b)=>a.att-b.att);
+
+  withQuota.forEach((q,i)=>{
+    container.appendChild(buildCard(q,i+1));
+  });
+}
+
+buildAll();
+document.getElementById('foot').textContent='Salesforce MCP · Quota: ForecastingQuota object · Activity: Salesforce Tasks & Events · Data as at 28 March 2026';
+</script>
+</body>
+</html>
