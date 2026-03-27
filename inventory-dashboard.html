@@ -12,11 +12,12 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--ricoh-red:#D7063B;--charcoal:#1e1f22;--body-bg:#f7f7f6;--surface:#ffffff;--border:#e4e4e2;--text-primary:#1a1a1a;--text-muted:#6b6b6b;--text-light:#9a9a9a;--amber:#d97706;--amber-bg:rgba(217,119,6,.10);--red-bg:rgba(215,6,59,.08);--green:#16a34a;--green-bg:rgba(22,163,74,.10);--font-sans:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;--radius:10px;--shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.04)}
     body{font-family:var(--font-sans);background:var(--body-bg);color:var(--text-primary);min-height:100vh}
-    header{background:var(--charcoal);color:white;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+    header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
     .header-left{display:flex;align-items:center;gap:16px}
     .header-brand{font-size:18px;font-weight:700;letter-spacing:-.3px}
     .header-brand span{color:var(--ricoh-red)}
-    .header-divider{width:1px;height:24px;background:rgba(255,255,255,.2)}
+    .hd{width:1px;height:22px;background:#444}
+    .header-title{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em}
     .header-subtitle{font-size:13px;color:rgba(255,255,255,.6)}
     .header-right{display:flex;align-items:center;gap:20px}
     .header-meta{font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,.4)}
@@ -79,27 +80,162 @@
     .table-footnote{padding:10px 20px;font-size:11px;color:var(--text-light);border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:16px;line-height:1.6}
     .dash-footer{text-align:center;font-size:11px;color:var(--text-light);font-family:var(--font-mono);padding-top:12px;border-top:1px solid var(--border)}
     @media(max-width:600px){main{padding:16px 12px 40px}header{padding:0 16px}.header-subtitle{display:none}.pill-nav{padding:0 12px;overflow-x:auto}}
+  
+  /* ── WIG SCOREBOARD — matches service-dashboard.html ── */
+  .wig-banner{background:var(--charcoal);border-radius:8px;padding:18px 24px 10px;margin-bottom:28px;position:relative;overflow:hidden;}
+  .wig-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red);}
+  .wig-eyebrow{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--red);font-family:'DM Mono',monospace;margin-bottom:14px;}
+  .wig-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px;}
+  .wig-card{background:#242424;border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:14px 16px;}
+  .wig-card-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-family:'DM Mono',monospace;margin-bottom:6px;}
+  .wig-card-title{font-size:12px;font-weight:600;color:#fff;line-height:1.3;margin-bottom:2px;}
+  .wig-card-owners{font-size:10px;color:#666;margin-bottom:12px;}
+  .wig-track-wrap{margin-bottom:6px;}
+  .wig-track-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+  .wig-track-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#555;width:38px;flex-shrink:0;}
+  .wig-track{flex:1;height:8px;background:#111;border-radius:4px;position:relative;overflow:visible;}
+  .wig-fill{height:8px;border-radius:4px;position:absolute;top:0;left:0;}
+  .wig-target-marker{position:absolute;top:-3px;bottom:-3px;width:2px;border-radius:1px;background:#fff;opacity:.4;}
+  .wig-track-val{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;width:42px;text-align:right;flex-shrink:0;}
+  .wig-footer-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06);}
+  .wig-from{font-size:10px;color:#555;}
+  .wig-deadline{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:3px;}
+  .wig-deadline.jun{background:rgba(251,191,36,.15);color:#fbbf24;}
+  .wig-deadline.sep{background:rgba(251,146,60,.15);color:#fb923c;}
+  .wig-fill-good{background:var(--green);}
+  .wig-fill-warn{background:#f59e0b;}
+  .wig-fill-bad{background:var(--danger);}
+  @media(max-width:900px){.wig-cards{grid-template-columns:1fr 1fr;}}
+  @media(max-width:500px){.wig-cards{grid-template-columns:1fr;}}
+
   </style>
 </head>
 <body>
 <header>
   <div class="header-left">
-    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
-    <div class="header-divider"></div>
-    <div class="header-subtitle">Inventory Dashboard</div>
-  </div>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px;display:block;" onerror="this.style.display='none'">
+      <span style="color:rgba(255,255,255,.25);font-weight:300;font-size:20px;line-height:1;">|</span>
+      <span class="header-title">Inventory — Summary</span>
+    </div>
   <div class="header-right">
     <span class="header-meta">As at 25 Mar 2026</span>
     <a href="index.html" class="back-link">← Scorecards</a>
   </div>
 </header>
 <nav class="pill-nav">
-  <a href="inventory-dashboard.html"  class="pill-btn active">Summary</a>
-  <a href="inventory-worklist.html"   class="pill-btn">Work List</a>
-  <a href="inventory-drilldown.html"  class="pill-btn">Drill-Down</a>
+  <a href="inventory-dashboard.html" class="pill-btn active">Summary</a>
+  <a href="inventory-worklist.html" class="pill-btn">Work List</a>
+  <a href="inventory-drilldown.html" class="pill-btn">Drill-Down</a>
+  <a href="inventory-month-end-close.html" class="pill-btn">Month-End Close</a>
   <a href="inventory-dictionary.html" class="pill-btn">Data Dictionary</a>
 </nav>
 <main>
+  <!-- ── 4DX WIG SCOREBOARD ────────────────────────────── -->
+  <div class="wig-banner">
+    <div class="wig-eyebrow">4DX — Wildly Important Goals · Ranika Prasad · Inventory Controller</div>
+    <div class="wig-cards">
+
+      <!-- WIG 1: SLOB reduction -->
+      <div class="wig-card">
+        <div class="wig-card-num">WIG 1</div>
+        <div class="wig-card-title">SLOB % from ~55% regional avg → ≤15% by 30 September</div>
+        <div class="wig-card-owners">Owner: Ranika Prasad · connects to: Minoo (provisions), Sridhar (parts availability)</div>
+        <div class="wig-track-wrap">
+          <!-- Scale: 0–70%. Current ~55% avg. Sept target 15%. -->
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Now</div>
+            <div class="wig-track">
+              <!-- 55/70 = 78.6% fill — higher=worse so red -->
+              <div class="wig-fill wig-fill-bad" style="width:78.6%"></div>
+              <!-- Sept target at 15/70 = 21.4% -->
+              <div class="wig-target-marker" style="left:21.4%" title="Sept target: 15%"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--danger)">~55%</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Sep 26</div>
+            <div class="wig-track">
+              <div class="wig-fill wig-fill-good" style="width:21.4%"></div>
+              <div class="wig-target-marker" style="left:21.4%"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--green)">≤15%</div>
+          </div>
+        </div>
+        <div class="wig-footer-row">
+          <span class="wig-from">~$782k total SLOB · need ↓40pp across all entities</span>
+          <span class="wig-deadline sep">Sept 2026</span>
+        </div>
+      </div>
+
+      <!-- WIG 2: Zero stockouts on active SKUs -->
+      <div class="wig-card">
+        <div class="wig-card-num">WIG 2</div>
+        <div class="wig-card-title">Zero stockouts on active-demand SKUs by 30 June</div>
+        <div class="wig-card-owners">Owner: Ranika Prasad · connects to: Sridhar (FTF rate — his WIG 2), service delivery</div>
+        <div class="wig-track-wrap">
+          <!-- Scale: 0–80 lines. Current 73 total. Target 0. -->
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Now</div>
+            <div class="wig-track">
+              <!-- 73/80 = 91.25% — higher=worse so red -->
+              <div class="wig-fill wig-fill-bad" style="width:91.25%"></div>
+              <!-- target at 0 = 0% -->
+              <div class="wig-target-marker" style="left:0%;opacity:.6" title="June target: 0"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--danger)">73 lines</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Jun 26</div>
+            <div class="wig-track">
+              <div class="wig-fill wig-fill-good" style="width:0%"></div>
+              <div class="wig-target-marker" style="left:0%;opacity:.6"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--green)">0 lines</div>
+          </div>
+        </div>
+        <div class="wig-footer-row">
+          <span class="wig-from">RSP 15 · Samoa 15 · Solomons 15 · Vanuatu 15 · Tonga 13</span>
+          <span class="wig-deadline jun">June 2026</span>
+        </div>
+      </div>
+
+      <!-- WIG 3: Fresh stock % -->
+      <div class="wig-card">
+        <div class="wig-card-num">WIG 3</div>
+        <div class="wig-card-title">Fresh stock % from ~36% avg → ≥75% by 30 September</div>
+        <div class="wig-card-owners">Owner: Ranika Prasad · connects to: David/Minoo (working capital efficiency), Sridhar (parts age)</div>
+        <div class="wig-track-wrap">
+          <!-- Scale: 0–100%. Current ~36% avg (weighted). Target 75%. -->
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Now</div>
+            <div class="wig-track">
+              <!-- 36/100 = 36% fill — higher=better so warn (below target) -->
+              <div class="wig-fill wig-fill-warn" style="width:36%"></div>
+              <!-- target at 75% -->
+              <div class="wig-target-marker" style="left:75%" title="Sept target: 75%"></div>
+            </div>
+            <div class="wig-track-val" style="color:#f59e0b">~36%</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Sep 26</div>
+            <div class="wig-track">
+              <div class="wig-fill wig-fill-good" style="width:75%"></div>
+              <div class="wig-target-marker" style="left:75%"></div>
+            </div>
+            <div class="wig-track-val" style="color:var(--green)">≥75%</div>
+          </div>
+        </div>
+        <div class="wig-footer-row">
+          <span class="wig-from">From avg ~36% — need ↑39pp across all entities</span>
+          <span class="wig-deadline sep">Sept 2026</span>
+        </div>
+      </div>
+
+    </div><!-- /wig-cards -->
+  </div><!-- /wig-banner -->
+
+
   <div class="fx-notice">
     <span style="flex-shrink:0;font-size:15px;">💱</span>
     <div><strong>Currency conversion applied post-query.</strong> Synchub queries return raw local currency. FX applied in DATA object: VUV×0.0141 · SBD×0.2119 · WST×0.6181 · TOP×0.7191 · NZD×1.0 (XE/Wise mid-market 25 Mar 2026). Age basis: FIFO receipt date — matches Unleashed BI. Validated: Samoa SLOB within 5% of Unleashed BI benchmark.</div>
