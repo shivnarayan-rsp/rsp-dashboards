@@ -202,7 +202,11 @@
 
 <header>
   <div class="header-left">
-    <div class="header-brand">Ricoh <span>|</span> South Pacific</div>
+    <div class="header-brand" style="display:flex;align-items:center;gap:12px;">
+      <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px;display:block;" onerror="this.style.display='none'">
+      <span style="color:rgba(255,255,255,.3);font-weight:300;font-size:18px;">|</span>
+      <span style="font-size:13px;font-weight:400;color:rgba(255,255,255,.7);letter-spacing:.03em;">South Pacific</span>
+    </div>
     <div class="hd" style="width:1px;height:22px;background:#444;"></div>
     <span style="font-size:13px;color:#aaa;letter-spacing:.03em;">Finance Dashboard</span>
   </div>
@@ -219,6 +223,19 @@
 </nav>
 
 <main>
+  
+  <a href="finance-close.html" class="close-strip" id="closeStrip">
+    <div>
+      <div class="cs-label">Month-End Close</div>
+      <div class="cs-period" id="csPeriod">Loading…</div>
+    </div>
+    <div class="cs-bar-wrap"><div class="cs-bar-fill" id="csBarFill" style="width:0%"></div></div>
+    <div class="cs-stat"><div class="cs-stat-val" id="csDone">—</div><div class="cs-stat-label">Done</div></div>
+    <div class="cs-stat"><div class="cs-stat-val" id="csTotal">—</div><div class="cs-stat-label">Total</div></div>
+    <div class="cs-blocking" id="csBlocking"></div>
+    <div class="cs-arrow">→</div>
+  </a>
+
   <div class="wig-banner" id="wigBanner"></div>
 
   <div class="section-label">Working Capital Scorecard — DSO &amp; Collection Health by Entity</div>
@@ -655,6 +672,35 @@ renderScorecards();
 renderLeaderboard();
 renderDetailTable();
 renderFootnote();
+
+// ── CLOSE PROGRESS STRIP ───────────────────────────────────
+async function loadCloseProgress() {
+  const SB_URL = 'https://dztsgkpqgcnebqhkuyeu.supabase.co';
+  const SB_KEY = 'sb_publishable_ozzi1WvvklaFYx_Fx3JuPQ_tmkkJ8kz';
+  try {
+    const periods = await fetch(SB_URL+'/rest/v1/month_close_periods?status=eq.open&order=month_label.desc&limit=1',
+      {headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(r=>r.json());
+    const period = periods[0];
+    if (!period) { document.getElementById('csPeriod').textContent='Month-End Close'; return; }
+    const statuses = await fetch(SB_URL+'/rest/v1/month_close_status?period_id=eq.'+period.id,
+      {headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(r=>r.json());
+    const TOTAL = 18, ENTITIES = ['RSP','Alpine','Samoa','Solomons','Tonga','Vanuatu'];
+    const totalSlots = TOTAL * ENTITIES.length;
+    const done = statuses.filter(s=>['done','na'].includes(s.status)).length;
+    const pct  = Math.round(done/totalSlots*100);
+    const nonMinoo = [1,2,3,15,16,17];
+    const blocking = statuses.filter(s=>nonMinoo.includes(s.task_number)&&!['done','na'].includes(s.status)).length;
+    document.getElementById('csPeriod').textContent = period.display_label+' Close — '+pct+'% complete';
+    document.getElementById('csBarFill').style.width = pct+'%';
+    document.getElementById('csDone').textContent = done;
+    document.getElementById('csTotal').textContent = totalSlots;
+    if (blocking>0) document.getElementById('csBlocking').textContent = '⏳ '+blocking+' input'+(blocking>1?'s':'')+' pending';
+  } catch(e) {
+    document.getElementById('csPeriod').textContent = 'Month-End Close';
+  }
+}
+loadCloseProgress();
+
 </script>
 </body>
 </html>
