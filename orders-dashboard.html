@@ -3,194 +3,234 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RSP Orders Dashboard</title>
+<title>RSP — Orders Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:#f8f7f4;--surface:#ffffff;--surface-2:#f1efe8;
-    --border:rgba(0,0,0,0.1);--border-strong:rgba(0,0,0,0.2);
-    --text:#2c2c2a;--text-muted:#888780;--text-hint:#b4b2a9;
-    --accent:#1d9e75;--accent-bg:#e1f5ee;--accent-text:#085041;
-    --warn-bg:#faeeda;--warn-text:#633806;--warn:#ba7517;
-    --danger:#a32d2d;--danger-bg:#fcebeb;--danger-text:#501313;
-    --info-bg:#e6f1fb;--info-text:#042c53;
-    --placed-bg:#eeedfe;--placed-text:#26215c;
-    --r:8px;--rl:12px;
+    --red:#D7063B; --red-dark:#a8002d; --red-light:#f5e0e6;
+    --charcoal:#1a1a1a; --dark:#2a2a2a; --mid:#444; --muted:#888;
+    --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
+    --green:#1a6e2e; --green-bg:#e6f4ea;
+    --amber:#8a5200; --amber-bg:#fef3dc;
+    --danger:#c0392b; --danger-bg:#fdecea;
+    --blue:#0057b8; --blue-bg:#e8f0fb;
+    --gray:#555; --gray-bg:#efefef;
+    --purple:#5b2d8e; --purple-bg:#f0eaf8;
   }
-  @media(prefers-color-scheme:dark){:root{
-    --bg:#1a1a18;--surface:#252522;--surface-2:#2c2c2a;
-    --border:rgba(255,255,255,0.1);--border-strong:rgba(255,255,255,0.2);
-    --text:#f1efe8;--text-muted:#888780;--text-hint:#5f5e5a;
-    --accent:#5dcaa5;--accent-bg:#04342c;--accent-text:#9fe1cb;
-    --warn-bg:#412402;--warn-text:#fac775;--warn:#ef9f27;
-    --danger:#f09595;--danger-bg:#501313;--danger-text:#f7c1c1;
-    --info-bg:#042c53;--info-text:#b5d4f4;
-    --placed-bg:#26215c;--placed-text:#cecbf6;
-  }}
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh;}
-  .hdr{background:var(--surface);border-bottom:.5px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100;}
-  .hl{display:flex;align-items:center;gap:12px;}
-  .logo{width:30px;height:30px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .h1{font-size:15px;font-weight:500;}
-  .hsub{font-size:12px;color:var(--text-muted);margin-top:1px;}
-  .hr2{display:flex;align-items:center;gap:10px;}
-  .ts{font-size:12px;color:var(--text-muted);}
-  .btnr{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--surface);border:.5px solid var(--border-strong);border-radius:var(--r);font-size:13px;color:var(--text);cursor:pointer;text-decoration:none;transition:background .15s;}
-  .btnr:hover{background:var(--surface-2);}
-  .banner{padding:10px 24px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;}
-  .banner.win{background:var(--accent-bg);color:var(--accent-text);border-bottom:.5px solid var(--accent);}
-  .banner.risk{background:var(--warn-bg);color:var(--warn-text);border-bottom:.5px solid var(--warn);}
-  .banner.behind{background:var(--danger-bg);color:var(--danger-text);border-bottom:.5px solid var(--danger);}
-  .banner-detail{font-weight:400;opacity:.85;margin-left:4px;}
-  .ctrl{background:var(--surface);border-bottom:.5px solid var(--border);padding:10px 24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .fl{font-size:11px;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:.04em;}
-  .fg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-  .chip{padding:4px 10px;border-radius:100px;border:.5px solid var(--border-strong);background:var(--surface);font-size:12px;color:var(--text-muted);cursor:pointer;transition:all .12s;user-select:none;white-space:nowrap;}
-  .chip:hover{border-color:var(--accent);color:var(--text);}
-  .chip.active{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-text);font-weight:500;}
-  .dvd{width:1px;height:20px;background:var(--border);margin:0 4px;}
-  .main{padding:20px 24px;max-width:1400px;margin:0 auto;}
-  .slbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px;}
-  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:10px;}
-  .tile{background:var(--surface-2);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .12s;border:1.5px solid transparent;}
-  .tile:hover{border-color:var(--border-strong);}
-  .tlbl{font-size:11px;color:var(--text-muted);font-weight:500;margin-bottom:6px;}
-  .tn{font-size:28px;font-weight:500;color:var(--text);line-height:1;}
-  .tn-sm{font-size:20px;font-weight:500;color:var(--text);line-height:1.2;}
-  .tsub{font-size:11px;color:var(--text-hint);margin-top:4px;}
-  .tref{font-size:10px;color:var(--text-hint);margin-top:3px;font-family:monospace;}
-  .dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle;}
-  .section-divider{display:flex;align-items:center;gap:10px;margin:16px 0 10px;}
-  .section-divider .slbl{margin:0;}
-  .section-divider::after{content:'';flex:1;height:.5px;background:var(--border);}
-  .sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-  .bdg{font-size:12px;color:var(--text-muted);background:var(--surface-2);padding:2px 8px;border-radius:100px;border:.5px solid var(--border);}
-  .srow{display:flex;gap:12px;flex-wrap:wrap;}
-  .ss{font-size:12px;color:var(--text-muted);}
-  .ss strong{color:var(--text);font-weight:500;}
-  .tw{background:var(--surface);border-radius:var(--rl);border:.5px solid var(--border);overflow:hidden;}
-  table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;}
-  th{text-align:left;padding:10px 14px;font-size:11px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;background:var(--surface-2);border-bottom:.5px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none;}
-  th:hover{color:var(--text);}
-  th .sa{display:inline-block;margin-left:4px;opacity:.4;}
-  th.sorted .sa{opacity:1;color:var(--accent);}
-  td{padding:10px 14px;border-bottom:.5px solid var(--border);vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  tr:last-child td{border-bottom:none;}
-  tr:hover td{background:var(--surface-2);}
-  .sb{display:inline-block;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:500;}
-  .s-Backordered{background:var(--danger-bg);color:var(--danger-text);}
-  .s-Parked{background:var(--warn-bg);color:var(--warn-text);}
-  .s-Placed{background:var(--placed-bg);color:var(--placed-text);}
-  .ab{display:inline-block;padding:2px 7px;border-radius:100px;font-size:11px;font-weight:500;}
-  .ac{background:var(--danger-bg);color:var(--danger-text);}
-  .aw{background:var(--warn-bg);color:var(--warn-text);}
-  .ao{background:var(--accent-bg);color:var(--accent-text);}
-  .an{background:var(--surface-2);color:var(--text-muted);}
-  .etag{font-size:11px;color:var(--info-text);background:var(--info-bg);padding:2px 7px;border-radius:4px;display:inline-block;}
-  .lccy{font-size:10px;color:var(--text-hint);margin-left:3px;}
-  .empty{padding:40px;text-align:center;color:var(--text-muted);}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-  /* Deep link styling */
-  .order-num{font-family:monospace;font-size:11px;color:var(--text-muted);display:inline-flex;align-items:center;gap:5px;}
-  .copy-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:3px;cursor:pointer;background:transparent;border:.5px solid var(--border-strong);color:var(--text-hint);transition:all .12s;flex-shrink:0;}
-  .copy-btn:hover{background:var(--surface-2);color:var(--text-muted);border-color:var(--accent);}
-  .copy-btn.copied{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-text);}
+  /* ── HEADER ── */
+  header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .header-center{display:flex;align-items:center;gap:16px;}
+  .header-divider{width:1px;height:22px;background:#444;}
+  .header-title{font-size:13px;font-weight:400;color:#aaa;letter-spacing:.03em;}
+  .header-right{display:flex;align-items:center;gap:16px;}
+  .as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+  .back-link{font-size:11px;color:#666;text-decoration:none;letter-spacing:.03em;transition:color .15s;}
+  .back-link:hover{color:#aaa;}
+
+  /* ── SCOREBOARD BANNER ── */
+  .scoreboard{padding:10px 32px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+  .scoreboard.win{background:var(--green-bg);color:var(--green);border-left:3px solid var(--green);}
+  .scoreboard.risk{background:var(--amber-bg);color:var(--amber);border-left:3px solid var(--amber);}
+  .scoreboard.behind{background:var(--danger-bg);color:var(--danger);border-left:3px solid var(--danger);}
+  .scoreboard-detail{font-weight:400;opacity:.85;margin-left:4px;}
+
+  /* ── FILTERS ── */
+  .filter-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .fl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+  .fg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .chip{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:12px;color:var(--mid);cursor:pointer;transition:all .12s;user-select:none;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+  .chip:hover{border-color:var(--red);color:var(--red);}
+  .chip.active{background:var(--charcoal);border-color:var(--charcoal);color:#fff;}
+  .filter-divider{width:1px;height:20px;background:var(--border);margin:0 4px;}
+
+  /* ── LAYOUT ── */
+  main{max-width:1300px;margin:0 auto;padding:32px 24px 64px;}
+
+  /* ── SECTION LABEL ── */
+  .section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  hr.divider{border:none;border-top:1px solid var(--border);margin:28px 0;}
+
+  /* ── KPI GRID ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:12px;}
+  .kpi-grid-2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:32px;}
+  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px 20px;position:relative;overflow:hidden;transition:box-shadow .15s;animation:fadeUp .4s ease both;}
+  .kpi-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07);}
+  .kpi-card.accent::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red);}
+  .kpi-card.alert::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--danger);}
+  .kpi-card.warn::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--amber);}
+  .kpi-card.good::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);}
+  .kpi-card:nth-child(1){animation-delay:.05s;}.kpi-card:nth-child(2){animation-delay:.1s;}.kpi-card:nth-child(3){animation-delay:.15s;}.kpi-card:nth-child(4){animation-delay:.2s;}.kpi-card:nth-child(5){animation-delay:.25s;}
+  .kpi-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+  .kpi-value{font-size:32px;font-weight:300;color:var(--charcoal);line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;}
+  .kpi-value.alert{color:var(--danger);}
+  .kpi-value.warn{color:var(--amber);}
+  .kpi-value.good{color:var(--green);}
+  .kpi-sub{font-size:11px;color:var(--muted);line-height:1.4;}
+  .kpi-ref{font-size:10px;color:#bbb;margin-top:4px;font-family:'DM Mono',monospace;}
+  .kpi-ref-label{font-size:10px;color:var(--muted);font-weight:500;margin-top:4px;}
+
+  /* ── TABLE ── */
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-top:0;}
+  table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;}
+  th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);white-space:nowrap;cursor:pointer;user-select:none;}
+  th:hover{color:var(--charcoal);}
+  th .sa{display:inline-block;margin-left:4px;opacity:.4;}
+  th.sorted .sa{opacity:1;color:var(--red);}
+  td{padding:10px 16px;border-bottom:1px solid #f0f0f0;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:var(--surface2);}
+
+  /* ── BADGES ── */
+  .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:500;white-space:nowrap;letter-spacing:.02em;}
+  .b-Backordered{background:var(--danger-bg);color:var(--danger);}
+  .b-Parked{background:var(--amber-bg);color:var(--amber);}
+  .b-Placed{background:var(--purple-bg);color:var(--purple);}
+  .entity-tag{display:inline-block;padding:2px 7px;border-radius:3px;font-size:11px;font-weight:500;background:var(--blue-bg);color:var(--blue);}
+
+  /* ── AGE BADGES ── */
+  .age{display:inline-block;padding:2px 7px;border-radius:3px;font-size:11px;font-weight:500;font-family:'DM Mono',monospace;}
+  .age-crit{background:var(--danger-bg);color:var(--danger);}
+  .age-warn{background:var(--amber-bg);color:var(--amber);}
+  .age-ok{background:var(--green-bg);color:var(--green);}
+  .age-new{background:var(--surface2);color:var(--muted);}
+
+  /* ── ORDER NUMBER + COPY ── */
+  .order-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--mid);display:inline-flex;align-items:center;gap:5px;}
+  .copy-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:3px;cursor:pointer;background:transparent;border:1px solid var(--border);color:#bbb;transition:all .12s;flex-shrink:0;}
+  .copy-btn:hover{background:var(--surface2);color:var(--mid);border-color:var(--red);}
+  .copy-btn.copied{background:var(--green-bg);border-color:var(--green);color:var(--green);}
   .copy-btn svg{width:10px;height:10px;pointer-events:none;}
 
-  .fxbar{background:var(--surface-2);border-top:.5px solid var(--border);padding:10px 24px;font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-  .fxlbl{font-weight:500;text-transform:uppercase;letter-spacing:.04em;font-size:10px;}
-  .fxrate{display:inline-flex;align-items:center;gap:5px;}
-  .ccy-pill{background:var(--surface);border:.5px solid var(--border-strong);border-radius:4px;padding:1px 5px;font-size:10px;font-weight:500;color:var(--text-muted);}
-  .co{width:16%;}.ce{width:9%;}.cc{width:22%;}.cd{width:8%;}.crq{width:8%;}.ca{width:7%;}.cv{width:14%;}.cs{width:11%;}
-  @media(max-width:768px){.hdr,.ctrl,.banner{padding:12px 16px;}.main{padding:14px;}.cd,.crq{display:none;}}
+  /* ── VALUE CELL ── */
+  .val-nzd{font-size:12px;font-variant-numeric:tabular-nums;}
+  .val-local{font-size:10px;color:#bbb;font-family:'DM Mono',monospace;display:block;margin-top:1px;}
+
+  /* ── SUMMARY ROW ── */
+  .summary-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;}
+  .sum-item{font-size:12px;color:var(--muted);}
+  .sum-item strong{color:var(--charcoal);font-weight:500;}
+  .sum-sep{color:#ccc;}
+
+  /* ── TABLE COUNT BADGE ── */
+  .count-badge{font-size:12px;color:var(--muted);background:var(--surface2);padding:2px 10px;border-radius:20px;border:1px solid var(--border);font-family:'DM Mono',monospace;}
+
+  /* ── TABLE HEADER ROW ── */
+  .table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+
+  /* ── EMPTY STATE ── */
+  .empty{padding:40px;text-align:center;color:var(--muted);font-size:13px;}
+
+  /* ── FX BAR ── */
+  .fx-bar{background:var(--surface2);border-top:1px solid var(--border);padding:10px 32px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-family:'DM Mono',monospace;}
+  .fx-lbl{font-weight:500;text-transform:uppercase;letter-spacing:.08em;font-size:10px;color:var(--mid);}
+  .fx-pill{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 6px;font-size:10px;font-weight:500;color:var(--mid);}
+
+  /* ── FOOTER ── */
+  footer{text-align:center;padding:24px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;letter-spacing:.04em;}
+
+  /* ── COL WIDTHS ── */
+  .co{width:14%;}.ce{width:9%;}.cc{width:23%;}.cd{width:9%;}.crq{width:9%;}.ca{width:8%;}.cv{width:16%;}.cs{width:12%;}
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+  @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));}.kpi-grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-title{display:none;}.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.cd,.crq{display:none;}}
 </style>
 </head>
 <body>
 
-<div class="hdr">
-  <div class="hl">
-    <div class="logo">
-      <svg viewBox="0 0 16 16" width="16" height="16" fill="none">
-        <rect x="1" y="1" width="6" height="6" rx="1.5" fill="white" opacity="0.9"/>
-        <rect x="9" y="1" width="6" height="6" rx="1.5" fill="white" opacity="0.55"/>
-        <rect x="1" y="9" width="6" height="6" rx="1.5" fill="white" opacity="0.55"/>
-        <rect x="9" y="9" width="6" height="6" rx="1.5" fill="white" opacity="0.25"/>
-      </svg>
-    </div>
-    <div>
-      <div class="h1">RSP Orders Dashboard</div>
-      <div class="hsub">Open sales orders — all Pacific Island entities · Values in NZD</div>
-    </div>
+<header>
+  <div class="header-center">
+    <span style="display:flex;align-items:center">
+      <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px;display:block;">
+    </span>
+    <div class="header-divider"></div>
+    <span class="header-title">South Pacific — Orders Dashboard</span>
   </div>
-  <div class="hr2">
-    <span class="ts">Data as of 23 Mar 2026, 09:00 NZT</span>
-    <a class="btnr" href="javascript:location.reload()">
-      <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M14 8A6 6 0 1 1 8 2" stroke-linecap="round"/>
-        <path d="M8 2l2.5 2.5L8 7" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Refresh
-    </a>
+  <div class="header-right">
+    <span class="as-of" id="asOf"></span>
+    <a href="index.html" class="back-link">← Scorecards</a>
   </div>
-</div>
+</header>
 
-<div id="banner" class="banner"></div>
+<div id="banner" class="scoreboard"></div>
 
-<div class="ctrl">
+<div class="filter-bar">
   <span class="fl">Entity</span>
   <div class="fg" id="ef"></div>
-  <div class="dvd"></div>
+  <div class="filter-divider"></div>
   <span class="fl">Status</span>
   <div class="fg" id="sf"></div>
 </div>
 
-<div class="main">
-  <div class="slbl">Order status</div>
-  <div class="tiles" id="statusTiles"></div>
-  <div class="section-divider"><div class="slbl">Performance indicators</div></div>
-  <div class="tiles" id="kpiTiles"></div>
-  <div>
-    <div class="sh">
-      <div>
-        <div class="slbl" style="margin-bottom:4px;">Open sales orders</div>
-        <div class="srow" id="srow"></div>
-      </div>
-      <span class="bdg" id="cnt"></span>
+<main>
+
+  <div class="section-label">Order status</div>
+  <div class="kpi-grid" id="statusTiles"></div>
+
+  <hr class="divider">
+
+  <div class="section-label">Performance indicators</div>
+  <div class="kpi-grid-2" id="kpiTiles"></div>
+
+  <div class="table-header">
+    <div>
+      <div class="section-label" style="margin-bottom:6px;">Open sales orders</div>
+      <div class="summary-row" id="summaryRow"></div>
     </div>
-    <div class="tw">
-      <table>
-        <thead><tr>
-          <th class="co" onclick="sb2('order')">Order <span class="sa">↕</span></th>
-          <th class="ce" onclick="sb2('entity')">Entity <span class="sa">↕</span></th>
-          <th class="cc" onclick="sb2('customer')">Customer <span class="sa">↕</span></th>
-          <th class="cd" onclick="sb2('date')">Order date <span class="sa">↕</span></th>
-          <th class="crq" onclick="sb2('req')">Required <span class="sa">↕</span></th>
-          <th class="ca" onclick="sb2('age')">Age <span class="sa">↓</span></th>
-          <th class="cv" onclick="sb2('val')">Value (NZD) <span class="sa">↕</span></th>
-          <th class="cs" onclick="sb2('status')">Status <span class="sa">↕</span></th>
-        </tr></thead>
-        <tbody id="tb"></tbody>
-      </table>
-      <div id="emp" class="empty" style="display:none;">No orders match the current filters</div>
-    </div>
+    <span class="count-badge" id="cnt"></span>
   </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th class="co" onclick="sb2('order')">Order <span class="sa">↕</span></th>
+        <th class="ce" onclick="sb2('entity')">Entity <span class="sa">↕</span></th>
+        <th class="cc" onclick="sb2('customer')">Customer <span class="sa">↕</span></th>
+        <th class="cd" onclick="sb2('date')">Order date <span class="sa">↕</span></th>
+        <th class="crq" onclick="sb2('req')">Required <span class="sa">↕</span></th>
+        <th class="ca" onclick="sb2('age')">Age <span class="sa">↓</span></th>
+        <th class="cv" onclick="sb2('val')">Value (NZD) <span class="sa">↕</span></th>
+        <th class="cs" onclick="sb2('status')">Status <span class="sa">↕</span></th>
+      </tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+    <div id="emp" class="empty" style="display:none;">No orders match the current filters</div>
+  </div>
+
+</main>
+
+<div class="fx-bar">
+  <span class="fx-lbl">FX rates</span>
+  <span><span class="fx-pill">WST</span> 1 WST = NZD 0.6197</span>
+  <span><span class="fx-pill">SBD</span> 1 SBD = NZD 0.2119</span>
+  <span><span class="fx-pill">VUV</span> 1 VUV = NZD 0.01370</span>
+  <span><span class="fx-pill">TOP</span> 1 TOP = NZD 0.6904</span>
+  <span><span class="fx-pill">NZD</span> RSP native</span>
+  <span style="color:#ccc;">· XE mid-market, 18 Mar 2026 · Indicative only</span>
 </div>
 
-<div class="fxbar">
-  <span class="fxlbl">FX rates</span>
-  <span class="fxrate"><span class="ccy-pill">WST</span> 1 WST = NZD 0.6197</span>
-  <span class="fxrate"><span class="ccy-pill">SBD</span> 1 SBD = NZD 0.2119</span>
-  <span class="fxrate"><span class="ccy-pill">VUV</span> 1 VUV = NZD 0.01370</span>
-  <span class="fxrate"><span class="ccy-pill">TOP</span> 1 TOP = NZD 0.6904</span>
-  <span class="fxrate"><span class="ccy-pill">NZD</span> RSP native</span>
-  <span style="color:var(--text-hint);">· XE mid-market, 18 Mar 2026 · Indicative only</span>
-</div>
+<footer id="footer"></footer>
 
 <script>
-const FX={RSP:1,Samoa:0.6197,Solomons:0.2119,Vanuatu:0.01370,Tonga:0.6904};
-const CCY={RSP:'NZD',Samoa:'WST',Solomons:'SBD',Vanuatu:'VUV',Tonga:'TOP'};
-const GUIDS={
-  // RSP
+// ─────────────────────────────────────────────
+//  DATA — update this block on each refresh
+//  Last refreshed: 23 Mar 2026
+// ─────────────────────────────────────────────
+const ASOF = "23 Mar 2026, 09:00 NZT";
+
+const FX  = {RSP:1, Samoa:0.6197, Solomons:0.2119, Vanuatu:0.01370, Tonga:0.6904};
+const CCY = {RSP:'NZD', Samoa:'WST', Solomons:'SBD', Vanuatu:'VUV', Tonga:'TOP'};
+
+const GUIDS = {
   "RSPSO-00126763":"03e0343c-bee5-4f65-b1c9-68f4ddbdfc89",
   "RSPSO-00126780":"0b143da3-18d8-424f-a400-4390314b0b1a",
   "RSPSO-00126756":"12e7af69-c9b2-49c3-8257-016aaf12043c",
@@ -230,7 +270,6 @@ const GUIDS={
   "RSPSO-00126617":"e498fa15-5632-4a78-974b-0823473f2572",
   "RSPSO-00126718":"f6d859d7-4614-451f-819a-0eb2e9afd4de",
   "RSPSO-00126730":"f700cea1-ad56-40aa-972d-820a5ec2cc24",
-  // Samoa
   "RSSO-00032782":"151cd324-90e3-4297-b0b0-bc83c2dbbd29",
   "RSSO-00032917":"23dd320b-ca67-4885-afbe-eb33d154be91",
   "RSSO-00032849":"3c8339d6-ce6b-484c-b078-a8b945caddd3",
@@ -249,7 +288,6 @@ const GUIDS={
   "RSSO-00032912":"c1504b83-7ba8-4566-8dcb-ca8ab7814575",
   "RSSO-00033002":"c1fe73a8-7731-4439-8a5a-af78c7e89a2c",
   "RSSO-00032932":"c43ce233-6b6c-4e97-89fb-781973bb85b8",
-  // Solomons
   "RSISO-00020173":"02924104-7b27-4ef9-9ff7-34c19feaeda2",
   "RSISO-00020136":"02fb986f-f5db-4e1f-8151-6946a3470284",
   "RSISO-00020181":"12e1a9c3-5e16-457f-887f-d1e4aa4eb454",
@@ -269,7 +307,6 @@ const GUIDS={
   "RSISO-00020176":"d76733c0-aa4f-448a-948f-fe867cd4b206",
   "RSISO-00020183":"f0939980-a285-4892-9c27-a30fc1efa0e8",
   "RSISO-00020102":"f6261a2b-b036-4da5-9e24-38e0206a072b",
-  // Vanuatu
   "RVSO-00032353":"01eca2db-6122-4980-9198-7ae5d22253c2",
   "RVSO-00034683":"0459ced4-90fe-4ab5-a0ea-1209943ea7b8",
   "RVSO-00034679":"05454ef3-28d9-4191-b7a6-9efa647288ab",
@@ -307,7 +344,6 @@ const GUIDS={
   "RVSO-00034625":"f7e01ceb-ae9b-4b0c-90a3-919de1c24752",
   "RVSO-00034646":"fa2ce51d-59e5-4471-a4fd-c70d688fd2ca",
   "RVSO-00034123":"ffff3b5b-dbc2-4333-b354-5aba258394f3",
-  // Tonga
   "RTSO-00026358":"03499fe7-e848-4a78-8265-73525f90dd26",
   "RTSO-00026366":"1761ddbf-c2a6-443f-8f04-510873cb982f",
   "RTSO-00026337":"19aeaa8c-51e2-41b3-8bbf-dc3264d8cb1e",
@@ -322,9 +358,7 @@ const GUIDS={
   "RTSO-00026247":"d6667300-f456-4916-ad98-dce0ccb3a419",
 };
 
-
 const D=[
-  // RSP (NZD)
   {o:"RSPSO-00126607",e:"RSP",c:"Cook Islands Printing Services",od:"2026-01-16",rd:"2026-01-16",s:"Parked",lv:10625.78,a:66},
   {o:"RSPSO-00126617",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-01-21",rd:"2026-01-21",s:"Parked",lv:163.12,a:61},
   {o:"RSPSO-00126620",e:"RSP",c:"Daltons Limited",od:"2026-01-22",rd:"2026-01-22",s:"Parked",lv:5549.90,a:60},
@@ -364,7 +398,6 @@ const D=[
   {o:"RSPSO-00126777",e:"RSP",c:"Ricoh Vanuatu Limited",od:"2026-03-20",rd:"2026-03-20",s:"Backordered",lv:0,a:3},
   {o:"RSPSO-00126783",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:1807.92,a:0},
   {o:"RSPSO-00126782",e:"RSP",c:"Ricoh Samoa Limited",od:"2026-03-23",rd:"2026-03-23",s:"Backordered",lv:1579.88,a:0},
-  // Samoa (WST)
   {o:"RSSO-00032723",e:"Samoa",c:"Samoa Land Transport Authority",od:"2026-02-18",rd:"2026-03-31",s:"Backordered",lv:10527.07,a:33},
   {o:"RSSO-00032743",e:"Samoa",c:"Ministry of Works Transport & Infrastructure",od:"2026-02-19",rd:"2026-03-31",s:"Backordered",lv:25300.00,a:32},
   {o:"RSSO-00032782",e:"Samoa",c:"Ricoh Samoa",od:"2026-02-25",rd:"2026-03-31",s:"Backordered",lv:0,a:26},
@@ -383,7 +416,6 @@ const D=[
   {o:"RSSO-00030811",e:"Samoa",c:"Ministry of Sports and Recreation",od:"2026-03-18",rd:"2026-04-30",s:"Backordered",lv:17801.94,a:5},
   {o:"RSSO-00033002",e:"Samoa",c:"Ricoh Samoa",od:"2026-03-20",rd:"2026-03-23",s:"Parked",lv:5680.69,a:3},
   {o:"RSSO-00033010",e:"Samoa",c:"Samoa Bureau of Statistics",od:"2026-03-23",rd:"2026-03-23",s:"Backordered",lv:0,a:0},
-  // Solomons (SBD)
   {o:"RSISO-00019799",e:"Solomons",c:"Bank South Pacific (SI)",od:"2025-12-12",rd:"2025-12-12",s:"Parked",lv:273.88,a:101},
   {o:"RSISO-00019786",e:"Solomons",c:"Asian Development Bank (SI)",od:"2025-12-15",rd:"2025-12-15",s:"Parked",lv:123500.00,a:98},
   {o:"RSISO-00020062",e:"Solomons",c:"Asian Development Bank (SI)",od:"2026-02-19",rd:"2026-02-19",s:"Parked",lv:26000.00,a:32},
@@ -403,7 +435,6 @@ const D=[
   {o:"RSISO-00020181",e:"Solomons",c:"Pink South Pacific Limited",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:941.60,a:0},
   {o:"RSISO-00020183",e:"Solomons",c:"Solomon Airlines",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
   {o:"RSISO-00020186",e:"Solomons",c:"Pacific Labour Mobility Support Program",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
-  // Vanuatu (VUV)
   {o:"RVSO-00032353",e:"Vanuatu",c:"Vanuatu Financial Services Commission",od:"2025-04-10",rd:"2025-04-10",s:"Parked",lv:578496.00,a:347},
   {o:"RVSO-00033516",e:"Vanuatu",c:"Cash Sales Account",od:"2025-10-28",rd:"2025-10-28",s:"Parked",lv:26500.00,a:146},
   {o:"RVSO-00033242",e:"Vanuatu",c:"Customary Land Management Office",od:"2025-10-28",rd:"2025-10-28",s:"Placed",lv:980836.00,a:146},
@@ -441,7 +472,6 @@ const D=[
   {o:"RVSO-00034687",e:"Vanuatu",c:"Save the Children (Vanuatu)",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
   {o:"RVSO-00034685",e:"Vanuatu",c:"Central School",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
   {o:"RVSO-00034688",e:"Vanuatu",c:"Life Changer Christian College",od:"2026-03-23",rd:"2026-03-23",s:"Parked",lv:0,a:0},
-  // Tonga (TOP)
   {o:"RTSO-00026247",e:"Tonga",c:"MEIDECC",od:"2026-02-12",rd:"2026-02-12",s:"Backordered",lv:34497.70,a:39},
   {o:"RTSO-00026306",e:"Tonga",c:"Statistics Department - Tonga",od:"2026-02-20",rd:"2026-02-20",s:"Parked",lv:40248.87,a:31},
   {o:"RTSO-00026282",e:"Tonga",c:"MEIDECC",od:"2026-03-04",rd:"2026-03-04",s:"Parked",lv:3612.80,a:19},
@@ -455,20 +485,84 @@ const D=[
   {o:"RTSO-00026380",e:"Tonga",c:"LDS Saineha High School",od:"2026-03-20",rd:"2026-03-20",s:"Parked",lv:0,a:3},
   {o:"RTSO-00026382",e:"Tonga",c:"Ahopanilolo Technical Institute",od:"2026-03-20",rd:"2026-03-20",s:"Parked",lv:0,a:3},
 ];
+// ─────────────────────────────────────────────
+//  END DATA
+// ─────────────────────────────────────────────
 
 D.forEach(d=>{d.v=d.lv*FX[d.e];});
 
 const ENT=[...new Set(D.map(d=>d.e))];
 const STS=['Backordered','Parked','Placed'];
-let AE=new Set(),AS=new Set(),SF='age',SD='desc';
+let AE=new Set(), AS=new Set(), SF='age', SD='desc';
 
+// ── INIT ──────────────────────────────────────
+document.getElementById('asOf').textContent = ASOF;
+document.getElementById('footer').textContent = `Ricoh South Pacific · Data from SyncHub / Unleashed · ${ASOF}`;
+
+// ── FILTERS ───────────────────────────────────
+function buildFilters(){
+  const ef=document.getElementById('ef'), sf=document.getElementById('sf');
+  const ae=mkChip('All',()=>{AE.clear();syncE();render();},true);
+  ae.classList.add('active','ea'); ef.appendChild(ae);
+  ENT.forEach(e=>{
+    const c=mkChip(e+' · '+CCY[e],()=>{
+      document.querySelector('.ea').classList.remove('active');
+      AE.has(e)?AE.delete(e):AE.add(e); c.classList.toggle('active');
+      if(!AE.size) document.querySelector('.ea').classList.add('active');
+      render();
+    }); ef.appendChild(c);
+  });
+  const as=mkChip('All',()=>{AS.clear();syncS();render();},true);
+  as.classList.add('active','sa2'); sf.appendChild(as);
+  STS.forEach(s=>{
+    const c=mkChip(s,()=>{
+      document.querySelector('.sa2').classList.remove('active');
+      AS.has(s)?AS.delete(s):AS.add(s); c.classList.toggle('active');
+      if(!AS.size) document.querySelector('.sa2').classList.add('active');
+      render();
+    }); sf.appendChild(c);
+  });
+}
+function syncE(){document.querySelectorAll('#ef .chip:not(.ea)').forEach(c=>c.classList.remove('active'));document.querySelector('.ea').classList.add('active');}
+function syncS(){document.querySelectorAll('#sf .chip:not(.sa2)').forEach(c=>c.classList.remove('active'));document.querySelector('.sa2').classList.add('active');}
+function mkChip(l,fn,b){const el=document.createElement('div');el.className='chip';el.textContent=l;if(b)el.style.fontWeight='600';el.addEventListener('click',fn);return el;}
+function fil(){return D.filter(d=>(!AE.size||AE.has(d.e))&&(!AS.size||AS.has(d.s)));}
+
+// ── SORT ──────────────────────────────────────
+function srt(data){return[...data].sort((a,b)=>{
+  let va,vb;
+  if(SF==='order'){va=a.o;vb=b.o;}else if(SF==='entity'){va=a.e;vb=b.e;}else if(SF==='customer'){va=a.c;vb=b.c;}else if(SF==='date'){va=a.od;vb=b.od;}else if(SF==='req'){va=a.rd;vb=b.rd;}else if(SF==='age'){va=a.a;vb=b.a;}else if(SF==='val'){va=a.v;vb=b.v;}else{va=a.s;vb=b.s;}
+  if(typeof va==='string')return SD==='asc'?va.localeCompare(vb):vb.localeCompare(va);
+  return SD==='asc'?va-vb:vb-va;
+});}
+function sb2(f){if(SF===f)SD=SD==='asc'?'desc':'asc';else{SF=f;SD=(f==='age'||f==='val')?'desc':'asc';}render();}
+
+// ── FORMAT HELPERS ─────────────────────────────
+function fd(s){if(!s)return'—';const d=new Date(s);return d.toLocaleDateString('en-NZ',{day:'2-digit',month:'short'});}
+function fvs(n){if(!n)return'—';if(n>=1000000)return'NZ$'+(n/1000000).toFixed(2)+'M';if(n>=1000)return'NZ$'+(n/1000).toFixed(1)+'K';return'NZ$'+Math.round(n).toLocaleString('en-NZ');}
+function fvCell(nzd,lv,e){
+  if(!lv)return`<span style="color:#ccc;font-size:12px;">—</span>`;
+  const ccy=CCY[e];
+  const nf=nzd>=1000000?'NZ$'+(nzd/1000000).toFixed(2)+'M':nzd>=1000?'NZ$'+(nzd/1000).toFixed(1)+'K':'NZ$'+Math.round(nzd).toLocaleString('en-NZ');
+  if(ccy==='NZD')return`<span class="val-nzd">${nf}</span>`;
+  const lf=lv>=1000000?(lv/1000000).toFixed(1)+'M':lv>=1000?(lv/1000).toFixed(0)+'K':Math.round(lv).toLocaleString();
+  return`<span class="val-nzd">${nf}</span><span class="val-local">${ccy} ${lf}</span>`;
+}
+function ageBadge(d){
+  if(d===0)return`<span class="age age-new">Today</span>`;
+  if(d>=60)return`<span class="age age-crit">${d}d</span>`;
+  if(d>=30)return`<span class="age age-warn">${d}d</span>`;
+  if(d>=7) return`<span class="age age-ok">${d}d</span>`;
+  return`<span class="age age-new">${d}d</span>`;
+}
+
+// ── KPI CALCULATIONS ──────────────────────────
 function calcKPIs(data){
   const total=data.length;
   const bo=data.filter(d=>d.s==='Backordered');
   const boCount=bo.length;
-  const aged30=data.filter(d=>d.a>=30);
-  const aged30Count=aged30.length;
-  const aged30Pct=total>0?Math.round(aged30Count/total*100):0;
+  const aged30=data.filter(d=>d.a>=30).length;
+  const aged30Pct=total>0?Math.round(aged30/total*100):0;
   const totalV=data.reduce((s,d)=>s+d.v,0);
   const boV=bo.reduce((s,d)=>s+d.v,0);
   const boValPct=totalV>0?Math.round(boV/totalV*100):0;
@@ -476,94 +570,91 @@ function calcKPIs(data){
   const avgAge=total>0?Math.round(data.reduce((s,d)=>s+d.a,0)/total):0;
   const oldest=data.length>0?[...data].sort((a,b)=>b.a-a.a)[0]:null;
   const oldestBo=bo.length>0?[...bo].sort((a,b)=>b.a-a.a)[0]:null;
-  return{total,boCount,aged30Count,aged30Pct,totalV,boV,boValPct,avgBoAge,avgAge,oldest,oldestBo};
+  return{total,boCount,aged30,aged30Pct,totalV,boV,boValPct,avgBoAge,avgAge,oldest,oldestBo};
 }
 
+// ── SCOREBOARD BANNER ─────────────────────────
 function renderBanner(kpi){
   const b=document.getElementById('banner');
   const pct=kpi.aged30Pct;
-  if(pct<15){b.className='banner win';b.innerHTML=`● Scoreboard: <strong>Winning</strong><span class="banner-detail">— ${pct}% of open orders aged 30+ days (target: below 15%)</span>`;}
-  else if(pct<=30){b.className='banner risk';b.innerHTML=`● Scoreboard: <strong>At Risk</strong><span class="banner-detail">— ${pct}% of open orders aged 30+ days (target: below 15%)</span>`;}
-  else{b.className='banner behind';b.innerHTML=`● Scoreboard: <strong>Behind</strong><span class="banner-detail">— ${pct}% of open orders aged 30+ days (target: below 15%)</span>`;}
+  const icon=`<svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><circle cx="7" cy="7" r="7"/></svg>`;
+  if(pct<15){
+    b.className='scoreboard win';
+    b.innerHTML=`${icon} Scoreboard: <strong>Winning</strong><span class="scoreboard-detail">— ${pct}% of open orders aged 30+ days (target: below 15%)</span>`;
+  } else if(pct<=30){
+    b.className='scoreboard risk';
+    b.innerHTML=`${icon} Scoreboard: <strong>At Risk</strong><span class="scoreboard-detail">— ${pct}% of open orders aged 30+ days (target: below 15%)</span>`;
+  } else {
+    b.className='scoreboard behind';
+    b.innerHTML=`${icon} Scoreboard: <strong>Behind</strong><span class="scoreboard-detail">— ${pct}% of open orders aged 30+ days (target: below 15%)</span>`;
+  }
 }
 
+// ── STATUS TILES ──────────────────────────────
 function renderStatusTiles(data,kpi){
   const cnts={};STS.forEach(s=>cnts[s]=0);data.forEach(d=>{if(cnts[d.s]!==undefined)cnts[d.s]++;});
   document.getElementById('statusTiles').innerHTML=`
-    <div class="tile"><div class="tlbl">Total open orders</div><div class="tn">${data.length}</div><div class="tsub">${fvs(kpi.totalV)} total NZD</div></div>
-    <div class="tile" onclick="qf('Backordered')"><div class="tlbl"><span class="dot" style="background:#e24b4a"></span>Backordered</div><div class="tn">${cnts['Backordered']}</div><div class="tsub">${fvs(kpi.boV)}</div></div>
-    <div class="tile" onclick="qf('Parked')"><div class="tlbl"><span class="dot" style="background:#ba7517"></span>Parked</div><div class="tn">${cnts['Parked']}</div><div class="tsub">${cnts['Parked']} orders</div></div>
-    <div class="tile" onclick="qf('Placed')"><div class="tlbl"><span class="dot" style="background:#534ab7"></span>Placed</div><div class="tn">${cnts['Placed']}</div><div class="tsub">${cnts['Placed']} orders</div></div>
-  `;
+    <div class="kpi-card accent" style="animation-delay:.05s">
+      <div class="kpi-label">Total open orders</div>
+      <div class="kpi-value">${data.length}</div>
+      <div class="kpi-sub">${fvs(kpi.totalV)} total value</div>
+    </div>
+    <div class="kpi-card alert" style="cursor:pointer;animation-delay:.1s" onclick="qf('Backordered')">
+      <div class="kpi-label">Backordered</div>
+      <div class="kpi-value alert">${cnts['Backordered']}</div>
+      <div class="kpi-sub">${fvs(kpi.boV)}</div>
+    </div>
+    <div class="kpi-card warn" style="cursor:pointer;animation-delay:.15s" onclick="qf('Parked')">
+      <div class="kpi-label">Parked</div>
+      <div class="kpi-value">${cnts['Parked']}</div>
+      <div class="kpi-sub">${cnts['Parked']} orders</div>
+    </div>
+    <div class="kpi-card" style="animation-delay:.2s;cursor:pointer" onclick="qf('Placed')">
+      <div class="kpi-label">Placed</div>
+      <div class="kpi-value">${cnts['Placed']}</div>
+      <div class="kpi-sub">${cnts['Placed']} orders</div>
+    </div>
+    <div class="kpi-card alert" style="cursor:pointer;animation-delay:.25s" onclick="filterAged()">
+      <div class="kpi-label">Aged 30+ days</div>
+      <div class="kpi-value alert">${kpi.aged30}</div>
+      <div class="kpi-sub">${kpi.aged30Pct}% of open orders</div>
+    </div>`;
 }
 
+// ── KPI TILES ─────────────────────────────────
 function renderKPITiles(kpi){
-  const aged30Color=kpi.aged30Pct>30?'var(--danger)':kpi.aged30Pct>15?'var(--warn)':'var(--text)';
-  const avgBoColor=kpi.avgBoAge>30?'var(--danger)':kpi.avgBoAge>14?'var(--warn)':'var(--text)';
+  const avgBoColor=kpi.avgBoAge>30?'alert':kpi.avgBoAge>14?'warn':'';
   document.getElementById('kpiTiles').innerHTML=`
-    <div class="tile" onclick="filterAged()">
-      <div class="tlbl">Aged 30+ days</div>
-      <div class="tn" style="color:${aged30Color}">${kpi.aged30Count}</div>
-      <div class="tsub" style="color:${aged30Color};font-weight:500;">${kpi.aged30Pct}% of open orders</div>
+    <div class="kpi-card ${kpi.avgBoAge>30?'alert':kpi.avgBoAge>14?'warn':''}" style="animation-delay:.05s">
+      <div class="kpi-label">Avg backorder age</div>
+      <div class="kpi-value ${avgBoColor}">${kpi.avgBoAge}d</div>
+      <div class="kpi-sub">Across ${kpi.boCount} backordered orders</div>
     </div>
-    <div class="tile">
-      <div class="tlbl">Avg backorder age</div>
-      <div class="tn" style="color:${avgBoColor}">${kpi.avgBoAge}d</div>
-      <div class="tsub">Across ${kpi.boCount} backordered orders</div>
+    <div class="kpi-card" style="animation-delay:.1s">
+      <div class="kpi-label">Backorder value</div>
+      <div class="kpi-value ${kpi.boValPct>50?'alert':kpi.boValPct>30?'warn':''}">${kpi.boValPct}%</div>
+      <div class="kpi-sub">Of total open NZD value</div>
     </div>
-    <div class="tile">
-      <div class="tlbl">Avg age — all open</div>
-      <div class="tn">${kpi.avgAge}d</div>
-      <div class="tsub">Across all ${kpi.total} orders</div>
-    </div>
-    <div class="tile">
-      <div class="tlbl">Backorder value %</div>
-      <div class="tn" style="color:${kpi.boValPct>50?'var(--danger)':kpi.boValPct>30?'var(--warn)':'var(--text)'}">${kpi.boValPct}%</div>
-      <div class="tsub">Of total open NZD value</div>
-    </div>
-    <div class="tile" onclick="qf('Backordered')" style="cursor:pointer;">
-      <div class="tlbl">Oldest backorder</div>
-      <div class="tn-sm" style="color:var(--danger)">${kpi.oldestBo?kpi.oldestBo.a+'d':'—'}</div>
-      ${kpi.oldestBo?`<div class="tsub">${kpi.oldestBo.c.length>22?kpi.oldestBo.c.slice(0,22)+'…':kpi.oldestBo.c}</div><div class="tref">${kpi.oldestBo.e} · ${kpi.oldestBo.o}</div>`:'<div class="tsub">No backordered orders</div>'}
-    </div>
-    <div class="tile">
-      <div class="tlbl">Oldest open order</div>
-      <div class="tn-sm" style="color:${kpi.oldest&&kpi.oldest.a>=60?'var(--danger)':kpi.oldest&&kpi.oldest.a>=30?'var(--warn)':'var(--text)'}">${kpi.oldest?kpi.oldest.a+'d':'—'}</div>
-      ${kpi.oldest?`<div class="tsub">${kpi.oldest.c.length>22?kpi.oldest.c.slice(0,22)+'…':kpi.oldest.c}</div><div class="tref">${kpi.oldest.e} · ${kpi.oldest.o}</div>`:''}
-    </div>
-  `;
+    <div class="kpi-card alert" style="cursor:pointer;animation-delay:.15s" onclick="qf('Backordered')">
+      <div class="kpi-label">Oldest backorder</div>
+      <div class="kpi-value alert" style="font-size:24px;margin-bottom:4px;">${kpi.oldestBo?kpi.oldestBo.a+'d':'—'}</div>
+      ${kpi.oldestBo?`<div class="kpi-sub">${kpi.oldestBo.c.length>24?kpi.oldestBo.c.slice(0,24)+'…':kpi.oldestBo.c}</div><div class="kpi-ref">${kpi.oldestBo.e} · ${kpi.oldestBo.o}</div>`:'<div class="kpi-sub">No backordered orders</div>'}
+    </div>`;
 }
 
-function orderLink(orderNum){
-  const id='cb-'+orderNum.replace(/[^a-z0-9]/gi,'');
-  return`<span class="order-num">${orderNum}<button class="copy-btn" id="${id}" onclick="copyOrder('${orderNum}','${id}')" title="Copy order number"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M1 8V1h7v3"/></svg></button></span>`;
-}
-function copyOrder(num,id){
-  navigator.clipboard.writeText(num).then(()=>{
-    const btn=document.getElementById(id);
-    if(!btn)return;
-    btn.classList.add('copied');
-    btn.innerHTML=`<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 6 4.5 9 10.5 3"/></svg>`;
-    setTimeout(()=>{
-      btn.classList.remove('copied');
-      btn.innerHTML=`<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M1 8V1h7v3"/></svg>`;
-    },1500);
-  });
-}
-
+// ── TABLE ─────────────────────────────────────
 function renderTable(data){
   const rows=srt(data);
   document.getElementById('cnt').textContent=rows.length+' order'+(rows.length!==1?'s':'');
   const rtv=rows.reduce((s,d)=>s+d.v,0);
   const rbo=rows.filter(d=>d.s==='Backordered').length;
   const ra=rows.filter(d=>d.a>=30).length;
-  document.getElementById('srow').innerHTML=`
-    <span class="ss">Total NZD: <strong>${fvs(rtv)}</strong></span>
-    <span style="color:var(--text-hint);margin:0 6px;">·</span>
-    <span class="ss">Backordered: <strong>${rbo}</strong></span>
-    <span style="color:var(--text-hint);margin:0 6px;">·</span>
-    <span class="ss">Aged 30+ days: <strong style="color:var(--danger)">${ra}</strong></span>
-  `;
+  document.getElementById('summaryRow').innerHTML=`
+    <span class="sum-item">Total NZD: <strong>${fvs(rtv)}</strong></span>
+    <span class="sum-sep">·</span>
+    <span class="sum-item">Backordered: <strong>${rbo}</strong></span>
+    <span class="sum-sep">·</span>
+    <span class="sum-item">Aged 30+: <strong style="color:var(--danger)">${ra}</strong></span>`;
   const flds=['order','entity','customer','date','req','age','val','status'];
   document.querySelectorAll('th').forEach((th,i)=>{
     const sa=th.querySelector('.sa');if(!sa)return;
@@ -575,18 +666,32 @@ function renderTable(data){
   emp.style.display='none';
   tb.innerHTML=rows.map(d=>`
     <tr>
-      <td>${orderLink(d.o)}</td>
-      <td><span class="etag">${d.e}</span></td>
+      <td>${orderNum(d.o)}</td>
+      <td><span class="entity-tag">${d.e}</span></td>
       <td style="font-weight:500">${d.c}</td>
-      <td style="color:var(--text-muted)">${fd(d.od)}</td>
-      <td style="color:var(--text-muted)">${fd(d.rd)}</td>
-      <td>${abadge(d.a)}</td>
-      <td style="font-size:12px">${fv(d.v,d.lv,d.e)}</td>
-      <td><span class="sb s-${d.s}">${d.s}</span></td>
-    </tr>
-  `).join('');
+      <td style="color:var(--muted);font-size:12px">${fd(d.od)}</td>
+      <td style="color:var(--muted);font-size:12px">${fd(d.rd)}</td>
+      <td>${ageBadge(d.a)}</td>
+      <td>${fvCell(d.v,d.lv,d.e)}</td>
+      <td><span class="badge b-${d.s}">${d.s}</span></td>
+    </tr>`).join('');
 }
 
+// ── ORDER NUM + COPY ──────────────────────────
+function orderNum(n){
+  const id='cb-'+n.replace(/[^a-z0-9]/gi,'');
+  return`<span class="order-num">${n}<button class="copy-btn" id="${id}" onclick="copyOrder('${n}','${id}')" title="Copy order number"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M1 8V1h7v3"/></svg></button></span>`;
+}
+function copyOrder(num,id){
+  navigator.clipboard.writeText(num).then(()=>{
+    const btn=document.getElementById(id);if(!btn)return;
+    btn.classList.add('copied');
+    btn.innerHTML=`<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="1.5 6 4.5 9 10.5 3"/></svg>`;
+    setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=`<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><path d="M1 8V1h7v3"/></svg>`;},1500);
+  });
+}
+
+// ── MASTER RENDER ─────────────────────────────
 function render(){
   const data=fil();
   const kpi=calcKPIs(data);
@@ -596,61 +701,11 @@ function render(){
   renderTable(data);
 }
 
-function buildFilters(){
-  const ef=document.getElementById('ef'),sf=document.getElementById('sf');
-  const ae=mkChip('All',()=>{AE.clear();syncE();render();},true);
-  ae.classList.add('active','ea');ef.appendChild(ae);
-  ENT.forEach(e=>{
-    const c=mkChip(e+'  '+CCY[e],()=>{
-      document.querySelector('.ea').classList.remove('active');
-      AE.has(e)?AE.delete(e):AE.add(e);c.classList.toggle('active');
-      if(!AE.size)document.querySelector('.ea').classList.add('active');
-      render();
-    });ef.appendChild(c);
-  });
-  const as=mkChip('All',()=>{AS.clear();syncS();render();},true);
-  as.classList.add('active','sa2');sf.appendChild(as);
-  STS.forEach(s=>{
-    const c=mkChip(s,()=>{
-      document.querySelector('.sa2').classList.remove('active');
-      AS.has(s)?AS.delete(s):AS.add(s);c.classList.toggle('active');
-      if(!AS.size)document.querySelector('.sa2').classList.add('active');
-      render();
-    });sf.appendChild(c);
-  });
-}
-function syncE(){document.querySelectorAll('#ef .chip:not(.ea)').forEach(c=>c.classList.remove('active'));document.querySelector('.ea').classList.add('active');}
-function syncS(){document.querySelectorAll('#sf .chip:not(.sa2)').forEach(c=>c.classList.remove('active'));document.querySelector('.sa2').classList.add('active');}
-function mkChip(l,fn,b){const el=document.createElement('div');el.className='chip';el.textContent=l;if(b)el.style.fontWeight='500';el.addEventListener('click',fn);return el;}
-function fil(){return D.filter(d=>(!AE.size||AE.has(d.e))&&(!AS.size||AS.has(d.s)));}
-function srt(data){return[...data].sort((a,b)=>{
-  let va,vb;
-  if(SF==='order'){va=a.o;vb=b.o;}else if(SF==='entity'){va=a.e;vb=b.e;}else if(SF==='customer'){va=a.c;vb=b.c;}else if(SF==='date'){va=a.od;vb=b.od;}else if(SF==='req'){va=a.rd;vb=b.rd;}else if(SF==='age'){va=a.a;vb=b.a;}else if(SF==='val'){va=a.v;vb=b.v;}else if(SF==='status'){va=a.s;vb=b.s;}
-  if(typeof va==='string')return SD==='asc'?va.localeCompare(vb):vb.localeCompare(va);
-  return SD==='asc'?va-vb:vb-va;
-});}
-function sb2(f){if(SF===f)SD=SD==='asc'?'desc':'asc';else{SF=f;SD=(f==='age'||f==='val')?'desc':'asc';}render();}
-function fd(s){if(!s)return'—';const d=new Date(s);return d.toLocaleDateString('en-NZ',{day:'2-digit',month:'short'});}
-function fv(nzd,lv,e){
-  if(!lv)return'<span style="color:var(--text-hint)">—</span>';
-  const ccy=CCY[e];
-  const nf=nzd>=1000000?'NZ$'+(nzd/1000000).toFixed(2)+'M':nzd>=1000?'NZ$'+(nzd/1000).toFixed(1)+'K':'NZ$'+Math.round(nzd).toLocaleString('en-NZ');
-  if(ccy==='NZD')return nf;
-  const lf=lv>=1000000?(lv/1000000).toFixed(1)+'M':lv>=1000?(lv/1000).toFixed(0)+'K':Math.round(lv).toLocaleString();
-  return nf+'<span class="lccy">'+ccy+' '+lf+'</span>';
-}
-function fvs(n){if(!n)return'—';if(n>=1000000)return'NZ$'+(n/1000000).toFixed(2)+'M';if(n>=1000)return'NZ$'+(n/1000).toFixed(1)+'K';return'NZ$'+Math.round(n).toLocaleString('en-NZ');}
-function abadge(d){
-  if(d===0)return'<span class="ab an">Today</span>';
-  if(d>=60)return`<span class="ab ac">${d}d</span>`;
-  if(d>=30)return`<span class="ab aw">${d}d</span>`;
-  if(d>=7) return`<span class="ab ao">${d}d</span>`;
-  return`<span class="ab an">${d}d</span>`;
-}
 function qf(s){AS.clear();AS.add(s);syncS();document.querySelectorAll('#sf .chip:not(.sa2)').forEach(c=>{if(c.textContent===s)c.classList.add('active');});render();}
-function filterAged(){AS.clear();syncS();SF='age';SD='desc';render();document.querySelector('.tw').scrollIntoView({behavior:'smooth',block:'start'});}
+function filterAged(){AS.clear();syncS();SF='age';SD='desc';render();document.querySelector('.table-wrap').scrollIntoView({behavior:'smooth',block:'start'});}
 
-buildFilters();render();
+buildFilters();
+render();
 </script>
 </body>
 </html>
