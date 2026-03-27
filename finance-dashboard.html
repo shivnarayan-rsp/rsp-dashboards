@@ -37,40 +37,41 @@
   body { font-family: 'DM Sans', sans-serif; background: var(--body-bg); color: var(--text); font-size: 14px; line-height: 1.5; }
 
   /* ── HEADER ── */
-  header { background: var(--charcoal); border-bottom: 3px solid #D7063B; border-bottom: 3px solid #D7063B; color: white; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  header { background: var(--charcoal); border-bottom: 3px solid #D7063B; color: white; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
   .header-left { display: flex; align-items: center; gap: 16px; }
-  .header-brand { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: white; }
-  .header-brand span { color: var(--red); }
-  .header-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.2); }
-  .header-subtitle { font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 400; }
   .header-right { display: flex; align-items: center; gap: 20px; }
-  .as-at-badge { background: rgba(215,6,59,0.15); border: 1px solid rgba(215,6,59,0.3); color: #ff7a97; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-family: 'DM Mono', monospace; font-weight: 500; }
   .back-link { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 13px; transition: color 0.15s; }
   .back-link:hover { color: white; }
 
   /* ── LAYOUT ── */
   main { max-width: 1440px; margin: 0 auto; padding: 28px 24px 60px; }
 
-  /* ── WIG BANNER ── */
-  .wig-banner {
-    background: var(--charcoal);
-    border-radius: 10px;
-    padding: 16px 24px;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .wig-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--red); }
-  .wig-text { font-size: 15px; font-weight: 600; color: white; margin-top: 2px; }
-  .wig-group-stats { display: flex; gap: 32px; }
-  .wig-stat { text-align: right; }
-  .wig-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.4); }
-  .wig-stat-value { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; color: white; line-height: 1.2; }
-  .wig-stat-value.warn { color: #fbbf24; }
-  .wig-stat-value.danger { color: #f87171; }
+  /* ── WIG SCOREBOARD (4DX format — matches service-dashboard.html) ── */
+  .wig-banner{background:var(--charcoal);border-radius:10px;padding:18px 24px 12px;margin-bottom:24px;position:relative;overflow:hidden;}
+  .wig-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red);}
+  .wig-eyebrow{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.18em;color:var(--red);font-family:'DM Mono',monospace;margin-bottom:14px;}
+  .wig-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px;}
+  .wig-card{background:#242424;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:16px 18px;}
+  .wig-card-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-family:'DM Mono',monospace;margin-bottom:6px;}
+  .wig-card-title{font-size:12px;font-weight:600;color:#fff;line-height:1.3;margin-bottom:2px;}
+  .wig-card-owners{font-size:10px;color:#666;margin-bottom:14px;}
+  .wig-track-wrap{margin-bottom:6px;}
+  .wig-track-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .wig-track-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:#555;width:38px;flex-shrink:0;}
+  .wig-track{flex:1;height:8px;background:#111;border-radius:4px;position:relative;overflow:visible;}
+  .wig-fill{height:8px;border-radius:4px;position:absolute;top:0;left:0;}
+  .wig-fill-good{background:#16a34a;}
+  .wig-fill-warn{background:#f59e0b;}
+  .wig-fill-bad{background:#dc2626;}
+  .wig-target-marker{position:absolute;top:-3px;bottom:-3px;width:2px;border-radius:1px;background:#fff;opacity:.4;}
+  .wig-track-val{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;width:52px;text-align:right;flex-shrink:0;}
+  .wig-footer-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06);}
+  .wig-from{font-size:10px;color:#555;}
+  .wig-deadline{font-size:10px;font-family:'DM Mono',monospace;font-weight:600;padding:2px 7px;border-radius:3px;}
+  .wig-deadline.jun{background:rgba(251,191,36,.15);color:#fbbf24;}
+  .wig-deadline.dec{background:rgba(74,222,128,.12);color:#4ade80;}
+  @media(max-width:900px){.wig-cards{grid-template-columns:1fr 1fr;}}
+  @media(max-width:500px){.wig-cards{grid-template-columns:1fr;}}
 
   /* ── SECTION LABEL ── */
   .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
@@ -78,20 +79,11 @@
 
   /* ── SCORECARDS ROW ── */
   .scorecard-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 28px; }
-
-  .scorecard {
-    background: var(--surface);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    padding: 18px 16px 16px;
-    position: relative;
-    overflow: hidden;
-  }
+  .scorecard { background: var(--surface); border-radius: 10px; border: 1px solid var(--border); padding: 18px 16px 16px; position: relative; overflow: hidden; }
   .scorecard::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--border); }
   .scorecard.status-green::before { background: var(--green); }
   .scorecard.status-amber::before { background: var(--amber); }
   .scorecard.status-red::before { background: var(--danger); }
-
   .sc-entity { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); margin-bottom: 12px; }
   .sc-dso-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
   .sc-dso { font-family: 'DM Mono', monospace; font-size: 32px; font-weight: 500; line-height: 1; }
@@ -103,24 +95,18 @@
   .sc-trend.improving { color: var(--green); }
   .sc-trend.worsening { color: var(--danger); }
   .sc-trend.stable { color: var(--text-3); }
-
   .sc-divider { height: 1px; background: var(--border); margin-bottom: 12px; }
-
   .sc-metric-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
   .sc-metric-label { font-size: 11px; color: var(--text-2); }
   .sc-metric-value { font-family: 'DM Mono', monospace; font-size: 11.5px; font-weight: 500; color: var(--text); }
   .sc-metric-value.danger { color: var(--danger); }
   .sc-metric-value.amber { color: var(--amber); }
-
-  /* AR health bar */
   .sc-health-bar-wrap { margin-top: 12px; }
   .sc-health-bar-label { font-size: 10px; color: var(--text-3); margin-bottom: 4px; display: flex; justify-content: space-between; }
   .sc-health-bar { height: 6px; border-radius: 99px; background: var(--border); overflow: hidden; display: flex; }
   .sc-bar-current { background: var(--green); height: 100%; }
   .sc-bar-overdue-mild { background: var(--amber); height: 100%; }
   .sc-bar-overdue-severe { background: var(--danger); height: 100%; }
-
-  /* Cash pill */
   .sc-cash-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; margin-top: 10px; }
   .sc-cash-pill.ok    { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-border); }
   .sc-cash-pill.tight { background: var(--amber-bg);  color: var(--amber);  border: 1px solid var(--amber-border); }
@@ -133,32 +119,25 @@
   .lb-header-cell { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.5); text-align: right; }
   .lb-header-cell:first-child { text-align: left; color: rgba(255,255,255,0.3); }
   .lb-header-cell.highlight { color: rgba(255,255,255,0.85); }
-
   .lb-row { display: grid; grid-template-columns: 120px 1fr 90px 90px 90px 90px; align-items: center; padding: 14px 20px; gap: 12px; border-bottom: 1px solid var(--border); transition: background 0.1s; }
   .lb-row:last-child { border-bottom: none; }
   .lb-row:hover { background: #fafafa; }
-
   .lb-entity { font-weight: 600; font-size: 13px; }
   .lb-rank { font-size: 10px; color: var(--text-3); font-family: 'DM Mono', monospace; }
-
   .lb-bar-wrap { position: relative; height: 28px; display: flex; align-items: center; }
   .lb-bar-bg { position: absolute; left: 0; right: 0; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; display: flex; }
   .lb-bar-current { height: 100%; background: var(--green); }
   .lb-bar-mild { height: 100%; background: var(--amber); opacity: 0.7; }
   .lb-bar-severe { height: 100%; background: var(--danger); opacity: 0.85; }
-  .lb-pct-label { position: absolute; right: 0; font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text-3); }
-
   .lb-num { font-family: 'DM Mono', monospace; font-size: 12.5px; text-align: right; }
   .lb-num.danger { color: var(--danger); font-weight: 600; }
   .lb-num.amber  { color: var(--amber);  font-weight: 600; }
   .lb-num.green  { color: var(--green);  font-weight: 600; }
-
   .lb-dso-cell { text-align: right; }
   .lb-dso-badge { display: inline-block; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
   .lb-dso-badge.green  { background: var(--green-bg);  color: var(--green); }
   .lb-dso-badge.amber  { background: var(--amber-bg);  color: var(--amber); }
   .lb-dso-badge.red    { background: var(--danger-bg); color: var(--danger); }
-
   .lb-trend-cell { text-align: right; font-size: 12px; font-weight: 600; }
   .lb-trend-cell.worsening { color: var(--danger); }
   .lb-trend-cell.improving { color: var(--green); }
@@ -180,41 +159,45 @@
   .val-amber { color: var(--amber)  !important; }
   .val-green { color: var(--green)  !important; }
   .val-muted { color: var(--text-3) !important; }
+  tr.inv-row { background: #f7f9ff !important; border-top: 2px solid var(--border) !important; }
+  tr.inv-row td { border-bottom: 2px solid var(--border); }
+
+  /* ── CLOSE PROGRESS STRIP ── */
+  .close-strip { display:flex; align-items:center; gap:20px; background:var(--charcoal); border-radius:10px; padding:14px 20px; margin-bottom:20px; text-decoration:none; transition:opacity .15s; }
+  .close-strip:hover { opacity:.9; }
+  .cs-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:rgba(255,255,255,.4); }
+  .cs-period { font-size:13px; font-weight:600; color:white; margin-top:2px; white-space:nowrap; }
+  .cs-bar-wrap { flex:1; height:6px; background:rgba(255,255,255,.1); border-radius:99px; overflow:hidden; min-width:80px; }
+  .cs-bar-fill { height:100%; background:var(--red); border-radius:99px; transition:width .5s; }
+  .cs-stat { text-align:center; min-width:32px; }
+  .cs-stat-val { font-family:'DM Mono',monospace; font-size:18px; font-weight:500; color:white; line-height:1; }
+  .cs-stat-label { font-size:10px; color:rgba(255,255,255,.4); text-transform:uppercase; letter-spacing:.07em; margin-top:2px; }
+  .cs-blocking { font-size:11px; color:#fbbf24; font-weight:600; white-space:nowrap; }
+  .cs-arrow { font-size:16px; color:rgba(255,255,255,.3); }
 
   /* ── FX FOOTNOTE ── */
   .fx-footnote { font-size: 11px; color: var(--text-3); margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); font-family: 'DM Mono', monospace; }
 
-  @media (max-width: 1100px) {
-    .scorecard-grid { grid-template-columns: repeat(3, 1fr); }
-    .ap-grid { grid-template-columns: repeat(3, 1fr); }
-    .lb-header, .lb-row { grid-template-columns: 100px 1fr 80px 80px 80px; }
-    .lb-header .lb-header-cell:nth-child(4), .lb-row .lb-num:nth-child(4) { display: none; }
-  }
-  @media (max-width: 700px) {
-    main { padding: 16px 12px 40px; }
-    .scorecard-grid { grid-template-columns: repeat(2, 1fr); }
-    .ap-grid { grid-template-columns: repeat(2, 1fr); }
-    .wig-group-stats { display: none; }
-  }
+  @media (max-width: 1100px) { .scorecard-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px) { main { padding: 16px 12px 40px; } .scorecard-grid { grid-template-columns: repeat(2, 1fr); } }
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-left">
-    <div class="header-brand" style="display:flex;align-items:center;gap:12px;">
+    <div style="display:flex;align-items:center;gap:14px;">
       <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:26px;display:block;" onerror="this.style.display='none'">
-      <span style="color:rgba(255,255,255,.3);font-weight:300;font-size:18px;">|</span>
-      <span style="font-size:13px;font-weight:400;color:rgba(255,255,255,.7);letter-spacing:.03em;">South Pacific</span>
+      <span style="color:rgba(255,255,255,.25);font-weight:300;font-size:20px;line-height:1;">|</span>
+      <span style="font-size:13px;color:#aaa;letter-spacing:.03em;">Finance Dashboard</span>
     </div>
-    <div class="hd" style="width:1px;height:22px;background:#444;"></div>
-    <span style="font-size:13px;color:#aaa;letter-spacing:.03em;">Finance Dashboard</span>
   </div>
   <div class="header-right">
     <span style="font-family:'DM Mono',monospace;font-size:11px;color:#666;" id="asAtBadge"></span>
     <a href="index.html" class="back-link">← Scorecards</a>
   </div>
 </header>
+
 <nav style="background:#1a1a1a;border-top:1px solid rgba(255,255,255,.08);padding:0 32px;display:flex;gap:4px;overflow-x:auto;">
   <a href="finance-dashboard.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:white;border-bottom:2px solid #D7063B;text-decoration:none;display:inline-block;margin-bottom:-1px;white-space:nowrap;">Finance Dashboard</a>
   <a href="finance-close.html" style="padding:9px 16px;font-size:12.5px;font-weight:500;color:rgba(255,255,255,.5);border-bottom:2px solid transparent;text-decoration:none;display:inline-block;transition:color .15s;white-space:nowrap;" onmouseover="this.style.color='rgba(255,255,255,.85)'" onmouseout="this.style.color='rgba(255,255,255,.5)'">Month-End Close</a>
@@ -223,7 +206,7 @@
 </nav>
 
 <main>
-  
+
   <a href="finance-close.html" class="close-strip" id="closeStrip">
     <div>
       <div class="cs-label">Month-End Close</div>
@@ -244,7 +227,7 @@
   <div class="section-label">Collections Leaderboard — Overdue AR Ranked by Risk</div>
   <div class="leaderboard" id="leaderboard"></div>
 
-  <div class="section-label">AR Ageing Detail</div>
+  <div class="section-label">Working Capital Detail — AR Ageing &amp; Inventory</div>
   <div class="detail-table-wrap" id="detailTable"></div>
 
   <div class="fx-footnote" id="fxFootnote"></div>
@@ -260,195 +243,225 @@
 const DATA = {
   asAt: "23 March 2026",
   fx: { WST: 0.6172, SBD: 0.2076, TOP: 0.6931, VUV: 0.0140, NZD: 1.0 },
-
-  // DSO target: <60 days
   dsoTarget: 60,
-
   entities: ["Alpine", "RSP", "Samoa", "Solomons", "Tonga", "Vanuatu"],
 
   ar: {
-    // AR ageing in NZD
     current: {
-      Alpine:   209307,
-      RSP:       57733,   // live
-      Samoa:     23534,   // WST 38,101 × 0.6172
-      Solomons:   5754,   // SBD 27,728 × 0.2076
-      Tonga:      3642,   // TOP 5,256 × 0.6931
-      Vanuatu:   26653,   // VUV 1,903,774 × 0.0140
+      Alpine: 209307, RSP: 57733, Samoa: 23534, Solomons: 5754, Tonga: 3642, Vanuatu: 26653,
     },
     days3060: {
-      Alpine:     8613,
-      RSP:      186119,   // live
-      Samoa:     34188,   // WST 55,373 × 0.6172
-      Solomons:   5895,   // SBD 28,395 × 0.2076
-      Tonga:      7213,   // TOP 10,407 × 0.6931
-      Vanuatu:   19876,   // VUV 1,419,712 × 0.0140
+      Alpine: 8613, RSP: 186119, Samoa: 34188, Solomons: 5895, Tonga: 7213, Vanuatu: 19876,
     },
     days6090: {
-      Alpine:    10238,
-      RSP:       91342,   // live
-      Samoa:      6880,   // WST 11,141 × 0.6172
-      Solomons:   3025,   // SBD 14,578 × 0.2076
-      Tonga:       680,   // TOP 981 × 0.6931
-      Vanuatu:   12813,   // VUV 915,230 × 0.0140
+      Alpine: 10238, RSP: 91342, Samoa: 6880, Solomons: 3025, Tonga: 680, Vanuatu: 12813,
     },
     days90plus: {
-      Alpine:    72018,
-      RSP:      601496,   // live — significantly elevated
-      Samoa:     96304,   // WST 155,951 × 0.6172
-      Solomons:  49826,   // SBD 240,009 × 0.2076
-      Tonga:      2332,   // TOP 3,365 × 0.6931
-      Vanuatu:   50792,   // VUV 3,628,000 × 0.0140
+      Alpine: 72018, RSP: 601496, Samoa: 96304, Solomons: 49826, Tonga: 2332, Vanuatu: 50792,
     },
-    // Trailing 90-day revenue in NZD (for DSO calculation)
     rev90Day: {
-      Alpine:   359690,   // manual
-      RSP:      924194,   // live
-      Samoa:    532254,   // WST 861,785 × 0.6172
-      Solomons: 344349,   // SBD 1,658,717 × 0.2076
-      Tonga:    213581,   // TOP 308,266 × 0.6931
-      Vanuatu:  447447,   // VUV 31,960,496 × 0.0140
+      Alpine: 359690, RSP: 924194, Samoa: 532254, Solomons: 344349, Tonga: 213581, Vanuatu: 447447,
     },
-    // Prior period 90-day revenue (91–180 days ago) for DSO trend
     rev90DayPrior: {
-      Alpine:      null,   // not available
-      RSP:      1169961,   // live
-      Samoa:     654001,   // WST 1,059,593 × 0.6172
-      Solomons:  427302,   // SBD 2,058,296 × 0.2076
-      Tonga:     232092,   // TOP 334,987 × 0.6931
-      Vanuatu:   510870,   // VUV 36,490,738 × 0.0140
+      Alpine: null, RSP: 1169961, Samoa: 654001, Solomons: 427302, Tonga: 232092, Vanuatu: 510870,
     },
   },
 
-  // AP due next 7 days in NZD
   ap7Days: {
-    Alpine:    66918,   // manual
-    RSP:        3119,   // live
-    Samoa:       210,   // WST 340 × 0.6172
-    Solomons:   1358,   // SBD 6,542 × 0.2076
-    Tonga:         0,   // TOP 0
-    Vanuatu:      42,   // VUV 3,000 × 0.0140
+    Alpine: 66918, RSP: 3119, Samoa: 210, Solomons: 1358, Tonga: 0, Vanuatu: 42,
   },
 
-  // Available cash (closing cash + overdraft) — from prior manual dashboard
-  // Used only for AP coverage ratio
   availableCash: {
-    Alpine:   135482,   // -114,518 + 250,000
-    RSP:      669417,   // -80,583 + 750,000
-    Samoa:    855955,   // 797,321 + 58,634
-    Solomons: 124536,   // 59,661 + 64,875
-    Tonga:    237453,   // 181,311 + 56,141
-    Vanuatu:  377515,   // 321,515 + 56,000
+    Alpine: 135482, RSP: 669417, Samoa: 855955, Solomons: 124536, Tonga: 237453, Vanuatu: 377515,
   },
+
+  // ── INVENTORY — Unleashed via Synchub · 25 Mar 2026 ──────────────────
+  // FX: WST×0.6181 · SBD×0.2119 · VUV×0.0141 · TOP×0.7191 · NZD×1.0
+  // Lead measures: Ranika Chandra's SLOB WIG on inventory-dashboard.html
+  inventoryNZD: {
+    Alpine:   10027,    // manual — Alpine not connected to Synchub
+    RSP:      408201,   // NZD direct · 296 product lines
+    Samoa:    187466,   // WST 303,294 × 0.6181
+    Solomons: 558043,   // SBD 2,633,519 × 0.2119 — highest entity
+    Tonga:    247342,   // TOP 343,961 × 0.7191
+    Vanuatu:  419710,   // VUV 29,766,641 × 0.0141
+  },
+  inventoryTarget: 1200000,   // WIG 3: ≤$1.2m NZD total by December 2026
+  inventoryAsAt: "25 Mar 2026",
 };
 
 // ═══════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════
 const E = DATA.entities;
-const fx  = (n) => n === null ? null : Math.round(n);
 
 function totalAR(e) {
   return (DATA.ar.current[e]||0) + (DATA.ar.days3060[e]||0) +
          (DATA.ar.days6090[e]||0) + (DATA.ar.days90plus[e]||0);
 }
-
 function dso(e) {
-  const ar  = totalAR(e);
-  const rev = DATA.ar.rev90Day[e];
+  const ar = totalAR(e), rev = DATA.ar.rev90Day[e];
   return rev > 0 ? (ar / rev) * 90 : null;
 }
-
 function priorDSO(e) {
-  // Prior AR = prior total AR approximated using prior revenue and current % overdue structure
-  // We use the prior revenue window to estimate what AR would have been
   const priorRev = DATA.ar.rev90DayPrior[e];
   if (!priorRev) return null;
-  // Use the same AR/revenue ratio shape but applied to prior revenue
-  // This gives a directional prior DSO
-  const currentRev = DATA.ar.rev90Day[e];
-  const currentDSO = dso(e);
-  if (!currentRev || !currentDSO) return null;
-  // Prior DSO = current AR / prior revenue × 90
-  // (AR is the same snapshot, revenue is the prior window — shows if revenue was higher/lower)
   return (totalAR(e) / priorRev) * 90;
 }
-
 function dsoStatus(d) {
   if (d === null) return 'stable';
   if (d > 90) return 'red';
   if (d > 60) return 'amber';
   return 'green';
 }
-
 function overduePercent(e) {
   const total = totalAR(e);
   if (!total) return 0;
   return ((DATA.ar.days3060[e]||0) + (DATA.ar.days6090[e]||0) + (DATA.ar.days90plus[e]||0)) / total;
 }
-
 function severe90Percent(e) {
   const total = totalAR(e);
-  if (!total) return 0;
-  return (DATA.ar.days90plus[e]||0) / total;
+  return total ? (DATA.ar.days90plus[e]||0) / total : 0;
 }
-
 function cashStatus(e) {
-  const avail = DATA.availableCash[e];
-  const ap    = DATA.ap7Days[e] || 0;
-  if (!ap || ap === 0) return 'ok';
+  const avail = DATA.availableCash[e], ap = DATA.ap7Days[e] || 0;
+  if (!ap) return 'ok';
   const ratio = avail / ap;
   if (ratio >= 3) return 'ok';
   if (ratio >= 1.5) return 'tight';
   return 'risk';
 }
-
-function fmt(n, opts = {}) {
+function fmt(n) {
   if (n === null || n === undefined) return '<span style="color:var(--text-3);font-style:italic">N/A</span>';
   const abs = Math.abs(Math.round(n));
   const str = '$' + abs.toLocaleString('en-NZ');
   return n < 0 ? `(${str})` : str;
 }
-
 function fmtDays(n) {
   if (n === null || n === undefined || !isFinite(n)) return '—';
   return Math.round(n) + 'd';
 }
 
 // ═══════════════════════════════════════════════════════════
-// WIG BANNER
+// WIG BANNER — 4DX format
 // ═══════════════════════════════════════════════════════════
 function renderWIG() {
-  const totalARAll  = E.reduce((s, e) => s + totalAR(e), 0);
-  const total90plus = E.reduce((s, e) => s + (DATA.ar.days90plus[e]||0), 0);
-  const groupDSONum = E.reduce((s,e)=>s+totalAR(e),0) / E.reduce((s,e)=>s+(DATA.ar.rev90Day[e]||0),0) * 90;
-  const overduePct  = E.reduce((s,e)=>s+(DATA.ar.days3060[e]||0)+(DATA.ar.days6090[e]||0)+(DATA.ar.days90plus[e]||0),0) / totalARAll * 100;
+  const totalARAll   = E.reduce((s,e) => s + totalAR(e), 0);
+  const total90plus  = E.reduce((s,e) => s + (DATA.ar.days90plus[e]||0), 0);
+  const groupDSONum  = totalARAll / E.reduce((s,e) => s + (DATA.ar.rev90Day[e]||0), 0) * 90;
+  const totalInvNZD  = Object.values(DATA.inventoryNZD).reduce((s,v) => s + (v||0), 0);
+  const invReductionNeeded = Math.max(0, totalInvNZD - DATA.inventoryTarget);
 
-  const dsoClass   = groupDSONum > 90 ? 'danger' : groupDSONum > 60 ? 'warn' : '';
-  const overdueClass = overduePct > 50 ? 'danger' : overduePct > 30 ? 'warn' : '';
+  const dsoNow    = Math.round(groupDSONum);
+  // WIG 1 scale: 0–120d
+  const dsoNowPct = Math.min(dsoNow / 120 * 100, 100).toFixed(1);
+  const dsoJunPct = (60 / 120 * 100).toFixed(1);   // 50%
+  const dsoDecPct = (45 / 120 * 100).toFixed(1);   // 37.5%
+
+  // WIG 2 scale: 0–$1m
+  const sev90NowPct = Math.min(total90plus / 1000000 * 100, 100).toFixed(1);
+
+  // WIG 3 scale: 0–$2m
+  const invNowPct  = Math.min(totalInvNZD / 2000000 * 100, 100).toFixed(1);
+  const invTargPct = (DATA.inventoryTarget / 2000000 * 100).toFixed(1); // 60%
 
   document.getElementById('wigBanner').innerHTML = `
-    <div>
-      <div class="wig-label">Wildly Important Goal</div>
-      <div class="wig-text">Reduce DSO &amp; recover overdue AR — strengthen working capital across the group</div>
-    </div>
-    <div class="wig-group-stats">
-      <div class="wig-stat">
-        <div class="wig-stat-label">Group Total AR</div>
-        <div class="wig-stat-value">${fmt(totalARAll)}</div>
+    <div class="wig-eyebrow">4DX — Wildly Important Goals · Minoo Sigan · Finance Manager</div>
+    <div class="wig-cards">
+
+      <div class="wig-card">
+        <div class="wig-card-num">WIG 1</div>
+        <div class="wig-card-title">Group DSO from ${dsoNow}d → ≤60d by June · ≤45d by December</div>
+        <div class="wig-card-owners">Owner: Minoo Sigan · connects to: Shiv (board WIG), collections team</div>
+        <div class="wig-track-wrap">
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Now</div>
+            <div class="wig-track">
+              <div class="wig-fill wig-fill-bad" style="width:${dsoNowPct}%"></div>
+              <div class="wig-target-marker" style="left:${dsoJunPct}%" title="June target: 60d"></div>
+              <div class="wig-target-marker" style="left:${dsoDecPct}%;opacity:.25" title="Dec target: 45d"></div>
+            </div>
+            <div class="wig-track-val" style="color:#dc2626">${dsoNow}d</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Jun 26</div>
+            <div class="wig-track">
+              <div class="wig-fill wig-fill-warn" style="width:${dsoJunPct}%"></div>
+              <div class="wig-target-marker" style="left:${dsoJunPct}%"></div>
+            </div>
+            <div class="wig-track-val" style="color:#f59e0b">≤60d</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Dec 26</div>
+            <div class="wig-track">
+              <div class="wig-fill wig-fill-good" style="width:${dsoDecPct}%"></div>
+              <div class="wig-target-marker" style="left:${dsoDecPct}%"></div>
+            </div>
+            <div class="wig-track-val" style="color:#16a34a">≤45d</div>
+          </div>
+        </div>
+        <div class="wig-footer-row">
+          <span class="wig-from">Group AR ${fmt(totalARAll)} · 90+ overdue ${fmt(total90plus)}</span>
+          <span class="wig-deadline jun">June 2026</span>
+        </div>
       </div>
-      <div class="wig-stat">
-        <div class="wig-stat-label">Group DSO</div>
-        <div class="wig-stat-value ${dsoClass}">${fmtDays(groupDSONum)}</div>
+
+      <div class="wig-card">
+        <div class="wig-card-num">WIG 2</div>
+        <div class="wig-card-title">90+ Day AR from ${fmt(total90plus)} → ≤$200k by December</div>
+        <div class="wig-card-owners">Owner: Minoo Sigan · connects to: entity finance leads, credit control</div>
+        <div class="wig-track-wrap">
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Now</div>
+            <div class="wig-track">
+              <div class="wig-fill wig-fill-bad" style="width:${sev90NowPct}%"></div>
+              <div class="wig-target-marker" style="left:20%" title="Dec target: $200k"></div>
+            </div>
+            <div class="wig-track-val" style="color:#dc2626">${fmt(total90plus)}</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Dec 26</div>
+            <div class="wig-track">
+              <div class="wig-fill wig-fill-good" style="width:20%"></div>
+              <div class="wig-target-marker" style="left:20%"></div>
+            </div>
+            <div class="wig-track-val" style="color:#16a34a">≤$200k</div>
+          </div>
+        </div>
+        <div class="wig-footer-row">
+          <span class="wig-from">RSP $601k dominates — primary focus entity</span>
+          <span class="wig-deadline dec">December 2026</span>
+        </div>
       </div>
-      <div class="wig-stat">
-        <div class="wig-stat-label">90+ Day AR</div>
-        <div class="wig-stat-value ${overdueClass}">${fmt(total90plus)}</div>
+
+      <div class="wig-card">
+        <div class="wig-card-num">WIG 3</div>
+        <div class="wig-card-title">Pacific inventory from ${fmt(Math.round(totalInvNZD))} → ≤$1.2m NZD by December</div>
+        <div class="wig-card-owners">Owner: Minoo Sigan · lead measures owned by Ranika Chandra — see inventory-dashboard.html</div>
+        <div class="wig-track-wrap">
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Now</div>
+            <div class="wig-track">
+              <div class="wig-fill wig-fill-bad" style="width:${invNowPct}%"></div>
+              <div class="wig-target-marker" style="left:${invTargPct}%" title="Dec target: $1.2m"></div>
+            </div>
+            <div class="wig-track-val" style="color:#dc2626">${fmt(Math.round(totalInvNZD))}</div>
+          </div>
+          <div class="wig-track-row">
+            <div class="wig-track-lbl">Dec 26</div>
+            <div class="wig-track">
+              <div class="wig-fill wig-fill-good" style="width:${invTargPct}%"></div>
+              <div class="wig-target-marker" style="left:${invTargPct}%"></div>
+            </div>
+            <div class="wig-track-val" style="color:#16a34a">≤$1.2m</div>
+          </div>
+        </div>
+        <div class="wig-footer-row">
+          <span class="wig-from">Need ↓${fmt(invReductionNeeded)} · Solomons $558k largest entity</span>
+          <span class="wig-deadline dec">December 2026</span>
+        </div>
       </div>
-      <div class="wig-stat">
-        <div class="wig-stat-label">% Overdue</div>
-        <div class="wig-stat-value ${overdueClass}">${overduePct.toFixed(0)}%</div>
-      </div>
+
     </div>`;
 }
 
@@ -457,34 +470,22 @@ function renderWIG() {
 // ═══════════════════════════════════════════════════════════
 function renderScorecards() {
   const grid = document.getElementById('scorecardGrid');
-
   E.forEach(e => {
-    const d        = dso(e);
-    const dPrior   = priorDSO(e);
-    const status   = dsoStatus(d);
-    const ovd      = overduePercent(e) * 100;
-    const sev      = severe90Percent(e) * 100;
-    const cur      = 100 - ovd;
-    const mild     = Math.max(0, ovd - sev);
-    const cs       = cashStatus(e);
-    const ar       = totalAR(e);
-    const ap7      = DATA.ap7Days[e] || 0;
+    const d = dso(e), dPrior = priorDSO(e), status = dsoStatus(d);
+    const ovd = overduePercent(e) * 100, sev = severe90Percent(e) * 100;
+    const cur = 100 - ovd, mild = Math.max(0, ovd - sev), cs = cashStatus(e);
 
-    // Trend
     let trendHtml = '<span class="sc-trend stable">— no prior data</span>';
     if (d !== null && dPrior !== null) {
       const delta = d - dPrior;
-      if (Math.abs(delta) < 2) {
-        trendHtml = `<span class="sc-trend stable">→ Stable (${fmtDays(dPrior)} prior)</span>`;
-      } else if (delta > 0) {
-        trendHtml = `<span class="sc-trend worsening">↑ +${Math.round(delta)}d vs prior (${fmtDays(dPrior)})</span>`;
-      } else {
-        trendHtml = `<span class="sc-trend improving">↓ ${Math.round(delta)}d vs prior (${fmtDays(dPrior)})</span>`;
-      }
+      if (Math.abs(delta) < 2) trendHtml = `<span class="sc-trend stable">→ Stable (${fmtDays(dPrior)} prior)</span>`;
+      else if (delta > 0) trendHtml = `<span class="sc-trend worsening">↑ +${Math.round(delta)}d vs prior (${fmtDays(dPrior)})</span>`;
+      else trendHtml = `<span class="sc-trend improving">↓ ${Math.round(delta)}d vs prior (${fmtDays(dPrior)})</span>`;
     }
 
     const cashPillLabels = { ok: 'Cash OK', tight: 'Cash Tight', risk: 'Cash Risk' };
-    const avail = DATA.availableCash[e];
+    const invVal = DATA.inventoryNZD[e] || 0;
+    const invCls = invVal > 400000 ? 'danger' : invVal > 200000 ? 'amber' : '';
 
     grid.innerHTML += `
     <div class="scorecard status-${status}">
@@ -497,23 +498,25 @@ function renderScorecards() {
       <div class="sc-divider"></div>
       <div class="sc-metric-row">
         <span class="sc-metric-label">Total AR</span>
-        <span class="sc-metric-value">${fmt(ar)}</span>
+        <span class="sc-metric-value">${fmt(totalAR(e))}</span>
       </div>
       <div class="sc-metric-row">
         <span class="sc-metric-label">90+ Overdue</span>
         <span class="sc-metric-value ${sev > 30 ? 'danger' : sev > 15 ? 'amber' : ''}">${fmt(DATA.ar.days90plus[e])} <span style="font-size:10px;color:var(--text-3)">(${sev.toFixed(0)}%)</span></span>
       </div>
+      <div class="sc-metric-row">
+        <span class="sc-metric-label">Inventory</span>
+        <span class="sc-metric-value ${invCls}">${fmt(invVal)}</span>
+      </div>
       <div class="sc-health-bar-wrap">
-        <div class="sc-health-bar-label"><span>Current</span><span>${(100-ovd).toFixed(0)}% current</span></div>
+        <div class="sc-health-bar-label"><span>AR Health</span><span>${(100-ovd).toFixed(0)}% current</span></div>
         <div class="sc-health-bar">
-          <div class="sc-bar-current"    style="width:${cur.toFixed(1)}%"></div>
-          <div class="sc-bar-overdue-mild"   style="width:${mild.toFixed(1)}%"></div>
+          <div class="sc-bar-current"       style="width:${cur.toFixed(1)}%"></div>
+          <div class="sc-bar-overdue-mild"  style="width:${mild.toFixed(1)}%"></div>
           <div class="sc-bar-overdue-severe" style="width:${sev.toFixed(1)}%"></div>
         </div>
       </div>
-      <div>
-        <span class="sc-cash-pill ${cs}"><span class="pill-dot"></span>${cashPillLabels[cs]}</span>
-      </div>
+      <div><span class="sc-cash-pill ${cs}"><span class="pill-dot"></span>${cashPillLabels[cs]}</span></div>
     </div>`;
   });
 }
@@ -522,8 +525,7 @@ function renderScorecards() {
 // LEADERBOARD
 // ═══════════════════════════════════════════════════════════
 function renderLeaderboard() {
-  const sorted = [...E].sort((a, b) => severe90Percent(b) - severe90Percent(a));
-
+  const sorted = [...E].sort((a,b) => severe90Percent(b) - severe90Percent(a));
   let html = `
     <div class="lb-header">
       <div class="lb-header-cell">Entity</div>
@@ -535,37 +537,23 @@ function renderLeaderboard() {
     </div>`;
 
   sorted.forEach((e, i) => {
-    const ar      = totalAR(e);
-    const sev     = severe90Percent(e);
-    const ovd     = overduePercent(e);
-    const cur     = 1 - ovd;
-    const mild    = ovd - sev;
-    const d       = dso(e);
-    const dPrior  = priorDSO(e);
-    const status  = dsoStatus(d);
-    const sevPct  = (sev * 100).toFixed(0);
-
-    const sevClass  = sev > 0.30 ? 'danger' : sev > 0.15 ? 'amber' : 'green';
-    const dsoClass  = status === 'red' ? 'red' : status === 'amber' ? 'amber' : 'green';
+    const sev = severe90Percent(e), ovd = overduePercent(e);
+    const cur = 1 - ovd, mild = ovd - sev;
+    const d = dso(e), dPrior = priorDSO(e), status = dsoStatus(d);
+    const sevClass = sev > 0.30 ? 'danger' : sev > 0.15 ? 'amber' : 'green';
+    const dsoClass = status === 'red' ? 'red' : status === 'amber' ? 'amber' : 'green';
 
     let trendHtml = '<span class="lb-trend-cell stable">—</span>';
     if (d !== null && dPrior !== null) {
       const delta = d - dPrior;
-      if (Math.abs(delta) < 2) {
-        trendHtml = `<span class="lb-trend-cell stable">→ Stable</span>`;
-      } else if (delta > 0) {
-        trendHtml = `<span class="lb-trend-cell worsening">↑ +${Math.round(delta)}d</span>`;
-      } else {
-        trendHtml = `<span class="lb-trend-cell improving">↓ ${Math.round(delta)}d</span>`;
-      }
+      if (Math.abs(delta) < 2) trendHtml = `<span class="lb-trend-cell stable">→ Stable</span>`;
+      else if (delta > 0) trendHtml = `<span class="lb-trend-cell worsening">↑ +${Math.round(delta)}d</span>`;
+      else trendHtml = `<span class="lb-trend-cell improving">↓ ${Math.round(delta)}d</span>`;
     }
 
     html += `
     <div class="lb-row">
-      <div>
-        <div class="lb-entity">${e}</div>
-        <div class="lb-rank">#${i+1} by risk</div>
-      </div>
+      <div><div class="lb-entity">${e}</div><div class="lb-rank">#${i+1} by risk</div></div>
       <div class="lb-bar-wrap">
         <div class="lb-bar-bg">
           <div class="lb-bar-current" style="width:${(cur*100).toFixed(1)}%"></div>
@@ -574,7 +562,7 @@ function renderLeaderboard() {
         </div>
       </div>
       <div class="lb-num ${sevClass}">${fmt(DATA.ar.days90plus[e])}</div>
-      <div class="lb-num ${sevClass}">${sevPct}%</div>
+      <div class="lb-num ${sevClass}">${(sev*100).toFixed(0)}%</div>
       <div class="lb-dso-cell"><span class="lb-dso-badge ${dsoClass}">${fmtDays(d)}</span></div>
       ${trendHtml}
     </div>`;
@@ -584,11 +572,31 @@ function renderLeaderboard() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// AR DETAIL TABLE
+// DETAIL TABLE — AR ageing + inventory working capital row
 // ═══════════════════════════════════════════════════════════
 function renderDetailTable() {
+  let html = `<table><thead><tr>
+    <th>Metric</th>
+    ${E.map(e => `<th>${e}</th>`).join('')}
+    <th class="total-col">Group</th>
+  </tr></thead><tbody>`;
+
+  // ── Inventory working capital row (top — context for the AR below) ──
+  const invTotal = E.reduce((s,e) => s + (DATA.inventoryNZD[e]||0), 0);
+  html += `<tr class="inv-row">
+    <td style="font-weight:600">Total Inventory (NZD)
+      <span style="display:block;font-size:10px;font-weight:400;color:var(--text-3);margin-top:1px">Unleashed · ${DATA.inventoryAsAt} · lead: Ranika Chandra WIG 1</span>
+    </td>`;
+  E.forEach(e => {
+    const v = DATA.inventoryNZD[e]||0;
+    const cls = v > 400000 ? ' val-red' : v > 200000 ? ' val-amber' : '';
+    html += `<td class="${cls}">${fmt(v)}</td>`;
+  });
+  html += `<td class="total-col" style="font-weight:700">${fmt(invTotal)}</td></tr>`;
+
+  // ── AR ageing rows ──
   const rows = [
-    { label: 'Current (not yet due)', key: 'current',    cls: v => '' },
+    { label: 'Current (not yet due)', key: 'current',    cls: () => '' },
     { label: '30–60 Days Overdue',    key: 'days3060',   cls: v => v > 0 ? ' val-amber' : '' },
     { label: '60–90 Days Overdue',    key: 'days6090',   cls: v => v > 0 ? ' val-amber' : '' },
     { label: '90+ Days Overdue',      key: 'days90plus', cls: (v, e) => {
@@ -596,26 +604,19 @@ function renderDetailTable() {
         return t > 0 && v/t > 0.30 ? ' val-red' : t > 0 && v/t > 0.15 ? ' val-amber' : '';
       }
     },
-    { label: 'Total AR',              key: null, isTotal: true },
-    { label: '90-Day Revenue',        key: 'rev90Day',   cls: v => '' },
-    { label: 'DSO (days)',            key: null, isDSO: true },
+    { label: 'Total AR',    isTotal: true },
+    { label: '90-Day Revenue', key: 'rev90Day', cls: () => '' },
+    { label: 'DSO (days)', isDSO: true },
   ];
-
-  let html = `<table><thead><tr>
-    <th>Metric</th>
-    ${E.map(e => `<th>${e}</th>`).join('')}
-    <th class="total-col">Group</th>
-  </tr></thead><tbody>`;
 
   rows.forEach(row => {
     if (row.isDSO) {
       html += `<tr><td>DSO (days)</td>`;
       let tAR = 0, tRev = 0;
       E.forEach(e => {
-        const ar  = totalAR(e);
-        const rev = DATA.ar.rev90Day[e] || 0;
+        const ar = totalAR(e), rev = DATA.ar.rev90Day[e]||0;
         tAR += ar; tRev += rev;
-        const d   = rev > 0 ? (ar/rev)*90 : null;
+        const d = rev > 0 ? (ar/rev)*90 : null;
         const cls = dsoStatus(d);
         const badge = d !== null
           ? `<span style="display:inline-block;padding:1px 6px;border-radius:4px;font-weight:700;background:var(--${cls==='red'?'danger':cls}-bg);color:var(--${cls==='red'?'danger':cls})">${Math.round(d)}d</span>`
@@ -637,16 +638,26 @@ function renderDetailTable() {
       html += `<td class="total-col" style="font-weight:700">${fmt(grand)}</td></tr>`;
       return;
     }
-    const vals = {}; E.forEach(e => vals[e] = DATA.ar[row.key][e]);
-    const tot  = E.reduce((s,e) => s + (vals[e]||0), 0);
+    const tot = E.reduce((s,e) => s + (DATA.ar[row.key][e]||0), 0);
     html += `<tr><td>${row.label}</td>`;
     E.forEach(e => {
-      const v   = vals[e];
-      const cls = typeof row.cls === 'function' ? row.cls(v, e) : row.cls(v);
+      const v = DATA.ar[row.key][e];
+      const cls = typeof row.cls === 'function' ? row.cls(v, e) : '';
       html += `<td class="${cls}">${fmt(v)}</td>`;
     });
     html += `<td class="total-col">${fmt(tot)}</td></tr>`;
   });
+
+  // ── Working capital total row (AR + Inventory) ──
+  const arTotal = E.reduce((s,e) => s + totalAR(e), 0);
+  const wcTotal = arTotal + invTotal;
+  html += `<tr style="font-weight:700;background:#f0f4ff;border-top:2px solid var(--border)"><td style="font-weight:700">Total Working Capital Exposure <span style="font-size:10px;font-weight:400;color:var(--text-3)">(AR + Inventory)</span></td>`;
+  E.forEach(e => {
+    const wc = totalAR(e) + (DATA.inventoryNZD[e]||0);
+    const cls = wc > 700000 ? ' val-red' : wc > 400000 ? ' val-amber' : '';
+    html += `<td class="${cls}" style="font-weight:700">${fmt(wc)}</td>`;
+  });
+  html += `<td class="total-col" style="font-weight:700">${fmt(wcTotal)}</td></tr>`;
 
   html += `</tbody></table>`;
   document.getElementById('detailTable').innerHTML = html;
@@ -658,10 +669,11 @@ function renderDetailTable() {
 function renderFootnote() {
   document.getElementById('asAtBadge').textContent = 'As at ' + DATA.asAt;
   document.getElementById('fxFootnote').innerHTML =
-    `FX rates applied: WST×0.6172 · SBD×0.2076 · TOP×0.6931 · VUV×0.0140 · NZD×1.0 · Rates as at end-Feb 2026 &nbsp;|&nbsp; ` +
+    `AR FX rates: WST×0.6172 · SBD×0.2076 · TOP×0.6931 · VUV×0.0140 · NZD×1.0 (end-Feb 2026) &nbsp;|&nbsp; ` +
+    `Inventory FX rates: WST×0.6181 · SBD×0.2119 · TOP×0.7191 · VUV×0.0141 (XE/Wise mid-market 25 Mar 2026) &nbsp;|&nbsp; ` +
     `Alpine Print figures from manual dashboard (week ending 6 Mar 2026) — Alpine Xero not connected to Synchub &nbsp;|&nbsp; ` +
-    `Available cash figures from prior manual dashboard — used for AP coverage ratio only &nbsp;|&nbsp; ` +
-    `DSO trend: current AR ÷ prior-period revenue window — directional indicator, not point-in-time AR comparison`;
+    `Inventory data sourced from Unleashed via Synchub — lead measures owned by Ranika Chandra (inventory-dashboard.html) &nbsp;|&nbsp; ` +
+    `DSO trend: current AR ÷ prior-period revenue window — directional indicator only`;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -673,7 +685,7 @@ renderLeaderboard();
 renderDetailTable();
 renderFootnote();
 
-// ── CLOSE PROGRESS STRIP ───────────────────────────────────
+// ── CLOSE PROGRESS STRIP ──────────────────────────────────
 async function loadCloseProgress() {
   const SB_URL = 'https://dztsgkpqgcnebqhkuyeu.supabase.co';
   const SB_KEY = 'sb_publishable_ozzi1WvvklaFYx_Fx3JuPQ_tmkkJ8kz';
@@ -700,7 +712,6 @@ async function loadCloseProgress() {
   }
 }
 loadCloseProgress();
-
 </script>
 </body>
 </html>
