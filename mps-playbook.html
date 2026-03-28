@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSP — MPS Playbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red:#D7063B; --charcoal:#1a1a1a; --mid:#444; --muted:#888;
+      --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
+      --green:#1a6e2e; --green-bg:#e6f4ea; --amber:#8a5200; --amber-bg:#fef3dc;
+      --danger:#c0392b; --danger-bg:#fdecea; --blue:#0057b8; --blue-bg:#e8f0fb;
+      --gray:#555; --gray-bg:#efefef; --purple:#5b2d8e; --purple-bg:#f0eaf8;
+    }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--charcoal); font-size:14px; line-height:1.65; }
+
+    header { background:var(--charcoal); border-top:3px solid var(--red); height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .wordmark { font-size:1.1rem; font-weight:700; color:#fff; letter-spacing:.04em; }
+    .header-divider { width:1px; height:20px; background:rgba(255,255,255,.2); }
+    .header-title { font-size:.85rem; font-weight:500; color:rgba(255,255,255,.7); }
+    .as-of { font-size:.72rem; color:rgba(255,255,255,.45); font-family:'DM Mono',monospace; }
+
+    .nav-pills { display:flex; align-items:center; gap:.5rem; padding:.9rem 2rem; background:var(--surface); border-bottom:1px solid var(--border); overflow-x:auto; }
+    .nav-pill { display:inline-block; padding:.35rem 1rem; border-radius:20px; font-size:.78rem; font-weight:500; text-decoration:none; color:var(--mid); white-space:nowrap; transition:background .15s,color .15s; }
+    .nav-pill:hover { background:var(--bg); color:var(--charcoal); }
+    .nav-pill.active { background:var(--red); color:#fff; }
+
+    .layout { display:grid; grid-template-columns:220px 1fr; max-width:1200px; margin:0 auto; padding:2rem; gap:2rem; }
+
+    .toc { position:sticky; top:80px; height:fit-content; }
+    .toc-title { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:.75rem; }
+    .toc-list { list-style:none; display:flex; flex-direction:column; gap:.1rem; }
+    .toc-list a { display:block; padding:.3rem .65rem; border-radius:5px; font-size:.78rem; text-decoration:none; color:var(--mid); transition:background .12s,color .12s; border-left:2px solid transparent; }
+    .toc-list a:hover { background:var(--surface); color:var(--charcoal); border-left-color:var(--border); }
+    .toc-list a.active { background:var(--red-light,#f5e0e6); color:var(--red); font-weight:600; border-left-color:var(--red); }
+    .toc-section { font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); padding:.5rem .65rem .2rem; margin-top:.5rem; }
+
+    .content { min-width:0; }
+
+    /* WIG BANNER */
+    .wig-banner { background:var(--charcoal); color:#fff; border-radius:10px; padding:1.2rem 1.5rem; margin-bottom:2rem; display:flex; align-items:center; gap:1rem; }
+    .wig-icon { font-size:1.5rem; flex-shrink:0; }
+    .wig-text strong { display:block; font-size:1rem; font-weight:700; margin-bottom:.2rem; }
+    .wig-text span { font-size:.82rem; color:rgba(255,255,255,.6); }
+
+    section { margin-bottom:2.5rem; scroll-margin-top:80px; }
+    h2 { font-size:1.05rem; font-weight:700; color:var(--charcoal); border-bottom:2px solid var(--border); padding-bottom:.5rem; margin-bottom:1rem; display:flex; align-items:center; gap:.6rem; }
+    .h2-badge { font-size:.68rem; font-weight:700; padding:.15rem .55rem; border-radius:10px; text-transform:uppercase; letter-spacing:.04em; }
+    .badge-daily   { background:#e8f0fb; color:var(--blue); }
+    .badge-weekly  { background:var(--green-bg); color:var(--green); }
+    .badge-monthly { background:var(--amber-bg); color:var(--amber); }
+    .badge-howto   { background:var(--gray-bg); color:var(--gray); }
+    .badge-amp     { background:var(--purple-bg); color:var(--purple); }
+
+    h3 { font-size:.88rem; font-weight:700; color:var(--charcoal); margin-top:1.25rem; margin-bottom:.4rem; }
+    p  { font-size:.85rem; color:var(--mid); margin-bottom:.7rem; line-height:1.7; }
+    ul, ol { padding-left:1.3rem; margin-bottom:.75rem; }
+    li { font-size:.85rem; color:var(--mid); margin-bottom:.35rem; line-height:1.6; }
+    li strong { color:var(--charcoal); }
+    code { font-family:'DM Mono',monospace; background:var(--surface2); padding:.1em .4em; border-radius:3px; font-size:.82em; }
+    a { color:var(--blue); }
+
+    /* RHYTHM CARD */
+    .rhythm-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1.2rem 1.4rem; margin-bottom:.75rem; }
+    .rhythm-header { display:flex; align-items:center; gap:.75rem; margin-bottom:.85rem; }
+    .rhythm-who { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+    .rhythm-who.sridhar { color:var(--blue); }
+    .rhythm-who.avi     { color:var(--purple); }
+    .rhythm-who.slt     { color:var(--amber); }
+    .rhythm-who.both    { color:var(--green); }
+    .rhythm-title { font-size:.95rem; font-weight:700; color:var(--charcoal); }
+    .rhythm-steps { list-style:none; padding:0; display:flex; flex-direction:column; gap:.5rem; }
+    .rhythm-steps li { display:flex; gap:.7rem; align-items:flex-start; font-size:.84rem; color:var(--mid); }
+    .step-num { width:22px; height:22px; border-radius:50%; background:var(--charcoal); color:#fff; font-size:.68rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:.1rem; }
+    .step-num.blue   { background:var(--blue); }
+    .step-num.green  { background:var(--green); }
+    .step-num.amber  { background:var(--amber); }
+    .step-num.purple { background:var(--purple); }
+    .step-text strong { color:var(--charcoal); }
+    .step-link { font-size:.75rem; color:var(--blue); text-decoration:none; display:inline-block; margin-top:.15rem; }
+
+    /* HOW-TO BOX */
+    .howto { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:1rem; }
+    .howto-header { background:var(--surface2); padding:.65rem 1rem; font-size:.8rem; font-weight:700; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:.5rem; }
+    .howto-body { padding:1rem 1.1rem; }
+    .howto-steps { list-style:none; padding:0; counter-reset:step; display:flex; flex-direction:column; gap:.55rem; }
+    .howto-steps li { counter-increment:step; display:flex; gap:.75rem; align-items:flex-start; font-size:.84rem; color:var(--mid); }
+    .howto-steps li::before { content:counter(step); width:22px; height:22px; border-radius:50%; background:var(--red); color:#fff; font-size:.68rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:.1rem; }
+    .howto-note { background:var(--amber-bg); border-radius:5px; padding:.5rem .75rem; font-size:.78rem; color:var(--amber); margin-top:.75rem; }
+
+    /* AMP TABLE */
+    .amp-table { width:100%; border-collapse:collapse; background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:1rem; }
+    .amp-table th { background:var(--charcoal); color:#fff; font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; padding:.6rem 1rem; text-align:left; }
+    .amp-table td { padding:.7rem 1rem; font-size:.83rem; border-bottom:1px solid var(--border); vertical-align:top; }
+    .amp-table tr:last-child td { border-bottom:none; }
+    .amp-table td:first-child { font-weight:700; color:var(--charcoal); white-space:nowrap; }
+    .amp-table td:nth-child(2) { color:var(--mid); }
+    .amp-table td:nth-child(3) { color:var(--muted); font-size:.78rem; }
+
+    /* GM GUIDE */
+    .gm-guide { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; margin-bottom:1rem; }
+    .gm-guide-card { border-radius:8px; padding:1rem; }
+    .gm-guide-card.green { background:var(--green-bg); border:1px solid #b7dfbe; }
+    .gm-guide-card.amber { background:var(--amber-bg); border:1px solid #f0c040; }
+    .gm-guide-card.red   { background:var(--danger-bg); border:1px solid #f5b7b1; }
+    .gm-guide-card .label { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.3rem; }
+    .gm-guide-card.green .label { color:var(--green); }
+    .gm-guide-card.amber .label { color:var(--amber); }
+    .gm-guide-card.red   .label { color:var(--danger); }
+    .gm-guide-card .range { font-size:1.2rem; font-weight:700; font-family:'DM Mono',monospace; margin-bottom:.4rem; }
+    .gm-guide-card .action { font-size:.8rem; color:var(--mid); line-height:1.55; }
+    .gm-guide-card .action strong { color:var(--charcoal); }
+
+    @media (max-width:800px) { .layout { grid-template-columns:1fr; } .toc { display:none; } .gm-guide { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="wordmark">RSP</span>
+    <span class="header-divider"></span>
+    <span class="header-title">MPS Operating Playbook</span>
+  </div>
+  <span class="as-of">As of 28 Mar 2026</span>
+</header>
+
+<nav class="nav-pills">
+  <a href="mps-portfolio.html"       class="nav-pill">◎ MPS Portfolio</a>
+  <a href="mps-machine.html"         class="nav-pill">⊟ MPS Machines</a>
+  <a href="mps-actions.html"         class="nav-pill">✓ MPS Actions</a>
+  <a href="mps-contracts.html"       class="nav-pill">≡ MPS Contracts</a>
+  <a href="mps-data-dictionary.html" class="nav-pill">◈ Data Dictionary</a>
+  <a href="mps-playbook.html"        class="nav-pill active">▷ Playbook</a>
+</nav>
+
+<div class="layout">
+
+  <aside class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <div class="toc-section">Operating Rhythm</div>
+      <li><a href="#daily">Daily — Sridhar</a></li>
+      <li><a href="#weekly">Weekly — Sridhar + Avi</a></li>
+      <li><a href="#monthly">Monthly — SLT</a></li>
+      <li><a href="#renewal">Renewal Rhythm — Avi</a></li>
+      <li><a href="#qbr">QBR Rhythm — Avi</a></li>
+      <div class="toc-section">How-To Guides</div>
+      <li><a href="#add-action">Add / Resolve an Action</a></li>
+      <li><a href="#log-qbr">Log a QBR Meeting</a></li>
+      <li><a href="#update-labour">Update Labour Rate</a></li>
+      <li><a href="#rebuild">Rebuild Dashboard Data</a></li>
+      <div class="toc-section">Reference</div>
+      <li><a href="#gm-guide">GM Band Interpretation</a></li>
+      <li><a href="#amp">AMP Language Guide</a></li>
+    </ul>
+  </aside>
+
+  <div class="content">
+
+    <!-- WIG BANNER -->
+    <div class="wig-banner">
+      <div class="wig-icon">🎯</div>
+      <div class="wig-text">
+        <strong>WIG — Achieve 80% blended GM across the MPS portfolio by December 2026</strong>
+        <span>Lead measures: (1) % of machines with GM% reviewed monthly · (2) % of renewal conversations initiated ≥60 days before expiry · (3) % of major accounts with QBR in last 90 days</span>
+      </div>
+    </div>
+
+    <!-- DAILY -->
+    <section id="daily">
+      <h2><span class="h2-badge badge-daily">Daily</span> Sridhar — Action Centre &amp; Anomaly Check</h2>
+      <div class="rhythm-card">
+        <div class="rhythm-header">
+          <span class="rhythm-who sridhar">Sridhar</span>
+          <span class="rhythm-title">5-minute morning check</span>
+        </div>
+        <ul class="rhythm-steps">
+          <li>
+            <span class="step-num blue">1</span>
+            <div class="step-text">
+              <strong>Open MPS Actions.</strong> Review any new Open actions or Overdue items. Update status on actions you're progressing — click the status dropdown inline to save.
+              <br><a class="step-link" href="mps-actions.html">→ mps-actions.html</a>
+            </div>
+          </li>
+          <li>
+            <span class="step-num blue">2</span>
+            <div class="step-text">
+              <strong>Check for meter_anomaly flags.</strong> Filter by Issue Type = "Meter Anomaly". If new flags exist, contact the site to arrange a meter read. Resolve the action once the read is obtained and note the value.
+            </div>
+          </li>
+          <li>
+            <span class="step-num blue">3</span>
+            <div class="step-text">
+              <strong>Note any high_visits flags</strong> from the overnight service log. If a machine has had 3+ visits this week, add a <em>high_visits</em> action and assign to yourself for investigation.
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- WEEKLY -->
+    <section id="weekly">
+      <h2><span class="h2-badge badge-weekly">Weekly</span> Sridhar + Avi — Machine P&amp;L &amp; Visit Flags</h2>
+      <div class="rhythm-card">
+        <div class="rhythm-header">
+          <span class="rhythm-who both">Sridhar + Avi</span>
+          <span class="rhythm-title">Monday review — 15 minutes</span>
+        </div>
+        <ul class="rhythm-steps">
+          <li>
+            <span class="step-num green">1</span>
+            <div class="step-text">
+              <strong>Open MPS Machines.</strong> Filter by GM Band = "Critical (&lt;60%)" and scan for any machines that have moved into the red band since last week.
+              <br><a class="step-link" href="mps-machine.html">→ mps-machine.html</a>
+            </div>
+          </li>
+          <li>
+            <span class="step-num green">2</span>
+            <div class="step-text">
+              <strong>Review high-visit machines.</strong> Sort by Visits (90d) descending. Any machine with &gt;6 visits in 90 days is flagged. Log a <em>high_visits</em> action if one does not already exist. Assign to Sridhar.
+            </div>
+          </li>
+          <li>
+            <span class="step-num green">3</span>
+            <div class="step-text">
+              <strong>Avi: check expiring contracts.</strong> Open MPS Contracts. Review the 61–90 day band. Any contract without a logged renewal action should get one today.
+              <br><a class="step-link" href="mps-contracts.html">→ mps-contracts.html</a>
+            </div>
+          </li>
+          <li>
+            <span class="step-num green">4</span>
+            <div class="step-text">
+              <strong>Close out resolved actions.</strong> Any action where the work is done — mark as Resolved. Keep the actions list clean so Open count is a meaningful number.
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- MONTHLY -->
+    <section id="monthly">
+      <h2><span class="h2-badge badge-monthly">Monthly</span> SLT — Portfolio Scoreboard</h2>
+      <div class="rhythm-card">
+        <div class="rhythm-header">
+          <span class="rhythm-who slt">SLT (Sridhar, Avi + GM)</span>
+          <span class="rhythm-title">First Monday of the month — 30 minutes</span>
+        </div>
+        <ul class="rhythm-steps">
+          <li>
+            <span class="step-num amber">1</span>
+            <div class="step-text">
+              <strong>Scoreboard check — Portfolio GM%.</strong> Open MPS Portfolio. Read the portfolio GM% KPI. Is it moving toward 80%? Note the direction vs last month.
+              <br><a class="step-link" href="mps-portfolio.html">→ mps-portfolio.html</a>
+            </div>
+          </li>
+          <li>
+            <span class="step-num amber">2</span>
+            <div class="step-text">
+              <strong>Territory scorecards.</strong> Review each territory card. Note which territories are below 60% (critical) and which improved from last month. Identify the 1–2 highest-impact actions to drive this month.
+            </div>
+          </li>
+          <li>
+            <span class="step-num amber">3</span>
+            <div class="step-text">
+              <strong>GM band distribution.</strong> Check the count of machines in each band (&gt;80% / 60–79% / &lt;60%). The goal is to grow the ≥80% bucket every month.
+            </div>
+          </li>
+          <li>
+            <span class="step-num amber">4</span>
+            <div class="step-text">
+              <strong>Lead measure review.</strong> Review the three lead measures: (1) % of machines reviewed; (2) % renewals initiated ≥60d before expiry; (3) % of major accounts with QBR ≤90d. Are they moving?
+            </div>
+          </li>
+          <li>
+            <span class="step-num amber">5</span>
+            <div class="step-text">
+              <strong>Commitments.</strong> Each person states 1–2 specific commitments for the coming month to move the WIG. Log these as actions in mps-actions.html so they're tracked.
+            </div>
+          </li>
+          <li>
+            <span class="step-num amber">6</span>
+            <div class="step-text">
+              <strong>Rebuild dashboard data</strong> after the meeting to reflect the new month's starting position. See <a href="#rebuild">How to Rebuild</a> below.
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- RENEWAL -->
+    <section id="renewal">
+      <h2><span class="h2-badge badge-weekly">Renewal</span> Avi — 90-Day Rolling Pipeline</h2>
+      <div class="rhythm-card">
+        <div class="rhythm-header">
+          <span class="rhythm-who avi">Avi</span>
+          <span class="rhythm-title">Every Monday — 10 minutes</span>
+        </div>
+        <ul class="rhythm-steps">
+          <li>
+            <span class="step-num purple">1</span>
+            <div class="step-text">
+              <strong>Open MPS Contracts → Renewal Pipeline.</strong> Start with the 61–90 day band. These are the contracts that need a conversation started this week.
+              <br><a class="step-link" href="mps-contracts.html">→ mps-contracts.html</a>
+            </div>
+          </li>
+          <li>
+            <span class="step-num purple">2</span>
+            <div class="step-text">
+              <strong>For each contract in 61–90 days with no renewal action:</strong> Go to MPS Actions → Add Action. Set Issue Type = <em>contract_renewal</em>, fill the contract no and customer, assign to Avi, set due date 30 days before expiry.
+            </div>
+          </li>
+          <li>
+            <span class="step-num purple">3</span>
+            <div class="step-text">
+              <strong>Update notes on in-progress renewals.</strong> For contracts already in the Actions tracker, update the notes field with the latest conversation status (e.g. "Sent renewal quote 22 Mar, awaiting sign-off").
+            </div>
+          </li>
+          <li>
+            <span class="step-num purple">4</span>
+            <div class="step-text">
+              <strong>Escalate any contract entering ≤30 days without a renewal.</strong> This is a critical flag — raise it in the weekly team check-in immediately.
+            </div>
+          </li>
+        </ul>
+      </div>
+      <p>Renewal goal: no contract should reach expiry without a conversation logged at least 60 days beforehand. This is Lead Measure 2 for the WIG.</p>
+    </section>
+
+    <!-- QBR RHYTHM -->
+    <section id="qbr">
+      <h2><span class="h2-badge badge-monthly">QBR</span> Avi — Major Account Cadence</h2>
+      <div class="rhythm-card">
+        <div class="rhythm-header">
+          <span class="rhythm-who avi">Avi</span>
+          <span class="rhythm-title">Monthly scan — 10 minutes</span>
+        </div>
+        <ul class="rhythm-steps">
+          <li>
+            <span class="step-num purple">1</span>
+            <div class="step-text">
+              <strong>Open MPS Contracts → QBR Tracker.</strong> Filter for Status = "Overdue" or "Due soon". These accounts need a QBR scheduled this month.
+              <br><a class="step-link" href="mps-contracts.html">→ mps-contracts.html</a>
+            </div>
+          </li>
+          <li>
+            <span class="step-num purple">2</span>
+            <div class="step-text">
+              <strong>Schedule the QBR meeting</strong> with the account contact. Standard QBR agenda: contract performance review · print volume trend · consumable usage · renewal outlook · any service issues · expansion discussion.
+            </div>
+          </li>
+          <li>
+            <span class="step-num purple">3</span>
+            <div class="step-text">
+              <strong>After the meeting, log the QBR date</strong> using the Edit button on the QBR row. Update Last QBR Date to today. Add notes summarising key discussion points and any commitments made.
+            </div>
+          </li>
+          <li>
+            <span class="step-num purple">4</span>
+            <div class="step-text">
+              <strong>If any account issues surface in the QBR</strong> (e.g. machine performance complaint, rate renegotiation request), log an <em>account_review</em> action in mps-actions.html immediately.
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- HOW TO: ADD ACTION -->
+    <section id="add-action">
+      <h2><span class="h2-badge badge-howto">How-To</span> Add or Resolve an Action</h2>
+      <div class="howto">
+        <div class="howto-header">➕ Adding a new action</div>
+        <div class="howto-body">
+          <ol class="howto-steps">
+            <li><span>Open <a href="mps-actions.html">MPS Actions</a> in your browser.</span></li>
+            <li><span>Click the <strong>+ Add Action</strong> button (top right of the filter bar).</span></li>
+            <li><span>Select the <strong>Issue Type</strong> — choose the closest match: Margin Critical, High Visits, Meter Anomaly, Contract Renewal, or Account Review.</span></li>
+            <li><span>Fill in <strong>Assignee</strong> (Sridhar or Avi), <strong>Customer Name</strong>, and <strong>Territory</strong> — these are required.</span></li>
+            <li><span>Add Serial No and/or Contract No if the action relates to a specific machine or contract.</span></li>
+            <li><span>Write a clear <strong>Issue Detail</strong> and <strong>Suggested Action</strong> so the assignee knows what to do without needing to ask.</span></li>
+            <li><span>Set a <strong>Due Date</strong> — default to 2 weeks out unless the situation is urgent.</span></li>
+            <li><span>Click <strong>Save Action</strong>. The action appears in the table immediately.</span></li>
+          </ol>
+          <div class="howto-note">If Supabase is not configured, actions are saved to the browser session only and will not persist on refresh. Contact Vijendra to set up the live connection.</div>
+        </div>
+      </div>
+      <div class="howto">
+        <div class="howto-header">✓ Resolving an action</div>
+        <div class="howto-body">
+          <ol class="howto-steps">
+            <li><span>Find the action in the <a href="mps-actions.html">MPS Actions</a> table (use filters or search).</span></li>
+            <li><span>Click the <strong>Status dropdown</strong> in the Status column — change from <em>Open</em> or <em>In Progress</em> to <strong>Resolved</strong>.</span></li>
+            <li><span>The change saves to Supabase instantly. The KPI counts update automatically.</span></li>
+            <li><span>Optionally click <strong>View</strong> to open the detail panel and add a closing note describing what was done.</span></li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW TO: LOG QBR -->
+    <section id="log-qbr">
+      <h2><span class="h2-badge badge-howto">How-To</span> Log a QBR Meeting</h2>
+      <div class="howto">
+        <div class="howto-header">📋 Recording a completed QBR</div>
+        <div class="howto-body">
+          <ol class="howto-steps">
+            <li><span>Open <a href="mps-contracts.html">MPS Contracts</a> and scroll to the <strong>QBR Cadence Tracker</strong> section.</span></li>
+            <li><span>If the account is not yet in the tracker, click <strong>+ Log Account</strong> and fill in the customer name, territory, and QBR cadence (quarterly or biannual).</span></li>
+            <li><span>If the account is already listed, click <strong>Edit</strong> on that row.</span></li>
+            <li><span>Update <strong>Last QBR Date</strong> to today's date.</span></li>
+            <li><span>Add a brief note in the <strong>Notes</strong> field summarising the outcome (e.g. "Renewed 3yr MP contract, expanding to 2 more machines in July").</span></li>
+            <li><span>Click <strong>Save</strong>. The QBR status badge will update from Overdue/Due soon to <strong>On track</strong>.</span></li>
+          </ol>
+          <div class="howto-note">The QBR overdue threshold is 90 days for quarterly accounts and 180 days for biannual. The "Due soon" warning appears at 75% of the threshold (67 days / 135 days).</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW TO: UPDATE LABOUR -->
+    <section id="update-labour">
+      <h2><span class="h2-badge badge-howto">How-To</span> Update the Labour Rate</h2>
+      <p>The labour rate (<strong>NZD 49/hr</strong>) is embedded in the <code>DATA</code> object at the top of each dashboard HTML file. To update it:</p>
+      <div class="howto">
+        <div class="howto-header">⚙ Updating the labour rate in a dashboard file</div>
+        <div class="howto-body">
+          <ol class="howto-steps">
+            <li><span>Open the relevant <code>.html</code> file in a text editor (e.g. VS Code, Notepad++).</span></li>
+            <li><span>Use Find (Ctrl+F) to search for <code>labourRateNZD</code>.</span></li>
+            <li><span>Change the value — e.g. from <code>labourRateNZD: 49</code> to <code>labourRateNZD: 52</code>.</span></li>
+            <li><span>Save the file and refresh the browser. All GM calculations update instantly.</span></li>
+            <li><span>Repeat for each dashboard file that uses the labour rate (<code>mps-portfolio.html</code>, <code>mps-machine.html</code>).</span></li>
+          </ol>
+          <div class="howto-note">If the dashboards are rebuilt from MCP at a later date, tell Claude the new rate before rebuilding so it's embedded correctly in the new files.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW TO: REBUILD -->
+    <section id="rebuild">
+      <h2><span class="h2-badge badge-howto">How-To</span> Rebuild Dashboard Data</h2>
+      <p>Dashboard data is static — embedded at the time the files were generated. To refresh with current BMS and Salesforce data:</p>
+      <div class="howto">
+        <div class="howto-header">🔄 Rebuilding with Claude Code</div>
+        <div class="howto-body">
+          <ol class="howto-steps">
+            <li><span>Open a new Claude Code session in the <code>MPS Dashboard</code> project folder.</span></li>
+            <li><span>Tell Claude: <em>"Rebuild mps-portfolio.html with fresh data from BMS and Salesforce. Use the same design and DATA structure as the current file."</em></span></li>
+            <li><span>Claude will query BMS (MySQL MCP) and Salesforce (SF MCP) and regenerate the file with today's figures. Check the as-of date in the header updates.</span></li>
+            <li><span>Repeat for <code>mps-machine.html</code> and <code>mps-contracts.html</code> as needed.</span></li>
+            <li><span>The Actions tracker and QBR section do not need rebuilding — they are live Supabase fetches.</span></li>
+          </ol>
+          <div class="howto-note">Rebuild recommended: monthly (before the SLT review) or after a major contract change (new major account, large fleet change, rate renegotiation).</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GM BAND GUIDE -->
+    <section id="gm-guide">
+      <h2><span class="h2-badge badge-howto">Reference</span> GM Band Interpretation Guide</h2>
+      <div class="gm-guide">
+        <div class="gm-guide-card green">
+          <div class="label">On Target — ≥ 80%</div>
+          <div class="range">≥ 80%</div>
+          <div class="action">
+            <strong>No immediate action needed.</strong> Machine is contributing above the WIG threshold. Review annually at renewal. Look for expansion opportunities.
+          </div>
+        </div>
+        <div class="gm-guide-card amber">
+          <div class="label">Watch — 60–79%</div>
+          <div class="range">60–79%</div>
+          <div class="action">
+            <strong>Monitor monthly.</strong> Review visit frequency and consumable usage. Is the machine approaching end-of-life? Consider rate increase at next renewal. Do not let this persist for more than 3 months without a plan.
+          </div>
+        </div>
+        <div class="gm-guide-card red">
+          <div class="label">Critical — &lt; 60%</div>
+          <div class="range">&lt; 60%</div>
+          <div class="action">
+            <strong>Act this week.</strong> Log a <em>margin_critical</em> action. Investigate: high visits? Low volume (under-utilised machine)? Consumable abuse? Old rate? Machine replacement candidate?
+          </div>
+        </div>
+      </div>
+      <h3>Common root causes by band</h3>
+      <ul>
+        <li><strong>High visits (labour):</strong> Machine needs service upgrade or replacement. Escalate to vendor.</li>
+        <li><strong>Low contract rate:</strong> Rate agreed years ago, no increase applied. Address at renewal — target CPI + 3% minimum.</li>
+        <li><strong>High consumable use:</strong> Check if toner is being used for non-contracted sites. Verify delivery address.</li>
+        <li><strong>Low volume:</strong> Machine is idle or underused — customer isn't printing. Engage before renewal to right-size or exit.</li>
+        <li><strong>Multi-machine equal split:</strong> A high-volume machine in a shared contract appears unprofitable due to equal revenue split. Check meter reads before taking action.</li>
+      </ul>
+    </section>
+
+    <!-- AMP LANGUAGE -->
+    <section id="amp">
+      <h2><span class="h2-badge badge-amp">AMP</span> AMP Language Guide</h2>
+      <p>The MPS review follows the <strong>AMP (Account Management Process)</strong> rhythm. Use this language in the monthly SLT meeting:</p>
+      <table class="amp-table">
+        <tr><th>Element</th><th>What to cover</th><th>Dashboard location</th></tr>
+        <tr>
+          <td>Scoreboard Check</td>
+          <td>Read the WIG metric: portfolio GM% vs 80% target. Up or down vs last month? By how much?</td>
+          <td>MPS Portfolio → Portfolio GM% KPI card</td>
+        </tr>
+        <tr>
+          <td>Lead Measure Review</td>
+          <td>(1) % machines with GM reviewed. (2) % renewals started ≥60d before expiry. (3) % major accounts with QBR ≤90d.</td>
+          <td>MPS Machines count · MPS Contracts pipeline · QBR tracker</td>
+        </tr>
+        <tr>
+          <td>Commitments</td>
+          <td>Each person states 1–2 specific actions they commit to this month that will move the WIG. Log in mps-actions.html.</td>
+          <td>MPS Actions → Add Action</td>
+        </tr>
+        <tr>
+          <td>Account Rhythm</td>
+          <td>Avi: which major accounts had QBR this month? Any expansion or churn risk surfaced?</td>
+          <td>MPS Contracts → QBR Tracker</td>
+        </tr>
+        <tr>
+          <td>Renewal Rhythm</td>
+          <td>Avi: how many contracts in the 61–90 day band? Are renewal conversations started? Any at risk?</td>
+          <td>MPS Contracts → Renewal Pipeline (61–90d tab)</td>
+        </tr>
+      </table>
+      <p>The meeting should take no longer than 30 minutes. The dashboard is the single source of truth — no spreadsheets, no separate reports. If a number is wrong, log it as an action and fix the source data.</p>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const sections = document.querySelectorAll('section[id]');
+const links    = document.querySelectorAll('.toc-list a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.toc-list a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin:'-60px 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

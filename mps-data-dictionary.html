@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSP — MPS Data Dictionary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red:#D7063B; --charcoal:#1a1a1a; --mid:#444; --muted:#888;
+      --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
+      --green:#1a6e2e; --green-bg:#e6f4ea; --amber:#8a5200; --amber-bg:#fef3dc;
+      --danger:#c0392b; --danger-bg:#fdecea; --blue:#0057b8; --blue-bg:#e8f0fb;
+      --gray:#555; --gray-bg:#efefef;
+    }
+    body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--charcoal); font-size:14px; line-height:1.65; }
+
+    header { background:var(--charcoal); border-top:3px solid var(--red); height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 2rem; position:sticky; top:0; z-index:100; }
+    .header-left { display:flex; align-items:center; gap:1rem; }
+    .wordmark { font-size:1.1rem; font-weight:700; color:#fff; letter-spacing:.04em; }
+    .header-divider { width:1px; height:20px; background:rgba(255,255,255,.2); }
+    .header-title { font-size:.85rem; font-weight:500; color:rgba(255,255,255,.7); }
+    .as-of { font-size:.72rem; color:rgba(255,255,255,.45); font-family:'DM Mono',monospace; }
+
+    .nav-pills { display:flex; align-items:center; gap:.5rem; padding:.9rem 2rem; background:var(--surface); border-bottom:1px solid var(--border); overflow-x:auto; }
+    .nav-pill { display:inline-block; padding:.35rem 1rem; border-radius:20px; font-size:.78rem; font-weight:500; text-decoration:none; color:var(--mid); white-space:nowrap; transition:background .15s,color .15s; }
+    .nav-pill:hover { background:var(--bg); color:var(--charcoal); }
+    .nav-pill.active { background:var(--red); color:#fff; }
+
+    .layout { display:grid; grid-template-columns:220px 1fr; max-width:1200px; margin:0 auto; padding:2rem; gap:2rem; }
+
+    /* SIDEBAR TOC */
+    .toc { position:sticky; top:80px; height:fit-content; }
+    .toc-title { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin-bottom:.75rem; }
+    .toc-list { list-style:none; display:flex; flex-direction:column; gap:.1rem; }
+    .toc-list a { display:block; padding:.3rem .65rem; border-radius:5px; font-size:.78rem; text-decoration:none; color:var(--mid); transition:background .12s,color .12s; border-left:2px solid transparent; }
+    .toc-list a:hover { background:var(--surface); color:var(--charcoal); border-left-color:var(--border); }
+    .toc-list a.active { background:var(--blue-bg); color:var(--blue); font-weight:600; border-left-color:var(--blue); }
+
+    /* CONTENT */
+    .content { min-width:0; }
+    .first-pass-note { background:var(--amber-bg); border:1px solid #f0c040; border-left:4px solid var(--amber); border-radius:8px; padding:1rem 1.2rem; margin-bottom:2rem; font-size:.85rem; line-height:1.7; }
+    .first-pass-note strong { display:block; font-size:.95rem; color:var(--amber); margin-bottom:.4rem; }
+
+    section { margin-bottom:2.5rem; scroll-margin-top:80px; }
+    h2 { font-size:1.1rem; font-weight:700; color:var(--charcoal); border-bottom:2px solid var(--border); padding-bottom:.5rem; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
+    h2 .icon { font-size:1rem; }
+    h3 { font-size:.9rem; font-weight:700; color:var(--charcoal); margin-top:1.2rem; margin-bottom:.4rem; }
+    p { font-size:.85rem; color:var(--mid); margin-bottom:.75rem; line-height:1.7; }
+    ul, ol { padding-left:1.4rem; margin-bottom:.75rem; }
+    li { font-size:.85rem; color:var(--mid); margin-bottom:.3rem; line-height:1.6; }
+    li strong { color:var(--charcoal); }
+    code { font-family:'DM Mono',monospace; background:var(--surface2); padding:.1em .4em; border-radius:3px; font-size:.82em; color:var(--charcoal); }
+
+    /* DEFINITION TABLE */
+    .def-table { width:100%; border-collapse:collapse; margin-bottom:1rem; background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+    .def-table th { background:var(--surface2); font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); padding:.55rem 1rem; text-align:left; border-bottom:1px solid var(--border); }
+    .def-table td { padding:.6rem 1rem; font-size:.83rem; border-bottom:1px solid var(--border); vertical-align:top; }
+    .def-table tr:last-child td { border-bottom:none; }
+    .def-table td:first-child { font-family:'DM Mono',monospace; font-size:.78rem; font-weight:600; color:var(--charcoal); white-space:nowrap; }
+    .def-table td:last-child { color:var(--mid); }
+
+    /* FORMULA BOX */
+    .formula { background:var(--charcoal); color:#f0f0f0; border-radius:8px; padding:1rem 1.2rem; font-family:'DM Mono',monospace; font-size:.82rem; line-height:1.8; margin-bottom:1rem; overflow-x:auto; }
+    .formula .comment { color:#888; }
+    .formula .val { color:#7ecfff; }
+    .formula .label { color:#ffd07a; }
+
+    /* BAND TABLE */
+    .band-table { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; margin-bottom:1rem; }
+    .band-card { border-radius:8px; padding:.85rem 1rem; }
+    .band-card.green  { background:var(--green-bg);  border:1px solid #b7dfbe; }
+    .band-card.amber  { background:var(--amber-bg);  border:1px solid #f0c040; }
+    .band-card.red    { background:var(--danger-bg); border:1px solid #f5b7b1; }
+    .band-card .band-label { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.3rem; }
+    .band-card.green  .band-label { color:var(--green); }
+    .band-card.amber  .band-label { color:var(--amber); }
+    .band-card.red    .band-label { color:var(--danger); }
+    .band-card .band-range { font-size:1.3rem; font-weight:700; font-family:'DM Mono',monospace; }
+    .band-card .band-desc  { font-size:.78rem; color:var(--mid); margin-top:.25rem; line-height:1.5; }
+
+    /* LIMITATION BOX */
+    .limitation { background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--amber); border-radius:6px; padding:.75rem 1rem; margin-bottom:.6rem; font-size:.83rem; color:var(--mid); }
+    .limitation strong { color:var(--charcoal); }
+
+    /* FLOW */
+    .data-flow { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.2rem; margin-bottom:1rem; }
+    .flow-row { display:flex; align-items:center; gap:.6rem; margin-bottom:.5rem; font-size:.83rem; }
+    .flow-row:last-child { margin-bottom:0; }
+    .flow-box { background:var(--blue-bg); border:1px solid #b3cef5; border-radius:5px; padding:.25rem .7rem; font-weight:600; font-size:.78rem; color:var(--blue); white-space:nowrap; }
+    .flow-box.sf { background:var(--purple-bg); border-color:#c8aeed; color:#5b2d8e; }
+    .flow-box.bms { background:var(--green-bg); border-color:#b7dfbe; color:var(--green); }
+    .flow-box.calc { background:var(--amber-bg); border-color:#f0c040; color:var(--amber); }
+    .flow-arrow { color:var(--muted); font-size:.9rem; }
+    .flow-note { font-size:.75rem; color:var(--muted); margin-left:.3rem; }
+
+    @media (max-width:800px) { .layout { grid-template-columns:1fr; } .toc { display:none; } .band-table { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="wordmark">RSP</span>
+    <span class="header-divider"></span>
+    <span class="header-title">MPS Data Dictionary</span>
+  </div>
+  <span class="as-of">As of 28 Mar 2026</span>
+</header>
+
+<nav class="nav-pills">
+  <a href="mps-portfolio.html"       class="nav-pill">◎ MPS Portfolio</a>
+  <a href="mps-machine.html"         class="nav-pill">⊟ MPS Machines</a>
+  <a href="mps-actions.html"         class="nav-pill">✓ MPS Actions</a>
+  <a href="mps-contracts.html"       class="nav-pill">≡ MPS Contracts</a>
+  <a href="mps-data-dictionary.html" class="nav-pill active">◈ Data Dictionary</a>
+  <a href="mps-playbook.html"        class="nav-pill">▷ Playbook</a>
+</nav>
+
+<div class="layout">
+
+  <!-- SIDEBAR TOC -->
+  <aside class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#first-pass">First-Pass Framing</a></li>
+      <li><a href="#gm-calc">GM Calculation</a></li>
+      <li><a href="#revenue">Revenue Attribution</a></li>
+      <li><a href="#costs">Cost Components</a></li>
+      <li><a href="#gm-bands">GM Bands</a></li>
+      <li><a href="#data-sources">Data Sources</a></li>
+      <li><a href="#join-logic">Join Logic</a></li>
+      <li><a href="#consumables">Consumable Cost</a></li>
+      <li><a href="#labour">Labour Rate</a></li>
+      <li><a href="#contracts">Contract Types</a></li>
+      <li><a href="#fx">FX Conversion</a></li>
+      <li><a href="#flags">Flagging Thresholds</a></li>
+      <li><a href="#major-accounts">Major Accounts</a></li>
+      <li><a href="#limitations">Known Limitations</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="content">
+
+    <!-- FIRST-PASS NOTE -->
+    <div class="first-pass-note" id="first-pass">
+      <strong>First-Pass Framing — Read Before Using</strong>
+      This dashboard represents a first structured view of MPS profitability at Ricoh South Pacific. Revenue figures are derived from BMS contract rates (service component only). Cost data — parts and consumables — is partial in this release: labour is estimated at NZD 49/hr × visit hours; consumable costs use the Toner Delivery → Order path where available. GM% figures are indicative, not audited. Use them to identify machines and territories that need investigation, not as a final financial record. Refinements will be made as the data model matures. If a number looks wrong, log it as an action and flag it for Vijendra.
+    </div>
+
+    <!-- GM CALCULATION -->
+    <section id="gm-calc">
+      <h2><span class="icon">⊕</span> GM Calculation</h2>
+      <p>Gross Margin (GM%) is the primary profitability measure for each MPS machine and the portfolio. It is calculated as:</p>
+      <div class="formula">
+<span class="label">GM%</span> = ( <span class="val">Revenue</span> − <span class="val">Total Cost</span> ) ÷ <span class="val">Revenue</span> × 100
+
+<span class="comment">Where:</span>
+<span class="label">Total Cost</span>  = <span class="val">Parts Cost</span> + <span class="val">Labour Cost</span> + <span class="val">Consumable Cost</span>
+<span class="label">Revenue</span>     = <span class="val">CPC Revenue</span> + <span class="val">Fixed Base Revenue</span>  <span class="comment">(service component only)</span>
+      </div>
+      <p>All values are converted to NZD using the locked FX rates before GM% is computed. GM% is a blended rate — it does not separate finance margin from service margin.</p>
+    </section>
+
+    <!-- REVENUE ATTRIBUTION -->
+    <section id="revenue">
+      <h2><span class="icon">$</span> Revenue Attribution</h2>
+      <h3>Single-machine contracts</h3>
+      <p>Revenue is taken directly from the BMS contract rates for that machine's contract. The service component (CPC charges + fixed base) is used.</p>
+      <h3>Multi-machine contracts</h3>
+      <p>Where one contract covers multiple machines (e.g. 5 machines under one agreement), revenue is attributed using <strong>equal split</strong> in this release:</p>
+      <div class="formula">
+<span class="label">Revenue per machine</span> = <span class="val">Total Contract Service Revenue</span> ÷ <span class="val">Machine Count</span>
+      </div>
+      <p>A volume-weighted split (CPC revenue weighted by per-machine meter reads) is planned for a future release, once per-machine meter data is reliably joined. The equal split understates revenue for high-volume machines and overstates it for low-volume machines.</p>
+      <h3>What is excluded from revenue</h3>
+      <ul>
+        <li>Finance/rental component of RP contracts (shown separately in BMS as a finance charge)</li>
+        <li>GST, VAT and equivalent local taxes</li>
+        <li>Ad-hoc call charges outside the contract</li>
+        <li>Hardware sale revenue (one-off, not recurring MPS)</li>
+      </ul>
+    </section>
+
+    <!-- COST COMPONENTS -->
+    <section id="costs">
+      <h2><span class="icon">↓</span> Cost Components</h2>
+      <table class="def-table">
+        <tr><th>Component</th><th>Source</th><th>Method</th><th>Status</th></tr>
+        <tr>
+          <td>Parts Cost</td>
+          <td>BMS — service_jobs → service_job_activities → service_job_lines</td>
+          <td>Sum of <code>buy_price_cents × used_quantity</code> for service job lines linked to the asset's serial number, last 90 days</td>
+          <td>Phase 1 — partial (join via activity_id chain)</td>
+        </tr>
+        <tr>
+          <td>Labour Cost</td>
+          <td>BMS — service_jobs → service_job_activities</td>
+          <td>Sum of <code>actual_duration_minutes / 60 × NZD 49</code> per visit, last 90 days. Annualised to monthly.</td>
+          <td>Phase 1 — estimated at NZD 49/hr flat</td>
+        </tr>
+        <tr>
+          <td>Consumable Cost</td>
+          <td>Salesforce Cases (Work_Type__c = 'Toner Delivery') → Order → OrderItem</td>
+          <td>Sum of <code>OrderItem.TotalPrice</code> for toner delivery orders linked to the asset, last 90 days</td>
+          <td>Phase 1 — via SF toner delivery case path</td>
+        </tr>
+      </table>
+      <p>Costs are averaged to a monthly figure by dividing 90-day totals by 3. This smooths seasonal variation but may not reflect the current month accurately.</p>
+    </section>
+
+    <!-- GM BANDS -->
+    <section id="gm-bands">
+      <h2><span class="icon">◑</span> GM Bands</h2>
+      <div class="band-table">
+        <div class="band-card green">
+          <div class="band-label">On Target</div>
+          <div class="band-range">≥ 80%</div>
+          <div class="band-desc">Machine is contributing at or above the portfolio WIG. No immediate action required.</div>
+        </div>
+        <div class="band-card amber">
+          <div class="band-label">Watch</div>
+          <div class="band-range">60 – 79%</div>
+          <div class="band-desc">Below target. Review visit frequency and consumable usage. Consider rate review at next renewal.</div>
+        </div>
+        <div class="band-card red">
+          <div class="band-label">Critical</div>
+          <div class="band-range">&lt; 60%</div>
+          <div class="band-desc">Machine is destroying portfolio margin. Log a <em>margin_critical</em> action and assign to Sridhar or Avi.</div>
+        </div>
+      </div>
+      <p>The 80% WIG (Wildly Important Goal) is Ricoh South Pacific's MPS profitability target for Dec 2026. Bands are locked and reviewed annually by the GM.</p>
+    </section>
+
+    <!-- DATA SOURCES -->
+    <section id="data-sources">
+      <h2><span class="icon">◫</span> Data Sources</h2>
+      <table class="def-table">
+        <tr><th>System</th><th>What it provides</th><th>Access method</th></tr>
+        <tr><td>BMS (MySQL)</td><td>Contracts, machine assets, CPC rates, service jobs, visit history, parts lines</td><td>BMS MCP — read-only SQL against <code>bms_ricoh_sp_production</code></td></tr>
+        <tr><td>Salesforce</td><td>Asset master (serial number, account), cases (toner delivery), orders, order items</td><td>Salesforce MCP — SOQL queries</td></tr>
+        <tr><td>Supabase</td><td>mps_actions (action tracker), mps_accounts (major accounts QBR)</td><td>REST API with anon key — live fetch from browser</td></tr>
+      </table>
+      <p>The dashboard is rebuilt at build time by querying BMS and Salesforce via MCP and embedding results as static <code>const DATA</code> objects in each HTML file. This means the data reflects the state at the time the file was last generated. Only <code>mps-actions.html</code> and the QBR section of <code>mps-contracts.html</code> fetch live data at runtime (from Supabase).</p>
+    </section>
+
+    <!-- JOIN LOGIC -->
+    <section id="join-logic">
+      <h2><span class="icon">⇄</span> Join Logic (BMS ↔ Salesforce)</h2>
+      <p>The primary link between BMS and Salesforce is the machine serial number. BMS stores this in <code>core_assets.serial_no</code>; Salesforce stores it in <code>Asset.SerialNumber</code>.</p>
+      <div class="data-flow">
+        <div class="flow-row">
+          <div class="flow-box bms">BMS: billing_contracts</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box bms">billing_contract_assets</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box bms">core_assets (serial_no)</div>
+          <span class="flow-note">Contract → machine link</span>
+        </div>
+        <div class="flow-row">
+          <div class="flow-box bms">core_assets (serial_no)</div>
+          <span class="flow-arrow">matches</span>
+          <div class="flow-box sf">SF: Asset.SerialNumber</div>
+          <span class="flow-note">Cross-system join key</span>
+        </div>
+        <div class="flow-row">
+          <div class="flow-box sf">SF: Asset</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box sf">Case (Work_Type__c = 'Toner Delivery')</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box sf">Order → OrderItem</div>
+          <span class="flow-note">Consumable cost path</span>
+        </div>
+        <div class="flow-row">
+          <div class="flow-box bms">BMS: service_jobs</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box bms">service_job_activities</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box bms">service_job_assets (activity_id)</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box bms">service_job_lines</div>
+          <span class="flow-note">Parts cost path</span>
+        </div>
+      </div>
+      <p><strong>Known gap:</strong> Some BMS machines may not have a matching Salesforce asset if the asset was not created at install time. These machines will show zero consumable cost. A reconciliation between BMS <code>core_assets</code> and Salesforce <code>Asset</code> records is recommended.</p>
+    </section>
+
+    <!-- CONSUMABLE COST -->
+    <section id="consumables">
+      <h2><span class="icon">◉</span> Consumable Cost Methodology</h2>
+      <h3>Phase 1 approach (current)</h3>
+      <p>Consumable cost is sourced from Salesforce via the Toner Delivery case path:</p>
+      <div class="formula">
+<span class="label">Consumable Cost</span> =
+  SELECT SUM(OrderItem.TotalPrice)
+  FROM Case
+  WHERE Work_Type__c = 'Toner Delivery'
+    AND Asset.SerialNumber = <span class="val">[machine serial]</span>
+    AND CreatedDate = LAST_N_DAYS:90
+  <span class="comment">-- via Case.Order__c → Order → OrderItem</span>
+      </div>
+      <ul>
+        <li>Only <strong>Toner Delivery</strong> cases are included — other consumable types (e.g. drums, waste toner) are excluded in Phase 1</li>
+        <li>The <code>Work_Type__c</code> field on the Case must be set to <code>'Toner Delivery'</code> for the delivery to be captured</li>
+        <li>If a Toner Delivery case has no linked Order, it is not counted (data quality issue — log an action)</li>
+        <li>OrderItem.TotalPrice is in local currency; converted to NZD using the locked FX rates</li>
+      </ul>
+      <h3>Future enhancements</h3>
+      <p>Phase 2 will include drums, waste toner bottles and other consumables tracked via separate Work_Type values or product codes on OrderItem.</p>
+    </section>
+
+    <!-- LABOUR RATE -->
+    <section id="labour">
+      <h2><span class="icon">⏱</span> Labour Rate Assumptions</h2>
+      <p>A flat labour rate of <strong>NZD 49/hr</strong> is applied across all territories. This is derived from:</p>
+      <div class="formula">
+<span class="val">USD 35,000</span>/yr ÷ <span class="val">1,200</span> billable hrs/yr
+= <span class="label">USD 29.17/hr</span>
+÷ <span class="val">0.595</span> (USD/NZD)
+= <span class="label">NZD 49/hr</span> <span class="comment">(rounded)</span>
+      </div>
+      <p>This rate is a proxy for the average Pacific field technician cost fully loaded (salary + oncosts). It does not vary by territory in Phase 1 — future releases may apply territory-specific rates.</p>
+      <h3>How to update the labour rate</h3>
+      <ol>
+        <li>Open the relevant <code>.html</code> file in a text editor</li>
+        <li>Find <code>labourRateNZD: 49</code> in the <code>DATA</code> object near the top of the <code>&lt;script&gt;</code> block</li>
+        <li>Update the value (e.g. <code>52</code>) and save</li>
+        <li>All GM calculations on that page will recalculate automatically on next browser load</li>
+        <li>If the dashboard is rebuilt from MCP at a later date, update the constant in the build instructions so it persists</li>
+      </ol>
+    </section>
+
+    <!-- CONTRACT TYPES -->
+    <section id="contracts">
+      <h2><span class="icon">≡</span> Contract Type Definitions</h2>
+      <table class="def-table">
+        <tr><th>Type</th><th>Full Name</th><th>Description</th><th>Revenue treatment</th></tr>
+        <tr>
+          <td>MP</td>
+          <td>Managed Print</td>
+          <td>Customer pays a per-click (CPC) rate for pages printed, with an optional minimum volume commitment. Ricoh provides the machine, service, and consumables.</td>
+          <td>CPC revenue = volume × rate. Fixed base if applicable. Finance component excluded.</td>
+        </tr>
+        <tr>
+          <td>RP</td>
+          <td>Rental Print</td>
+          <td>Customer pays a monthly rental fee for the equipment plus a service/click component. The machine remains Ricoh's asset.</td>
+          <td>Service CPC + fixed service base only. Rental (finance) component excluded from MPS GM calculation.</td>
+        </tr>
+      </table>
+      <p>Both contract types are included in the MPS portfolio. The finance/rental component is not included in the GM calculation as it flows to a separate P&amp;L line.</p>
+    </section>
+
+    <!-- FX -->
+    <section id="fx">
+      <h2><span class="icon">↔</span> FX Conversion</h2>
+      <p>All monetary values are converted to NZD for portfolio comparison using locked static rates. These rates are reviewed monthly by Minoo and updated in the <code>DATA.fxRates</code> object in each file.</p>
+      <table class="def-table">
+        <tr><th>Territory</th><th>Currency</th><th>Rate to NZD</th><th>Example</th></tr>
+        <tr><td>RSP (NZ)</td><td>NZD</td><td>1.000</td><td>NZD 100 = NZD 100</td></tr>
+        <tr><td>Solomons</td><td>SBD</td><td>0.180</td><td>SBD 1,000 = NZD 180</td></tr>
+        <tr><td>Samoa</td><td>WST</td><td>0.540</td><td>WST 1,000 = NZD 540</td></tr>
+        <tr><td>Vanuatu</td><td>VUV</td><td>0.012</td><td>VUV 100,000 = NZD 1,200</td></tr>
+        <tr><td>Tonga</td><td>TOP</td><td>0.640</td><td>TOP 1,000 = NZD 640</td></tr>
+      </table>
+      <p><strong>VUV note:</strong> The Vanuatu Vatu has no decimal sub-unit. BMS stores VUV amounts as whole integer values. Unlike other currencies where BMS stores values in cents (÷100 to get the amount), VUV values are already in full Vatu. The dashboard applies <code>× FX.VUV</code> directly without dividing by 100.</p>
+      <h3>How to update FX rates</h3>
+      <p>Find <code>fxRates: { NZD:1.000, SBD:0.180, ... }</code> in the <code>DATA</code> object of each HTML file and update the relevant currency value. Refresh the browser to see recalculated NZD figures.</p>
+    </section>
+
+    <!-- FLAGGING THRESHOLDS -->
+    <section id="flags">
+      <h2><span class="icon">⚑</span> Flagging Thresholds</h2>
+      <table class="def-table">
+        <tr><th>Flag</th><th>Condition</th><th>Action type</th></tr>
+        <tr><td>margin_critical</td><td>GM% &lt; 60% for the machine in the current period</td><td>Investigate cost drivers; consider contract repricing or machine replacement</td></tr>
+        <tr><td>high_visits</td><td>Service visits &gt; 2 per month (i.e. &gt; 6 in 90 days) for the machine</td><td>Review machine fault history; escalate to vendor if persistent</td></tr>
+        <tr><td>meter_anomaly</td><td>No meter read recorded in last 60 days, OR meter read is 0, OR volume change &gt; 3× historical average</td><td>Contact site to arrange meter read; verify billing accuracy</td></tr>
+        <tr><td>contract_renewal</td><td>Contract <code>expires_on</code> is within 90 days</td><td>Prepare renewal quote; engage customer</td></tr>
+        <tr><td>account_review</td><td>Major account with no QBR logged in &gt; 90 days (quarterly) or &gt; 180 days (biannual)</td><td>Schedule QBR; update mps_accounts in Supabase</td></tr>
+      </table>
+    </section>
+
+    <!-- MAJOR ACCOUNTS -->
+    <section id="major-accounts">
+      <h2><span class="icon">★</span> Major Account Threshold</h2>
+      <p>An account is classified as a <strong>major account</strong> if it meets any one of these criteria:</p>
+      <ul>
+        <li><strong>Fleet size:</strong> 3 or more machines on active MPS contracts</li>
+        <li><strong>Revenue:</strong> NZD 500 or more per month across all MPS contracts</li>
+        <li><strong>Multi-territory:</strong> Active machines in 2 or more RSP territories</li>
+      </ul>
+      <p>Major accounts receive quarterly (or biannual) QBR review tracked in <code>mps_accounts</code> in Supabase. The QBR tracker on the Contracts page flags accounts that are overdue for review.</p>
+    </section>
+
+    <!-- KNOWN LIMITATIONS -->
+    <section id="limitations">
+      <h2><span class="icon">⚠</span> Known Limitations (Phase 1)</h2>
+      <div class="limitation"><strong>Revenue attribution is equal-split for multi-machine contracts.</strong> A 5-machine contract assigns 1/5 of revenue to each machine. Machines with high volume will look more profitable than they are; low-volume machines will look less profitable.</div>
+      <div class="limitation"><strong>Parts cost join chain is complex.</strong> The BMS path is service_jobs → service_job_activities → service_job_assets (via activity_id) → service_job_lines. If any link in this chain is missing, the machine shows zero parts cost and GM% is overstated.</div>
+      <div class="limitation"><strong>Consumables only cover Toner Delivery cases.</strong> Drums, waste toner, fusers and other consumables are excluded. Machines that consume high-cost consumables will appear more profitable than they are.</div>
+      <div class="limitation"><strong>Labour rate is flat across all territories.</strong> NZD 49/hr is a proxy. Samoa technicians may cost more or less than Vanuatu technicians. Territory-specific rates should be applied in a later release.</div>
+      <div class="limitation"><strong>VUV revenue scale.</strong> BMS stores VUV as full integer Vatu (not sub-units). However, the service rate tables (billing_contract_rates) use a "cents" convention even for VUV. The scale interpretation for per-click rates in VUV has not been fully validated against a known invoice. Revenue figures for Vanuatu machines should be cross-checked against a recent BMS invoice for one machine.</div>
+      <div class="limitation"><strong>Data is static at build time.</strong> With the exception of the Actions tracker and QBR section, all dashboard data reflects the state when the files were last regenerated. The as-of date is shown in the header. Rebuild the files monthly (or when a significant contract change occurs) to keep data current.</div>
+      <div class="limitation"><strong>NZD/RSP territory has only 3 machines.</strong> NZD-currency BMS contracts are few; most NZ-based MPS may be managed outside BMS or under different contract structures. Confirm with Vijendra whether NZ MPS machines are fully captured.</div>
+    </section>
+
+  </div><!-- /content -->
+</div><!-- /layout -->
+
+<script>
+// Highlight active TOC item on scroll
+const sections = document.querySelectorAll('section[id], .first-pass-note[id]');
+const links    = document.querySelectorAll('.toc-list a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.toc-list a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin:'-60px 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
