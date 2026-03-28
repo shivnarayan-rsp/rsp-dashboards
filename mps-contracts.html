@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSP — MPS Contracts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:        #D7063B;
+      --red-dark:   #a8002d;
+      --charcoal:   #1a1a1a;
+      --dark:       #2a2a2a;
+      --mid:        #444;
+      --muted:      #888;
+      --border:     #e5e5e5;
+      --bg:         #f7f7f6;
+      --surface:    #fff;
+      --surface2:   #f2f2f1;
+      --green:      #1a6e2e;
+      --green-bg:   #e6f4ea;
+      --amber:      #8a5200;
+      --amber-bg:   #fef3dc;
+      --danger:     #c0392b;
+      --danger-bg:  #fdecea;
+      --blue:       #0057b8;
+      --blue-bg:    #e8f0fb;
+      --gray:       #555;
+      --gray-bg:    #efefef;
+      --purple:     #5b2d8e;
+      --purple-bg:  #f0eaf8;
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--charcoal); font-size: 14px; line-height: 1.5; }
+
+    /* HEADER */
+    header {
+      background: var(--charcoal);
+      border-top: 3px solid var(--red);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .wordmark { font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: .04em; }
+    .header-divider { width: 1px; height: 20px; background: rgba(255,255,255,.2); }
+    .header-title { font-size: .85rem; font-weight: 500; color: rgba(255,255,255,.7); letter-spacing: .02em; }
+    .header-right { display: flex; align-items: center; gap: 1rem; }
+    .live-badge { display: flex; align-items: center; gap: .4rem; background: rgba(215,6,59,.15); border: 1px solid rgba(215,6,59,.3); border-radius: 20px; padding: .2rem .7rem; }
+    .live-dot { width: 7px; height: 7px; background: var(--red); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .live-badge span { font-size: .65rem; font-weight: 700; color: var(--red); letter-spacing: .1em; }
+    .as-of { font-size: .72rem; color: rgba(255,255,255,.45); font-family: 'DM Mono', monospace; }
+
+    /* NAV */
+    .nav-pills {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .9rem 2rem; background: var(--surface);
+      border-bottom: 1px solid var(--border); overflow-x: auto; flex-wrap: nowrap;
+    }
+    .nav-pill {
+      display: inline-block; padding: .35rem 1rem; border-radius: 20px;
+      font-size: .78rem; font-weight: 500; text-decoration: none;
+      color: var(--mid); white-space: nowrap; transition: background .15s, color .15s;
+    }
+    .nav-pill:hover { background: var(--bg); color: var(--charcoal); }
+    .nav-pill.active { background: var(--red); color: #fff; }
+
+    /* MAIN */
+    main { max-width: 1300px; margin: 0 auto; padding: 2rem; }
+
+    /* KPI STRIP */
+    .kpi-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .kpi-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1rem 1.2rem; position: relative; overflow: hidden;
+    }
+    .kpi-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 4px; height: 100%; border-radius: 10px 0 0 10px;
+    }
+    .kpi-card.accent::before  { background: var(--blue); }
+    .kpi-card.good::before    { background: var(--green); }
+    .kpi-card.warn::before    { background: var(--amber); }
+    .kpi-card.alert::before   { background: var(--danger); }
+    .kpi-card.neutral::before { background: var(--gray); }
+    .kpi-label { font-size: .68rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .3rem; }
+    .kpi-val { font-size: 1.85rem; font-weight: 700; color: var(--charcoal); font-family: 'DM Mono', monospace; line-height: 1; }
+    .kpi-sub { font-size: .72rem; color: var(--muted); margin-top: .3rem; }
+
+    /* SECTION */
+    .section { margin-bottom: 2rem; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: .75rem;
+    }
+    .section-title {
+      font-size: .95rem; font-weight: 700; color: var(--charcoal);
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .count-chip {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      padding: .1rem .55rem; font-size: .72rem; font-weight: 600;
+      color: var(--muted); font-family: 'DM Mono', monospace;
+    }
+
+    /* BAND TABS */
+    .band-tabs {
+      display: flex; gap: .4rem; margin-bottom: 1rem;
+    }
+    .band-tab {
+      padding: .3rem .85rem; border-radius: 6px; font-size: .78rem; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border); background: var(--bg);
+      color: var(--mid); transition: all .15s;
+    }
+    .band-tab:hover { background: var(--surface2); }
+    .band-tab.active { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+    .band-tab .badge-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.2); border-radius: 10px;
+      padding: 0 .4rem; font-size: .65rem; margin-left: .3rem;
+      min-width: 18px; height: 16px;
+    }
+    .band-tab:not(.active) .badge-count { background: var(--border); color: var(--mid); }
+
+    /* URGENCY COLOURS */
+    .urgent-30  { color: var(--danger); font-weight: 700; }
+    .urgent-60  { color: var(--amber);  font-weight: 700; }
+    .urgent-90  { color: var(--blue);   font-weight: 600; }
+    .urgent-180 { color: var(--gray);   font-weight: 500; }
+
+    /* TABLE */
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .table-wrap table { width: 100%; border-collapse: collapse; }
+    .table-wrap thead th {
+      background: var(--surface2); font-size: .68rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .05em; color: var(--muted);
+      padding: .6rem 1rem; text-align: left; border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .table-wrap tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
+    .table-wrap tbody tr:last-child { border-bottom: none; }
+    .table-wrap tbody tr:hover { background: var(--bg); }
+    .table-wrap tbody td { padding: .65rem 1rem; font-size: .82rem; vertical-align: middle; }
+    .table-empty td { text-align: center; padding: 2rem; color: var(--muted); }
+
+    /* BADGE */
+    .badge {
+      display: inline-block; padding: .12rem .5rem; border-radius: 4px;
+      font-size: .68rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase;
+    }
+    .badge-mp      { background: var(--blue-bg);   color: var(--blue); }
+    .badge-rp      { background: var(--purple-bg); color: var(--purple); }
+    .badge-nzd     { background: var(--green-bg);  color: var(--green); }
+    .badge-sbd     { background: #e3f3ff;           color: #005a99; }
+    .badge-wst     { background: var(--amber-bg);  color: var(--amber); }
+    .badge-vuv     { background: var(--danger-bg); color: var(--danger); }
+    .badge-top     { background: var(--purple-bg); color: var(--purple); }
+    .badge-qbr-ok  { background: var(--green-bg);  color: var(--green); }
+    .badge-qbr-due { background: var(--amber-bg);  color: var(--amber); }
+    .badge-qbr-od  { background: var(--danger-bg); color: var(--danger); }
+    .badge-unknown { background: var(--gray-bg);   color: var(--gray); }
+
+    /* CONTROLS */
+    .controls {
+      display: flex; align-items: center; gap: .7rem; flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .controls select, .controls input[type=text] {
+      border: 1px solid var(--border); border-radius: 6px; padding: .35rem .7rem;
+      font-size: .8rem; font-family: inherit; color: var(--charcoal);
+      background: var(--bg); outline: none; transition: border-color .15s;
+    }
+    .controls select:focus, .controls input[type=text]:focus { border-color: var(--red); }
+    .controls label { font-size: .75rem; font-weight: 500; color: var(--muted); white-space: nowrap; }
+    .spacer { flex: 1; }
+
+    /* TERRITORY GRID */
+    .territory-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .terr-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: .9rem 1rem;
+    }
+    .terr-name { font-size: .8rem; font-weight: 700; margin-bottom: .5rem; color: var(--charcoal); }
+    .terr-row { display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); margin-bottom: .15rem; }
+    .terr-row span:last-child { font-weight: 600; color: var(--charcoal); font-family: 'DM Mono', monospace; }
+    .terr-exp { margin-top: .4rem; padding-top: .4rem; border-top: 1px solid var(--border); font-size: .72rem; }
+
+    /* QBR SECTION */
+    .qbr-notice { background: var(--blue-bg); border: 1px solid #b3cef5; border-left: 4px solid var(--blue); border-radius: 6px; padding: .75rem 1rem; margin-bottom: 1rem; font-size: .8rem; color: var(--charcoal); }
+    .qbr-notice strong { color: var(--blue); display: block; margin-bottom: .2rem; }
+    .qbr-notice code { font-family: 'DM Mono', monospace; background: rgba(0,0,0,.07); padding: .1em .35em; border-radius: 3px; }
+
+    /* MAJOR ACCOUNT CARD */
+    .major-accounts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-bottom: 1.5rem; }
+    .ma-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: .9rem 1rem; display: flex; flex-direction: column; gap: .3rem;
+    }
+    .ma-name { font-size: .83rem; font-weight: 700; color: var(--charcoal); line-height: 1.3; }
+    .ma-meta { display: flex; gap: .4rem; flex-wrap: wrap; align-items: center; }
+    .ma-stats { font-size: .72rem; color: var(--muted); display: flex; gap: .8rem; margin-top: .2rem; }
+    .ma-stats span strong { color: var(--charcoal); font-weight: 700; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--surface); border-radius: 12px; width: 520px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .modal-title { font-size: 1rem; font-weight: 700; }
+    .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); }
+    .modal-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: .75rem; }
+    .form-group { display: flex; flex-direction: column; gap: .3rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .form-label { font-size: .76rem; font-weight: 600; color: var(--mid); }
+    .form-control { border: 1px solid var(--border); border-radius: 6px; padding: .4rem .75rem; font-size: .84rem; font-family: inherit; color: var(--charcoal); background: var(--bg); outline: none; transition: border-color .15s; }
+    .form-control:focus { border-color: var(--red); background: #fff; }
+    textarea.form-control { resize: vertical; min-height: 70px; }
+    .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .4rem .9rem; border-radius: 6px; font-size: .82rem; font-weight: 600; font-family: inherit; cursor: pointer; transition: background .15s; border: none; }
+    .btn-primary { background: var(--red); color: #fff; }
+    .btn-primary:hover { background: var(--red-dark); }
+    .btn-secondary { background: var(--bg); color: var(--charcoal); border: 1px solid var(--border); }
+    .btn-sm { padding: .25rem .6rem; font-size: .75rem; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--charcoal); color: #fff; border-radius: 8px; padding: .75rem 1.2rem; font-size: .84rem; box-shadow: 0 8px 24px rgba(0,0,0,.2); opacity: 0; transform: translateY(8px); transition: opacity .2s, transform .2s; z-index: 300; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: var(--green); }
+    .toast.error   { background: var(--danger); }
+
+    @media (max-width: 1100px) { .kpi-strip, .territory-grid { grid-template-columns: repeat(3, 1fr); } .major-accounts-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 700px)  { .kpi-strip, .territory-grid, .major-accounts-grid { grid-template-columns: repeat(2, 1fr); } main { padding: 1rem; } }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <span class="wordmark">RSP</span>
+    <span class="header-divider"></span>
+    <span class="header-title">MPS Contracts Pipeline</span>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><span class="live-dot"></span><span>LIVE</span></div>
+    <span class="as-of">As of 28 Mar 2026</span>
+  </div>
+</header>
+
+<!-- NAV PILLS -->
+<nav class="nav-pills">
+  <a href="mps-portfolio.html"       class="nav-pill">◎ MPS Portfolio</a>
+  <a href="mps-machine.html"         class="nav-pill">⊟ MPS Machines</a>
+  <a href="mps-actions.html"         class="nav-pill">✓ MPS Actions</a>
+  <a href="mps-contracts.html"       class="nav-pill active">≡ MPS Contracts</a>
+  <a href="mps-data-dictionary.html" class="nav-pill">◈ Data Dictionary</a>
+  <a href="mps-playbook.html"        class="nav-pill">▷ Playbook</a>
+</nav>
+
+<main>
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip">
+    <div class="kpi-card accent">
+      <div class="kpi-label">Active Contracts</div>
+      <div class="kpi-val">261</div>
+      <div class="kpi-sub">All territories</div>
+    </div>
+    <div class="kpi-card accent">
+      <div class="kpi-label">Machines on Contract</div>
+      <div class="kpi-val">512</div>
+      <div class="kpi-sub">BMS active</div>
+    </div>
+    <div class="kpi-card alert">
+      <div class="kpi-label">Expiring ≤ 30 days</div>
+      <div class="kpi-val">0</div>
+      <div class="kpi-sub">Critical — act now</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="kpi-label">Expiring ≤ 90 days</div>
+      <div class="kpi-val">1</div>
+      <div class="kpi-sub">BI Consulting, Vanuatu</div>
+    </div>
+    <div class="kpi-card neutral">
+      <div class="kpi-label">Expiring ≤ 180 days</div>
+      <div class="kpi-val">34</div>
+      <div class="kpi-sub">Renewal pipeline</div>
+    </div>
+  </div>
+
+  <!-- TERRITORY OVERVIEW -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Portfolio by Territory</div>
+    </div>
+    <div class="territory-grid">
+      <div class="terr-card">
+        <div class="terr-name">RSP (NZ)</div>
+        <div class="terr-row"><span>Contracts</span><span>3</span></div>
+        <div class="terr-row"><span>Machines</span><span>3</span></div>
+        <div class="terr-row"><span>MP / RP</span><span>0 / 3</span></div>
+        <div class="terr-exp"><span style="color:var(--green);font-weight:600">✓ None expiring ≤180d</span></div>
+      </div>
+      <div class="terr-card">
+        <div class="terr-name">Solomons</div>
+        <div class="terr-row"><span>Contracts</span><span>24</span></div>
+        <div class="terr-row"><span>Machines</span><span>82</span></div>
+        <div class="terr-row"><span>MP / RP</span><span>3 / 21</span></div>
+        <div class="terr-exp"><span style="color:var(--green);font-weight:600">✓ None expiring ≤180d</span></div>
+      </div>
+      <div class="terr-card">
+        <div class="terr-name">Tonga</div>
+        <div class="terr-row"><span>Contracts</span><span>54</span></div>
+        <div class="terr-row"><span>Machines</span><span>61</span></div>
+        <div class="terr-row"><span>MP / RP</span><span>32 / 22</span></div>
+        <div class="terr-exp"><span style="color:var(--blue);font-weight:600">3 expiring 91–180d</span></div>
+      </div>
+      <div class="terr-card">
+        <div class="terr-name">Vanuatu</div>
+        <div class="terr-row"><span>Contracts</span><span>74</span></div>
+        <div class="terr-row"><span>Machines</span><span>179</span></div>
+        <div class="terr-row"><span>MP / RP</span><span>21 / 53</span></div>
+        <div class="terr-exp"><span style="color:var(--amber);font-weight:600">14 expiring ≤180d (1 ≤90d)</span></div>
+      </div>
+      <div class="terr-card">
+        <div class="terr-name">Samoa</div>
+        <div class="terr-row"><span>Contracts</span><span>106</span></div>
+        <div class="terr-row"><span>Machines</span><span>187</span></div>
+        <div class="terr-row"><span>MP / RP</span><span>22 / 84</span></div>
+        <div class="terr-exp"><span style="color:var(--blue);font-weight:600">17 expiring 91–180d</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RENEWAL PIPELINE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">
+        Renewal Pipeline
+        <span class="count-chip" id="pipelineCount">34</span>
+      </div>
+    </div>
+
+    <div class="band-tabs">
+      <div class="band-tab" onclick="filterBand(0,this)">≤ 30 days <span class="badge-count">0</span></div>
+      <div class="band-tab" onclick="filterBand(31,this)">31–60 days <span class="badge-count">0</span></div>
+      <div class="band-tab active" onclick="filterBand(61,this)">61–90 days <span class="badge-count">1</span></div>
+      <div class="band-tab" onclick="filterBand(91,this)">91–180 days <span class="badge-count">33</span></div>
+      <div class="band-tab" onclick="filterBand(-1,this)">All ≤ 180 days <span class="badge-count">34</span></div>
+    </div>
+
+    <div class="controls">
+      <label>Territory</label>
+      <select id="filterTerritory" onchange="applyFilters()">
+        <option value="">All</option>
+        <option value="Vanuatu">Vanuatu</option>
+        <option value="Samoa">Samoa</option>
+        <option value="Tonga">Tonga</option>
+        <option value="Solomons">Solomons</option>
+        <option value="RSP">RSP (NZ)</option>
+      </select>
+      <label>Type</label>
+      <select id="filterType" onchange="applyFilters()">
+        <option value="">All</option>
+        <option value="MP">MP</option>
+        <option value="RP">RP</option>
+      </select>
+      <input type="text" id="filterSearch" placeholder="Search customer or contract…" oninput="applyFilters()" style="min-width:200px">
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Contract No</th>
+            <th>Customer</th>
+            <th>Territory</th>
+            <th>Type</th>
+            <th>Machines</th>
+            <th>Currency</th>
+            <th>Expiry Date</th>
+            <th>Days Left</th>
+            <th>Action in System?</th>
+          </tr>
+        </thead>
+        <tbody id="pipelineBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MAJOR ACCOUNTS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Major Accounts <span style="font-size:.75rem;font-weight:400;color:var(--muted)">(fleet ≥ 3 machines)</span></div>
+    </div>
+    <div class="major-accounts-grid" id="majorAccountsGrid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- QBR TRACKER -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">QBR Cadence Tracker
+        <span class="count-chip" id="qbrCount">—</span>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openQBRModal()">+ Log Account</button>
+    </div>
+
+    <div class="qbr-notice">
+      <strong>Live from Supabase — mps_accounts table</strong>
+      To connect: set <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> at the top of this file. Use the "+ Log Account" button to add major accounts and record QBR dates. QBR overdue = last_qbr_date &gt; 90 days ago.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Territory</th>
+            <th>QBR Cadence</th>
+            <th>Last QBR</th>
+            <th>Days Since QBR</th>
+            <th>QBR Status</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="qbrBody">
+          <tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--muted)" id="qbrMsg">Loading QBR data…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- QBR ADD MODAL -->
+<div class="modal-overlay" id="qbrModal" onclick="closeOnBackdrop(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="qbrModalTitle">Log Major Account</div>
+      <button class="modal-close" onclick="closeQBRModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="qbrEditId">
+      <div class="form-row">
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label">Customer Name *</label>
+          <input type="text" class="form-control" id="qCustomer" placeholder="Account name">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Territory *</label>
+          <select class="form-control" id="qTerritory">
+            <option value="">Select…</option>
+            <option value="RSP">RSP (NZ)</option>
+            <option value="Solomons">Solomons</option>
+            <option value="Samoa">Samoa</option>
+            <option value="Vanuatu">Vanuatu</option>
+            <option value="Tonga">Tonga</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">QBR Cadence</label>
+          <select class="form-control" id="qCadence">
+            <option value="quarterly">Quarterly</option>
+            <option value="biannual">Bi-annual</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Last QBR Date</label>
+          <input type="date" class="form-control" id="qLastQBR">
+        </div>
+        <div class="form-group">
+          <label class="form-label">BMS Customer ID</label>
+          <input type="number" class="form-control" id="qBMSId" placeholder="Optional">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-control" id="qNotes" placeholder="Key account notes, upcoming topics…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeQBRModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveQBR()" id="qbrSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ──────────────────────────────────────────────
+// SUPABASE CONFIG
+// ──────────────────────────────────────────────
+const SUPABASE_URL      = '';   // e.g. 'https://xxxx.supabase.co'
+const SUPABASE_ANON_KEY = '';   // anon public key — ask Vijendra
+
+// ──────────────────────────────────────────────
+// RENEWAL PIPELINE DATA (from BMS, 28 Mar 2026)
+// ──────────────────────────────────────────────
+const PIPELINE = [
+  // ≤ 90 days
+  { contract_no:'BC-VAN-BIC-366',   customer:'BI Consulting',                  territory:'Vanuatu',  currency:'VUV', type:'RP', machines:1,  expires:'2026-06-20', days:85  },
+  // 91–180 days (sorted by expiry)
+  { contract_no:'BC-RTO010094',     customer:'LDS Tonga — Saineha HS Admin',   territory:'Tonga',    currency:'TOP', type:'MP', machines:1,  expires:'2026-06-27', days:92  },
+  { contract_no:'BC-RSA010044',     customer:'Seki a Upolu',                   territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-VAN-NEI-268',   customer:'Freedom School Port Vila',       territory:'Vanuatu',  currency:'VUV', type:'RP', machines:2,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-SAM-NAY-523',   customer:'Naydith Events & Town Area Svc', territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-RVA010048',     customer:'Digicel (Vanuatu)',              territory:'Vanuatu',  currency:'VUV', type:'MP', machines:2,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-RVA010023',     customer:'Vila Central Hospital',          territory:'Vanuatu',  currency:'VUV', type:'MP', machines:1,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-RSA010221',     customer:'Lui & Chang',                    territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-RSA010217',     customer:'Wallwork Lamb Lawyers',          territory:'Samoa',    currency:'WST', type:'RP', machines:2,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-RSA010213',     customer:'Leavai Law Firm',                territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-RSA010176',     customer:'Metek Aluminium Limited',        territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-RVA010121',     customer:'Bank of South Pacific (VAN)',    territory:'Vanuatu',  currency:'VUV', type:'RP', machines:5,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-RVA010109',     customer:'Malvatumauri',                   territory:'Vanuatu',  currency:'VUV', type:'MP', machines:1,  expires:'2026-06-29', days:94  },
+  { contract_no:'BC-SAM-NAT-2962',  customer:'National Bank of Samoa Ltd',     territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-06-30', days:95  },
+  { contract_no:'BC-RTO010095',     customer:'LDS Tonga — Eua Middle School',  territory:'Tonga',    currency:'TOP', type:'MP', machines:1,  expires:'2026-07-20', days:115 },
+  { contract_no:'BC-VAN-VIC-2107',  customer:'Victoria Limited',               territory:'Vanuatu',  currency:'VUV', type:'RP', machines:1,  expires:'2026-07-30', days:125 },
+  { contract_no:'BC-SAM-SOU-440',   customer:'South Seas Intl Traders (DHL)',  territory:'Samoa',    currency:'WST', type:'RP', machines:2,  expires:'2026-07-30', days:125 },
+  { contract_no:'BC-RVA010030',     customer:'Vanuatu Police Maritime Wing',   territory:'Vanuatu',  currency:'VUV', type:'MP', machines:1,  expires:'2026-07-30', days:125 },
+  { contract_no:'BC-SAM-GAM-439',   customer:'Gambling Control Authority',     territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-07-30', days:125 },
+  { contract_no:'BC-SAM-RIV-405',   customer:'Rivaiv Samoa',                   territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-07-30', days:125 },
+  { contract_no:'BC-SAM-VOD-390',   customer:'Vodafone Samoa',                 territory:'Samoa',    currency:'WST', type:'RP', machines:6,  expires:'2026-07-30', days:125 },
+  { contract_no:'BC-RVA010175',     customer:'Vanuatu Inst. of Teachers Edu.', territory:'Vanuatu',  currency:'VUV', type:'RP', machines:4,  expires:'2026-07-30', days:125 },
+  { contract_no:'BC-RVA010174',     customer:'National University of Vanuatu', territory:'Vanuatu',  currency:'VUV', type:'MP', machines:1,  expires:'2026-07-30', days:125 },
+  { contract_no:'BC-RVA010163',     customer:'Ministry of Trade (VAN)',        territory:'Vanuatu',  currency:'VUV', type:'RP', machines:2,  expires:'2026-07-30', days:125 },
+  { contract_no:'BC-RTO010097',     customer:'LDS Tonga — Liahona HS Computer',territory:'Tonga',    currency:'TOP', type:'MP', machines:2,  expires:'2026-08-08', days:134 },
+  { contract_no:'BC-SAM-CCC-119',   customer:'CCCS — Treasurer\'s Office',     territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-08-14', days:140 },
+  { contract_no:'BC-SAM-FRA-3078',  customer:'Frankie Company Limited',        territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-08-17', days:143 },
+  { contract_no:'BC-SAM-FRA-2871',  customer:'Frankie Company Limited',        territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-08-20', days:146 },
+  { contract_no:'BC-RSI010087',     customer:'Solomon Water',                  territory:'Solomons', currency:'SBD', type:'RP', machines:11, expires:'2026-08-29', days:155 },
+  { contract_no:'BC-RVA010139',     customer:'Ministry of Foreign Affairs (VAN)',territory:'Vanuatu', currency:'VUV', type:'RP', machines:2,  expires:'2026-08-29', days:155 },
+  { contract_no:'BC-SAM-SAM-446',   customer:'Samoa Surety',                   territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-08-30', days:156 },
+  { contract_no:'BC-SAM-SKY-441',   customer:'Skyeye Limited',                 territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-08-30', days:156 },
+  { contract_no:'BC-SAM-FRA-758',   customer:'Frankie Company Limited',        territory:'Samoa',    currency:'WST', type:'RP', machines:1,  expires:'2026-08-30', days:156 },
+  { contract_no:'BC-TON-FRI-2331',  customer:'Friendly Island Bookshop',       territory:'Tonga',    currency:'TOP', type:'RP', machines:1,  expires:'2026-08-30', days:156 },
+];
+
+// ──────────────────────────────────────────────
+// MAJOR ACCOUNTS (fleet ≥ 3 machines, from BMS)
+// ──────────────────────────────────────────────
+const MAJOR_ACCOUNTS = [
+  { name:'Fexco Samoa Limited',               territory:'Samoa',    machines:32, contracts:1, currencies:'WST' },
+  { name:'Vanuatu National Provident Fund',   territory:'Vanuatu',  machines:28, contracts:1, currencies:'VUV' },
+  { name:'Unelco Vanuatu Limited',            territory:'Vanuatu',  machines:20, contracts:1, currencies:'VUV' },
+  { name:'Bank South Pacific (Solomon Is.)',  territory:'Solomons', machines:20, contracts:1, currencies:'SBD' },
+  { name:'BRED Bank (Solomon Islands)',       territory:'Solomons', machines:13, contracts:1, currencies:'SBD' },
+  { name:'Solomon Water',                     territory:'Solomons', machines:12, contracts:2, currencies:'SBD' },
+  { name:'Solomon Airlines',                  territory:'Solomons', machines:11, contracts:1, currencies:'SBD' },
+  { name:'Vodafone Vanuatu',                  territory:'Vanuatu',  machines:11, contracts:1, currencies:'VUV' },
+  { name:'Samoa Airways',                     territory:'Samoa',    machines:10, contracts:1, currencies:'WST' },
+  { name:'Wan Smol Bag',                      territory:'Vanuatu',  machines:8,  contracts:1, currencies:'VUV' },
+  { name:'Société de Services Pétroliers',    territory:'Vanuatu',  machines:7,  contracts:2, currencies:'VUV' },
+  { name:'Development Bank of Samoa',         territory:'Samoa',    machines:7,  contracts:1, currencies:'WST' },
+  { name:'Sheraton Samoa Aggie Greys Hotel',  territory:'Samoa',    machines:6,  contracts:1, currencies:'WST' },
+  { name:'Vodafone Samoa',                    territory:'Samoa',    machines:6,  contracts:1, currencies:'WST' },
+  { name:'Vanuatu Post Limited',              territory:'Vanuatu',  machines:5,  contracts:3, currencies:'VUV' },
+  { name:'Bank of South Pacific (Vanuatu)',   territory:'Vanuatu',  machines:5,  contracts:1, currencies:'VUV' },
+  { name:'National Bank of Vanuatu',          territory:'Vanuatu',  machines:5,  contracts:1, currencies:'VUV' },
+  { name:'Univ. of South Pacific (Emalus)',   territory:'Vanuatu',  machines:5,  contracts:1, currencies:'VUV' },
+  { name:'Friendly Island Bookshop',          territory:'Tonga',    machines:4,  contracts:4, currencies:'TOP' },
+  { name:'Vanuatu Inst. of Teachers Edu.',    territory:'Vanuatu',  machines:4,  contracts:1, currencies:'VUV' },
+  { name:'Samoa Beach Resort',                territory:'Samoa',    machines:4,  contracts:1, currencies:'WST' },
+  { name:'Betham Brothers Enterprise Ltd',    territory:'Samoa',    machines:4,  contracts:1, currencies:'WST' },
+  { name:'Taumeasina Island Resort',          territory:'Samoa',    machines:3,  contracts:1, currencies:'WST' },
+  { name:'Bank of South Pacific (Samoa)',     territory:'Samoa',    machines:3,  contracts:1, currencies:'WST' },
+  { name:'Digicel (Samoa)',                   territory:'Samoa',    machines:3,  contracts:1, currencies:'WST' },
+  { name:'Air New Zealand (Samoa)',           territory:'Samoa',    machines:3,  contracts:1, currencies:'WST' },
+];
+
+// ──────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────
+let activeBand = 61;
+let qbrAccounts = [];
+let editingQBRId = null;
+
+// ──────────────────────────────────────────────
+// PIPELINE RENDER
+// ──────────────────────────────────────────────
+function filterBand(band, el) {
+  activeBand = band;
+  document.querySelectorAll('.band-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const territory = document.getElementById('filterTerritory').value;
+  const type      = document.getElementById('filterType').value;
+  const search    = document.getElementById('filterSearch').value.toLowerCase();
+
+  let rows = PIPELINE.filter(c => {
+    if (activeBand === 0  && c.days > 30)                        return false;
+    if (activeBand === 31 && (c.days <= 30 || c.days > 60))      return false;
+    if (activeBand === 61 && (c.days <= 60 || c.days > 90))      return false;
+    if (activeBand === 91 && (c.days <= 90 || c.days > 180))     return false;
+    // -1 = all ≤ 180
+    if (territory && c.territory !== territory) return false;
+    if (type      && c.type      !== type)      return false;
+    if (search    && !`${c.contract_no} ${c.customer}`.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  document.getElementById('pipelineCount').textContent = rows.length;
+  drawPipeline(rows);
+}
+
+function drawPipeline(rows) {
+  const tbody = document.getElementById('pipelineBody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr class="table-empty"><td colspan="9">No contracts match the current filter.</td></tr>';
+    return;
+  }
+
+  const currBadge = { NZD:'badge-nzd', SBD:'badge-sbd', WST:'badge-wst', VUV:'badge-vuv', TOP:'badge-top' };
+
+  tbody.innerHTML = rows.map(c => {
+    const daysClass = c.days <= 30 ? 'urgent-30' : c.days <= 60 ? 'urgent-60' : c.days <= 90 ? 'urgent-90' : 'urgent-180';
+    const expiryDate = new Date(c.expires).toLocaleDateString('en-NZ', {day:'numeric',month:'short',year:'numeric'});
+    return `<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:.78rem">${esc(c.contract_no)}</td>
+      <td style="font-weight:600;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.customer)}</td>
+      <td>${esc(c.territory)}</td>
+      <td><span class="badge badge-${c.type.toLowerCase()}">${c.type}</span></td>
+      <td style="font-family:'DM Mono',monospace;text-align:right">${c.machines}</td>
+      <td><span class="badge ${currBadge[c.currency] || 'badge-unknown'}">${c.currency}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:.78rem">${expiryDate}</td>
+      <td><span class="${daysClass}">${c.days}d</span></td>
+      <td style="font-size:.75rem;color:var(--muted)">
+        <a href="mps-actions.html" style="color:var(--blue);text-decoration:none;font-size:.75rem">Log action ↗</a>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ──────────────────────────────────────────────
+// MAJOR ACCOUNTS GRID
+// ──────────────────────────────────────────────
+function drawMajorAccounts() {
+  const terrColour = { Samoa:'badge-wst', Vanuatu:'badge-vuv', Solomons:'badge-sbd', Tonga:'badge-top', RSP:'badge-nzd' };
+  const grid = document.getElementById('majorAccountsGrid');
+  grid.innerHTML = MAJOR_ACCOUNTS.map(a => `
+    <div class="ma-card">
+      <div class="ma-name">${esc(a.name)}</div>
+      <div class="ma-meta">
+        <span class="badge ${terrColour[a.territory] || 'badge-unknown'}">${a.territory}</span>
+        <span class="badge ${terrColour[a.territory] || 'badge-unknown'}">${a.currencies}</span>
+      </div>
+      <div class="ma-stats">
+        <span><strong>${a.machines}</strong> machines</span>
+        <span><strong>${a.contracts}</strong> contract${a.contracts > 1 ? 's' : ''}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ──────────────────────────────────────────────
+// QBR TRACKER
+// ──────────────────────────────────────────────
+async function loadQBR() {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    document.getElementById('qbrMsg').textContent = 'Supabase not configured — set SUPABASE_URL and SUPABASE_ANON_KEY to load QBR data.';
+    document.getElementById('qbrCount').textContent = '—';
+    return;
+  }
+  try {
+    const res = await fetch(
+      SUPABASE_URL + '/rest/v1/mps_accounts?select=*&order=customer_name.asc',
+      { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }
+    );
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    qbrAccounts = await res.json();
+    drawQBR();
+  } catch (e) {
+    document.getElementById('qbrMsg').textContent = 'Could not load QBR data: ' + e.message;
+  }
+}
+
+function drawQBR() {
+  document.getElementById('qbrCount').textContent = qbrAccounts.length;
+  const tbody = document.getElementById('qbrBody');
+  if (!qbrAccounts.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:var(--muted)">No accounts logged yet. Use "+ Log Account" to add major accounts and track QBR cadence.</td></tr>';
+    return;
+  }
+  const today = new Date(); today.setHours(0,0,0,0);
+  tbody.innerHTML = qbrAccounts.map(a => {
+    const lastQBR = a.last_qbr_date ? new Date(a.last_qbr_date) : null;
+    const daysSince = lastQBR ? Math.floor((today - lastQBR) / 86400000) : null;
+    const threshold = a.qbr_cadence === 'biannual' ? 180 : 90;
+    let qbrStatus, qbrClass;
+    if (!lastQBR) {
+      qbrStatus = 'No QBR logged'; qbrClass = 'badge-unknown';
+    } else if (daysSince > threshold) {
+      qbrStatus = 'Overdue'; qbrClass = 'badge-qbr-od';
+    } else if (daysSince > threshold * 0.75) {
+      qbrStatus = 'Due soon'; qbrClass = 'badge-qbr-due';
+    } else {
+      qbrStatus = 'On track'; qbrClass = 'badge-qbr-ok';
+    }
+    const lastQBRStr = lastQBR ? lastQBR.toLocaleDateString('en-NZ', {day:'numeric',month:'short',year:'numeric'}) : '—';
+    const daysSinceStr = daysSince !== null ? daysSince + 'd ago' : '—';
+    return `<tr>
+      <td style="font-weight:600">${esc(a.customer_name)}</td>
+      <td>${esc(a.territory || '—')}</td>
+      <td style="text-transform:capitalize">${a.qbr_cadence || 'quarterly'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:.78rem">${lastQBRStr}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:.78rem${daysSince > threshold ? ';color:var(--danger);font-weight:700' : ''}">${daysSinceStr}</td>
+      <td><span class="badge ${qbrClass}">${qbrStatus}</span></td>
+      <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem;color:var(--muted)" title="${esc(a.notes || '')}">${a.notes ? esc(a.notes) : '—'}</td>
+      <td>
+        <button class="btn btn-secondary btn-sm" onclick="openQBREdit('${a.id}')">Edit</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ──────────────────────────────────────────────
+// QBR MODAL
+// ──────────────────────────────────────────────
+function openQBRModal() {
+  editingQBRId = null;
+  document.getElementById('qbrModalTitle').textContent = 'Log Major Account';
+  ['qCustomer','qNotes','qBMSId'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('qTerritory').value = '';
+  document.getElementById('qCadence').value = 'quarterly';
+  document.getElementById('qLastQBR').value = '';
+  document.getElementById('qbrModal').classList.add('open');
+}
+
+function openQBREdit(id) {
+  const a = qbrAccounts.find(x => x.id === id);
+  if (!a) return;
+  editingQBRId = id;
+  document.getElementById('qbrModalTitle').textContent = 'Edit Account';
+  document.getElementById('qCustomer').value  = a.customer_name || '';
+  document.getElementById('qTerritory').value = a.territory || '';
+  document.getElementById('qCadence').value   = a.qbr_cadence || 'quarterly';
+  document.getElementById('qLastQBR').value   = a.last_qbr_date || '';
+  document.getElementById('qBMSId').value     = a.bms_customer_id || '';
+  document.getElementById('qNotes').value     = a.notes || '';
+  document.getElementById('qbrModal').classList.add('open');
+}
+
+function closeQBRModal() { document.getElementById('qbrModal').classList.remove('open'); }
+function closeOnBackdrop(e) { if (e.target === e.currentTarget) e.currentTarget.classList.remove('open'); }
+
+async function saveQBR() {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) { showToast('Supabase not configured', 'error'); return; }
+  const customer = document.getElementById('qCustomer').value.trim();
+  const territory = document.getElementById('qTerritory').value;
+  if (!customer || !territory) { showToast('Customer and territory required', 'error'); return; }
+
+  const payload = {
+    customer_name:   customer,
+    territory,
+    qbr_cadence:     document.getElementById('qCadence').value,
+    last_qbr_date:   document.getElementById('qLastQBR').value || null,
+    bms_customer_id: parseInt(document.getElementById('qBMSId').value) || null,
+    notes:           document.getElementById('qNotes').value.trim() || null,
+  };
+
+  const btn = document.getElementById('qbrSaveBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  try {
+    const url = editingQBRId
+      ? SUPABASE_URL + '/rest/v1/mps_accounts?id=eq.' + encodeURIComponent(editingQBRId)
+      : SUPABASE_URL + '/rest/v1/mps_accounts';
+    const method = editingQBRId ? 'PATCH' : 'POST';
+    const prefer = editingQBRId ? 'return=minimal' : 'return=representation';
+
+    const res = await fetch(url, {
+      method,
+      headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Content-Type': 'application/json', 'Prefer': prefer },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    if (editingQBRId) {
+      const idx = qbrAccounts.findIndex(x => x.id === editingQBRId);
+      if (idx !== -1) qbrAccounts[idx] = { ...qbrAccounts[idx], ...payload };
+    } else {
+      const created = await res.json();
+      qbrAccounts.push(Array.isArray(created) ? created[0] : created);
+    }
+    drawQBR();
+    closeQBRModal();
+    showToast('Account saved', 'success');
+  } catch (e) {
+    showToast('Save failed: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save';
+  }
+}
+
+// ──────────────────────────────────────────────
+// UTILS
+// ──────────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = 'toast'; }, 3500);
+}
+
+// ──────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────
+drawMajorAccounts();
+applyFilters();
+loadQBR();
+</script>
+</body>
+</html>
