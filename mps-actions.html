@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSP — MPS Actions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:        #D7063B;
+      --red-dark:   #a8002d;
+      --red-light:  #f5e0e6;
+      --charcoal:   #1a1a1a;
+      --dark:       #2a2a2a;
+      --mid:        #444;
+      --muted:      #888;
+      --border:     #e5e5e5;
+      --bg:         #f7f7f6;
+      --surface:    #fff;
+      --surface2:   #f2f2f1;
+      --green:      #1a6e2e;
+      --green-bg:   #e6f4ea;
+      --amber:      #8a5200;
+      --amber-bg:   #fef3dc;
+      --danger:     #c0392b;
+      --danger-bg:  #fdecea;
+      --blue:       #0057b8;
+      --blue-bg:    #e8f0fb;
+      --gray:       #555;
+      --gray-bg:    #efefef;
+      --purple:     #5b2d8e;
+      --purple-bg:  #f0eaf8;
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--charcoal); font-size: 14px; line-height: 1.5; }
+
+    /* HEADER */
+    header {
+      background: var(--charcoal);
+      border-top: 3px solid var(--red);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .wordmark { font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: .04em; }
+    .header-divider { width: 1px; height: 20px; background: rgba(255,255,255,.2); }
+    .header-title { font-size: .85rem; font-weight: 500; color: rgba(255,255,255,.7); letter-spacing: .02em; }
+    .header-right { display: flex; align-items: center; gap: 1rem; }
+    .live-badge { display: flex; align-items: center; gap: .4rem; background: rgba(215,6,59,.15); border: 1px solid rgba(215,6,59,.3); border-radius: 20px; padding: .2rem .7rem; }
+    .live-dot { width: 7px; height: 7px; background: var(--red); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .live-badge span { font-size: .65rem; font-weight: 700; color: var(--red); letter-spacing: .1em; }
+    .as-of { font-size: .72rem; color: rgba(255,255,255,.45); font-family: 'DM Mono', monospace; }
+
+    /* NAV PILLS */
+    .nav-pills {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .9rem 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      flex-wrap: nowrap;
+    }
+    .nav-pill {
+      display: inline-block;
+      padding: .35rem 1rem;
+      border-radius: 20px;
+      font-size: .78rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--mid);
+      white-space: nowrap;
+      transition: background .15s, color .15s;
+    }
+    .nav-pill:hover { background: var(--bg); color: var(--charcoal); }
+    .nav-pill.active { background: var(--red); color: #fff; }
+
+    /* MAIN */
+    main { max-width: 1300px; margin: 0 auto; padding: 2rem; }
+
+    /* KPI STRIP */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem 1.3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      border-radius: 10px 0 0 10px;
+    }
+    .kpi-card.accent::before { background: var(--blue); }
+    .kpi-card.open::before  { background: var(--amber); }
+    .kpi-card.good::before  { background: var(--green); }
+    .kpi-card.alert::before { background: var(--danger); }
+    .kpi-label { font-size: .72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .35rem; }
+    .kpi-val { font-size: 2rem; font-weight: 700; color: var(--charcoal); font-family: 'DM Mono', monospace; line-height: 1; }
+    .kpi-sub { font-size: .75rem; color: var(--muted); margin-top: .35rem; }
+
+    /* CONTROLS BAR */
+    .controls {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .controls select, .controls input[type=text] {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .4rem .75rem;
+      font-size: .82rem;
+      font-family: inherit;
+      color: var(--charcoal);
+      background: var(--bg);
+      outline: none;
+      transition: border-color .15s;
+    }
+    .controls select:focus, .controls input[type=text]:focus { border-color: var(--red); }
+    .controls label { font-size: .78rem; font-weight: 500; color: var(--muted); white-space: nowrap; }
+    .controls .spacer { flex: 1; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .45rem 1rem;
+      border-radius: 6px;
+      font-size: .82rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .15s;
+      border: none;
+    }
+    .btn-primary { background: var(--red); color: #fff; }
+    .btn-primary:hover { background: var(--red-dark); }
+    .btn-secondary { background: var(--bg); color: var(--charcoal); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .btn-sm { padding: .3rem .7rem; font-size: .76rem; }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--bg); }
+
+    /* LOADING / ERROR */
+    .state-msg {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .state-msg.error { color: var(--danger); }
+
+    /* TABLE */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .table-wrap table { width: 100%; border-collapse: collapse; }
+    .table-wrap thead th {
+      background: var(--surface2);
+      font-size: .72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+      padding: .65rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .table-wrap tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
+    .table-wrap tbody tr:last-child { border-bottom: none; }
+    .table-wrap tbody tr:hover { background: var(--bg); }
+    .table-wrap tbody td { padding: .7rem 1rem; font-size: .83rem; vertical-align: middle; }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      padding: .15rem .55rem;
+      border-radius: 4px;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+    .badge-open    { background: var(--amber-bg); color: var(--amber); }
+    .badge-inprog  { background: var(--blue-bg); color: var(--blue); }
+    .badge-resolved{ background: var(--green-bg); color: var(--green); }
+    .badge-overdue { background: var(--danger-bg); color: var(--danger); }
+    .badge-margin  { background: var(--danger-bg); color: var(--danger); }
+    .badge-visits  { background: var(--amber-bg); color: var(--amber); }
+    .badge-meter   { background: var(--purple-bg); color: var(--purple); }
+    .badge-renewal { background: var(--blue-bg); color: var(--blue); }
+    .badge-review  { background: var(--gray-bg); color: var(--gray); }
+    .badge-sridhar { background: #e8f0fb; color: var(--blue); }
+    .badge-avi     { background: var(--purple-bg); color: var(--purple); }
+    .badge-other   { background: var(--gray-bg); color: var(--gray); }
+
+    /* INLINE EDIT */
+    .select-inline {
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: .25rem .5rem;
+      font-size: .78rem;
+      font-family: inherit;
+      cursor: pointer;
+      background: var(--bg);
+    }
+    .select-inline:focus { outline: none; border-color: var(--red); }
+
+    /* EMPTY */
+    .empty-row td { text-align: center; padding: 2.5rem; color: var(--muted); }
+
+    /* MODAL OVERLAY */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border-radius: 12px;
+      width: 560px;
+      max-width: 95vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 1rem; font-weight: 700; color: var(--charcoal); }
+    .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); line-height: 1; padding: .2rem; }
+    .modal-body { padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: .75rem; }
+
+    /* FORM */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .form-group { display: flex; flex-direction: column; gap: .3rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label { font-size: .76rem; font-weight: 600; color: var(--mid); }
+    .form-label .req { color: var(--danger); }
+    .form-control {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .45rem .75rem;
+      font-size: .84rem;
+      font-family: inherit;
+      color: var(--charcoal);
+      background: var(--bg);
+      outline: none;
+      transition: border-color .15s;
+    }
+    .form-control:focus { border-color: var(--red); background: #fff; }
+    textarea.form-control { resize: vertical; min-height: 70px; }
+
+    /* CONFIG NOTICE */
+    .config-notice {
+      background: var(--amber-bg);
+      border: 1px solid #f0c040;
+      border-radius: 8px;
+      padding: .75rem 1rem;
+      font-size: .8rem;
+      color: var(--amber);
+      margin-bottom: 1.25rem;
+    }
+    .config-notice strong { display: block; margin-bottom: .25rem; }
+    .config-notice code { font-family: 'DM Mono', monospace; background: rgba(0,0,0,.07); padding: .1em .35em; border-radius: 3px; }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--charcoal);
+      color: #fff;
+      border-radius: 8px;
+      padding: .75rem 1.2rem;
+      font-size: .84rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .2s, transform .2s;
+      z-index: 300;
+      max-width: 320px;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: var(--danger); }
+    .toast.success { background: var(--green); }
+
+    /* SECTION HEADER */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: .75rem;
+    }
+    .section-title { font-size: .85rem; font-weight: 700; color: var(--charcoal); display: flex; align-items: center; gap: .5rem; }
+    .count-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .1rem .55rem;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+    .notes-cell { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: .78rem; cursor: help; }
+
+    @media (max-width: 900px) {
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      main { padding: 1rem; }
+      .kpi-strip { grid-template-columns: 1fr 1fr; }
+      .controls { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-left">
+    <span class="wordmark">RSP</span>
+    <span class="header-divider"></span>
+    <span class="header-title">MPS Actions Tracker</span>
+  </div>
+  <div class="header-right">
+    <div class="live-badge">
+      <span class="live-dot"></span>
+      <span>LIVE</span>
+    </div>
+    <span class="as-of" id="asOf">Loading…</span>
+  </div>
+</header>
+
+<!-- ── NAV PILLS ── -->
+<nav class="nav-pills">
+  <a href="mps-portfolio.html"       class="nav-pill">◎ MPS Portfolio</a>
+  <a href="mps-machine.html"         class="nav-pill">⊟ MPS Machines</a>
+  <a href="mps-actions.html"         class="nav-pill active">✓ MPS Actions</a>
+  <a href="mps-contracts.html"       class="nav-pill">≡ MPS Contracts</a>
+  <a href="mps-data-dictionary.html" class="nav-pill">◈ Data Dictionary</a>
+  <a href="mps-playbook.html"        class="nav-pill">▷ Playbook</a>
+</nav>
+
+<!-- ── MAIN ── -->
+<main>
+
+  <!-- Config notice shown when Supabase not configured -->
+  <div class="config-notice" id="configNotice" style="display:none">
+    <strong>Supabase not configured — showing demo data</strong>
+    Set <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> at the top of this file to connect to live data. Contact Vijendra to get the anon key.
+  </div>
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip" id="kpiStrip">
+    <div class="kpi-card accent">
+      <div class="kpi-label">Total Actions</div>
+      <div class="kpi-val" id="kpiTotal">—</div>
+      <div class="kpi-sub">All statuses</div>
+    </div>
+    <div class="kpi-card open">
+      <div class="kpi-label">Open</div>
+      <div class="kpi-val" id="kpiOpen">—</div>
+      <div class="kpi-sub">Awaiting action</div>
+    </div>
+    <div class="kpi-card accent" style="--accent:var(--blue)">
+      <div class="kpi-label">In Progress</div>
+      <div class="kpi-val" id="kpiInProg">—</div>
+      <div class="kpi-sub">Being worked</div>
+    </div>
+    <div class="kpi-card alert">
+      <div class="kpi-label">Overdue</div>
+      <div class="kpi-val" id="kpiOverdue">—</div>
+      <div class="kpi-sub">Past due date</div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <label>Assignee</label>
+    <select id="filterAssignee" onchange="applyFilters()">
+      <option value="">All</option>
+      <option value="Sridhar">Sridhar</option>
+      <option value="Avi">Avi</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label>Issue Type</label>
+    <select id="filterType" onchange="applyFilters()">
+      <option value="">All</option>
+      <option value="margin_critical">Margin Critical</option>
+      <option value="high_visits">High Visits</option>
+      <option value="meter_anomaly">Meter Anomaly</option>
+      <option value="contract_renewal">Contract Renewal</option>
+      <option value="account_review">Account Review</option>
+    </select>
+
+    <label>Territory</label>
+    <select id="filterTerritory" onchange="applyFilters()">
+      <option value="">All</option>
+      <option value="RSP">RSP (NZ)</option>
+      <option value="Solomons">Solomons</option>
+      <option value="Samoa">Samoa</option>
+      <option value="Vanuatu">Vanuatu</option>
+      <option value="Tonga">Tonga</option>
+    </select>
+
+    <label>Status</label>
+    <select id="filterStatus" onchange="applyFilters()">
+      <option value="">All</option>
+      <option value="Open">Open</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Resolved">Resolved</option>
+    </select>
+
+    <input type="text" id="filterSearch" placeholder="Search customer, serial, notes…" oninput="applyFilters()" style="min-width:200px">
+
+    <div class="spacer"></div>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Add Action</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="section-header">
+    <div class="section-title">
+      Actions
+      <span class="count-chip" id="rowCount">0</span>
+    </div>
+    <div style="font-size:.75rem;color:var(--muted)">Click status to update inline · Changes save to Supabase</div>
+  </div>
+  <div class="table-wrap">
+    <table id="actionsTable">
+      <thead>
+        <tr>
+          <th>Issue Type</th>
+          <th>Machine / Account</th>
+          <th>Territory</th>
+          <th>Assignee</th>
+          <th>Due Date</th>
+          <th>Status</th>
+          <th>Notes</th>
+          <th>Detail</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="8" class="state-msg" id="loadMsg">Loading actions…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<!-- ── ADD ACTION MODAL ── -->
+<div class="modal-overlay" id="addModal" onclick="closeOnBackdrop(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add New Action</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Issue Type <span class="req">*</span></label>
+          <select class="form-control" id="fIssueType">
+            <option value="">Select…</option>
+            <option value="margin_critical">Margin Critical</option>
+            <option value="high_visits">High Visits</option>
+            <option value="meter_anomaly">Meter Anomaly</option>
+            <option value="contract_renewal">Contract Renewal</option>
+            <option value="account_review">Account Review</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assignee <span class="req">*</span></label>
+          <select class="form-control" id="fAssignee">
+            <option value="">Select…</option>
+            <option value="Sridhar">Sridhar</option>
+            <option value="Avi">Avi</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Serial No</label>
+          <input type="text" class="form-control" id="fSerialNo" placeholder="e.g. C123456">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contract No</label>
+          <input type="text" class="form-control" id="fContractNo" placeholder="e.g. MP-00123">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Customer Name <span class="req">*</span></label>
+          <input type="text" class="form-control" id="fCustomer" placeholder="Account name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Territory <span class="req">*</span></label>
+          <select class="form-control" id="fTerritory">
+            <option value="">Select…</option>
+            <option value="RSP">RSP (NZ)</option>
+            <option value="Solomons">Solomons</option>
+            <option value="Samoa">Samoa</option>
+            <option value="Vanuatu">Vanuatu</option>
+            <option value="Tonga">Tonga</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full">
+          <label class="form-label">Issue Detail</label>
+          <textarea class="form-control" id="fIssueDetail" placeholder="Describe the issue in full…"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full">
+          <label class="form-label">Suggested Action</label>
+          <textarea class="form-control" id="fSuggestedAction" placeholder="What should be done?"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Due Date</label>
+          <input type="date" class="form-control" id="fDueDate">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <input type="text" class="form-control" id="fNotes" placeholder="Short note">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAction()" id="submitBtn">Save Action</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── DETAIL MODAL ── -->
+<div class="modal-overlay" id="detailModal" onclick="closeOnBackdrop(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="detailTitle">Action Detail</div>
+      <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeDetailModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ──────────────────────────────────────────────
+// SUPABASE CONFIG — set these before first use
+// ──────────────────────────────────────────────
+const SUPABASE_URL      = '';   // e.g. 'https://xxxx.supabase.co'
+const SUPABASE_ANON_KEY = '';   // anon public key from Supabase dashboard (ask Vijendra)
+
+// ──────────────────────────────────────────────
+// DEMO DATA — shown when Supabase not configured
+// ──────────────────────────────────────────────
+const DEMO_ACTIONS = [
+  {
+    id: 'demo-1',
+    issue_type: 'margin_critical',
+    serial_no: 'C3C380110',
+    contract_no: 'MP-00241',
+    customer_name: 'MASI CORPORATION',
+    territory: 'Solomons',
+    issue_detail: 'Machine GM estimated at 32% — well below 60% threshold. High visit frequency (4 visits in 90 days) driving labour cost.',
+    suggested_action: 'Review visit history with Solomons tech team. Check if machine is due for replacement or if consumable misuse is a factor.',
+    assignee: 'Avi',
+    due_date: '2026-04-15',
+    status: 'Open',
+    notes: 'Flagged from machine P&L review',
+    created_at: '2026-03-20T09:00:00Z',
+    updated_at: '2026-03-20T09:00:00Z'
+  },
+  {
+    id: 'demo-2',
+    issue_type: 'contract_renewal',
+    serial_no: '',
+    contract_no: 'MP-00187',
+    customer_name: 'WESTERNJOINT VENTURE',
+    territory: 'Solomons',
+    issue_detail: 'Contract expires 30 Apr 2026 — 33 days away. No renewal discussion logged.',
+    suggested_action: 'Avi to contact account holder this week. Prepare renewal quote with updated CPC rates.',
+    assignee: 'Avi',
+    due_date: '2026-04-05',
+    status: 'In Progress',
+    notes: 'Email sent 22 Mar, awaiting response',
+    created_at: '2026-03-22T11:30:00Z',
+    updated_at: '2026-03-26T08:15:00Z'
+  },
+  {
+    id: 'demo-3',
+    issue_type: 'high_visits',
+    serial_no: 'C3H620048',
+    contract_no: 'MP-00251',
+    customer_name: 'TONGA DEVELOPMENT BANK',
+    territory: 'Tonga',
+    issue_detail: 'Machine logged 5 service visits in 90 days. Labour cost alone exceeds monthly contract revenue.',
+    suggested_action: 'Sridhar to review machine fault codes. Consider escalation to vendor or machine swap.',
+    assignee: 'Sridhar',
+    due_date: '2026-03-31',
+    status: 'Open',
+    notes: '',
+    created_at: '2026-03-18T14:00:00Z',
+    updated_at: '2026-03-18T14:00:00Z'
+  },
+  {
+    id: 'demo-4',
+    issue_type: 'account_review',
+    serial_no: '',
+    contract_no: '',
+    customer_name: 'GOVERNMENT OF SAMOA',
+    territory: 'Samoa',
+    issue_detail: 'Major account — 7 machines across 3 sites. Last QBR was Oct 2025. Overdue for bi-annual review.',
+    suggested_action: 'Avi to schedule Q2 QBR by end of April. Review contract performance, consumable usage, expansion opportunities.',
+    assignee: 'Avi',
+    due_date: '2026-04-30',
+    status: 'Open',
+    notes: 'Log QBR date in mps-accounts table after meeting',
+    created_at: '2026-03-25T10:00:00Z',
+    updated_at: '2026-03-25T10:00:00Z'
+  },
+  {
+    id: 'demo-5',
+    issue_type: 'meter_anomaly',
+    serial_no: 'C2H640024',
+    contract_no: 'MP-00198',
+    customer_name: 'ROYAL PACIFIC HOTEL',
+    territory: 'Vanuatu',
+    issue_detail: 'No meter read recorded in last 60 days. Billing may be estimated. Actual volume unknown.',
+    suggested_action: 'Sridhar to contact site contact and arrange remote meter read or on-site visit.',
+    assignee: 'Sridhar',
+    due_date: '2026-04-07',
+    status: 'Resolved',
+    notes: 'Meter read obtained 27 Mar 2026 — 14,320 mono clicks',
+    created_at: '2026-03-10T08:00:00Z',
+    updated_at: '2026-03-27T16:00:00Z'
+  }
+];
+
+// ──────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────
+let allActions = [];
+let filtered   = [];
+let usingDemo  = false;
+
+// ──────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────
+async function init() {
+  document.getElementById('asOf').textContent = 'As of ' + new Date().toLocaleDateString('en-NZ', {day:'numeric',month:'short',year:'numeric'});
+
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    usingDemo = true;
+    document.getElementById('configNotice').style.display = '';
+    allActions = DEMO_ACTIONS;
+    render();
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      SUPABASE_URL + '/rest/v1/mps_actions?select=*&order=created_at.desc',
+      { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } }
+    );
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    allActions = await res.json();
+    render();
+  } catch (e) {
+    document.getElementById('tableBody').innerHTML =
+      `<tr><td colspan="8" class="state-msg error">Could not load from Supabase: ${e.message}<br><small>Check SUPABASE_URL and SUPABASE_ANON_KEY at the top of this file.</small></td></tr>`;
+    updateKPIs([]);
+  }
+}
+
+// ──────────────────────────────────────────────
+// RENDER
+// ──────────────────────────────────────────────
+function render() {
+  applyFilters();
+}
+
+function applyFilters() {
+  const assignee  = document.getElementById('filterAssignee').value;
+  const type      = document.getElementById('filterType').value;
+  const territory = document.getElementById('filterTerritory').value;
+  const status    = document.getElementById('filterStatus').value;
+  const search    = document.getElementById('filterSearch').value.toLowerCase();
+
+  filtered = allActions.filter(a => {
+    if (assignee  && a.assignee  !== assignee)  return false;
+    if (type      && a.issue_type !== type)      return false;
+    if (territory && a.territory  !== territory) return false;
+    if (status    && a.status     !== status)    return false;
+    if (search) {
+      const hay = [a.customer_name, a.serial_no, a.contract_no, a.notes, a.issue_detail, a.suggested_action].join(' ').toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  updateKPIs(allActions);
+  drawTable(filtered);
+}
+
+function updateKPIs(actions) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const open    = actions.filter(a => a.status === 'Open').length;
+  const inprog  = actions.filter(a => a.status === 'In Progress').length;
+  const overdue = actions.filter(a => a.status !== 'Resolved' && a.due_date && new Date(a.due_date) < today).length;
+
+  document.getElementById('kpiTotal').textContent   = actions.length;
+  document.getElementById('kpiOpen').textContent    = open;
+  document.getElementById('kpiInProg').textContent  = inprog;
+  document.getElementById('kpiOverdue').textContent = overdue;
+}
+
+function drawTable(rows) {
+  document.getElementById('rowCount').textContent = rows.length;
+  const tbody = document.getElementById('tableBody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="state-msg">No actions match filters.</td></tr>';
+    return;
+  }
+
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  tbody.innerHTML = rows.map(a => {
+    const due      = a.due_date ? new Date(a.due_date) : null;
+    const isOverdue= due && a.status !== 'Resolved' && due < today;
+    const dueStr   = a.due_date ? new Date(a.due_date).toLocaleDateString('en-NZ', {day:'numeric',month:'short',year:'numeric'}) : '—';
+    const typeMap  = {
+      margin_critical: ['badge-margin',  'Margin Critical'],
+      high_visits:     ['badge-visits',  'High Visits'],
+      meter_anomaly:   ['badge-meter',   'Meter Anomaly'],
+      contract_renewal:['badge-renewal', 'Renewal'],
+      account_review:  ['badge-review',  'Account Review']
+    };
+    const [typeCls, typeLabel] = typeMap[a.issue_type] || ['badge-review', a.issue_type];
+    const statusCls = a.status === 'Open' ? 'badge-open' : a.status === 'In Progress' ? 'badge-inprog' : 'badge-resolved';
+    const assigneeCls = a.assignee === 'Sridhar' ? 'badge-sridhar' : a.assignee === 'Avi' ? 'badge-avi' : 'badge-other';
+    const machine = [a.serial_no, a.customer_name].filter(Boolean).join(' · ');
+    const notes = a.notes ? `<span class="notes-cell" title="${esc(a.notes)}">${esc(a.notes)}</span>` : '<span style="color:var(--muted)">—</span>';
+
+    return `<tr>
+      <td><span class="badge ${typeCls}">${typeLabel}</span></td>
+      <td style="max-width:200px">
+        <div style="font-weight:600;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(a.customer_name || '—')}</div>
+        ${a.serial_no ? `<div style="font-size:.72rem;color:var(--muted);font-family:'DM Mono',monospace">${esc(a.serial_no)}</div>` : ''}
+        ${a.contract_no ? `<div style="font-size:.72rem;color:var(--muted);font-family:'DM Mono',monospace">${esc(a.contract_no)}</div>` : ''}
+      </td>
+      <td><span class="badge badge-review">${esc(a.territory || '—')}</span></td>
+      <td><span class="badge ${assigneeCls}">${esc(a.assignee || '—')}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:.78rem;${isOverdue ? 'color:var(--danger);font-weight:700' : ''}">
+        ${dueStr}${isOverdue ? ' <span style="font-size:.65rem">⚠ OVERDUE</span>' : ''}
+      </td>
+      <td>
+        ${usingDemo
+          ? `<span class="badge ${statusCls}">${a.status}</span>`
+          : `<select class="select-inline ${statusCls}" data-id="${a.id}" onchange="updateStatus(this)">
+               <option value="Open"        ${a.status==='Open'        ?'selected':''}>Open</option>
+               <option value="In Progress" ${a.status==='In Progress' ?'selected':''}>In Progress</option>
+               <option value="Resolved"    ${a.status==='Resolved'    ?'selected':''}>Resolved</option>
+             </select>`
+        }
+      </td>
+      <td>${notes}</td>
+      <td>
+        <button class="btn btn-ghost btn-sm" onclick="showDetail('${a.id}')">View</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ──────────────────────────────────────────────
+// INLINE STATUS UPDATE
+// ──────────────────────────────────────────────
+async function updateStatus(sel) {
+  const id     = sel.dataset.id;
+  const status = sel.value;
+  // Update class
+  sel.className = 'select-inline ' + (status === 'Open' ? 'badge-open' : status === 'In Progress' ? 'badge-inprog' : 'badge-resolved');
+
+  try {
+    const res = await fetch(
+      SUPABASE_URL + '/rest/v1/mps_actions?id=eq.' + encodeURIComponent(id),
+      {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ status })
+      }
+    );
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    // Update local state
+    const action = allActions.find(a => a.id === id);
+    if (action) action.status = status;
+    updateKPIs(allActions);
+    showToast('Status updated', 'success');
+  } catch (e) {
+    showToast('Save failed: ' + e.message, 'error');
+  }
+}
+
+// ──────────────────────────────────────────────
+// DETAIL VIEW
+// ──────────────────────────────────────────────
+function showDetail(id) {
+  const a = allActions.find(x => x.id === id);
+  if (!a) return;
+  document.getElementById('detailTitle').textContent = a.customer_name || 'Action Detail';
+
+  const typeMap = {
+    margin_critical: 'Margin Critical', high_visits: 'High Visits',
+    meter_anomaly: 'Meter Anomaly', contract_renewal: 'Contract Renewal', account_review: 'Account Review'
+  };
+  const created = a.created_at ? new Date(a.created_at).toLocaleDateString('en-NZ', {day:'numeric',month:'short',year:'numeric'}) : '—';
+  const updated = a.updated_at ? new Date(a.updated_at).toLocaleDateString('en-NZ', {day:'numeric',month:'short',year:'numeric'}) : '—';
+  const due     = a.due_date   ? new Date(a.due_date).toLocaleDateString('en-NZ', {day:'numeric',month:'short',year:'numeric'}) : '—';
+
+  document.getElementById('detailBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem 1.5rem">
+      <div><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem">Issue Type</div><div>${typeMap[a.issue_type] || a.issue_type}</div></div>
+      <div><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem">Status</div><div>${a.status}</div></div>
+      <div><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem">Assignee</div><div>${a.assignee || '—'}</div></div>
+      <div><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem">Territory</div><div>${a.territory || '—'}</div></div>
+      ${a.serial_no ? `<div><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem">Serial No</div><div style="font-family:'DM Mono',monospace">${esc(a.serial_no)}</div></div>` : ''}
+      ${a.contract_no ? `<div><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem">Contract No</div><div style="font-family:'DM Mono',monospace">${esc(a.contract_no)}</div></div>` : ''}
+      <div><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem">Due Date</div><div>${due}</div></div>
+      <div><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.2rem">Created</div><div>${created}</div></div>
+    </div>
+    ${a.issue_detail ? `<div style="margin-top:1rem"><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.4rem">Issue Detail</div><div style="background:var(--bg);border-radius:6px;padding:.75rem 1rem;font-size:.85rem;line-height:1.6">${esc(a.issue_detail)}</div></div>` : ''}
+    ${a.suggested_action ? `<div style="margin-top:.75rem"><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.4rem">Suggested Action</div><div style="background:var(--bg);border-radius:6px;padding:.75rem 1rem;font-size:.85rem;line-height:1.6">${esc(a.suggested_action)}</div></div>` : ''}
+    ${a.notes ? `<div style="margin-top:.75rem"><div style="font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:.4rem">Notes</div><div style="background:var(--bg);border-radius:6px;padding:.75rem 1rem;font-size:.85rem;line-height:1.6">${esc(a.notes)}</div></div>` : ''}
+    <div style="margin-top:.75rem;font-size:.72rem;color:var(--muted)">Last updated: ${updated}</div>
+  `;
+  document.getElementById('detailModal').classList.add('open');
+}
+
+function closeDetailModal() { document.getElementById('detailModal').classList.remove('open'); }
+
+// ──────────────────────────────────────────────
+// ADD ACTION MODAL
+// ──────────────────────────────────────────────
+function openAddModal() {
+  // Reset form
+  ['fIssueType','fAssignee','fSerialNo','fContractNo','fCustomer','fTerritory','fIssueDetail','fSuggestedAction','fDueDate','fNotes']
+    .forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('addModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('addModal').classList.remove('open'); }
+
+function closeOnBackdrop(e) {
+  if (e.target === e.currentTarget) {
+    e.currentTarget.classList.remove('open');
+  }
+}
+
+async function submitAction() {
+  const issueType = document.getElementById('fIssueType').value;
+  const assignee  = document.getElementById('fAssignee').value;
+  const customer  = document.getElementById('fCustomer').value.trim();
+  const territory = document.getElementById('fTerritory').value;
+
+  if (!issueType || !assignee || !customer || !territory) {
+    showToast('Please fill in all required fields', 'error');
+    return;
+  }
+
+  const payload = {
+    issue_type:       issueType,
+    assignee,
+    serial_no:        document.getElementById('fSerialNo').value.trim() || null,
+    contract_no:      document.getElementById('fContractNo').value.trim() || null,
+    customer_name:    customer,
+    territory,
+    issue_detail:     document.getElementById('fIssueDetail').value.trim() || null,
+    suggested_action: document.getElementById('fSuggestedAction').value.trim() || null,
+    due_date:         document.getElementById('fDueDate').value || null,
+    notes:            document.getElementById('fNotes').value.trim() || null,
+    status:           'Open'
+  };
+
+  if (usingDemo) {
+    // In demo mode, add to local array
+    payload.id         = 'demo-' + Date.now();
+    payload.created_at = new Date().toISOString();
+    payload.updated_at = new Date().toISOString();
+    allActions.unshift(payload);
+    closeModal();
+    render();
+    showToast('Action added (demo — not persisted)', 'success');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    const res = await fetch(
+      SUPABASE_URL + '/rest/v1/mps_actions',
+      {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const created = await res.json();
+    allActions.unshift(Array.isArray(created) ? created[0] : created);
+    closeModal();
+    render();
+    showToast('Action saved', 'success');
+  } catch (e) {
+    showToast('Save failed: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Action';
+  }
+}
+
+// ──────────────────────────────────────────────
+// TOAST
+// ──────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = 'toast'; }, 3500);
+}
+
+// ──────────────────────────────────────────────
+// START
+// ──────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

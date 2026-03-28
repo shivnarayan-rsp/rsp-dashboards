@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSP — MPS Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:        #D7063B;
+      --red-dark:   #a8002d;
+      --red-light:  #f5e0e6;
+      --charcoal:   #1a1a1a;
+      --dark:       #2a2a2a;
+      --mid:        #444;
+      --muted:      #888;
+      --border:     #e5e5e5;
+      --bg:         #f7f7f6;
+      --surface:    #fff;
+      --surface2:   #f2f2f1;
+      --green:      #1a6e2e;
+      --green-bg:   #e6f4ea;
+      --amber:      #8a5200;
+      --amber-bg:   #fef3dc;
+      --danger:     #c0392b;
+      --danger-bg:  #fdecea;
+      --blue:       #0057b8;
+      --blue-bg:    #e8f0fb;
+      --gray:       #555;
+      --gray-bg:    #efefef;
+      --purple:     #5b2d8e;
+      --purple-bg:  #f0eaf8;
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--charcoal); font-size: 14px; line-height: 1.5; }
+
+    /* HEADER */
+    header {
+      background: var(--charcoal);
+      border-top: 3px solid var(--red);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .wordmark { font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: .04em; }
+    .header-divider { width: 1px; height: 20px; background: rgba(255,255,255,.2); }
+    .header-title { font-size: .85rem; font-weight: 500; color: rgba(255,255,255,.7); letter-spacing: .02em; }
+    .header-right { display: flex; align-items: center; gap: 1rem; }
+    .live-badge { display: flex; align-items: center; gap: .4rem; background: rgba(215,6,59,.15); border: 1px solid rgba(215,6,59,.3); border-radius: 20px; padding: .2rem .7rem; }
+    .live-dot { width: 7px; height: 7px; background: var(--red); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .live-badge span { font-size: .65rem; font-weight: 700; color: var(--red); letter-spacing: .1em; }
+    .as-of { font-size: .72rem; color: rgba(255,255,255,.45); font-family: 'DM Mono', monospace; }
+
+    /* NAV PILLS */
+    .nav-pills {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .9rem 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      flex-wrap: nowrap;
+    }
+    .nav-pill {
+      display: inline-block;
+      padding: .35rem 1rem;
+      border-radius: 20px;
+      font-size: .78rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--mid);
+      border: 1.5px solid var(--border);
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .nav-pill:hover { border-color: var(--red); color: var(--red); }
+    .nav-pill.active { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+
+    main { max-width: 1280px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
+
+    /* WIG BANNER */
+    .wig-banner {
+      background: var(--charcoal);
+      color: #fff;
+      border-radius: 10px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .wig-eyebrow { font-size: .65rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--red); margin-bottom: .5rem; }
+    .wig-body { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .wig-statement { font-size: 1rem; font-weight: 600; color: #fff; }
+    .wig-target { display: flex; align-items: center; gap: 1.5rem; }
+    .wig-metric { text-align: center; }
+    .wig-metric-val { font-size: 1.6rem; font-weight: 700; font-family: 'DM Mono', monospace; }
+    .wig-metric-lbl { font-size: .68rem; color: rgba(255,255,255,.5); letter-spacing: .06em; text-transform: uppercase; }
+    .wig-metric-val.green  { color: #4caf82; }
+    .wig-metric-val.amber  { color: #f5a623; }
+    .wig-metric-val.danger { color: #ef5350; }
+    .wig-track-wrap { flex: 1; min-width: 180px; }
+    .wig-track { background: rgba(255,255,255,.12); border-radius: 4px; height: 8px; position: relative; margin-top: .3rem; }
+    .wig-fill { height: 100%; border-radius: 4px; background: var(--red); }
+    .wig-target-line { position: absolute; top: -4px; bottom: -4px; width: 2px; background: #fff; border-radius: 1px; }
+    .wig-track-label { font-size: .68rem; color: rgba(255,255,255,.45); margin-top: .25rem; font-family: 'DM Mono', monospace; }
+
+    /* SECTION LABELS */
+    .section-label {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 1.5rem 0 .75rem;
+    }
+
+    /* KPI GRID */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: .5rem; }
+    @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .kpi-grid { grid-template-columns: 1fr; } }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.1rem 1.2rem;
+      border-top: 3px solid var(--border);
+      transition: box-shadow .15s;
+    }
+    .kpi-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+    .kpi-card.accent  { border-top-color: var(--red); }
+    .kpi-card.good    { border-top-color: var(--green); }
+    .kpi-card.warn    { border-top-color: var(--amber); }
+    .kpi-card.alert   { border-top-color: var(--danger); }
+    .kpi-card.info    { border-top-color: var(--blue); }
+
+    .kpi-label { font-size: .72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .4rem; }
+    .kpi-value { font-size: 2rem; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--charcoal); line-height: 1.1; }
+    .kpi-value.green  { color: var(--green); }
+    .kpi-value.amber  { color: var(--amber); }
+    .kpi-value.danger { color: var(--danger); }
+    .kpi-sub   { font-size: .72rem; color: var(--muted); margin-top: .3rem; }
+    .kpi-trend { font-size: .72rem; font-weight: 600; margin-top: .5rem; }
+    .trend-good   { color: var(--green); }
+    .trend-warn   { color: var(--amber); }
+    .trend-danger { color: var(--danger); }
+    .progress-bar { background: var(--border); border-radius: 4px; height: 5px; margin-top: .7rem; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width .6s ease; }
+    .fill-green  { background: var(--green); }
+    .fill-amber  { background: #f5a623; }
+    .fill-danger { background: var(--danger); }
+    .fill-red    { background: var(--red); }
+    .fill-blue   { background: var(--blue); }
+
+    /* TERRITORY CARDS */
+    .territory-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    @media (max-width: 1100px) { .territory-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 700px)  { .territory-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .terr-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.1rem;
+      border-left: 4px solid var(--border);
+    }
+    .terr-card.samoa   { border-left-color: #0057b8; }
+    .terr-card.vanuatu { border-left-color: #1a7a4a; }
+    .terr-card.tonga   { border-left-color: #b86b00; }
+    .terr-card.solomons{ border-left-color: #5b2d8e; }
+    .terr-card.nz      { border-left-color: #1a1a1a; }
+
+    .terr-name { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .5rem; }
+    .terr-currency { font-size: .65rem; color: var(--muted); margin-left: .3rem; }
+    .terr-stat { display: flex; justify-content: space-between; align-items: baseline; padding: .25rem 0; border-bottom: 1px solid var(--border); }
+    .terr-stat:last-child { border-bottom: none; }
+    .terr-stat-lbl { font-size: .72rem; color: var(--mid); }
+    .terr-stat-val { font-size: .82rem; font-weight: 600; font-family: 'DM Mono', monospace; }
+    .terr-revenue { font-size: 1.05rem; font-weight: 700; font-family: 'DM Mono', monospace; color: var(--charcoal); margin: .5rem 0 .2rem; }
+    .terr-revenue-sub { font-size: .68rem; color: var(--muted); }
+
+    /* GM BAND TABLE */
+    table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    thead th { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); padding: .5rem .75rem; text-align: left; border-bottom: 2px solid var(--border); background: var(--surface2); }
+    thead th.right { text-align: right; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+    tbody tr:hover { background: var(--surface2); }
+    tbody td { padding: .6rem .75rem; vertical-align: middle; }
+    tbody td.right { text-align: right; font-family: 'DM Mono', monospace; }
+    .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 1.5rem; }
+
+    .badge {
+      display: inline-block;
+      padding: .15rem .6rem;
+      border-radius: 12px;
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .02em;
+    }
+    .badge-green  { background: var(--green-bg);  color: var(--green); }
+    .badge-amber  { background: var(--amber-bg);  color: var(--amber); }
+    .badge-danger { background: var(--danger-bg); color: var(--danger); }
+    .badge-blue   { background: var(--blue-bg);   color: var(--blue); }
+    .badge-gray   { background: var(--gray-bg);   color: var(--gray); }
+    .badge-purple { background: var(--purple-bg); color: var(--purple); }
+
+    /* GM indicator in table */
+    .gm-bar-wrap { display: flex; align-items: center; gap: .5rem; }
+    .gm-bar { flex: 1; background: var(--border); border-radius: 3px; height: 6px; overflow: hidden; }
+    .gm-fill { height: 100%; border-radius: 3px; }
+
+    /* FIRST-PASS NOTE */
+    .note-box {
+      background: var(--blue-bg);
+      border: 1px solid #b3cef5;
+      border-left: 4px solid var(--blue);
+      border-radius: 6px;
+      padding: .9rem 1.1rem;
+      margin-bottom: 1.5rem;
+      font-size: .78rem;
+      color: var(--charcoal);
+      line-height: 1.6;
+    }
+    .note-box strong { color: var(--blue); }
+
+    /* COST PENDING CHIP */
+    .pending-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      background: var(--amber-bg);
+      color: var(--amber);
+      border-radius: 12px;
+      font-size: .68rem;
+      font-weight: 600;
+      padding: .1rem .55rem;
+    }
+
+    /* DIVIDER */
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 1.5rem 2rem;
+      font-size: .7rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .04em;
+    }
+
+    /* CURRENCY TOGGLE */
+    .toggle-row { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+    .toggle-label { font-size: .72rem; color: var(--muted); font-weight: 600; }
+    .toggle-btn {
+      padding: .25rem .75rem;
+      border-radius: 14px;
+      font-size: .72rem;
+      font-weight: 600;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--mid);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .toggle-btn.active { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+
+    /* Fade-up animation */
+    .fade-up { animation: fadeUp .4s ease both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="wordmark">RSP</div>
+    <div class="header-divider"></div>
+    <div class="header-title">MPS Dashboard · Portfolio</div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div><span>LIVE</span></div>
+    <div class="as-of" id="asOf"></div>
+  </div>
+</header>
+
+<nav class="nav-pills">
+  <a href="mps-portfolio.html"       class="nav-pill active">◎ Portfolio</a>
+  <a href="mps-machine.html"         class="nav-pill">⊟ Machines</a>
+  <a href="mps-actions.html"         class="nav-pill">✓ Actions</a>
+  <a href="mps-contracts.html"       class="nav-pill">≡ Contracts</a>
+  <a href="mps-data-dictionary.html" class="nav-pill">◈ Data Dictionary</a>
+  <a href="mps-playbook.html"        class="nav-pill">▷ Playbook</a>
+</nav>
+
+<main>
+
+  <!-- WIG BANNER -->
+  <div class="wig-banner fade-up">
+    <div class="wig-eyebrow">4DX — Wildly Important Goal · MPS 2026</div>
+    <div class="wig-body">
+      <div class="wig-statement">Achieve 80% blended gross margin across the MPS portfolio by December 2026</div>
+      <div class="wig-target">
+        <div class="wig-metric">
+          <div class="wig-metric-val amber" id="wigCurrentGM">—</div>
+          <div class="wig-metric-lbl">Current GM%</div>
+        </div>
+        <div class="wig-metric">
+          <div class="wig-metric-val" style="color:#fff">80%</div>
+          <div class="wig-metric-lbl">Target</div>
+        </div>
+        <div class="wig-track-wrap">
+          <div class="wig-track">
+            <div class="wig-fill" id="wigFill" style="width:0%"></div>
+            <div class="wig-target-line" style="left:80%"></div>
+          </div>
+          <div class="wig-track-label">Cost data loading — GM will update when parts + consumable queries complete</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIRST-PASS NOTE -->
+  <div class="note-box fade-up">
+    <strong>First-pass baseline:</strong> Revenue data is live from BMS (Jan–Mar 2026 average). Labour cost estimated at NZD 49/hr flat rate.
+    Parts and consumable costs are connecting — GM% will firm up once those queries complete.
+    Some machines may show GM well below 60%: this is expected and is precisely why the dashboard exists. Treat this first view as a diagnostic, not a performance review.
+  </div>
+
+  <!-- SNAPSHOT KPIs -->
+  <div class="section-label">PORTFOLIO SNAPSHOT</div>
+  <div class="kpi-grid fade-up" id="kpiGrid"></div>
+
+  <!-- CURRENCY TOGGLE -->
+  <div class="toggle-row" style="margin-top:1.25rem;">
+    <span class="toggle-label">Revenue display:</span>
+    <button class="toggle-btn active" onclick="setCurrency('nzd',this)">NZD</button>
+    <button class="toggle-btn" onclick="setCurrency('local',this)">Local currency</button>
+  </div>
+
+  <!-- TERRITORY SCORECARDS -->
+  <div class="section-label">TERRITORY SCORECARDS</div>
+  <div class="territory-grid fade-up" id="terrGrid"></div>
+
+  <hr class="divider">
+
+  <!-- GM BAND DISTRIBUTION -->
+  <div class="section-label">GM BAND DISTRIBUTION <span class="pending-chip">⏳ Cost data pending</span></div>
+  <div class="table-wrap fade-up">
+    <table>
+      <thead>
+        <tr>
+          <th>Territory</th>
+          <th class="right">Total Machines</th>
+          <th class="right">≥ 80% (Target)</th>
+          <th class="right">60–79% (Watch)</th>
+          <th class="right">&lt; 60% (Critical)</th>
+          <th class="right">GM%</th>
+        </tr>
+      </thead>
+      <tbody id="gmBandBody"></tbody>
+      <tfoot id="gmBandFoot"></tfoot>
+    </table>
+  </div>
+
+  <!-- CONTRACTS EXPIRING SOON -->
+  <div class="section-label">CONTRACTS EXPIRING — NEXT 90 DAYS</div>
+  <div class="table-wrap fade-up">
+    <table>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Contract No.</th>
+          <th>Territory</th>
+          <th>Type</th>
+          <th class="right">Machines</th>
+          <th class="right">Expires</th>
+          <th class="right">Days Left</th>
+        </tr>
+      </thead>
+      <tbody id="expiryBody"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer id="footer"></footer>
+
+<script>
+// ============================================================
+// DATA — sourced from BMS + Salesforce, 28 Mar 2026
+// Revenue = Jan–Mar 2026 average monthly (BMS billing_transactions)
+// Labour = estimated NZD 49/hr, ~1.25 hrs/job average (spec locked)
+// Parts / Consumables = pending — queries being finalised
+// ============================================================
+const DATA = {
+  asOf: "28 Mar 2026",
+  period: "Jan–Mar 2026 avg/month",
+
+  fxRates: {
+    // NZD per 1 unit of local currency — static, reviewed monthly by Minoo
+    // Source: Salesforce CurrencyType, rates as at 28 Mar 2026
+    NZD: 1.000,
+    SBD: 0.180,
+    WST: 0.540,
+    VUV: 0.012,
+    TOP: 0.640,
+  },
+
+  labourRateNZD: 49,   // NZD/hr — locked flat rate, all territories
+  fxRatesDate: "28 Mar 2026",
+
+  // WIG
+  wigTarget: 80,
+
+  // Portfolio totals (derived from BMS queries)
+  // 261 active contracts, 512 machines, Jan–Mar 2026
+  totals: {
+    machines:  512,
+    contracts: 261,
+    revenueNZD: 143694,  // per month average (NZD equivalent)
+    // GM% pending cost data
+  },
+
+  // Territory-level data
+  territories: [
+    {
+      name: "Samoa",
+      css:  "samoa",
+      currency: "WST",
+      flag: "🇼🇸",
+      machines:  187,
+      contracts: 106,
+      contractsMP: 22,
+      contractsRP: 84,
+      // BMS: WST 350,941 / 3 months = WST 116,980/mo
+      revenueLocal: 116980,
+      revenueNZD:    63169,
+      // Labour: ~62 jobs/mo × 1.25 hr × NZD 49 = NZD 3,800 est.
+      labourCostNZD: 3800,
+      labourNote:    "estimated",
+      partsCostNZD:  null,
+      consumableCostNZD: null,
+    },
+    {
+      name: "Vanuatu",
+      css:  "vanuatu",
+      currency: "VUV",
+      flag: "🇻🇺",
+      machines:  179,
+      contracts:  74,
+      contractsMP: 21,
+      contractsRP: 53,
+      // BMS: VUV 9,826,600 / 3 months = VUV 3,275,533/mo
+      // Note: VUV stored as integer (no cents subdivision in practice)
+      revenueLocal: 3275533,
+      revenueNZD:    39306,
+      labourCostNZD: 3700,
+      labourNote:    "estimated",
+      partsCostNZD:  null,
+      consumableCostNZD: null,
+    },
+    {
+      name: "Tonga",
+      css:  "tonga",
+      currency: "TOP",
+      flag: "🇹🇴",
+      machines:   61,
+      contracts:  54,
+      contractsMP: 32,
+      contractsRP: 22,
+      // BMS: TOP 67,611 / 3 months = TOP 22,537/mo
+      revenueLocal: 22537,
+      revenueNZD:   14424,
+      labourCostNZD: 1200,
+      labourNote:    "estimated",
+      partsCostNZD:  null,
+      consumableCostNZD: null,
+    },
+    {
+      name: "Solomon Islands",
+      css:  "solomons",
+      currency: "SBD",
+      flag: "🇸🇧",
+      machines:   82,
+      contracts:  24,
+      contractsMP:  3,
+      contractsRP: 21,
+      // BMS: SBD 435,490 / 3 months = SBD 145,163/mo
+      revenueLocal: 145163,
+      revenueNZD:    26129,
+      labourCostNZD: 1750,
+      labourNote:    "estimated",
+      partsCostNZD:  null,
+      consumableCostNZD: null,
+    },
+    {
+      name: "RSP / NZ",
+      css:  "nz",
+      currency: "NZD",
+      flag: "🇳🇿",
+      machines:    3,
+      contracts:   3,
+      contractsMP: 0,
+      contractsRP: 3,
+      // BMS: NZD 1,998 / 3 months = NZD 666/mo
+      revenueLocal: 666,
+      revenueNZD:    666,
+      labourCostNZD: 65,
+      labourNote:    "estimated",
+      partsCostNZD:  null,
+      consumableCostNZD: null,
+    },
+  ],
+
+  // Contracts expiring in next 180 days (from BMS query)
+  expiringContracts: [
+    { customer:"BI Consulting",               contractNo:"BC-VAN-BIC-366",   territory:"Vanuatu",          type:"RP", machines:1, expires:"2026-06-20", daysLeft:85 },
+    { customer:"LDS - Saineha High Admin",    contractNo:"BC-RTO010094",     territory:"Tonga",            type:"MP", machines:1, expires:"2026-06-27", daysLeft:92 },
+    { customer:"Seki a Upolu",                contractNo:"BC-RSA010044",     territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-29", daysLeft:94 },
+    { customer:"Freedom School Port Vila",    contractNo:"BC-VAN-NEI-268",   territory:"Vanuatu",          type:"RP", machines:2, expires:"2026-06-29", daysLeft:94 },
+    { customer:"Naydith Events",              contractNo:"BC-SAM-NAY-523",   territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-29", daysLeft:94 },
+    { customer:"Digicel (Vanuatu)",           contractNo:"BC-RVA010048",     territory:"Vanuatu",          type:"MP", machines:2, expires:"2026-06-29", daysLeft:94 },
+    { customer:"Vila Central Hospital",       contractNo:"BC-RVA010023",     territory:"Vanuatu",          type:"MP", machines:1, expires:"2026-06-29", daysLeft:94 },
+    { customer:"Lui & Chang",                 contractNo:"BC-RSA010221",     territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-29", daysLeft:94 },
+    { customer:"Wallwork Lamb Lawyers",       contractNo:"BC-RSA010217",     territory:"Samoa",            type:"RP", machines:2, expires:"2026-06-29", daysLeft:94 },
+    { customer:"Bank of South Pacific (Van)", contractNo:"BC-RVA010121",     territory:"Vanuatu",          type:"RP", machines:5, expires:"2026-06-29", daysLeft:94 },
+    { customer:"National Bank of Samoa",      contractNo:"BC-SAM-NAT-2962",  territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-30", daysLeft:95 },
+  ],
+};
+
+// ============================================================
+// HELPERS
+// ============================================================
+let currencyMode = 'nzd'; // 'nzd' or 'local'
+
+const nzdFmt = n => n == null ? '—' : 'NZ$' + Math.round(n).toLocaleString('en-NZ');
+const localFmt = (n, cur) => n == null ? '—' : Math.round(n).toLocaleString('en') + ' ' + cur;
+const pct = n => n == null ? '—' : n.toFixed(1) + '%';
+
+function gmColor(gm) {
+  if (gm == null) return 'gray';
+  if (gm >= 80) return 'green';
+  if (gm >= 60) return 'amber';
+  return 'danger';
+}
+
+function calcGM(t) {
+  const rev = t.revenueNZD;
+  const labour = t.labourCostNZD || 0;
+  const parts  = t.partsCostNZD || 0;
+  const cons   = t.consumableCostNZD || 0;
+  const cost = labour + parts + cons;
+  if (rev <= 0 || cost <= 0) return null;
+  return ((rev - cost) / rev) * 100;
+}
+
+function setCurrency(mode, btn) {
+  currencyMode = mode;
+  document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTerrGrid();
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderKPIs() {
+  const totalRevNZD   = DATA.totals.revenueNZD;
+  const totalMachines = DATA.totals.machines;
+  const totalContracts= DATA.totals.contracts;
+
+  // Estimated total monthly labour cost
+  const totalLabour = DATA.territories.reduce((s,t) => s + (t.labourCostNZD||0), 0);
+  const estGM = null; // pending full cost data
+
+  const cards = [
+    { cls:'accent', label:'Active Machines', value: totalMachines.toLocaleString(), sub:`Across ${totalContracts} contracts · 5 territories`, trend:null },
+    { cls:'good',   label:'Monthly MPS Revenue', value: nzdFmt(totalRevNZD), sub:'Jan–Mar 2026 average · ex-tax', trend:'↑ First visibility baseline' },
+    { cls:'info',   label:'Est. Monthly Labour Cost', value: nzdFmt(totalLabour), sub:'At NZD 49/hr · estimated job volumes', trend:'⏳ Parts + consumables pending' },
+    { cls:'warn',   label:'Machines Below 60% GM', value: '—', sub:'GM calculation pending cost data', trend:'⏳ Connect parts + consumable queries' },
+  ];
+
+  document.getElementById('kpiGrid').innerHTML = cards.map(c => `
+    <div class="kpi-card ${c.cls}">
+      <div class="kpi-label">${c.label}</div>
+      <div class="kpi-value">${c.value}</div>
+      <div class="kpi-sub">${c.sub}</div>
+      ${c.trend ? `<div class="kpi-trend">${c.trend}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderTerrGrid() {
+  document.getElementById('terrGrid').innerHTML = DATA.territories.map(t => {
+    const gm = calcGM(t);
+    const revDisplay = currencyMode === 'nzd'
+      ? nzdFmt(t.revenueNZD)
+      : localFmt(t.revenueLocal, t.currency);
+
+    return `
+      <div class="terr-card ${t.css}">
+        <div class="terr-name">${t.flag} ${t.name} <span class="terr-currency">${t.currency}</span></div>
+        <div class="terr-revenue">${revDisplay}</div>
+        <div class="terr-revenue-sub">revenue / month</div>
+        <div style="margin-top:.6rem;">
+          <div class="terr-stat">
+            <span class="terr-stat-lbl">Machines</span>
+            <span class="terr-stat-val">${t.machines}</span>
+          </div>
+          <div class="terr-stat">
+            <span class="terr-stat-lbl">Contracts</span>
+            <span class="terr-stat-val">${t.contracts} <span style="font-size:.65rem;color:var(--muted);font-weight:400">(${t.contractsMP}MP · ${t.contractsRP}RP)</span></span>
+          </div>
+          <div class="terr-stat">
+            <span class="terr-stat-lbl">Labour est.</span>
+            <span class="terr-stat-val">${nzdFmt(t.labourCostNZD)}<span style="font-size:.62rem;color:var(--muted);font-weight:400"> NZD/mo</span></span>
+          </div>
+          <div class="terr-stat">
+            <span class="terr-stat-lbl">GM%</span>
+            <span class="terr-stat-val" style="color:var(--muted)">⏳ pending</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderGMBands() {
+  const rows = DATA.territories.map(t => {
+    const gm = calcGM(t);
+    const col = gmColor(gm);
+    // Bands are pending — show machines as TBD
+    return `
+      <tr>
+        <td>${t.flag} ${t.name}</td>
+        <td class="right">${t.machines}</td>
+        <td class="right"><span class="badge badge-green">—</span></td>
+        <td class="right"><span class="badge badge-amber">—</span></td>
+        <td class="right"><span class="badge badge-danger">—</span></td>
+        <td class="right">
+          <div class="gm-bar-wrap">
+            <div class="gm-bar"><div class="gm-fill fill-gray" style="width:0%"></div></div>
+            <span style="color:var(--muted);font-size:.72rem;min-width:2.5rem;text-align:right">⏳</span>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  const totalMachines = DATA.territories.reduce((s,t)=>s+t.machines,0);
+  const foot = `
+    <tr style="background:var(--surface2);font-weight:700;border-top:2px solid var(--border)">
+      <td>Total Portfolio</td>
+      <td class="right">${totalMachines}</td>
+      <td class="right">—</td>
+      <td class="right">—</td>
+      <td class="right">—</td>
+      <td class="right" style="color:var(--muted)">⏳ pending</td>
+    </tr>
+  `;
+
+  document.getElementById('gmBandBody').innerHTML = rows;
+  document.getElementById('gmBandFoot').innerHTML = foot;
+}
+
+function renderExpiry() {
+  // Only show next 90 days
+  const expiring90 = DATA.expiringContracts.filter(c => c.daysLeft <= 90);
+
+  if (expiring90.length === 0) {
+    document.getElementById('expiryBody').innerHTML = `
+      <tr><td colspan="7" style="color:var(--muted);text-align:center;padding:1.5rem">
+        No contracts expiring in the next 90 days
+      </td></tr>`;
+    return;
+  }
+
+  document.getElementById('expiryBody').innerHTML = expiring90.map(c => {
+    const urgency = c.daysLeft <= 30 ? 'badge-danger' : c.daysLeft <= 60 ? 'badge-amber' : 'badge-blue';
+    const urgencyLabel = c.daysLeft <= 30 ? 'URGENT' : c.daysLeft <= 60 ? 'DUE SOON' : 'UPCOMING';
+    return `
+      <tr>
+        <td><strong>${c.customer}</strong></td>
+        <td style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--muted)">${c.contractNo}</td>
+        <td>${c.territory}</td>
+        <td><span class="badge ${c.type==='MP'?'badge-purple':'badge-blue'}">${c.type}</span></td>
+        <td class="right">${c.machines}</td>
+        <td class="right" style="font-family:'DM Mono',monospace;font-size:.78rem">${c.expires}</td>
+        <td class="right">
+          <span class="badge ${urgency}">${c.daysLeft}d · ${urgencyLabel}</span>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderFooter() {
+  const rates = Object.entries(DATA.fxRates)
+    .filter(([k]) => k !== 'NZD')
+    .map(([k,v]) => `${k} × ${v}`)
+    .join(' · ');
+
+  document.getElementById('footer').innerHTML =
+    `Ricoh South Pacific · MPS Portfolio Dashboard · Data from BMS + Salesforce · ${DATA.asOf}<br>
+     FX rates (${DATA.fxRatesDate}): ${rates} · Labour NZD 49/hr (locked) · Parts &amp; consumables pending`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('asOf').textContent = DATA.asOf;
+renderKPIs();
+renderTerrGrid();
+renderGMBands();
+renderExpiry();
+renderFooter();
+</script>
+</body>
+</html>
