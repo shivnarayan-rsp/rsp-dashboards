@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSP — Vijen Tracker</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red:#D7063B; --red-dark:#a8002d;
+      --charcoal:#1a1a1a; --dark:#2a2a2a; --mid:#444; --muted:#888;
+      --border:#e5e5e5; --bg:#f7f7f6; --surface:#fff; --surface2:#f2f2f1;
+      --green:#1a6e2e; --green-bg:#e6f4ea; --green-border:#b7dfbe;
+      --amber:#8a5200; --amber-bg:#fef3dc; --amber-border:#f5d87e;
+      --danger:#c0392b; --danger-bg:#fdecea; --danger-border:#f5bcb7;
+      --blue:#0057b8; --blue-bg:#e8f0fb; --blue-border:#b3cfee;
+      --purple:#5b21b6; --purple-bg:#ede9fe; --purple-border:#c4b5fd;
+      --gray:#555; --gray-bg:#efefef;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--charcoal);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+    /* ── HEADER ── */
+    header{background:var(--charcoal);border-bottom:3px solid var(--red);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .header-center{display:flex;align-items:center;gap:16px;}
+    .header-divider{width:1px;height:22px;background:#444;}
+    .header-title{font-size:13px;color:#aaa;letter-spacing:.03em;}
+    .header-right{display:flex;align-items:center;gap:16px;}
+    .header-name{font-size:12px;color:#666;font-family:'DM Mono',monospace;}
+    .as-of{font-size:11px;color:#666;font-family:'DM Mono',monospace;}
+    .back-link{font-size:11px;color:#666;text-decoration:none;transition:color .15s;}
+    .back-link:hover{color:#aaa;}
+
+    /* ── NAV ── */
+    .main-nav{background:var(--charcoal);border-top:1px solid rgba(255,255,255,.07);padding:0 32px;display:flex;gap:2px;}
+    .nav-btn{padding:10px 18px;font-size:12px;font-weight:500;color:rgba(255,255,255,.45);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.03em;transition:color .15s;text-transform:uppercase;letter-spacing:.07em;}
+    .nav-btn:hover{color:rgba(255,255,255,.8);}
+    .nav-btn.active{color:#fff;border-bottom-color:var(--red);}
+
+    /* ── LAYOUT ── */
+    main{max-width:1280px;margin:0 auto;padding:32px 24px 64px;}
+    .view{display:none;}.view.active{display:block;}
+
+    /* ── SECTION LABEL ── */
+    .section-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+    .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+    /* ── CARDS ── */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:6px;}
+    .card-header{padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface2);}
+    .card-body{padding:16px 20px;}
+    hr.divider{border:none;border-top:1px solid var(--border);margin:24px 0;}
+
+    /* ── STAT STRIP ── */
+    .stat-strip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:28px;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;position:relative;overflow:hidden;animation:fadeUp .4s ease both;}
+    .stat-card.accent::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red);}
+    .stat-card.good::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);}
+    .stat-card.alert::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--danger);}
+    .stat-card.warn::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:#d97706;}
+    .stat-lbl{font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;}
+    .stat-val{font-size:28px;font-weight:300;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums;}
+    .stat-val.danger{color:var(--danger);}
+    .stat-val.good{color:var(--green);}
+    .stat-val.amber{color:var(--amber);}
+    .stat-sub{font-size:11px;color:var(--muted);}
+
+    /* ── WIG CARDS ── */
+    .wig-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:28px;}
+    .wig-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;cursor:pointer;transition:box-shadow .15s;animation:fadeUp .4s ease both;}
+    .wig-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);}
+    .wig-card-top{padding:16px 18px;border-bottom:1px solid var(--border);}
+    .wig-num{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:var(--red);font-family:'DM Mono',monospace;margin-bottom:5px;}
+    .wig-title{font-size:13px;font-weight:600;color:var(--charcoal);line-height:1.35;margin-bottom:6px;}
+    .wig-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+    .wig-card-bottom{padding:12px 18px;background:var(--surface2);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+    .wig-progress-wrap{flex:1;}
+    .wig-progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:4px;}
+    .wig-progress-fill{height:100%;border-radius:3px;}
+    .wig-progress-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+    .wig-chip-row{display:flex;gap:6px;}
+
+    /* ── CHIPS ── */
+    .chip{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.03em;white-space:nowrap;text-transform:uppercase;}
+    .chip-green{background:var(--green-bg);color:var(--green);}
+    .chip-amber{background:var(--amber-bg);color:var(--amber);}
+    .chip-red{background:var(--danger-bg);color:var(--danger);}
+    .chip-blue{background:var(--blue-bg);color:var(--blue);}
+    .chip-purple{background:var(--purple-bg);color:var(--purple);}
+    .chip-gray{background:var(--gray-bg);color:var(--gray);}
+
+    /* ── TABLE ── */
+    .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:6px;background:var(--surface);}
+    table{width:100%;border-collapse:collapse;min-width:900px;}
+    th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);white-space:nowrap;}
+    td{padding:10px 14px;font-size:12px;color:var(--charcoal);border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:#fafafa;}
+    .td-mono{font-family:'DM Mono',monospace;font-size:11px;}
+    .td-muted{color:var(--muted);}
+    .td-danger{color:var(--danger);font-weight:600;}
+    .td-bold{font-weight:600;}
+
+    /* ── BLOCKER FLAG ── */
+    .blocker-dot{width:8px;height:8px;border-radius:50%;background:var(--danger);display:inline-block;margin-right:4px;}
+    .blocker-dot.none{background:var(--border);}
+
+    /* ── LEAD MEASURE ROW ── */
+    .lm-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;}
+    .lm-card{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:13px 15px;border-left:3px solid var(--border);}
+    .lm-card.rag-green{border-left-color:var(--green);}
+    .lm-card.rag-amber{border-left-color:#d97706;}
+    .lm-card.rag-red{border-left-color:var(--danger);}
+    .lm-name{font-size:11px;font-weight:600;color:var(--charcoal);margin-bottom:5px;line-height:1.4;}
+    .lm-vals{display:flex;align-items:baseline;gap:8px;}
+    .lm-current{font-size:20px;font-weight:300;font-variant-numeric:tabular-nums;}
+    .lm-current.good{color:var(--green);}
+    .lm-current.warn{color:var(--amber);}
+    .lm-current.bad{color:var(--danger);}
+    .lm-target{font-size:11px;color:var(--muted);}
+
+    /* ── WEEKLY UPDATE CARDS ── */
+    .update-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-bottom:10px;}
+    .update-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .update-week{font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:var(--charcoal);}
+    .update-wig{font-size:10px;padding:2px 7px;border-radius:3px;background:var(--red-light,#f5e0e6);color:var(--red);}
+    .update-section{margin-bottom:8px;}
+    .update-section-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:3px;}
+    .update-section-body{font-size:12px;color:var(--mid);line-height:1.5;}
+
+    /* ── ISSUE CARDS ── */
+    .issue-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--danger);border-radius:6px;padding:16px 18px;margin-bottom:10px;}
+    .issue-card.warn{border-left-color:#d97706;}
+    .issue-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
+    .issue-title{font-size:13px;font-weight:600;color:var(--charcoal);line-height:1.35;}
+    .issue-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+    .issue-body{font-size:12px;color:var(--mid);line-height:1.55;}
+    .issue-next{font-size:11px;color:var(--blue);margin-top:6px;font-weight:500;}
+
+    /* ── FILTER BAR ── */
+    .filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+    .filter-select{font-family:'DM Sans',sans-serif;font-size:12px;border:1px solid var(--border);border-radius:4px;padding:6px 10px;background:var(--surface);color:var(--charcoal);cursor:pointer;}
+    .filter-select:focus{outline:none;border-color:var(--red);}
+
+    /* ── WIG DETAIL TABS ── */
+    .wig-detail-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;overflow-x:auto;}
+    .wig-detail-tab{padding:10px 20px;font-size:12px;font-weight:500;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .15s;}
+    .wig-detail-tab:hover{color:var(--charcoal);}
+    .wig-detail-tab.active{color:var(--red);border-bottom-color:var(--red);font-weight:600;}
+
+    /* ── REVIEW SECTION ── */
+    .review-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+    .review-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+    .review-card-head{padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;gap:8px;}
+    .review-card-icon{font-size:14px;}
+    .review-card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);}
+    .review-card-body{padding:12px 16px;}
+    .review-item{padding:7px 0;border-bottom:1px solid #f5f5f5;display:flex;align-items:flex-start;gap:10px;}
+    .review-item:last-child{border-bottom:none;}
+    .review-item-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+    .review-item-text{font-size:12px;color:var(--mid);line-height:1.45;}
+    .review-item-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+    .empty-state{padding:24px;text-align:center;font-size:12px;color:var(--muted);}
+
+    footer{text-align:center;padding:24px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);font-family:'DM Mono',monospace;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+    @media(max-width:1024px){.stat-strip{grid-template-columns:repeat(3,1fr);}.wig-grid{grid-template-columns:1fr 1fr;}.lm-grid{grid-template-columns:1fr 1fr;}.review-grid{grid-template-columns:1fr;}}
+    @media(max-width:600px){main{padding:16px 12px 48px;}header{padding:0 16px;}.header-title{display:none;}.main-nav{padding:0 12px;}.stat-strip{grid-template-columns:1fr 1fr;}.wig-grid{grid-template-columns:1fr;}.lm-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-center">
+    <span style="display:flex;align-items:center">
+      <img src="ricoh-logo-white-on-transparent.png" alt="Ricoh" style="height:28px;display:block;" onerror="this.style.display='none'">
+    </span>
+    <div class="header-divider"></div>
+    <span class="header-title">South Pacific &mdash; Execution Tracker</span>
+  </div>
+  <div class="header-right">
+    <span class="header-name">Vijendra Singh &middot; IT &amp; Digital</span>
+    <span class="as-of" id="asOf"></span>
+    <a href="index.html" class="back-link">&#8592; Scorecards</a>
+  </div>
+</header>
+
+<nav class="main-nav">
+  <button class="nav-btn active" onclick="showView('dashboard',this)">Dashboard</button>
+  <button class="nav-btn" onclick="showView('wigs',this)">WIGs</button>
+  <button class="nav-btn" onclick="showView('tasks',this)">Tasks</button>
+  <button class="nav-btn" onclick="showView('review',this)">Weekly Review</button>
+  <button class="nav-btn" onclick="showView('issues',this)">Issues &amp; Blockers</button>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════
+     VIEW 1 — DASHBOARD
+════════════════════════════════════════════════════ -->
+<div class="view active" id="view-dashboard">
+
+  <div class="section-label" style="margin-top:4px">Summary &mdash; week of 28 Mar 2026</div>
+
+  <div class="stat-strip">
+    <div class="stat-card accent" style="animation-delay:.05s">
+      <div class="stat-lbl">Total tasks</div>
+      <div class="stat-val">22</div>
+      <div class="stat-sub">Across 3 WIGs</div>
+    </div>
+    <div class="stat-card good" style="animation-delay:.08s">
+      <div class="stat-lbl">Completed</div>
+      <div class="stat-val good">6</div>
+      <div class="stat-sub">27% of all tasks</div>
+    </div>
+    <div class="stat-card warn" style="animation-delay:.11s">
+      <div class="stat-lbl">In Progress</div>
+      <div class="stat-val amber">9</div>
+      <div class="stat-sub">Active this week</div>
+    </div>
+    <div class="stat-card alert" style="animation-delay:.14s">
+      <div class="stat-lbl">Blocked</div>
+      <div class="stat-val danger">5</div>
+      <div class="stat-sub">Require action</div>
+    </div>
+    <div class="stat-card alert" style="animation-delay:.17s">
+      <div class="stat-lbl">Overdue</div>
+      <div class="stat-val danger">4</div>
+      <div class="stat-sub">Past due date</div>
+    </div>
+    <div class="stat-card warn" style="animation-delay:.20s">
+      <div class="stat-lbl">Avg age (days)</div>
+      <div class="stat-val amber">18</div>
+      <div class="stat-sub">Open tasks</div>
+    </div>
+  </div>
+
+  <div class="section-label">Wildly important goals</div>
+  <div class="wig-grid" id="dashWigGrid"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div>
+      <div class="section-label">Lead measures &mdash; this week</div>
+      <div id="dashLeadMeasures"></div>
+    </div>
+    <div>
+      <div class="section-label">Recent updates</div>
+      <div id="dashRecentUpdates"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VIEW 2 — WIGs
+════════════════════════════════════════════════════ -->
+<div class="view" id="view-wigs">
+  <div class="wig-detail-tabs" id="wigTabs"></div>
+  <div id="wigDetailPanel"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VIEW 3 — TASKS
+════════════════════════════════════════════════════ -->
+<div class="view" id="view-tasks">
+  <div class="filter-bar">
+    <select class="filter-select" id="filterWig" onchange="renderTaskTable()">
+      <option value="">All WIGs</option>
+      <option value="WIG 1">WIG 1</option>
+      <option value="WIG 2">WIG 2</option>
+      <option value="WIG 3">WIG 3</option>
+    </select>
+    <select class="filter-select" id="filterStatus" onchange="renderTaskTable()">
+      <option value="">All statuses</option>
+      <option value="Not Started">Not Started</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Blocked">Blocked</option>
+      <option value="In UAT">In UAT</option>
+      <option value="Completed">Completed</option>
+    </select>
+    <select class="filter-select" id="filterPriority" onchange="renderTaskTable()">
+      <option value="">All priorities</option>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select>
+    <select class="filter-select" id="filterOwner" onchange="renderTaskTable()">
+      <option value="">All owners</option>
+      <option value="Vijendra">Vijendra</option>
+      <option value="Shiv">Shiv</option>
+      <option value="Sridhar">Sridhar</option>
+      <option value="Finance">Finance</option>
+      <option value="Operations">Operations</option>
+    </select>
+    <select class="filter-select" id="filterBlocked" onchange="renderTaskTable()">
+      <option value="">All tasks</option>
+      <option value="yes">Blocked only</option>
+    </select>
+  </div>
+  <div class="table-wrap" id="taskTableWrap"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VIEW 4 — WEEKLY REVIEW
+════════════════════════════════════════════════════ -->
+<div class="view" id="view-review">
+  <div class="section-label">Week of 28 Mar 2026 &mdash; manager view</div>
+  <div class="review-grid" id="reviewGrid"></div>
+  <div class="section-label">Weekly updates by WIG</div>
+  <div id="reviewUpdates"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     VIEW 5 — ISSUES & BLOCKERS
+════════════════════════════════════════════════════ -->
+<div class="view" id="view-issues">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <div class="section-label" style="margin-bottom:0;flex:1">Active issues &amp; blockers</div>
+    <span style="font-size:11px;color:var(--muted)">5 open &middot; 2 critical</span>
+  </div>
+  <div id="issuesList"></div>
+</div>
+
+</main>
+
+<footer>Ricoh South Pacific &middot; IT &amp; Digital Execution Tracker &middot; Vijendra Singh &middot; Mock data &mdash; Supabase integration pending</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  MOCK DATA
+//  NOTE: Replace each array with a Supabase fetch when ready.
+//  Pattern: const wigs = await supabase.from('wigs').select('*')
+// ═══════════════════════════════════════════════════════
+
+const WIGS = [
+  {
+    id: 'W1', num: 'WIG 1',
+    title: 'Standardise and stabilise the core IT environment',
+    desc: 'Complete priority foundational IT work and move critical items into BAU with visibility, ownership, and low unresolved risk.',
+    lag: 'All priority foundation items completed or handed into BAU, with no critical unresolved blockers older than 14 days by quarter end.',
+    progress: 38,
+    tasksTotal: 8, tasksDone: 3,
+    leadMeasures: [
+      { name: '% priority foundation tasks updated this week', current: 62, target: 100, unit: '%', rag: 'amber' },
+      { name: 'Critical blockers older than 7 days', current: 2, target: 0, unit: '', rag: 'red', lowerBetter: true },
+      { name: '% of core environment documented', current: 45, target: 80, unit: '%', rag: 'amber' },
+      { name: '% of rollout items with owner, due date, next action', current: 70, target: 100, unit: '%', rag: 'amber' },
+      { name: 'Weekly review completed', current: 'Yes', target: 'Yes', unit: '', rag: 'green' },
+    ],
+    updates: [
+      { week: 'Wk 13 &mdash; 28 Mar', moved: 'Device rollout for NZ completed for 14 of 18 users. SharePoint documentation 40% done.', blocked: 'Vanuatu device shipment held at customs — no ETA. Awaiting Shiv sign-off on printer policy.', decisions: 'Need Shiv decision on BYOD exception for 2 Samoa staff.', notes: 'Good week overall but customs delay is at risk of pushing Vanuatu milestone.' },
+      { week: 'Wk 12 &mdash; 21 Mar', moved: 'Completed vendor review for managed print. Raised PO for 4 replacement units.', blocked: 'Finance approval for additional licences still pending — 8 days.', decisions: 'Finance to approve $3,200 annual licence renewal by 28 Mar.', notes: 'Licence issue now escalated to David.' },
+      { week: 'Wk 11 &mdash; 14 Mar', moved: 'Network segmentation documented for NZ and Samoa. Tonga in progress.', blocked: 'None this week.', decisions: '', notes: 'Good momentum. Aiming to close 3 tasks next week.' },
+    ]
+  },
+  {
+    id: 'W2', num: 'WIG 2',
+    title: 'Move priority automations into working operational capability',
+    desc: 'Take a small number of business automations from ad hoc activity into live, tested, owned business processes.',
+    lag: '2&ndash;3 priority automations live, tested, owned, and being used by the business by quarter end.',
+    progress: 55,
+    tasksTotal: 8, tasksDone: 3,
+    leadMeasures: [
+      { name: 'Automations in build / UAT / live', current: '2 / 1 / 1', target: '0 / 0 / 3', unit: '', rag: 'amber' },
+      { name: '% automation tasks with business + technical owner', current: 75, target: 100, unit: '%', rag: 'amber' },
+      { name: 'Unresolved defects older than 5 working days', current: 1, target: 0, unit: '', rag: 'amber', lowerBetter: true },
+      { name: 'Weekly UAT sessions completed', current: 'Yes', target: 'Yes', unit: '', rag: 'green' },
+      { name: '% live automations with process note and handover', current: 100, target: 100, unit: '%', rag: 'green' },
+    ],
+    updates: [
+      { week: 'Wk 13 &mdash; 28 Mar', moved: 'Leave approval automation passed UAT. Handover note written. Sales report automation in final build.', blocked: 'Finance approval form conversion awaiting sign-off from David — 6 days.', decisions: 'David to confirm Finance approval form scope before 2 Apr.', notes: 'On track for 2 live automations by quarter end. Third is at risk.' },
+      { week: 'Wk 12 &mdash; 21 Mar', moved: 'Meter read automation went live with Sridhar as owner. UAT feedback incorporated.', blocked: 'Operations have not completed UAT for reorder automation — 9 days outstanding.', decisions: 'Need Sridhar to nominate a backup owner for the meter read automation.', notes: 'Meter read automation is first live win. Good signal.' },
+      { week: 'Wk 11 &mdash; 14 Mar', moved: 'Leave automation UAT started with 3 test users from Finance and Operations.', blocked: 'IT environment instability caused 1 test failure. Linked to WIG 1 foundation work.', decisions: '', notes: 'Environment dependency is a real risk for this WIG. WIG 1 work must stay on track.' },
+    ]
+  },
+  {
+    id: 'W3', num: 'WIG 3',
+    title: 'Create a disciplined IT operating rhythm',
+    desc: 'Ensure active work is visible, updated, unblocked quickly, and escalated clearly where needed.',
+    lag: 'All active work has current status, next step, and decision path, with average open task ageing reducing month on month.',
+    progress: 70,
+    tasksTotal: 6, tasksDone: 2,
+    leadMeasures: [
+      { name: '% of active tasks updated in last 7 days', current: 78, target: 100, unit: '%', rag: 'amber' },
+      { name: 'Pending start tasks older than 14 days', current: 3, target: 0, unit: '', rag: 'red', lowerBetter: true },
+      { name: 'Dependencies awaiting decision older than 7 days', current: 2, target: 0, unit: '', rag: 'red', lowerBetter: true },
+      { name: 'Weekly review meeting held', current: 'Yes', target: 'Yes', unit: '', rag: 'green' },
+      { name: 'Avg days to close completed tasks', current: 14, target: 10, unit: 'd', rag: 'amber', lowerBetter: true },
+    ],
+    updates: [
+      { week: 'Wk 13 &mdash; 28 Mar', moved: 'Weekly review held with Shiv on 26 Mar. Tracker updated for all active tasks.', blocked: '3 tasks stalled pending decisions from Sales and Finance — escalated.', decisions: 'Sales to confirm reporting requirements by 1 Apr. Finance to confirm approval form scope.', notes: 'Operating rhythm improving. Blocker resolution time still too long.' },
+      { week: 'Wk 12 &mdash; 21 Mar', moved: 'All WIG 1 and WIG 2 tasks reviewed and statuses updated.', blocked: 'Process mapping for sales onboarding not started — owner has not engaged.', decisions: 'Shiv to reassign process mapping if Sales owner does not respond by 28 Mar.', notes: '' },
+      { week: 'Wk 11 &mdash; 14 Mar', moved: 'Introduced weekly task review cadence. First run done.', blocked: '4 tasks had no next action or due date — corrected during review.', decisions: '', notes: 'First structured review. Baseline established.' },
+    ]
+  }
+];
+
+const TASKS = [
+  // WIG 1
+  { id:'T01', wig:'WIG 1', title:'Device rollout — NZ office',          workstream:'Infrastructure', status:'In Progress', priority:'High',   owner:'Vijendra',   due:'2026-04-04', age:12, blocked:false, blockerReason:'',                                          nextAction:'Complete remaining 4 users', decision:'',                                lastUpdated:'27 Mar', comments:'14 of 18 done' },
+  { id:'T02', wig:'WIG 1', title:'Device rollout — Vanuatu',             workstream:'Infrastructure', status:'Blocked',    priority:'High',   owner:'Vijendra',   due:'2026-03-28', age:18, blocked:true,  blockerReason:'Shipment held at customs — no ETA',          nextAction:'Chase freight agent',        decision:'',                                lastUpdated:'25 Mar', comments:'Overdue' },
+  { id:'T03', wig:'WIG 1', title:'Managed print rollout — Samoa',        workstream:'Print Mgmt',     status:'In Progress', priority:'High',  owner:'Sridhar',    due:'2026-04-11', age:8,  blocked:false, blockerReason:'',                                          nextAction:'Install 3 remaining units',  decision:'',                                lastUpdated:'26 Mar', comments:'' },
+  { id:'T04', wig:'WIG 1', title:'Network segmentation documentation',   workstream:'Documentation',  status:'In Progress', priority:'Medium',owner:'Vijendra',   due:'2026-04-18', age:14, blocked:false, blockerReason:'',                                          nextAction:'Complete Tonga section',     decision:'',                                lastUpdated:'24 Mar', comments:'NZ and Samoa done' },
+  { id:'T05', wig:'WIG 1', title:'Licence renewal — Microsoft 365',      workstream:'Licensing',      status:'Blocked',    priority:'High',   owner:'Finance',    due:'2026-03-28', age:22, blocked:true,  blockerReason:'Finance approval pending — 8 days overdue',  nextAction:'Escalate to David',          decision:'Approve $3,200 annual renewal',   lastUpdated:'20 Mar', comments:'Escalated' },
+  { id:'T06', wig:'WIG 1', title:'Vendor review — print hardware',       workstream:'Procurement',    status:'Completed',  priority:'Medium', owner:'Vijendra',   due:'2026-03-21', age:0,  blocked:false, blockerReason:'',                                          nextAction:'',                           decision:'',                                lastUpdated:'21 Mar', comments:'PO raised' },
+  { id:'T07', wig:'WIG 1', title:'SharePoint environment documentation', workstream:'Documentation',  status:'In Progress', priority:'Medium',owner:'Vijendra',   due:'2026-04-25', age:7,  blocked:false, blockerReason:'',                                          nextAction:'Draft sections 3 and 4',     decision:'',                                lastUpdated:'26 Mar', comments:'40% complete' },
+  { id:'T08', wig:'WIG 1', title:'BYOD policy — Samoa exceptions',       workstream:'Policy',         status:'Not Started', priority:'Low',   owner:'Shiv',       due:'2026-04-30', age:5,  blocked:false, blockerReason:'',                                          nextAction:'Awaiting Shiv review',       decision:'BYOD exception for 2 Samoa staff',lastUpdated:'23 Mar', comments:'' },
+
+  // WIG 2
+  { id:'T09', wig:'WIG 2', title:'Leave approval automation — UAT',      workstream:'Automation',     status:'Completed',  priority:'High',   owner:'Vijendra',   due:'2026-03-27', age:0,  blocked:false, blockerReason:'',                                          nextAction:'',                           decision:'',                                lastUpdated:'27 Mar', comments:'Passed UAT' },
+  { id:'T10', wig:'WIG 2', title:'Leave approval automation — go live',  workstream:'Automation',     status:'Completed',  priority:'High',   owner:'Vijendra',   due:'2026-03-28', age:0,  blocked:false, blockerReason:'',                                          nextAction:'Monitor for 2 weeks',        decision:'',                                lastUpdated:'28 Mar', comments:'Live' },
+  { id:'T11', wig:'WIG 2', title:'Meter read automation — handover',     workstream:'Automation',     status:'Completed',  priority:'High',   owner:'Sridhar',    due:'2026-03-21', age:0,  blocked:false, blockerReason:'',                                          nextAction:'Confirm backup owner',       decision:'Nominate backup owner',           lastUpdated:'21 Mar', comments:'Sridhar is primary owner' },
+  { id:'T12', wig:'WIG 2', title:'Sales report automation — build',      workstream:'Automation',     status:'In Progress', priority:'High',  owner:'Vijendra',   due:'2026-04-11', age:9,  blocked:false, blockerReason:'',                                          nextAction:'Complete field mapping',     decision:'',                                lastUpdated:'26 Mar', comments:'Final build stage' },
+  { id:'T13', wig:'WIG 2', title:'Finance approval form — conversion',   workstream:'Automation',     status:'Blocked',    priority:'High',   owner:'Finance',    due:'2026-04-04', age:16, blocked:true,  blockerReason:'Awaiting scope sign-off from David — 6 days',nextAction:'Escalate if no response by 31 Mar','decision':'David to confirm scope',       lastUpdated:'22 Mar', comments:'' },
+  { id:'T14', wig:'WIG 2', title:'Reorder automation — UAT',             workstream:'Automation',     status:'Blocked',    priority:'Medium', owner:'Operations', due:'2026-03-28', age:19, blocked:true,  blockerReason:'Operations have not completed UAT — 9 days', nextAction:'Chase Operations UAT owner', decision:'',                                lastUpdated:'19 Mar', comments:'Overdue' },
+  { id:'T15', wig:'WIG 2', title:'Process mapping — reorder automation', workstream:'Documentation',  status:'In Progress', priority:'Medium',owner:'Vijendra',   due:'2026-04-18', age:6,  blocked:false, blockerReason:'',                                          nextAction:'Draft process note v1',      decision:'',                                lastUpdated:'25 Mar', comments:'' },
+  { id:'T16', wig:'WIG 2', title:'UAT sign-off template',                workstream:'Documentation',  status:'Completed',  priority:'Low',    owner:'Vijendra',   due:'2026-03-14', age:0,  blocked:false, blockerReason:'',                                          nextAction:'',                           decision:'',                                lastUpdated:'14 Mar', comments:'Template in SharePoint' },
+
+  // WIG 3
+  { id:'T17', wig:'WIG 3', title:'Weekly review meeting — cadence setup',workstream:'Operating Rhythm',status:'Completed',  priority:'High',  owner:'Vijendra',   due:'2026-03-07', age:0,  blocked:false, blockerReason:'',                                          nextAction:'Hold weekly',                decision:'',                                lastUpdated:'07 Mar', comments:'Running each week' },
+  { id:'T18', wig:'WIG 3', title:'Task tracker — structure and setup',   workstream:'Operating Rhythm',status:'Completed',  priority:'High',  owner:'Vijendra',   due:'2026-03-14', age:0,  blocked:false, blockerReason:'',                                          nextAction:'',                           decision:'',                                lastUpdated:'14 Mar', comments:'This tool' },
+  { id:'T19', wig:'WIG 3', title:'Reporting setup — IT dashboard',       workstream:'Reporting',       status:'In Progress', priority:'High', owner:'Vijendra',   due:'2026-04-11', age:11, blocked:false, blockerReason:'',                                          nextAction:'Add WIG 3 lead measures',    decision:'',                                lastUpdated:'25 Mar', comments:'' },
+  { id:'T20', wig:'WIG 3', title:'Process mapping — sales onboarding',   workstream:'Process',         status:'Blocked',    priority:'Medium', owner:'Sales',     due:'2026-03-28', age:21, blocked:true,  blockerReason:'Sales owner has not engaged — 21 days',      nextAction:'Shiv to reassign if no response','decision':'Reassign if Sales does not respond by 28 Mar',lastUpdated:'07 Mar', comments:'Overdue — stalled' },
+  { id:'T21', wig:'WIG 3', title:'Escalation path documentation',        workstream:'Process',         status:'In Progress', priority:'Medium',owner:'Vijendra',  due:'2026-04-18', age:5,  blocked:false, blockerReason:'',                                          nextAction:'Draft decision matrix',      decision:'',                                lastUpdated:'26 Mar', comments:'' },
+  { id:'T22', wig:'WIG 3', title:'BAU handover checklist',               workstream:'Documentation',   status:'Not Started', priority:'Low',  owner:'Vijendra',  due:'2026-04-30', age:0,  blocked:false, blockerReason:'',                                          nextAction:'Not yet started',            decision:'',                                lastUpdated:'',       comments:'Pending WIG 1 completion' },
+];
+
+const ISSUES = [
+  { id:'I01', wig:'WIG 1', title:'Vanuatu device shipment held at customs', severity:'Critical', urgency:'High', owner:'Vijendra', blockerOwner:'Freight agent / Customs', ageDays:18, nextAction:'Chase freight agent daily. If no movement by 31 Mar, escalate to Shiv for management intervention.', escalation:'Escalated to Shiv', impact:'Blocks Vanuatu rollout milestone. 4 staff without standardised devices.' },
+  { id:'I02', wig:'WIG 1', title:'Microsoft 365 licence renewal pending Finance approval', severity:'Critical', urgency:'High', owner:'Finance', blockerOwner:'David Lees', ageDays:22, nextAction:'David to approve $3,200 renewal by 28 Mar or licences will lapse.', escalation:'Escalated to David', impact:'If licences lapse, 8 users lose access to core productivity tools.' },
+  { id:'I03', wig:'WIG 2', title:'Finance approval form conversion — scope not confirmed', severity:'High', urgency:'Medium', owner:'Finance', blockerOwner:'David Lees', ageDays:6, nextAction:'Vijendra to follow up with David by 31 Mar. Escalate if no response.', escalation:'Not yet escalated', impact:'Delays Finance automation milestone. Blocks 1 build task.' },
+  { id:'I04', wig:'WIG 2', title:'Operations UAT for reorder automation stalled', severity:'High', urgency:'Medium', owner:'Operations', blockerOwner:'Operations team lead', ageDays:9, nextAction:'Chase Operations owner. If UAT not completed by 1 Apr, flag to Shiv.', escalation:'Not yet escalated', impact:'Delays live milestone for WIG 2 third automation.' },
+  { id:'I05', wig:'WIG 3', title:'Sales onboarding process mapping — owner not engaged', severity:'Medium', urgency:'Medium', owner:'Sales', blockerOwner:'Sales manager', ageDays:21, nextAction:'Shiv to reassign task if Sales does not respond by 28 Mar.', escalation:'Pending Shiv decision', impact:'Process mapping incomplete. Task has been stalled for 3 weeks.' },
+];
+
+// ═══════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════
+
+function statusChip(s) {
+  const map = { 'Not Started':'chip chip-gray', 'In Progress':'chip chip-blue', 'Blocked':'chip chip-red', 'In UAT':'chip chip-purple', 'Completed':'chip chip-green' };
+  return `<span class="${map[s]||'chip chip-gray'}">${s}</span>`;
+}
+function priorityChip(p) {
+  const map = { 'High':'chip chip-red', 'Medium':'chip chip-amber', 'Low':'chip chip-gray' };
+  return `<span class="${map[p]||'chip chip-gray'}">${p}</span>`;
+}
+function ragClass(r) { return r==='green'?'rag-green':r==='amber'?'rag-amber':'rag-red'; }
+function progressColor(p) { return p>=70?'var(--green)':p>=40?'#d97706':'var(--danger)'; }
+function severityChip(s) {
+  const map = { 'Critical':'chip chip-red', 'High':'chip chip-amber', 'Medium':'chip chip-gray' };
+  return `<span class="${map[s]||'chip chip-gray'}">${s}</span>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER — DASHBOARD
+// ═══════════════════════════════════════════════════════
+
+function renderDashboard() {
+  // WIG cards
+  document.getElementById('dashWigGrid').innerHTML = WIGS.map((w,i) => `
+    <div class="wig-card" onclick="switchToWig(${i})" style="animation-delay:${.05+i*.06}s">
+      <div class="wig-card-top">
+        <div class="wig-num">${w.num}</div>
+        <div class="wig-title">${w.title}</div>
+        <div class="wig-desc">${w.desc}</div>
+      </div>
+      <div class="wig-card-bottom">
+        <div class="wig-progress-wrap">
+          <div class="wig-progress-bar"><div class="wig-progress-fill" style="width:${w.progress}%;background:${progressColor(w.progress)}"></div></div>
+          <div class="wig-progress-label">${w.tasksDone}/${w.tasksTotal} tasks done &middot; ${w.progress}%</div>
+        </div>
+        <div class="wig-chip-row">
+          ${w.tasks&&w.tasks.filter&&w.tasks.filter(t=>t.blocked).length > 0 ? `<span class="chip chip-red">${TASKS.filter(t=>t.wig===w.num&&t.blocked).length} blocked</span>` : ''}
+        </div>
+      </div>
+    </div>`).join('');
+
+  // Show blocked count on wig cards
+  WIGS.forEach((w,i) => {
+    const blocked = TASKS.filter(t => t.wig === w.num && t.blocked).length;
+    const chipRow = document.querySelectorAll('.wig-chip-row')[i];
+    if (chipRow && blocked > 0) chipRow.innerHTML = `<span class="chip chip-red">${blocked} blocked</span>`;
+    else if (chipRow) chipRow.innerHTML = `<span class="chip chip-green">On track</span>`;
+  });
+
+  // Lead measures summary — all WIGs
+  const allLM = WIGS.flatMap(w => w.leadMeasures.map(lm => ({...lm, wig: w.num})));
+  const critical = allLM.filter(lm => lm.rag === 'red');
+  const atRisk   = allLM.filter(lm => lm.rag === 'amber');
+  document.getElementById('dashLeadMeasures').innerHTML = `
+    <div style="margin-bottom:12px">
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <span class="chip chip-red">${critical.length} off track</span>
+        <span class="chip chip-amber">${atRisk.length} at risk</span>
+        <span class="chip chip-green">${allLM.length - critical.length - atRisk.length} on track</span>
+      </div>
+    </div>
+    ${critical.concat(atRisk).slice(0,6).map(lm => `
+      <div class="lm-card ${ragClass(lm.rag)}" style="margin-bottom:8px">
+        <div class="lm-name">${lm.wig} &mdash; ${lm.name}</div>
+        <div class="lm-vals">
+          <div class="lm-current ${lm.rag==='green'?'good':lm.rag==='amber'?'warn':'bad'}">${lm.current}${lm.unit}</div>
+          <div class="lm-target">target: ${lm.target}${lm.unit}</div>
+        </div>
+      </div>`).join('')}`;
+
+  // Recent updates
+  const recentUpdates = WIGS.flatMap(w => [{...w.updates[0], wigNum: w.num}]);
+  document.getElementById('dashRecentUpdates').innerHTML = recentUpdates.map(u => `
+    <div class="update-card" style="margin-bottom:10px">
+      <div class="update-header">
+        <span class="update-week">${u.week}</span>
+        <span class="update-wig">${u.wigNum}</span>
+      </div>
+      ${u.moved ? `<div class="update-section"><div class="update-section-lbl">Moved this week</div><div class="update-section-body">${u.moved}</div></div>` : ''}
+      ${u.blocked ? `<div class="update-section"><div class="update-section-lbl">Blocked</div><div class="update-section-body" style="color:var(--danger)">${u.blocked}</div></div>` : ''}
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER — WIG DETAIL
+// ═══════════════════════════════════════════════════════
+
+let activeWig = 0;
+
+function renderWigDetail(idx) {
+  activeWig = idx;
+  const tabs = WIGS.map((w,i) => `<button class="wig-detail-tab ${i===idx?'active':''}" onclick="renderWigDetail(${i})">${w.num}</button>`).join('');
+  document.getElementById('wigTabs').innerHTML = tabs;
+
+  const w = WIGS[idx];
+  const wigTasks = TASKS.filter(t => t.wig === w.num);
+
+  document.getElementById('wigDetailPanel').innerHTML = `
+    <div style="margin-bottom:20px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:var(--red);font-family:'DM Mono',monospace;margin-bottom:6px">${w.num}</div>
+      <div style="font-size:18px;font-weight:600;color:var(--charcoal);line-height:1.3;margin-bottom:6px">${w.title}</div>
+      <div style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:12px">${w.desc}</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:5px;padding:12px 16px;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:5px">Lag measure</div>
+        <div style="font-size:12px;color:var(--mid);line-height:1.55">${w.lag}</div>
+      </div>
+    </div>
+
+    <div class="section-label">Lead measures</div>
+    <div class="lm-grid">
+      ${w.leadMeasures.map(lm => `
+        <div class="lm-card ${ragClass(lm.rag)}">
+          <div class="lm-name">${lm.name}</div>
+          <div class="lm-vals">
+            <div class="lm-current ${lm.rag==='green'?'good':lm.rag==='amber'?'warn':'bad'}">${lm.current}${lm.unit}</div>
+            <div class="lm-target">target: ${lm.target}${lm.unit}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <div class="section-label">Tasks</div>
+    <div class="table-wrap" style="margin-bottom:24px">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Title</th><th>Status</th><th>Priority</th><th>Owner</th><th>Due</th><th>Age</th><th>Next action</th><th>Blocker</th>
+        </tr></thead>
+        <tbody>
+          ${wigTasks.map(t => `<tr>
+            <td class="td-mono td-muted">${t.id}</td>
+            <td class="td-bold">${t.title}</td>
+            <td>${statusChip(t.status)}</td>
+            <td>${priorityChip(t.priority)}</td>
+            <td>${t.owner}</td>
+            <td class="td-mono ${t.age>0&&t.status!=='Completed'?'td-danger':''}">${t.due||'&mdash;'}</td>
+            <td class="td-mono ${t.age>14?'td-danger':''}">${t.age}d</td>
+            <td style="font-size:11px;color:var(--mid);max-width:180px">${t.nextAction||'&mdash;'}</td>
+            <td>${t.blocked?`<span class="blocker-dot"></span><span style="font-size:11px;color:var(--danger)">${t.blockerReason}</span>`:'<span class="blocker-dot none"></span>'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-label">Weekly updates</div>
+    ${w.updates.map(u => `
+      <div class="update-card">
+        <div class="update-header">
+          <span class="update-week">${u.week}</span>
+          <span class="update-wig">${w.num}</span>
+        </div>
+        ${u.moved   ? `<div class="update-section"><div class="update-section-lbl">Moved this week</div><div class="update-section-body">${u.moved}</div></div>` : ''}
+        ${u.blocked ? `<div class="update-section"><div class="update-section-lbl">Blocked</div><div class="update-section-body" style="color:var(--danger)">${u.blocked}</div></div>` : ''}
+        ${u.decisions ? `<div class="update-section"><div class="update-section-lbl">Decisions needed</div><div class="update-section-body" style="color:var(--amber)">${u.decisions}</div></div>` : ''}
+        ${u.notes   ? `<div class="update-section"><div class="update-section-lbl">Notes</div><div class="update-section-body">${u.notes}</div></div>` : ''}
+      </div>`).join('')}`;
+}
+
+function switchToWig(idx) {
+  showView('wigs', document.querySelectorAll('.nav-btn')[1]);
+  renderWigDetail(idx);
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER — TASK TABLE
+// ═══════════════════════════════════════════════════════
+
+function renderTaskTable() {
+  const wig      = document.getElementById('filterWig').value;
+  const status   = document.getElementById('filterStatus').value;
+  const priority = document.getElementById('filterPriority').value;
+  const owner    = document.getElementById('filterOwner').value;
+  const blocked  = document.getElementById('filterBlocked').value;
+
+  let tasks = TASKS.filter(t =>
+    (!wig      || t.wig === wig) &&
+    (!status   || t.status === status) &&
+    (!priority || t.priority === priority) &&
+    (!owner    || t.owner === owner) &&
+    (!blocked  || (blocked === 'yes' && t.blocked))
+  );
+
+  document.getElementById('taskTableWrap').innerHTML = `
+    <table>
+      <thead><tr>
+        <th>#</th><th>Title</th><th>WIG</th><th>Workstream</th><th>Status</th><th>Priority</th>
+        <th>Owner</th><th>Due</th><th>Age</th><th>Blocked</th><th>Next action</th><th>Decision needed</th>
+      </tr></thead>
+      <tbody>
+        ${tasks.length === 0 ? `<tr><td colspan="12" class="empty-state">No tasks match the current filters.</td></tr>` :
+          tasks.map(t => `<tr>
+            <td class="td-mono td-muted">${t.id}</td>
+            <td class="td-bold" style="max-width:200px">${t.title}</td>
+            <td><span class="chip chip-gray">${t.wig}</span></td>
+            <td style="font-size:11px;color:var(--muted)">${t.workstream}</td>
+            <td>${statusChip(t.status)}</td>
+            <td>${priorityChip(t.priority)}</td>
+            <td>${t.owner}</td>
+            <td class="td-mono ${t.age>0&&t.status!=='Completed'&&t.due<'2026-03-29'?'td-danger':''}">${t.due||'&mdash;'}</td>
+            <td class="td-mono ${t.age>14&&t.status!=='Completed'?'td-danger':t.age>7?'':''}">${t.age > 0 ? t.age+'d' : '&mdash;'}</td>
+            <td>${t.blocked ? `<span style="display:flex;align-items:center;gap:5px"><span class="blocker-dot"></span><span style="font-size:10px;color:var(--danger);max-width:140px;line-height:1.3">${t.blockerReason}</span></span>` : '<span style="color:var(--muted);font-size:11px">None</span>'}</td>
+            <td style="font-size:11px;color:var(--mid);max-width:160px">${t.nextAction||'&mdash;'}</td>
+            <td style="font-size:11px;color:var(--amber);max-width:160px">${t.decision||'&mdash;'}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER — WEEKLY REVIEW
+// ═══════════════════════════════════════════════════════
+
+function renderReview() {
+  const blocked  = TASKS.filter(t => t.blocked);
+  const overdue  = TASKS.filter(t => t.status !== 'Completed' && t.due < '2026-03-29' && t.due !== '');
+  const decisions= TASKS.filter(t => t.decision && t.status !== 'Completed');
+  const moved    = TASKS.filter(t => t.status === 'Completed' && t.lastUpdated >= '21 Mar');
+  const atRisk   = TASKS.filter(t => t.status === 'In Progress' && t.age > 14);
+
+  function reviewCard(icon, title, items, dotColor, empty) {
+    return `<div class="review-card">
+      <div class="review-card-head">
+        <span class="review-card-icon">${icon}</span>
+        <span class="review-card-title">${title} <span style="color:var(--red)">(${items.length})</span></span>
+      </div>
+      <div class="review-card-body">
+        ${items.length === 0 ? `<div class="empty-state">${empty}</div>` :
+          items.map(t => `<div class="review-item">
+            <div class="review-item-dot" style="background:${dotColor}"></div>
+            <div>
+              <div class="review-item-text">${t.title}</div>
+              <div class="review-item-sub">${t.wig} &middot; Owner: ${t.owner} ${t.blockerReason ? '&middot; ' + t.blockerReason : ''} ${t.decision ? '&middot; Decision: ' + t.decision : ''}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('reviewGrid').innerHTML =
+    reviewCard('⚑', 'Blocked', blocked, 'var(--danger)', 'No blocked tasks this week.') +
+    reviewCard('⚠', 'Overdue', overdue, '#d97706', 'No overdue tasks.') +
+    reviewCard('●', 'Decision needed', decisions, 'var(--amber)', 'No decisions pending.') +
+    reviewCard('↗', 'At risk', atRisk, 'var(--amber)', 'No tasks at risk.');
+
+  // Updates by WIG
+  document.getElementById('reviewUpdates').innerHTML = WIGS.map(w => `
+    <div style="margin-bottom:16px">
+      <div class="section-label">${w.num} &mdash; ${w.title}</div>
+      <div class="update-card">
+        <div class="update-header">
+          <span class="update-week">${w.updates[0].week}</span>
+          <span style="font-size:11px;color:var(--muted)">Progress: ${w.progress}%</span>
+        </div>
+        ${w.updates[0].moved    ? `<div class="update-section"><div class="update-section-lbl">Moved</div><div class="update-section-body">${w.updates[0].moved}</div></div>` : ''}
+        ${w.updates[0].blocked  ? `<div class="update-section"><div class="update-section-lbl">Blocked</div><div class="update-section-body" style="color:var(--danger)">${w.updates[0].blocked}</div></div>` : ''}
+        ${w.updates[0].decisions? `<div class="update-section"><div class="update-section-lbl">Decisions needed</div><div class="update-section-body" style="color:var(--amber)">${w.updates[0].decisions}</div></div>` : ''}
+        ${w.updates[0].notes    ? `<div class="update-section"><div class="update-section-lbl">Notes</div><div class="update-section-body">${w.updates[0].notes}</div></div>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER — ISSUES
+// ═══════════════════════════════════════════════════════
+
+function renderIssues() {
+  document.getElementById('issuesList').innerHTML = ISSUES.map(issue => `
+    <div class="issue-card ${issue.severity === 'Medium' ? 'warn' : ''}">
+      <div class="issue-header">
+        <div class="issue-title">${issue.title}</div>
+        <div style="display:flex;gap:6px;flex-shrink:0">${severityChip(issue.severity)}</div>
+      </div>
+      <div class="issue-meta">
+        <span class="chip chip-gray">${issue.wig}</span>
+        <span class="chip chip-gray">Age: ${issue.ageDays}d</span>
+        <span class="chip chip-gray">Owner: ${issue.owner}</span>
+        <span class="chip chip-gray">Blocker: ${issue.blockerOwner}</span>
+        <span class="chip ${issue.escalation.includes('Escalated') ? 'chip-amber' : 'chip-gray'}">${issue.escalation}</span>
+      </div>
+      <div class="issue-body"><strong>Impact:</strong> ${issue.impact}</div>
+      <div class="issue-next">&#8594; ${issue.nextAction}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+
+function showView(name, btn) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'wigs')   renderWigDetail(activeWig);
+  if (name === 'tasks')  renderTaskTable();
+  if (name === 'review') renderReview();
+  if (name === 'issues') renderIssues();
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+
+document.getElementById('asOf').textContent = '28 Mar 2026';
+renderDashboard();
+
+/*
+  ─────────────────────────────────────────────────────────
+  SUPABASE INTEGRATION NOTES (for Vijendra)
+  ─────────────────────────────────────────────────────────
+  To replace mock data with live Supabase data:
+
+  1. Add the Supabase client script to the <head>:
+     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  2. Initialise the client:
+     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+  3. Replace each const with a fetch, e.g.:
+     const { data: WIGS } = await supabase.from('wigs').select('*, lead_measures(*), weekly_updates(*)')
+     const { data: TASKS } = await supabase.from('tasks').select('*')
+     const { data: ISSUES } = await supabase.from('issues').select('*')
+
+  4. Call renderDashboard() after all fetches resolve.
+
+  Tables needed in Supabase:
+  - wigs (id, num, title, desc, lag, progress, tasks_total, tasks_done)
+  - lead_measures (id, wig_id, name, current, target, unit, rag, lower_better)
+  - tasks (id, wig, title, workstream, status, priority, owner, due, age, blocked, blocker_reason, next_action, decision, last_updated, comments)
+  - weekly_updates (id, wig_id, week_label, moved, blocked, decisions, notes)
+  - issues (id, wig, title, severity, urgency, owner, blocker_owner, age_days, next_action, escalation, impact)
+  ─────────────────────────────────────────────────────────
+*/
+</script>
+</body>
+</html>
