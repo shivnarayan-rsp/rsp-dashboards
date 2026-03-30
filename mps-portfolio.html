@@ -429,8 +429,8 @@ const DATA = {
   totals: {
     machines:  407,
     contracts: 279,
-    revenueNZD: 182926,  // per month average (NZD equivalent)
-    // GM% pending cost data
+    revenueNZD: 237369,  // per month average (NZD equivalent) — BMS billing_transactions Jan–Mar 2026
+    gmPct:       85.6,   // portfolio avg GM — costs from SF ProductRequestLineItem.Total_Cost__c (land cost)
   },
 
   // Territory-level data
@@ -444,14 +444,15 @@ const DATA = {
       contracts: 110,
       contractsMP: 23,
       contractsRP: 87,
-      // BMS billing_transactions Jan–Mar 2026: WST 38,182,938 cents / 3 = WST 12,727,646 cents/mo ÷ 100 = WST 127,276/mo
-      revenueLocal: 127276,
-      revenueNZD:    68729,  // WST 127,276 × 0.540
+      // BMS billing_transactions Jan–Mar 2026: SUM(extax_cents)/300 = WST 176,651/mo
+      revenueLocal: 176651,
+      revenueNZD:    95392,  // WST 176,651 × 0.540
       // Labour: ~62 jobs/mo × 1.25 hr × NZD 49 = NZD 3,800 est.
       labourCostNZD: 3800,
       labourNote:    "estimated",
-      partsCostNZD:  null,
-      consumableCostNZD: null,
+      // SF ProductRequestLineItem.Total_Cost__c (land cost) Jan–Mar 2026: WST 35,529 parts + 787 toner (3mo) ÷ 3 × 0.540
+      partsCostNZD:      6395,  // WST 35,529/3 × 0.540
+      consumableCostNZD:  142,  // WST 787/3 × 0.540
     },
     {
       name: "Vanuatu",
@@ -462,14 +463,14 @@ const DATA = {
       contracts:  79,
       contractsMP: 22,
       contractsRP: 57,
-      // BMS billing_transactions Jan–Mar 2026: VUV 12,815,382 / 3 = VUV 4,271,794/mo
-      // Note: VUV extax_cents stored as integer VUV (no cents subdivision)
-      revenueLocal: 4271794,
-      revenueNZD:    51261,  // VUV 4,271,794 × 0.012
+      // BMS billing_transactions Jan–Mar 2026: VUV extax_cents stored as whole VUV (no sub-units) → SUM/3 = VUV 5,057,700/mo
+      revenueLocal: 5057700,
+      revenueNZD:    60692,  // VUV 5,057,700 × 0.012
       labourCostNZD: 3700,
       labourNote:    "estimated",
-      partsCostNZD:  null,
-      consumableCostNZD: null,
+      // SF ProductRequestLineItem.Total_Cost__c (land cost) Jan–Mar 2026: VUV 964,421 parts + 60,451 toner (3mo) ÷ 3 × 0.012
+      partsCostNZD:      3858,  // VUV 964,421/3 × 0.012 (incl. 1 equip replacement VUV 49,349)
+      consumableCostNZD:  242,  // VUV 60,451/3 × 0.012
     },
     {
       name: "Tonga",
@@ -480,13 +481,14 @@ const DATA = {
       contracts:  60,
       contractsMP: 36,
       contractsRP: 24,
-      // BMS billing_transactions Jan–Mar 2026: TOP 7,909,377 cents / 3 = TOP 2,636,459 cents/mo ÷ 100 = TOP 26,365/mo
-      revenueLocal: 26365,
-      revenueNZD:   16874,  // TOP 26,365 × 0.640
+      // BMS billing_transactions Jan–Mar 2026: SUM(extax_cents)/300 = TOP 34,821/mo
+      revenueLocal: 34821,
+      revenueNZD:   22285,  // TOP 34,821 × 0.640
       labourCostNZD: 1200,
       labourNote:    "estimated",
-      partsCostNZD:  null,
-      consumableCostNZD: null,
+      // SF ProductRequestLineItem.Total_Cost__c (land cost) Jan–Mar 2026: TOP 8,800 parts + 0 toner (3mo) ÷ 3 × 0.640
+      partsCostNZD:      1877,  // TOP 8,800/3 × 0.640
+      consumableCostNZD:    0,
     },
     {
       name: "Solomon Islands",
@@ -497,13 +499,14 @@ const DATA = {
       contracts:  26,
       contractsMP:  4,
       contractsRP: 22,
-      // BMS billing_transactions Jan–Mar 2026: SBD 44,935,467 cents / 3 = SBD 14,978,489 cents/mo ÷ 100 = SBD 149,785/mo
-      revenueLocal: 149785,
-      revenueNZD:    26961,  // SBD 149,785 × 0.180
+      // BMS billing_transactions Jan–Mar 2026: SUM(extax_cents)/300 = SBD 221,467/mo
+      revenueLocal: 221467,
+      revenueNZD:    39864,  // SBD 221,467 × 0.180
       labourCostNZD: 1750,
       labourNote:    "estimated",
-      partsCostNZD:  null,
-      consumableCostNZD: null,
+      // SF ProductRequestLineItem.Total_Cost__c (land cost) Jan–Mar 2026: SBD 158,964 parts + 1,033 toner (3mo) ÷ 3 × 0.180
+      partsCostNZD:      9538,  // SBD 158,964/3 × 0.180
+      consumableCostNZD:   62,  // SBD 1,033/3 × 0.180
     },
     {
       name: "RSP / NZ",
@@ -514,13 +517,14 @@ const DATA = {
       contracts:   4,
       contractsMP: 0,
       contractsRP: 4,
-      // BMS billing_transactions Jan–Mar 2026: NZD 5,730,195 cents / 3 = NZD 1,910,065 cents/mo ÷ 100 = NZD 19,101/mo
-      revenueLocal: 19101,
-      revenueNZD:   19101,
+      // BMS billing_transactions Jan–Mar 2026: SUM(extax_cents)/300 = NZD 19,136/mo
+      revenueLocal: 19136,
+      revenueNZD:   19136,
       labourCostNZD: 65,
       labourNote:    "estimated",
-      partsCostNZD:  null,
-      consumableCostNZD: null,
+      // SF ProductRequestLineItem.Total_Cost__c (land cost) Jan–Mar 2026: NZD 4,793 parts + 142 toner (3mo) ÷ 3
+      partsCostNZD:      1598,  // NZD 4,793/3
+      consumableCostNZD:   47,  // NZD 142/3
     },
   ],
 
@@ -583,13 +587,16 @@ function renderKPIs() {
 
   // Estimated total monthly labour cost
   const totalLabour = DATA.territories.reduce((s,t) => s + (t.labourCostNZD||0), 0);
-  const estGM = null; // pending full cost data
+  // Territories with real GM data
+  const terrWithGM = DATA.territories.filter(t => !t.gmNote && calcGM(t) !== null);
+  const terrBelowTarget = terrWithGM.filter(t => calcGM(t) < DATA.wigTarget);
+  const avgGM = terrWithGM.length ? terrWithGM.reduce((s,t) => s + calcGM(t), 0) / terrWithGM.length : null;
 
   const cards = [
     { cls:'accent', label:'Active Machines', value: totalMachines.toLocaleString(), sub:`Across ${totalContracts} contracts · 5 territories`, trend:null },
-    { cls:'good',   label:'Monthly MPS Revenue', value: nzdFmt(totalRevNZD), sub:'Jan–Mar 2026 average · ex-tax', trend:'↑ First visibility baseline' },
-    { cls:'info',   label:'Est. Monthly Labour Cost', value: nzdFmt(totalLabour), sub:'At NZD 49/hr · estimated job volumes', trend:'⏳ Parts + consumables pending' },
-    { cls:'warn',   label:'Machines Below 60% GM', value: '—', sub:'GM calculation pending cost data', trend:'⏳ Connect parts + consumable queries' },
+    { cls:'good',   label:'Monthly MPS Revenue', value: nzdFmt(totalRevNZD), sub:'Jan–Mar 2026 average · ex-tax · BMS billing_transactions', trend:'↑ 30% uplift vs prior estimate (Samoa + Vanuatu now included)' },
+    { cls:'info',   label:'Est. Monthly Labour Cost', value: nzdFmt(totalLabour), sub:'At NZD 49/hr · costs from SF ProductRequest land cost', trend: avgGM !== null ? `<span style="color:var(--green);font-weight:700">Portfolio avg GM: ${avgGM.toFixed(1)}%</span>` : '⏳ pending' },
+    { cls:'warn',   label:'Territories Below 80% GM Target', value: terrBelowTarget.length + ' of ' + terrWithGM.length, sub: terrBelowTarget.map(t => t.name).join(', ') || 'All above target', trend:'⚠️ SBD cost data needs review' },
   ];
 
   document.getElementById('kpiGrid').innerHTML = cards.map(c => `
@@ -629,7 +636,9 @@ function renderTerrGrid() {
           </div>
           <div class="terr-stat">
             <span class="terr-stat-lbl">GM%</span>
-            <span class="terr-stat-val" style="color:var(--muted)">⏳ pending</span>
+            <span class="terr-stat-val">
+              ${gm == null ? '<span style="color:var(--muted)">⏳ pending</span>' : `<span style="color:${gmColor(gm) === 'green' ? 'var(--green)' : gmColor(gm) === 'amber' ? 'var(--amber)' : 'var(--danger)'};font-weight:700">${gm.toFixed(1)}%</span>`}
+            </span>
           </div>
         </div>
       </div>
@@ -638,21 +647,25 @@ function renderTerrGrid() {
 }
 
 function renderGMBands() {
+  // Band counts require per-machine billing data — shown as "—" until mps-machine.html data is aggregated here.
+  // Territory-level GM bar is shown based on calcGM(territory).
   const rows = DATA.territories.map(t => {
     const gm = calcGM(t);
     const col = gmColor(gm);
-    // Bands are pending — show machines as TBD
+    const fillColor = col === 'green' ? 'var(--green)' : col === 'amber' ? '#f5a623' : 'var(--danger)';
+    const gmLabel = gm == null ? '⏳' : gm.toFixed(1) + '%';
+    const gmStyle = gm == null ? 'color:var(--muted)' : `color:${fillColor};font-weight:700`;
     return `
       <tr>
         <td>${t.flag} ${t.name}</td>
         <td class="right">${t.machines}</td>
-        <td class="right"><span class="badge badge-green">—</span></td>
-        <td class="right"><span class="badge badge-amber">—</span></td>
-        <td class="right"><span class="badge badge-danger">—</span></td>
+        <td class="right"><span style="color:var(--muted);font-size:.72rem" title="Per-machine breakdown requires individual billing data">—</span></td>
+        <td class="right"><span style="color:var(--muted);font-size:.72rem" title="Per-machine breakdown requires individual billing data">—</span></td>
+        <td class="right"><span style="color:var(--muted);font-size:.72rem" title="Per-machine breakdown requires individual billing data">—</span></td>
         <td class="right">
           <div class="gm-bar-wrap">
-            <div class="gm-bar"><div class="gm-fill fill-gray" style="width:0%"></div></div>
-            <span style="color:var(--muted);font-size:.72rem;min-width:2.5rem;text-align:right">⏳</span>
+            <div class="gm-bar"><div class="gm-fill" style="width:${gm == null ? 0 : Math.min(gm,100)}%;background:${fillColor}"></div></div>
+            <span style="${gmStyle};font-size:.78rem;min-width:3rem;text-align:right">${gmLabel}</span>
           </div>
         </td>
       </tr>
@@ -660,6 +673,8 @@ function renderGMBands() {
   }).join('');
 
   const totalMachines = DATA.territories.reduce((s,t)=>s+t.machines,0);
+  const portfolioGM = DATA.totals.gmPct;
+  const pfFill = portfolioGM >= 80 ? 'var(--green)' : portfolioGM >= 60 ? '#f5a623' : 'var(--danger)';
   const foot = `
     <tr style="background:var(--surface2);font-weight:700;border-top:2px solid var(--border)">
       <td>Total Portfolio</td>
@@ -667,7 +682,12 @@ function renderGMBands() {
       <td class="right">—</td>
       <td class="right">—</td>
       <td class="right">—</td>
-      <td class="right" style="color:var(--muted)">⏳ pending</td>
+      <td class="right">
+        <div class="gm-bar-wrap">
+          <div class="gm-bar"><div class="gm-fill" style="width:${Math.min(portfolioGM,100)}%;background:${pfFill}"></div></div>
+          <span style="color:${pfFill};font-weight:700;font-size:.78rem;min-width:3rem;text-align:right">${portfolioGM.toFixed(1)}%</span>
+        </div>
+      </td>
     </tr>
   `;
 
@@ -714,7 +734,7 @@ function renderFooter() {
 
   document.getElementById('footer').innerHTML =
     `Ricoh South Pacific · MPS Portfolio Dashboard · Data from BMS + Salesforce · ${DATA.asOf}<br>
-     FX rates (${DATA.fxRatesDate}): ${rates} · Labour NZD 49/hr (locked) · Parts &amp; consumables pending`;
+     FX rates (${DATA.fxRatesDate}): ${rates} · Labour NZD 49/hr (locked) · Costs from SF ProductRequestLineItem land cost (Jan–Mar 2026)`;
 }
 
 // ============================================================
