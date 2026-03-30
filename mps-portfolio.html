@@ -325,7 +325,7 @@
             <div class="wig-fill" id="wigFill" style="width:0%"></div>
             <div class="wig-target-line" style="left:80%"></div>
           </div>
-          <div class="wig-track-label">Cost data loading — GM will update when parts + consumable queries complete</div>
+          <div class="wig-track-label" id="wigTrackLabel">Loading…</div>
         </div>
       </div>
     </div>
@@ -333,9 +333,7 @@
 
   <!-- FIRST-PASS NOTE -->
   <div class="note-box fade-up">
-    <strong>First-pass baseline:</strong> Revenue data is live from BMS (Jan–Mar 2026 average). Labour cost estimated at NZD 49/hr flat rate.
-    Parts and consumable costs are connecting — GM% will firm up once those queries complete.
-    Some machines may show GM well below 60%: this is expected and is precisely why the dashboard exists. Treat this first view as a diagnostic, not a performance review.
+    <strong>First-pass baseline · Jan–Mar 2026:</strong> Revenue from BMS billing transactions. Labour at NZD 49/hr flat rate. Parts and consumable costs from Salesforce ProductRequestLineItem land cost (ShipmentType = SLA Part Replacement). Territory GM is a blended average — individual machine P&amp;L is on the Machines tab. Treat this as a diagnostic baseline, not a performance review.
   </div>
 
   <!-- SNAPSHOT KPIs -->
@@ -746,6 +744,25 @@ renderTerrGrid();
 renderGMBands();
 renderExpiry();
 renderFooter();
+
+// WIG banner — populate with live portfolio GM
+(function renderWIG() {
+  const gm = DATA.totals.gmPct;
+  const el = document.getElementById('wigCurrentGM');
+  const fill = document.getElementById('wigFill');
+  const label = document.getElementById('wigTrackLabel');
+  if (el) {
+    el.textContent = gm.toFixed(1) + '%';
+    el.className = 'wig-metric-val ' + (gm >= 80 ? 'good' : gm >= 60 ? 'amber' : 'danger');
+  }
+  if (fill) fill.style.width = Math.min(gm, 100) + '%';
+  if (label) {
+    const ahead = gm >= 80;
+    label.textContent = ahead
+      ? `✓ ${gm.toFixed(1)}% — above the 80% WIG target · Jan–Mar 2026 average`
+      : `${gm.toFixed(1)}% · ${(80 - gm).toFixed(1)}pp to close to reach 80% WIG target`;
+  }
+})();
 </script>
 </body>
 </html>

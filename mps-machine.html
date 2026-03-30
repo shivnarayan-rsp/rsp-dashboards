@@ -797,6 +797,7 @@ function gmCell(m) {
     <span class="gm-text" style="color:var(--muted)">~${m.gmEst.toFixed(1)}%</span>
   </div>`;
   }
+  if (m.gmEst === null) return `<span style="color:var(--muted);font-size:.72rem" title="Revenue pending — cannot calculate GM">⏳ pending</span>`;
   const col = m.gmEst >= 80 ? 'var(--green)' : m.gmEst >= 60 ? '#f5a623' : 'var(--danger)';
   const fillClass = m.gmEst >= 80 ? 'fill-green' : m.gmEst >= 60 ? 'fill-amber' : 'fill-danger';
   return `<div class="gm-cell">
