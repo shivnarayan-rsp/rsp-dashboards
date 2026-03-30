@@ -276,41 +276,69 @@
           <span class="flow-note">Consumable cost path</span>
         </div>
         <div class="flow-row">
-          <div class="flow-box bms">BMS: service_jobs</div>
+          <div class="flow-box sf">SF: Case</div>
           <span class="flow-arrow">→</span>
-          <div class="flow-box bms">service_job_activities</div>
+          <div class="flow-box sf">WorkOrder (AssetId)</div>
           <span class="flow-arrow">→</span>
-          <div class="flow-box bms">service_job_assets (activity_id)</div>
+          <div class="flow-box sf">ProductConsumed (UnitPrice × Qty × Product2.Family)</div>
+          <span class="flow-note">Toner/Dev + Parts cost path — split by Product Family</span>
+        </div>
+        <div class="flow-row">
+          <div class="flow-box sf">SF: Case</div>
           <span class="flow-arrow">→</span>
-          <div class="flow-box bms">service_job_lines</div>
-          <span class="flow-note">Parts cost path</span>
+          <div class="flow-box sf">WorkOrder</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-box sf">ProductRequest (Shipment_Type = 'SLA Part Replacement')</div>
+          <span class="flow-note">Parts request audit trail</span>
         </div>
       </div>
-      <p><strong>Known gap:</strong> Some BMS machines may not have a matching Salesforce asset if the asset was not created at install time. These machines will show zero consumable cost. A reconciliation between BMS <code>core_assets</code> and Salesforce <code>Asset</code> records is recommended.</p>
+      <p><strong>Parts &amp; consumable costs are sourced entirely from Salesforce</strong> via the Case → WorkOrder → ProductConsumed chain. ProductConsumed records are split by <code>Product2.Family</code> into four categories:</p>
+      <ul>
+        <li><strong>Toner/Dev</strong> — Family = <code>Ricoh Copier Toners and Developers</code>. Includes toner cartridges and developer units. Included in GM calculation.</li>
+        <li><strong>Parts</strong> — Family = <code>Ricoh Copier Parts</code> or <code>IT Products</code>. Includes drums, fusers, rollers, and accessory hardware. Included in GM calculation.</li>
+        <li><strong>Equipment</strong> — Family = <code>Ricoh Copier Equipment</code>. Machine and accessory replacements (e.g. full machine swap, paper feed unit). <em>Excluded from recurring GM</em> — shown as a separate flag. These are one-off costs, not monthly recurring.</li>
+        <li><strong>Digital Paper</strong> — Family = <code>Digital Paper</code>. Paper reams delivered under contract. Excluded from GM calculation (assumed recovered in CPC rate). Shown as a flag.</li>
+        <li><strong>Skipped</strong> — Family = <code>Service Department</code> (callout fees, travel charges) and <code>Ricoh Software Solutions</code> ($0 licences). These are excluded entirely — service fees are already captured in the labour estimate.</li>
+      </ul>
+      <p>The 90-day total for each included category is divided by 3 to produce a monthly average cost per machine.</p>
+      <p><strong>Audit check:</strong> ProductRequest records (Shipment_Type = 'SLA Part Replacement') can be compared against ProductConsumed to verify technicians are consuming parts that were approved and shipped. Unconsumed requests may indicate parts issued but not used, or data entry gaps.</p>
+      <p><strong>Known gap:</strong> Some BMS machines may not have a matching Salesforce Asset if the asset was not created at install time. These machines will show zero cost and GM% will be overstated. A reconciliation between BMS <code>core_assets.serial_no</code> and Salesforce <code>Asset.SerialNumber</code> is recommended.</p>
     </section>
 
     <!-- CONSUMABLE COST -->
     <section id="consumables">
-      <h2><span class="icon">◉</span> Consumable Cost Methodology</h2>
+      <h2><span class="icon">◉</span> Consumable &amp; Parts Cost Methodology</h2>
       <h3>Phase 1 approach (current)</h3>
-      <p>Consumable cost is sourced from Salesforce via the Toner Delivery case path:</p>
+      <p>All supply and parts costs are sourced from Salesforce via <strong>ProductConsumed</strong> records on WorkOrders linked to the machine's Asset. The <code>Product2.Family</code> field determines which cost bucket each line falls into:</p>
       <div class="formula">
-<span class="label">Consumable Cost</span> =
-  SELECT SUM(OrderItem.TotalPrice)
-  FROM Case
-  WHERE Work_Type__c = 'Toner Delivery'
-    AND Asset.SerialNumber = <span class="val">[machine serial]</span>
-    AND CreatedDate = LAST_N_DAYS:90
-  <span class="comment">-- via Case.Order__c → Order → OrderItem</span>
+<span class="label">Toner/Dev (monthly)</span> =
+  SUM(ProductConsumed.UnitPrice × QuantityConsumed)
+  WHERE Product2.Family = 'Ricoh Copier Toners and Developers'
+    AND WorkOrder.Asset.SerialNumber = <span class="val">[serial]</span>
+    AND WorkOrder.CreatedDate = LAST_N_DAYS:90
+  ÷ 3  <span class="comment">-- 90-day total ÷ 3 = monthly average</span>
+
+<span class="label">Parts (monthly)</span> =
+  SUM(ProductConsumed.UnitPrice × QuantityConsumed)
+  WHERE Product2.Family IN ('Ricoh Copier Parts', 'IT Products')
+    AND WorkOrder.Asset.SerialNumber = <span class="val">[serial]</span>
+    AND WorkOrder.CreatedDate = LAST_N_DAYS:90
+  ÷ 3
+
+<span class="label">Equipment flag (excluded from GM)</span> =
+  SUM(ProductConsumed.UnitPrice × QuantityConsumed)
+  WHERE Product2.Family = 'Ricoh Copier Equipment'
+  <span class="comment">-- machine replacements; one-off, not monthly recurring</span>
       </div>
       <ul>
-        <li>Only <strong>Toner Delivery</strong> cases are included — other consumable types (e.g. drums, waste toner) are excluded in Phase 1</li>
-        <li>The <code>Work_Type__c</code> field on the Case must be set to <code>'Toner Delivery'</code> for the delivery to be captured</li>
-        <li>If a Toner Delivery case has no linked Order, it is not counted (data quality issue — log an action)</li>
-        <li>OrderItem.TotalPrice is in local currency; converted to NZD using the locked FX rates</li>
+        <li>Toner/Dev includes both toner cartridges and developer units (SF treats them in the same family)</li>
+        <li>Parts includes drums, fusers, rollers, feed rollers, and any IT accessory hardware fitted to the machine</li>
+        <li>Equipment lines (e.g. full machine swap, paper feed unit at ~SBD 93,000) are shown as a flag but excluded from the monthly GM calc — they distort recurring cost if included</li>
+        <li>Service callout fees and travel charges (Family = <em>Service Department</em>) are excluded — already captured in the NZD 49/hr labour estimate</li>
+        <li>All amounts are in local currency; converted to NZD using locked FX rates before averaging</li>
       </ul>
-      <h3>Future enhancements</h3>
-      <p>Phase 2 will include drums, waste toner bottles and other consumables tracked via separate Work_Type values or product codes on OrderItem.</p>
+      <h3>Note on the Toner Delivery → Order path</h3>
+      <p>An earlier approach queried <code>Case (Work_Type__c='Toner Delivery') → Order → OrderItem</code> for consumable cost. This returned zero for all MPS machines — toner deliveries for these machines are logged through WorkOrders, not separate Sales Orders. The ProductConsumed path is the correct and authoritative source.</p>
     </section>
 
     <!-- LABOUR RATE -->
@@ -401,8 +429,9 @@
     <section id="limitations">
       <h2><span class="icon">⚠</span> Known Limitations (Phase 1)</h2>
       <div class="limitation"><strong>Revenue attribution is equal-split for multi-machine contracts.</strong> A 5-machine contract assigns 1/5 of revenue to each machine. Machines with high volume will look more profitable than they are; low-volume machines will look less profitable.</div>
-      <div class="limitation"><strong>Parts cost join chain is complex.</strong> The BMS path is service_jobs → service_job_activities → service_job_assets (via activity_id) → service_job_lines. If any link in this chain is missing, the machine shows zero parts cost and GM% is overstated.</div>
-      <div class="limitation"><strong>Consumables only cover Toner Delivery cases.</strong> Drums, waste toner, fusers and other consumables are excluded. Machines that consume high-cost consumables will appear more profitable than they are.</div>
+      <div class="limitation"><strong>Parts &amp; consumable costs require a Salesforce WorkOrder per service visit.</strong> If a technician visit is not logged as a WorkOrder in Salesforce, or ProductConsumed lines are not entered, the machine shows zero cost and GM% is overstated. Completeness of WorkOrder data entry is the key data quality risk.</div>
+      <div class="limitation"><strong>Equipment lines in ProductConsumed distort recurring cost.</strong> Machine replacements and major accessories (Family = <em>Ricoh Copier Equipment</em>) are logged as ProductConsumed against the original machine's WorkOrder. These are excluded from GM and shown as a flag (🔧). If a machine shows an Equipment flag, investigate whether the replacement was a warranty swap or a chargeable event before drawing conclusions about margin.</div>
+      <div class="limitation"><strong>Product2.Family must be set correctly on each product record</strong> for the cost split to work. If a toner is catalogued under the wrong family (e.g. <em>Ricoh Copier Parts</em>), it will appear in the Parts column instead of Toner/Dev. Periodic product catalogue hygiene is recommended.</div>
       <div class="limitation"><strong>Labour rate is flat across all territories.</strong> NZD 49/hr is a proxy. Samoa technicians may cost more or less than Vanuatu technicians. Territory-specific rates should be applied in a later release.</div>
       <div class="limitation"><strong>VUV revenue scale.</strong> BMS stores VUV as full integer Vatu (not sub-units). However, the service rate tables (billing_contract_rates) use a "cents" convention even for VUV. The scale interpretation for per-click rates in VUV has not been fully validated against a known invoice. Revenue figures for Vanuatu machines should be cross-checked against a recent BMS invoice for one machine.</div>
       <div class="limitation"><strong>Data is static at build time.</strong> With the exception of the Actions tracker and QBR section, all dashboard data reflects the state when the files were last regenerated. The as-of date is shown in the header. Rebuild the files monthly (or when a significant contract change occurs) to keep data current.</div>

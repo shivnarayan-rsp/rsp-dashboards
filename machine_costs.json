@@ -1,0 +1,667 @@
+{
+  "3089R720383": {
+    "lastVisit": null,
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3090R720052": {
+    "lastVisit": "2026-03-12",
+    "tonerNZD": 2644.07,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3098RC20297": {
+    "lastVisit": "2026-03-16",
+    "tonerNZD": 4991.06,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3099R220018": {
+    "lastVisit": "2026-03-19",
+    "tonerNZD": 5918.51,
+    "partsNZD": 0.0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3099R220050": {
+    "lastVisit": "2026-03-19",
+    "tonerNZD": 3975.16,
+    "partsNZD": 4783.44,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3203XB57567": {
+    "lastVisit": "2025-09-16",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3352P950284": {
+    "lastVisit": "2026-03-19",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 2025.0
+  },
+  "3352P950286": {
+    "lastVisit": "2025-10-09",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3359P201194": {
+    "lastVisit": "2025-11-25",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3359PA03408": {
+    "lastVisit": "2026-03-19",
+    "tonerNZD": 436.52,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "4412RC20160": {
+    "lastVisit": "2026-01-08",
+    "tonerNZD": 367.41,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "4412RC20161": {
+    "lastVisit": "2026-02-25",
+    "tonerNZD": 298.98,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "4451R420031": {
+    "lastVisit": "2025-10-09",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "5852ZC31949": {
+    "lastVisit": "2026-03-19",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 1602.0,
+    "paperNZD": 0
+  },
+  "C378P300509": {
+    "lastVisit": "2026-03-17",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C378P300510": {
+    "lastVisit": "2026-03-24",
+    "tonerNZD": 542.76,
+    "partsNZD": 0.0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C386PC00385": {
+    "lastVisit": "2026-03-05",
+    "tonerNZD": 542.76,
+    "partsNZD": 7496.69,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C387P900198": {
+    "lastVisit": "2026-03-06",
+    "tonerNZD": 415.27,
+    "partsNZD": 6416.72,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C388P800038": {
+    "lastVisit": "2026-03-13",
+    "tonerNZD": 0,
+    "partsNZD": 2867.0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C388P800047": {
+    "lastVisit": "2026-02-15",
+    "tonerNZD": 542.76,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C388PA00312": {
+    "lastVisit": "2026-02-15",
+    "tonerNZD": 542.76,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C388PA00314": {
+    "lastVisit": "2025-12-12",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C388PA00336": {
+    "lastVisit": "2026-03-04",
+    "tonerNZD": 542.76,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C388PA00340": {
+    "lastVisit": "2026-03-12",
+    "tonerNZD": 819.97,
+    "partsNZD": 2231.76,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C388PC00109": {
+    "lastVisit": "2025-12-03",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C388PC00164": {
+    "lastVisit": "2026-02-16",
+    "tonerNZD": 405.05,
+    "partsNZD": 2622.67,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C409P900081": {
+    "lastVisit": "2026-01-30",
+    "tonerNZD": 415.27,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C508PA03593": {
+    "lastVisit": "2025-04-11",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G696M550109": {
+    "lastVisit": "2026-03-26",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G988X370881": {
+    "lastVisit": "2026-02-09",
+    "tonerNZD": 0,
+    "partsNZD": 337.95,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G988X370919": {
+    "lastVisit": "2026-01-20",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G988X790785": {
+    "lastVisit": "2026-02-24",
+    "tonerNZD": 865.82,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G988X790786": {
+    "lastVisit": "2025-04-21",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G988X790843": {
+    "lastVisit": "2026-03-10",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G988X791117": {
+    "lastVisit": "2026-03-24",
+    "tonerNZD": 865.82,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G988X791119": {
+    "lastVisit": "2026-02-23",
+    "tonerNZD": 865.82,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G989X110755": {
+    "lastVisit": "2026-03-20",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G989X315631": {
+    "lastVisit": "2026-03-11",
+    "tonerNZD": 865.82,
+    "partsNZD": 242.06,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G989X315648": {
+    "lastVisit": "2025-05-13",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G989X315651": {
+    "lastVisit": "2025-05-05",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G996X802544": {
+    "lastVisit": "2025-09-07",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "Y028X945302": {
+    "lastVisit": "2026-03-17",
+    "tonerNZD": 865.82,
+    "partsNZD": 809.91,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "Y028X945305": {
+    "lastVisit": "2026-02-11",
+    "tonerNZD": 0,
+    "partsNZD": 0.0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "Y849P400668": {
+    "lastVisit": "2023-08-21",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3081R920656": {
+    "lastVisit": "2026-03-24",
+    "tonerNZD": 1653.86,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3090R720163": {
+    "lastVisit": "2026-03-23",
+    "tonerNZD": 3975.16,
+    "partsNZD": 3990.0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3098RC20204": {
+    "lastVisit": "2026-02-15",
+    "tonerNZD": 986.42,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3101R720218": {
+    "lastVisit": "2025-11-25",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3102RA90148": {
+    "lastVisit": "2025-11-18",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3102RC20495": {
+    "lastVisit": "2026-02-19",
+    "tonerNZD": 1001.45,
+    "partsNZD": 0.0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3102RC20511": {
+    "lastVisit": "2025-12-01",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3110RB20313": {
+    "lastVisit": "2026-02-27",
+    "tonerNZD": 269.27,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3111R120114": {
+    "lastVisit": "2026-03-19",
+    "tonerNZD": 769.45,
+    "partsNZD": 2631.67,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3111R120123": {
+    "lastVisit": "2026-03-15",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3121M220258": {
+    "lastVisit": "2026-03-24",
+    "tonerNZD": 2318.39,
+    "partsNZD": 1767.69,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3128MC20092": {
+    "lastVisit": "2026-03-25",
+    "tonerNZD": 5125.31,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3129MC20133": {
+    "lastVisit": "2026-03-24",
+    "tonerNZD": 488.52,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3200X631880": {
+    "lastVisit": "2026-03-24",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3350P702454": {
+    "lastVisit": "2026-03-25",
+    "tonerNZD": 436.52,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3920PC02053": {
+    "lastVisit": "2026-03-12",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3922P851100": {
+    "lastVisit": "2026-03-10",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "3929PB01403": {
+    "lastVisit": "2026-02-09",
+    "tonerNZD": 1900.66,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "4442R520109": {
+    "lastVisit": "2026-02-12",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "4451R320002": {
+    "lastVisit": "2026-03-25",
+    "tonerNZD": 958.04,
+    "partsNZD": 2580.52,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "4451R320009": {
+    "lastVisit": "2026-02-12",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "9133R710078": {
+    "lastVisit": "2026-03-12",
+    "tonerNZD": 0,
+    "partsNZD": 9440.66,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "9133R710127": {
+    "lastVisit": "2026-02-15",
+    "tonerNZD": 516.41,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "9153RC30478": {
+    "lastVisit": "2025-11-26",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "9174R120239": {
+    "lastVisit": "2026-03-13",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "9175R220104": {
+    "lastVisit": "2026-03-06",
+    "tonerNZD": 9351.51,
+    "partsNZD": 135.72,
+    "equipNZD": 37426.28,
+    "paperNZD": 0
+  },
+  "9193R330008": {
+    "lastVisit": "2025-08-06",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "9193R630092": {
+    "lastVisit": "2026-02-18",
+    "tonerNZD": 9351.51,
+    "partsNZD": 3718.5,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "9194R830192": {
+    "lastVisit": "2025-11-17",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C370P100183": {
+    "lastVisit": "2026-03-12",
+    "tonerNZD": 542.76,
+    "partsNZD": 5006.16,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C388P800005": {
+    "lastVisit": "2026-02-24",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C409PA00069": {
+    "lastVisit": "2026-01-28",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C509P702882": {
+    "lastVisit": "2026-03-24",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C509P906086": {
+    "lastVisit": "2024-12-16",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C509P906161": {
+    "lastVisit": "2026-03-05",
+    "tonerNZD": 1639.11,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "C738M830460": {
+    "lastVisit": "2026-03-04",
+    "tonerNZD": 0,
+    "partsNZD": 1309.79,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E154M450453": {
+    "lastVisit": "2025-11-18",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E154MA50136": {
+    "lastVisit": "2026-03-27",
+    "tonerNZD": 476.77,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E155M650028": {
+    "lastVisit": "2025-10-08",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E165M550019": {
+    "lastVisit": "2026-02-24",
+    "tonerNZD": 476.77,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E175MA50358": {
+    "lastVisit": "2026-03-09",
+    "tonerNZD": 1702.02,
+    "partsNZD": 691.27,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E185M350137": {
+    "lastVisit": "2025-04-22",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E185M950261": {
+    "lastVisit": "2026-02-26",
+    "tonerNZD": 264.74,
+    "partsNZD": 691.27,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E185MA50180": {
+    "lastVisit": "2026-02-23",
+    "tonerNZD": 264.74,
+    "partsNZD": 1289.81,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E185MB50005": {
+    "lastVisit": "2025-09-09",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E205R870721": {
+    "lastVisit": "2026-03-24",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E214R880353": {
+    "lastVisit": "2026-03-27",
+    "tonerNZD": 322.77,
+    "partsNZD": 3441.14,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E215R380194": {
+    "lastVisit": "2025-09-03",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "E215R880234": {
+    "lastVisit": "2026-03-10",
+    "tonerNZD": 322.77,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "G988X993746": {
+    "lastVisit": "2026-03-17",
+    "tonerNZD": 0,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  },
+  "S9159501265": {
+    "lastVisit": "2026-02-18",
+    "tonerNZD": 1094.94,
+    "partsNZD": 0,
+    "equipNZD": 0,
+    "paperNZD": 0
+  }
+}

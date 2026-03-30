@@ -405,7 +405,7 @@
 // Parts / Consumables = pending — queries being finalised
 // ============================================================
 const DATA = {
-  asOf: "28 Mar 2026",
+  asOf: "30 Mar 2026",
   period: "Jan–Mar 2026 avg/month",
 
   fxRates: {
@@ -424,12 +424,12 @@ const DATA = {
   // WIG
   wigTarget: 80,
 
-  // Portfolio totals (derived from BMS queries)
-  // 261 active contracts, 512 machines, Jan–Mar 2026
+  // Portfolio totals (derived from BMS + Salesforce, refreshed 30 Mar 2026)
+  // 279 active contracts, 407 SF-SLA machines (NZ uses BMS count), Jan–Mar 2026
   totals: {
-    machines:  512,
-    contracts: 261,
-    revenueNZD: 143694,  // per month average (NZD equivalent)
+    machines:  407,
+    contracts: 279,
+    revenueNZD: 182926,  // per month average (NZD equivalent)
     // GM% pending cost data
   },
 
@@ -440,13 +440,13 @@ const DATA = {
       css:  "samoa",
       currency: "WST",
       flag: "🇼🇸",
-      machines:  187,
-      contracts: 106,
-      contractsMP: 22,
-      contractsRP: 84,
-      // BMS: WST 350,941 / 3 months = WST 116,980/mo
-      revenueLocal: 116980,
-      revenueNZD:    63169,
+      machines:  175,   // SF SLA assets, Active-Installed (30 Mar 2026)
+      contracts: 110,
+      contractsMP: 23,
+      contractsRP: 87,
+      // BMS billing_transactions Jan–Mar 2026: WST 38,182,938 cents / 3 = WST 12,727,646 cents/mo ÷ 100 = WST 127,276/mo
+      revenueLocal: 127276,
+      revenueNZD:    68729,  // WST 127,276 × 0.540
       // Labour: ~62 jobs/mo × 1.25 hr × NZD 49 = NZD 3,800 est.
       labourCostNZD: 3800,
       labourNote:    "estimated",
@@ -458,14 +458,14 @@ const DATA = {
       css:  "vanuatu",
       currency: "VUV",
       flag: "🇻🇺",
-      machines:  179,
-      contracts:  74,
-      contractsMP: 21,
-      contractsRP: 53,
-      // BMS: VUV 9,826,600 / 3 months = VUV 3,275,533/mo
-      // Note: VUV stored as integer (no cents subdivision in practice)
-      revenueLocal: 3275533,
-      revenueNZD:    39306,
+      machines:   94,   // SF SLA assets, Active-Installed (30 Mar 2026)
+      contracts:  79,
+      contractsMP: 22,
+      contractsRP: 57,
+      // BMS billing_transactions Jan–Mar 2026: VUV 12,815,382 / 3 = VUV 4,271,794/mo
+      // Note: VUV extax_cents stored as integer VUV (no cents subdivision)
+      revenueLocal: 4271794,
+      revenueNZD:    51261,  // VUV 4,271,794 × 0.012
       labourCostNZD: 3700,
       labourNote:    "estimated",
       partsCostNZD:  null,
@@ -476,13 +476,13 @@ const DATA = {
       css:  "tonga",
       currency: "TOP",
       flag: "🇹🇴",
-      machines:   61,
-      contracts:  54,
-      contractsMP: 32,
-      contractsRP: 22,
-      // BMS: TOP 67,611 / 3 months = TOP 22,537/mo
-      revenueLocal: 22537,
-      revenueNZD:   14424,
+      machines:   63,   // SF SLA assets, Active-Installed (30 Mar 2026)
+      contracts:  60,
+      contractsMP: 36,
+      contractsRP: 24,
+      // BMS billing_transactions Jan–Mar 2026: TOP 7,909,377 cents / 3 = TOP 2,636,459 cents/mo ÷ 100 = TOP 26,365/mo
+      revenueLocal: 26365,
+      revenueNZD:   16874,  // TOP 26,365 × 0.640
       labourCostNZD: 1200,
       labourNote:    "estimated",
       partsCostNZD:  null,
@@ -493,13 +493,13 @@ const DATA = {
       css:  "solomons",
       currency: "SBD",
       flag: "🇸🇧",
-      machines:   82,
-      contracts:  24,
-      contractsMP:  3,
-      contractsRP: 21,
-      // BMS: SBD 435,490 / 3 months = SBD 145,163/mo
-      revenueLocal: 145163,
-      revenueNZD:    26129,
+      machines:   66,   // SF SLA assets, Active-Installed (30 Mar 2026)
+      contracts:  26,
+      contractsMP:  4,
+      contractsRP: 22,
+      // BMS billing_transactions Jan–Mar 2026: SBD 44,935,467 cents / 3 = SBD 14,978,489 cents/mo ÷ 100 = SBD 149,785/mo
+      revenueLocal: 149785,
+      revenueNZD:    26961,  // SBD 149,785 × 0.180
       labourCostNZD: 1750,
       labourNote:    "estimated",
       partsCostNZD:  null,
@@ -510,13 +510,13 @@ const DATA = {
       css:  "nz",
       currency: "NZD",
       flag: "🇳🇿",
-      machines:    3,
-      contracts:   3,
+      machines:    9,   // BMS active contract assets (NZD scope)
+      contracts:   4,
       contractsMP: 0,
-      contractsRP: 3,
-      // BMS: NZD 1,998 / 3 months = NZD 666/mo
-      revenueLocal: 666,
-      revenueNZD:    666,
+      contractsRP: 4,
+      // BMS billing_transactions Jan–Mar 2026: NZD 5,730,195 cents / 3 = NZD 1,910,065 cents/mo ÷ 100 = NZD 19,101/mo
+      revenueLocal: 19101,
+      revenueNZD:   19101,
       labourCostNZD: 65,
       labourNote:    "estimated",
       partsCostNZD:  null,
@@ -524,19 +524,19 @@ const DATA = {
     },
   ],
 
-  // Contracts expiring in next 180 days (from BMS query)
+  // Contracts expiring in next 180 days (from BMS query, daysLeft as at 30 Mar 2026)
   expiringContracts: [
-    { customer:"BI Consulting",               contractNo:"BC-VAN-BIC-366",   territory:"Vanuatu",          type:"RP", machines:1, expires:"2026-06-20", daysLeft:85 },
-    { customer:"LDS - Saineha High Admin",    contractNo:"BC-RTO010094",     territory:"Tonga",            type:"MP", machines:1, expires:"2026-06-27", daysLeft:92 },
-    { customer:"Seki a Upolu",                contractNo:"BC-RSA010044",     territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-29", daysLeft:94 },
-    { customer:"Freedom School Port Vila",    contractNo:"BC-VAN-NEI-268",   territory:"Vanuatu",          type:"RP", machines:2, expires:"2026-06-29", daysLeft:94 },
-    { customer:"Naydith Events",              contractNo:"BC-SAM-NAY-523",   territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-29", daysLeft:94 },
-    { customer:"Digicel (Vanuatu)",           contractNo:"BC-RVA010048",     territory:"Vanuatu",          type:"MP", machines:2, expires:"2026-06-29", daysLeft:94 },
-    { customer:"Vila Central Hospital",       contractNo:"BC-RVA010023",     territory:"Vanuatu",          type:"MP", machines:1, expires:"2026-06-29", daysLeft:94 },
-    { customer:"Lui & Chang",                 contractNo:"BC-RSA010221",     territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-29", daysLeft:94 },
-    { customer:"Wallwork Lamb Lawyers",       contractNo:"BC-RSA010217",     territory:"Samoa",            type:"RP", machines:2, expires:"2026-06-29", daysLeft:94 },
-    { customer:"Bank of South Pacific (Van)", contractNo:"BC-RVA010121",     territory:"Vanuatu",          type:"RP", machines:5, expires:"2026-06-29", daysLeft:94 },
-    { customer:"National Bank of Samoa",      contractNo:"BC-SAM-NAT-2962",  territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-30", daysLeft:95 },
+    { customer:"BI Consulting",               contractNo:"BC-VAN-BIC-366",   territory:"Vanuatu",          type:"RP", machines:1, expires:"2026-06-20", daysLeft:82 },
+    { customer:"LDS - Saineha High Admin",    contractNo:"BC-RTO010094",     territory:"Tonga",            type:"MP", machines:1, expires:"2026-06-27", daysLeft:89 },
+    { customer:"Seki a Upolu",                contractNo:"BC-RSA010044",     territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-29", daysLeft:91 },
+    { customer:"Freedom School Port Vila",    contractNo:"BC-VAN-NEI-268",   territory:"Vanuatu",          type:"RP", machines:2, expires:"2026-06-29", daysLeft:91 },
+    { customer:"Naydith Events",              contractNo:"BC-SAM-NAY-523",   territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-29", daysLeft:91 },
+    { customer:"Digicel (Vanuatu)",           contractNo:"BC-RVA010048",     territory:"Vanuatu",          type:"MP", machines:2, expires:"2026-06-29", daysLeft:91 },
+    { customer:"Vila Central Hospital",       contractNo:"BC-RVA010023",     territory:"Vanuatu",          type:"MP", machines:1, expires:"2026-06-29", daysLeft:91 },
+    { customer:"Lui & Chang",                 contractNo:"BC-RSA010221",     territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-29", daysLeft:91 },
+    { customer:"Wallwork Lamb Lawyers",       contractNo:"BC-RSA010217",     territory:"Samoa",            type:"RP", machines:2, expires:"2026-06-29", daysLeft:91 },
+    { customer:"Bank of South Pacific (Van)", contractNo:"BC-RVA010121",     territory:"Vanuatu",          type:"RP", machines:5, expires:"2026-06-29", daysLeft:91 },
+    { customer:"National Bank of Samoa",      contractNo:"BC-SAM-NAT-2962",  territory:"Samoa",            type:"RP", machines:1, expires:"2026-06-30", daysLeft:92 },
   ],
 };
 
