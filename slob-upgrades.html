@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLOB Upgrade Action Tracker — RSP Pacific Islands</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --red: #cc0000;
+    --red-light: #e60000;
+    --charcoal: #1e1e1e;
+    --charcoal-mid: #2d2d2d;
+    --charcoal-light: #3a3a3a;
+    --slate: #5a5a5a;
+    --border: #e0e0e0;
+    --bg: #f5f5f5;
+    --surface: #ffffff;
+    --text: #1e1e1e;
+    --text-muted: #767676;
+    --done-bg: #f0f8f0;
+    --done-border: #c3e6cb;
+    --priority-1: #cc0000;
+    --priority-2: #e65c00;
+    --priority-3: #b8860b;
+    --green: #2e7d32;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--charcoal);
+    color: white;
+    padding: 28px 40px 24px;
+    border-bottom: 3px solid var(--red);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-left h1 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+
+  .header-left p {
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 4px;
+    font-weight: 300;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .progress-wrap {
+    text-align: right;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: #aaa;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .progress-bar {
+    width: 180px;
+    height: 6px;
+    background: var(--charcoal-light);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-count {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .btn-reset {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    padding: 6px 14px;
+    background: transparent;
+    border: 1px solid #555;
+    color: #aaa;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.15s;
+  }
+
+  .btn-reset:hover { border-color: var(--red); color: white; }
+
+  /* ── FILTERS ── */
+  .filters {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 4px;
+  }
+
+  .filter-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 5px 14px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text-muted);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+
+  .filter-btn:hover { border-color: var(--charcoal); color: var(--charcoal); }
+  .filter-btn.active { background: var(--charcoal); color: white; border-color: var(--charcoal); }
+  .filter-btn.active.red { background: var(--red); border-color: var(--red); }
+
+  /* ── SECTIONS ── */
+  .content { padding: 28px 40px 60px; max-width: 1400px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 32px 0 12px;
+  }
+
+  .section-header:first-child { margin-top: 0; }
+
+  .territory-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 3px;
+    background: var(--charcoal);
+    color: white;
+  }
+
+  .territory-badge.samoa { background: #1565c0; }
+  .territory-badge.tonga { background: #6a1b9a; }
+  .territory-badge.solomon { background: #2e7d32; }
+  .territory-badge.vanuatu { background: #b71c1c; }
+
+  .section-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead tr {
+    background: var(--charcoal);
+    color: white;
+  }
+
+  thead th {
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  thead th.center { text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #fafafa; }
+  tbody tr.done { background: var(--done-bg); opacity: 0.75; }
+  tbody tr.done:hover { background: var(--done-bg); }
+  tbody tr.hidden { display: none; }
+
+  td {
+    padding: 12px 14px;
+    vertical-align: top;
+    font-size: 13px;
+  }
+
+  td.center { text-align: center; }
+
+  /* ── PRIORITY ── */
+  .priority {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .p1 { background: var(--priority-1); }
+  .p2 { background: var(--priority-2); }
+  .p3 { background: var(--priority-3); }
+  .p4, .p5, .p6, .p7, .p8 { background: var(--slate); }
+
+  /* ── ASSET CELL ── */
+  .asset-name {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.3;
+    margin-bottom: 2px;
+  }
+
+  .serial {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* ── LINKS ── */
+  .sf-links {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .sf-link {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--red);
+    text-decoration: none;
+    padding: 2px 8px;
+    border: 1px solid #f0c0c0;
+    border-radius: 3px;
+    background: #fff5f5;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .sf-link:hover {
+    background: var(--red);
+    color: white;
+    border-color: var(--red);
+  }
+
+  /* ── COUNTER CELL ── */
+  .counter-wrap { white-space: nowrap; }
+
+  .counter-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .life-bar-wrap {
+    margin-top: 4px;
+    width: 100px;
+  }
+
+  .life-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .life-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--green);
+  }
+
+  .life-fill.warn { background: #e65c00; }
+  .life-fill.critical { background: var(--red); }
+
+  .life-pct {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── CALLS ── */
+  .call-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .call-count.high { color: var(--red); }
+  .call-count.med { color: #e65c00; }
+
+  .call-range {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+
+  /* ── REASON ── */
+  .reason-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    white-space: nowrap;
+  }
+
+  .reason-tag.counter { background: #fce8e8; color: #c62828; }
+  .reason-tag.frequency { background: #fff3e0; color: #bf360c; }
+  .reason-tag.both { background: #f3e5f5; color: #6a1b9a; }
+  .reason-tag.frequency-counter { background: #f3e5f5; color: #6a1b9a; }
+
+  .reason-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  /* ── CHECKBOX ── */
+  .done-check {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--green);
+    flex-shrink: 0;
+  }
+
+  /* ── NOTES ── */
+  .notes-input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    width: 100%;
+    min-width: 160px;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 50px;
+    color: var(--text);
+    background: var(--surface);
+    transition: border-color 0.15s;
+    line-height: 1.4;
+  }
+
+  .notes-input:focus {
+    outline: none;
+    border-color: var(--charcoal);
+  }
+
+  .notes-input::placeholder { color: #bbb; }
+
+  /* ── DONE STRIKE ── */
+  tr.done .asset-name,
+  tr.done .serial,
+  tr.done td { color: #999; }
+  tr.done .sf-link { opacity: 0.4; pointer-events: none; }
+
+  /* ── SUMMARY STRIP ── */
+  .summary {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    min-width: 140px;
+    flex: 1;
+  }
+
+  .summary-card .val {
+    font-size: 28px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .summary-card .val.red { color: var(--red); }
+  .summary-card .val.green { color: var(--green); }
+
+  .summary-card .lbl {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+
+  /* ── DEADLINE STRIP ── */
+  .deadline-strip {
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: #5d4037;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .deadline-strip strong { font-weight: 700; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    header { padding: 20px 20px 16px; flex-direction: column; align-items: flex-start; }
+    .filters { padding: 10px 20px; }
+    .content { padding: 20px 20px 40px; }
+    .life-bar-wrap { width: 70px; }
+    thead th:nth-child(5), td:nth-child(5) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>SLOB Upgrade Action Tracker</h1>
+    <p>Pacific Islands MIF — generated 1 April 2026 &nbsp;·&nbsp; Deadline: 30 April 2026 &nbsp;·&nbsp; Owner: Avi Sharma</p>
+  </div>
+  <div class="header-right">
+    <div class="progress-wrap">
+      <div class="progress-label">Actions completed</div>
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+      <div class="progress-count" id="progCount">0 / 30</div>
+    </div>
+    <button class="btn-reset" onclick="resetAll()">Reset all</button>
+  </div>
+</header>
+
+<div class="filters">
+  <span class="filter-label">Show:</span>
+  <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+  <button class="filter-btn active red" onclick="setFilter('open', this)">Open only</button>
+  <button class="filter-btn" onclick="setFilter('done', this)">Done only</button>
+  <span style="width:1px;height:20px;background:var(--border);margin:0 4px;"></span>
+  <button class="filter-btn" onclick="setFilter('samoa', this)">🇼🇸 Samoa</button>
+  <button class="filter-btn" onclick="setFilter('tonga', this)">🇹🇴 Tonga</button>
+  <button class="filter-btn" onclick="setFilter('solomons', this)">🇸🇧 Solomons</button>
+  <button class="filter-btn" onclick="setFilter('vanuatu', this)">🇻🇺 Vanuatu</button>
+</div>
+
+<div class="content">
+
+  <div class="deadline-strip">
+    ⚠️ <strong>Hard deadline: 30 April 2026.</strong> Each item below is a confirmed upgrade opportunity — asset counter data, service call history, and SLOB stock cross-referenced from Unleashed and Salesforce. Tick when actioned, add notes as you go.
+  </div>
+
+  <div class="summary">
+    <div class="summary-card">
+      <div class="val red" id="sumOpen">—</div>
+      <div class="lbl">Open actions</div>
+    </div>
+    <div class="summary-card">
+      <div class="val green" id="sumDone">—</div>
+      <div class="lbl">Completed</div>
+    </div>
+    <div class="summary-card">
+      <div class="val" id="sumSamoa">—</div>
+      <div class="lbl">Samoa</div>
+    </div>
+    <div class="summary-card">
+      <div class="val" id="sumTonga">—</div>
+      <div class="lbl">Tonga</div>
+    </div>
+    <div class="summary-card">
+      <div class="val" id="sumSolomons">—</div>
+      <div class="lbl">Solomons</div>
+    </div>
+    <div class="summary-card">
+      <div class="val" id="sumVanuatu">—</div>
+      <div class="lbl">Vanuatu</div>
+    </div>
+  </div>
+
+  <!-- ══ PRIORITY SHORTLIST ══ -->
+  <div class="section-header">
+    <span class="territory-badge" style="background:var(--red)">Priority Shortlist</span>
+    <span class="section-sub">Top 8 — action before 30 April</span>
+  </div>
+  <div class="table-wrap">
+    <table id="tblPriority">
+      <thead>
+        <tr>
+          <th style="width:36px" class="center">#</th>
+          <th>Asset / Serial</th>
+          <th>Customer</th>
+          <th>Territory</th>
+          <th>Counter vs Life</th>
+          <th>Service Calls</th>
+          <th>Why Now</th>
+          <th style="width:36px" class="center">Done</th>
+          <th style="width:200px">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- P1 Samoa -->
+        <tr class="asset-row" data-id="p1" data-territory="samoa">
+          <td class="center"><span class="priority p1">1</span></td>
+          <td>
+            <div class="asset-name">Ricoh IM 430F</div>
+            <div class="serial">3359P201320</div>
+            <div class="sf-links">
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009UyXIQA0" target="_blank">Asset ↗</a>
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFd6XQAT" target="_blank">Account ↗</a>
+            </div>
+          </td>
+          <td>Taumeasina Island Resort</td>
+          <td><span class="territory-badge samoa">Samoa</span></td>
+          <td>
+            <div class="counter-wrap">
+              <div class="counter-value">588,263</div>
+              <div class="life-bar-wrap">
+                <div class="life-bar"><div class="life-fill warn" style="width:49%"></div></div>
+                <div class="life-pct">49% — service frequency is the issue</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="call-count high">28</div>
+            <div class="call-range">Jan 2023 → Mar 2026</div>
+          </td>
+          <td>
+            <span class="reason-tag frequency">High frequency</span>
+            <div class="reason-text">Highest call count in entire dataset. A4 device at a resort — downtime is guest-facing. Replace, don't repair.</div>
+          </td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('p1', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('p1', this)"></textarea></td>
+        </tr>
+
+        <!-- P2 Tonga -->
+        <tr class="asset-row" data-id="p2" data-territory="tonga">
+          <td class="center"><span class="priority p2">2</span></td>
+          <td>
+            <div class="asset-name">Ricoh MP C6004 w SPDF</div>
+            <div class="serial">C758MA10054</div>
+            <div class="sf-links">
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009Uq0dQAC" target="_blank">Asset ↗</a>
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcylQAD" target="_blank">Account ↗</a>
+            </div>
+          </td>
+          <td>LDS Liahona High School – Printing</td>
+          <td><span class="territory-badge tonga">Tonga</span></td>
+          <td>
+            <div class="counter-wrap">
+              <div class="counter-value">1,877,346</div>
+              <div class="life-bar-wrap">
+                <div class="life-bar"><div class="life-fill critical" style="width:100%"></div></div>
+                <div class="life-pct">104% of Service Life — past threshold</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="call-count high">14</div>
+            <div class="call-range">Apr 2023 → Sep 2025</div>
+          </td>
+          <td>
+            <span class="reason-tag counter">Past service life</span>
+            <div class="reason-text">1,877,346 against 1,800,000 Service Life. Device is technically end-of-life. 14 service calls since 2023.</div>
+          </td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('p2', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('p2', this)"></textarea></td>
+        </tr>
+
+        <!-- P3 Solomons -->
+        <tr class="asset-row" data-id="p3" data-territory="solomons">
+          <td class="center"><span class="priority p3">3</span></td>
+          <td>
+            <div class="asset-name">Ricoh MP 5055</div>
+            <div class="serial">C388PC00164</div>
+            <div class="sf-links">
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000000FLjnQAG" target="_blank">Asset ↗</a>
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcqyQAD" target="_blank">Account ↗</a>
+            </div>
+          </td>
+          <td>Bank South Pacific (Solomon Islands)</td>
+          <td><span class="territory-badge solomon">Solomons</span></td>
+          <td>
+            <div class="counter-wrap">
+              <div class="counter-value">1,492,626</div>
+              <div class="life-bar-wrap">
+                <div class="life-bar"><div class="life-fill critical" style="width:100%"></div></div>
+                <div class="life-pct">~99% of est. Service Life</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="call-count high">17</div>
+            <div class="call-range">Jan 2023 → Nov 2025</div>
+          </td>
+          <td>
+            <span class="reason-tag both">Counter + frequency</span>
+            <div class="reason-text">BSP has 2 devices — both ageing (C88PA00340 also at 186k). Fleet refresh conversation overdue. IM 3500 in Solomons SLOB is a direct candidate.</div>
+          </td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('p3', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('p3', this)"></textarea></td>
+        </tr>
+
+        <!-- P4 Tonga -->
+        <tr class="asset-row" data-id="p4" data-territory="tonga">
+          <td class="center"><span class="priority p4">4</span></td>
+          <td>
+            <div class="asset-name">Sig. Series Ricoh MP C4503</div>
+            <div class="serial">E176M240011</div>
+            <div class="sf-links">
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F00000FlqWDQAZ" target="_blank">Asset ↗</a>
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFczuQAD" target="_blank">Account ↗</a>
+            </div>
+          </td>
+          <td>Ministry of Agriculture, Food, Forests &amp; Fisheries (Tonga)</td>
+          <td><span class="territory-badge tonga">Tonga</span></td>
+          <td>
+            <div class="counter-wrap">
+              <div class="counter-value">513,728</div>
+              <div class="life-bar-wrap">
+                <div class="life-bar"><div class="life-fill warn" style="width:43%"></div></div>
+                <div class="life-pct">43% — frequency is the issue</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="call-count high">20</div>
+            <div class="call-range">Mar 2023 → Feb 2026</div>
+          </td>
+          <td>
+            <span class="reason-tag frequency">High frequency</span>
+            <div class="reason-text">Highest service call count in Tonga. 20 calls in 3 years. Install date unknown — likely older than counter suggests. IM C3010 SLOB candidates in Tonga.</div>
+          </td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('p4', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('p4', this)"></textarea></td>
+        </tr>
+
+        <!-- P5 Vanuatu -->
+        <tr class="asset-row" data-id="p5" data-territory="vanuatu">
+          <td class="center"><span class="priority p5">5</span></td>
+          <td>
+            <div class="asset-name">Ricoh IM C2500</div>
+            <div class="serial">3099R620036</div>
+            <div class="sf-links">
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009UszqQAC" target="_blank">Asset ↗</a>
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFccUQAT" target="_blank">Account ↗</a>
+            </div>
+          </td>
+          <td>Freedom School Port Vila</td>
+          <td><span class="territory-badge vanuatu">Vanuatu</span></td>
+          <td>
+            <div class="counter-wrap">
+              <div class="counter-value">743,172</div>
+              <div class="life-bar-wrap">
+                <div class="life-bar"><div class="life-fill warn" style="width:62%"></div></div>
+                <div class="life-pct">62% of 1,200,000 Service Life</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="call-count high">23</div>
+            <div class="call-range">Feb 2023 → Mar 2026</div>
+          </td>
+          <td>
+            <span class="reason-tag frequency">High frequency</span>
+            <div class="reason-text">Highest call count in Vanuatu — 23 service calls since 2023. Device under stress. Replace-not-repair conversation.</div>
+          </td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('p5', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('p5', this)"></textarea></td>
+        </tr>
+
+        <!-- P6 Tonga -->
+        <tr class="asset-row" data-id="p6" data-territory="tonga">
+          <td class="center"><span class="priority p6">6</span></td>
+          <td>
+            <div class="asset-name">Ricoh MP C4504exSP w SPDF</div>
+            <div class="serial">C738M130842</div>
+            <div class="sf-links">
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000000GWm2QAG" target="_blank">Asset ↗</a>
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFd66QAD" target="_blank">Account ↗</a>
+            </div>
+          </td>
+          <td>Tupou Tertiary Institute</td>
+          <td><span class="territory-badge tonga">Tonga</span></td>
+          <td>
+            <div class="counter-wrap">
+              <div class="counter-value">1,105,011</div>
+              <div class="life-bar-wrap">
+                <div class="life-bar"><div class="life-fill critical" style="width:92%"></div></div>
+                <div class="life-pct">~92% — approaching end of life</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="call-count high">19</div>
+            <div class="call-range">Jun 2023 → Mar 2026</div>
+          </td>
+          <td>
+            <span class="reason-tag both">Counter + frequency</span>
+            <div class="reason-text">1.1M counter, 19 service calls, installed May 2018. Tupou already received a new Sig. Series MP C3003 in Oct 2025 — this C4504exSP is the next upgrade.</div>
+          </td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('p6', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('p6', this)"></textarea></td>
+        </tr>
+
+        <!-- P7 Vanuatu -->
+        <tr class="asset-row" data-id="p7" data-territory="vanuatu">
+          <td class="center"><span class="priority p7">7</span></td>
+          <td>
+            <div class="asset-name">Ricoh IM C4500</div>
+            <div class="serial">3129MC20325</div>
+            <div class="sf-links">
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009VMkiQAG" target="_blank">Asset ↗</a>
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFccvQAD" target="_blank">Account ↗</a>
+            </div>
+          </td>
+          <td>Office of the Public Prosecutor (Vanuatu)</td>
+          <td><span class="territory-badge vanuatu">Vanuatu</span></td>
+          <td>
+            <div class="counter-wrap">
+              <div class="counter-value">927,903</div>
+              <div class="life-bar-wrap">
+                <div class="life-bar"><div class="life-fill critical" style="width:77%"></div></div>
+                <div class="life-pct">77% of 1,200,000 Service Life</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="call-count med">12</div>
+            <div class="call-range">Jan 2023 → Feb 2026</div>
+          </td>
+          <td>
+            <span class="reason-tag frequency-counter">Counter + frequency</span>
+            <div class="reason-text">Government account — approaching service life, 12 calls. Two other IM C4500 Vanuatu govt accounts also in same position (PSC, Catholic Mission).</div>
+          </td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('p7', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('p7', this)"></textarea></td>
+        </tr>
+
+        <!-- P8 Vanuatu -->
+        <tr class="asset-row" data-id="p8" data-territory="vanuatu">
+          <td class="center"><span class="priority p8">8</span></td>
+          <td>
+            <div class="asset-name">Ricoh MP 5055</div>
+            <div class="serial">C388P900040</div>
+            <div class="sf-links">
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009Oze3QAC" target="_blank">Asset ↗</a>
+              <a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcXAQA1" target="_blank">Account ↗</a>
+            </div>
+          </td>
+          <td>Vanuatu National Provident Fund</td>
+          <td><span class="territory-badge vanuatu">Vanuatu</span></td>
+          <td>
+            <div class="counter-wrap">
+              <div class="counter-value">883,807</div>
+              <div class="life-bar-wrap">
+                <div class="life-bar"><div class="life-fill warn" style="width:74%"></div></div>
+                <div class="life-pct">~74% — watch list</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="call-count med">13</div>
+            <div class="call-range">Jul 2023 → Jun 2025</div>
+          </td>
+          <td>
+            <span class="reason-tag both">Counter + SLOB match</span>
+            <div class="reason-text">VNPF also has an MP C307 (13 calls). Two devices at same account. IM C3010 in Vanuatu SLOB is a direct replacement candidate for the MP 5055.</div>
+          </td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('p8', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('p8', this)"></textarea></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ══ FULL WATCHLIST ══ -->
+  <div class="section-header" style="margin-top:40px">
+    <span class="territory-badge" style="background:var(--slate)">Full Watchlist</span>
+    <span class="section-sub">All 22 additional assets identified — monitor and action where opportunity arises</span>
+  </div>
+  <div class="table-wrap">
+    <table id="tblWatch">
+      <thead>
+        <tr>
+          <th>Asset / Serial</th>
+          <th>Customer</th>
+          <th>Territory</th>
+          <th>Installed</th>
+          <th>Counter</th>
+          <th>Service Calls</th>
+          <th>Note</th>
+          <th style="width:36px" class="center">Done</th>
+          <th style="width:200px">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- SOLOMONS -->
+        <tr class="asset-row" data-id="w1" data-territory="solomons">
+          <td><div class="asset-name">Ricoh MP 5055</div><div class="serial">C388PA00340</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000000FQJdQAO" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcqyQAD" target="_blank">Account ↗</a></div></td>
+          <td>Bank South Pacific (Solomon Islands)</td>
+          <td><span class="territory-badge solomon">Solomons</span></td>
+          <td>Mar 2019</td>
+          <td><span class="counter-value">186,589</span></td>
+          <td><span class="call-count med">13</span><div class="call-range">Jan 2023 → Mar 2026</div></td>
+          <td><div class="reason-text">Second BSP device — pair with priority item #3 for fleet conversation</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w1', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w1', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w2" data-territory="solomons">
+          <td><div class="asset-name">Ricoh IM C2500</div><div class="serial">3098RC20297</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009Uj7NQAS" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcvIQAT" target="_blank">Account ↗</a></div></td>
+          <td>Solomon Water</td>
+          <td><span class="territory-badge solomon">Solomons</span></td>
+          <td>Jun 2019</td>
+          <td><span class="counter-value">591,542</span></td>
+          <td><span class="call-count med">13</span><div class="call-range">Apr 2023 → Jan 2026</div></td>
+          <td><div class="reason-text">591k counter, installed 2019 — ageing device at key utility account</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w2', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w2', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w3" data-territory="solomons">
+          <td><div class="asset-name">Ricoh MP 2501SP</div><div class="serial">E334MA50112</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000000xJsfQAE" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcuiQAD" target="_blank">Account ↗</a></div></td>
+          <td>Solomon Housing Limited</td>
+          <td><span class="territory-badge solomon">Solomons</span></td>
+          <td>Oct 2017</td>
+          <td><span class="counter-value">249,100</span></td>
+          <td><span class="call-count med">15</span><div class="call-range">Feb 2023 → Oct 2025</div></td>
+          <td><div class="reason-text">Installed Oct 2017 — nearly 9 years old. Age alone justifies upgrade conversation.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w3', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w3', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w4" data-territory="solomons">
+          <td><div class="asset-name">Ricoh MP C307</div><div class="serial">C509P906161</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009VBuiQAG" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcv6QAD" target="_blank">Account ↗</a></div></td>
+          <td>Solomon Airlines</td>
+          <td><span class="territory-badge solomon">Solomons</span></td>
+          <td>Jan 2020</td>
+          <td><span class="counter-value">241,412</span></td>
+          <td><span class="call-count med">13</span><div class="call-range">Jan 2023 → Jan 2026</div></td>
+          <td><div class="reason-text">13 calls on a small A4 device — recurring fault pattern. Pair with MP 6055 below for account conversation.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w4', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w4', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w5" data-territory="solomons">
+          <td><div class="asset-name">Sig. Series Ricoh MP 6055</div><div class="serial">C409PA00069</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000000Grk7QAC" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcv6QAD" target="_blank">Account ↗</a></div></td>
+          <td>Solomon Airlines</td>
+          <td><span class="territory-badge solomon">Solomons</span></td>
+          <td>Aug 2020</td>
+          <td><span class="counter-value">844,043</span></td>
+          <td><span class="call-count med">15</span><div class="call-range">Apr 2023 → Jan 2026</div></td>
+          <td><div class="reason-text">844k counter, 15 calls. Account also has the MP C307 above — two-device fleet refresh opportunity.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w5', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w5', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w6" data-territory="solomons">
+          <td><div class="asset-name">Ricoh MP C6004exSP w SPDF</div><div class="serial">C758M810267</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000000Ca5SQAS" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcwFQAT" target="_blank">Account ↗</a></div></td>
+          <td>Woodford International School</td>
+          <td><span class="territory-badge solomon">Solomons</span></td>
+          <td>Jan 2019</td>
+          <td><span class="counter-value">1,450,956</span></td>
+          <td><span class="call-count med">15</span><div class="call-range">Feb 2023 → Feb 2024</div></td>
+          <td><div class="reason-text">1.45M counter — approaching end of life. No service calls since Feb 2024 — check if still active.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w6', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w6', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w7" data-territory="solomons">
+          <td><div class="asset-name">Sig. Series Ricoh MP 5054</div><div class="serial">G185R190250</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02iGA00000hKRPwYAO" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFd81QAD" target="_blank">Account ↗</a></div></td>
+          <td>University of the South Pacific (Solomon Islands)</td>
+          <td><span class="territory-badge solomon">Solomons</span></td>
+          <td>Unknown</td>
+          <td><span class="counter-value">913,093</span></td>
+          <td><span class="call-count med">14</span><div class="call-range">Oct 2024 → Mar 2026</div></td>
+          <td><div class="reason-text">USP account — 913k counter, 14 calls in 18 months. High velocity. Install date unknown.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w7', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w7', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w8" data-territory="solomons">
+          <td><div class="asset-name">Ricoh MP C3003</div><div class="serial">E153MB50238</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000000Gr53QAC" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcqQQAT" target="_blank">Account ↗</a></div></td>
+          <td>Australian Federal Police (Solomon Islands)</td>
+          <td><span class="territory-badge solomon">Solomons</span></td>
+          <td>Jul 2020</td>
+          <td><span class="counter-value">270,214</span></td>
+          <td><span class="call-count med">16</span><div class="call-range">Jul 2020 → Jan 2026</div></td>
+          <td><div class="reason-text">Two service calls in Jan 2026 within 2 days — recurring fault. AFP account has 3 C3003 devices. Fleet conversation warranted.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w8', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w8', this)"></textarea></td>
+        </tr>
+
+        <!-- TONGA -->
+        <tr class="asset-row" data-id="w9" data-territory="tonga">
+          <td><div class="asset-name">Ricoh IM C3000</div><div class="serial">3102RC20031</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02iGA000000WZw1YAG" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcxKQAT" target="_blank">Account ↗</a></div></td>
+          <td>Friendly Island Bookshop</td>
+          <td><span class="territory-badge tonga">Tonga</span></td>
+          <td>Unknown</td>
+          <td><span class="counter-value">671,870</span></td>
+          <td><span class="call-count med">13</span><div class="call-range">Mar 2024 → Jan 2026</div></td>
+          <td><div class="reason-text">671k counter, 13 calls in ~18 months. High rate. Install date unknown.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w9', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w9', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w10" data-territory="tonga">
+          <td><div class="asset-name">Ricoh MP 4055</div><div class="serial">C379PA00429</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009VMSCQA4" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcxWQAT" target="_blank">Account ↗</a></div></td>
+          <td>Free Wesleyan Church – Education Department</td>
+          <td><span class="territory-badge tonga">Tonga</span></td>
+          <td>Mar 2020</td>
+          <td><span class="counter-value">526,769</span></td>
+          <td><span class="call-count med">17</span><div class="call-range">Jan 2023 → Feb 2026</div></td>
+          <td><div class="reason-text">17 calls, 526k counter, installed 2020. IM C3010 SLOB stock in Tonga is a direct candidate.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w10', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w10', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w11" data-territory="tonga">
+          <td><div class="asset-name">Ricoh MP 6055</div><div class="serial">C400PA00015</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F00000HzgZMQAZ" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFd6IQAT" target="_blank">Account ↗</a></div></td>
+          <td>Bank South Pacific (Tonga)</td>
+          <td><span class="territory-badge tonga">Tonga</span></td>
+          <td>Unknown</td>
+          <td><span class="counter-value">801,782</span></td>
+          <td><span class="call-count high">18</span><div class="call-range">Jan 2023 → Mar 2026</div></td>
+          <td><div class="reason-text">801k counter, 18 calls, install date unknown. BSP relationship — worth a proactive conversation.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w11', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w11', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w12" data-territory="tonga">
+          <td><div class="asset-name">Ricoh MP C4504exSP w SPDF</div><div class="serial">G716M950200</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009OMQOQA4" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00000000000000" target="_blank">Account ↗</a></div></td>
+          <td>University of the South Pacific (Tonga)</td>
+          <td><span class="territory-badge tonga">Tonga</span></td>
+          <td>Apr 2017</td>
+          <td><span class="counter-value">947,375</span></td>
+          <td><span class="call-count med">17</span><div class="call-range">Feb 2023 → Mar 2026</div></td>
+          <td><div class="reason-text">Installed Apr 2017 — nearly 9 years old. 947k counter, 17 calls.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w12', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w12', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w13" data-territory="tonga">
+          <td><div class="asset-name">Sig. Series Ricoh MP C4503</div><div class="serial">E175MA50358</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02iGA00000hKw2BYAS" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFdY6QAL" target="_blank">Account ↗</a></div></td>
+          <td>Act Community School</td>
+          <td><span class="territory-badge tonga">Tonga</span></td>
+          <td>Unknown</td>
+          <td><span class="counter-value">393,693</span></td>
+          <td><span class="call-count med">12</span><div class="call-range">Mar 2025 → Mar 2026</div></td>
+          <td><div class="reason-text">12 calls in just 12 months — very high recent frequency. Install date unknown.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w13', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w13', this)"></textarea></td>
+        </tr>
+
+        <!-- VANUATU -->
+        <tr class="asset-row" data-id="w14" data-territory="vanuatu">
+          <td><div class="asset-name">Ricoh IM C2500</div><div class="serial">3099RA20382</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009VFmbQAG" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcb7QAD" target="_blank">Account ↗</a></div></td>
+          <td>Vanuatu National Bureau of Standards</td>
+          <td><span class="territory-badge vanuatu">Vanuatu</span></td>
+          <td>Feb 2020</td>
+          <td><span class="counter-value">214,788</span></td>
+          <td><span class="call-count med">16</span><div class="call-range">Feb 2023 → Feb 2026</div></td>
+          <td><div class="reason-text">16 calls on a relatively low-counter device — fault pattern, not wear. Government account.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w14', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w14', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w15" data-territory="vanuatu">
+          <td><div class="asset-name">Ricoh IM C300F</div><div class="serial">3922PC51347</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000000WSe6QAG" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFdC5QAL" target="_blank">Account ↗</a></div></td>
+          <td>LDS – Port Vila Mission</td>
+          <td><span class="territory-badge vanuatu">Vanuatu</span></td>
+          <td>Unknown</td>
+          <td><span class="counter-value">86,718</span></td>
+          <td><span class="call-count med">16</span><div class="call-range">Jul 2023 → Mar 2026</div></td>
+          <td><div class="reason-text">16 calls on a very low counter — clear recurring fault. Small A4 device, likely old.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w15', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w15', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w16" data-territory="vanuatu">
+          <td><div class="asset-name">Ricoh IM C4500</div><div class="serial">3129M920905</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009VH3KQAW" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFccfQAD" target="_blank">Account ↗</a></div></td>
+          <td>Office of Public Service Commission (Vanuatu)</td>
+          <td><span class="territory-badge vanuatu">Vanuatu</span></td>
+          <td>Feb 2020</td>
+          <td><span class="counter-value">616,924</span></td>
+          <td><span class="call-count med">14</span><div class="call-range">Sep 2023 → Mar 2026</div></td>
+          <td><div class="reason-text">One of three IM C4500 govt accounts in Vanuatu all showing elevated call frequency. Group conversation possible.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w16', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w16', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w17" data-territory="vanuatu">
+          <td><div class="asset-name">Ricoh IM C4500</div><div class="serial">3129MB20058</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000000GrWJQA0" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00002ZfY2nQAF" target="_blank">Account ↗</a></div></td>
+          <td>Catholic Mission (Vanuatu)</td>
+          <td><span class="territory-badge vanuatu">Vanuatu</span></td>
+          <td>Jul 2020</td>
+          <td><span class="counter-value">561,159</span></td>
+          <td><span class="call-count med">14</span><div class="call-range">Sep 2023 → Feb 2026</div></td>
+          <td><div class="reason-text">Third IM C4500 in the Vanuatu cluster — 14 calls. See also PSC and Public Prosecutor above.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w17', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w17', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w18" data-territory="vanuatu">
+          <td><div class="asset-name">Ricoh MP 5055</div><div class="serial">C389P400184</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009V7FlQAK" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFccQQAT" target="_blank">Account ↗</a></div></td>
+          <td>National Archives of Vanuatu</td>
+          <td><span class="territory-badge vanuatu">Vanuatu</span></td>
+          <td>Dec 2019</td>
+          <td><span class="counter-value">164,654</span></td>
+          <td><span class="call-count med">13</span><div class="call-range">Feb 2023 → Mar 2026</div></td>
+          <td><div class="reason-text">Low counter but persistent fault history. Government account — patience required but worth a proactive visit.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w18', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w18', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w19" data-territory="vanuatu">
+          <td><div class="asset-name">Ricoh MP C307</div><div class="serial">C509P103848</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000000FYbDQAW" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFcXAQA1" target="_blank">Account ↗</a></div></td>
+          <td>Vanuatu National Provident Fund</td>
+          <td><span class="territory-badge vanuatu">Vanuatu</span></td>
+          <td>Mar 2019</td>
+          <td><span class="counter-value">378,522</span></td>
+          <td><span class="call-count med">13</span><div class="call-range">Jan 2023 → Mar 2026</div></td>
+          <td><div class="reason-text">VNPF second device — pair with priority #8 (MP 5055) for two-device fleet conversation at same account.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w19', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w19', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w20" data-territory="vanuatu">
+          <td><div class="asset-name">Sig. Series Ricoh MP 5055</div><div class="serial">C389P300398</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009V0fgQAC" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001dQkQmQAK" target="_blank">Account ↗</a></div></td>
+          <td>Life Changer Christian College</td>
+          <td><span class="territory-badge vanuatu">Vanuatu</span></td>
+          <td>Nov 2019</td>
+          <td><span class="counter-value">611,612</span></td>
+          <td><span class="call-count med">12</span><div class="call-range">Sep 2023 → Mar 2026</div></td>
+          <td><div class="reason-text">611k counter, 12 calls. Education account — budget constraints likely; consider lease framing.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w20', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w20', this)"></textarea></td>
+        </tr>
+
+        <!-- SAMOA -->
+        <tr class="asset-row" data-id="w21" data-territory="samoa">
+          <td><div class="asset-name">Ricoh IM C300F</div><div class="serial">3921P952662</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F00000KA8QLQA1" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001Vt7RLQAZ" target="_blank">Account ↗</a></div></td>
+          <td>National Bank of Samoa Limited</td>
+          <td><span class="territory-badge samoa">Samoa</span></td>
+          <td>Unknown</td>
+          <td><span class="counter-value">291,728</span></td>
+          <td><span class="call-count med">14</span><div class="call-range">Jan 2023 → Mar 2026</div></td>
+          <td><div class="reason-text">Bank account, 14 calls. Install date unknown — likely older than counter suggests.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w21', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w21', this)"></textarea></td>
+        </tr>
+
+        <tr class="asset-row" data-id="w22" data-territory="samoa">
+          <td><div class="asset-name">Ricoh MP C4504exSP w SPDF</div><div class="serial">C737M430082</div><div class="sf-links"><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/02i7F000009RP83QAG" target="_blank">Asset ↗</a><a class="sf-link" href="https://clearedgepacific.my.salesforce.com/0017F00001TFckNQAT" target="_blank">Account ↗</a></div></td>
+          <td>Business Systems Limited</td>
+          <td><span class="territory-badge samoa">Samoa</span></td>
+          <td>Jan 2019</td>
+          <td><span class="counter-value">546,458</span></td>
+          <td><span class="call-count med">12</span><div class="call-range">Mar 2023 → Feb 2025</div></td>
+          <td><div class="reason-text">No calls since Feb 2025 — check if still active. If so, 7-year-old device with 12 calls is overdue for refresh.</div></td>
+          <td class="center"><input type="checkbox" class="done-check" onchange="toggleDone('w22', this)"></td>
+          <td><textarea class="notes-input" placeholder="Add notes…" oninput="saveNote('w22', this)"></textarea></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  const SF_BASE = 'https://clearedgepacific.my.salesforce.com/';
+  const TOTAL = 30;
+  let currentFilter = 'open';
+
+  // ── INIT ──
+  function init() {
+    document.querySelectorAll('.asset-row').forEach(row => {
+      const id = row.dataset.id;
+      const saved = localStorage.getItem('slob_done_' + id);
+      const note  = localStorage.getItem('slob_note_' + id);
+      if (saved === 'true') {
+        row.querySelector('.done-check').checked = true;
+        row.classList.add('done');
+      }
+      if (note) {
+        row.querySelector('.notes-input').value = note;
+      }
+    });
+    setFilter('open', document.querySelector('.filter-btn.active.red'));
+    updateStats();
+  }
+
+  // ── TOGGLE DONE ──
+  function toggleDone(id, el) {
+    const row = el.closest('tr');
+    const isDone = el.checked;
+    localStorage.setItem('slob_done_' + id, isDone);
+    row.classList.toggle('done', isDone);
+    applyCurrentFilter();
+    updateStats();
+  }
+
+  // ── SAVE NOTE ──
+  function saveNote(id, el) {
+    localStorage.setItem('slob_note_' + id, el.value);
+  }
+
+  // ── FILTER ──
+  function setFilter(type, btn) {
+    currentFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'red'));
+    if (btn) {
+      btn.classList.add('active');
+      if (type === 'open') btn.classList.add('red');
+    }
+    applyCurrentFilter();
+  }
+
+  function applyCurrentFilter() {
+    document.querySelectorAll('.asset-row').forEach(row => {
+      const territory = row.dataset.territory;
+      const isDone = row.classList.contains('done');
+      let show = true;
+      if (currentFilter === 'open' && isDone) show = false;
+      if (currentFilter === 'done' && !isDone) show = false;
+      if (['samoa','tonga','solomons','vanuatu'].includes(currentFilter) && territory !== currentFilter) show = false;
+      row.classList.toggle('hidden', !show);
+    });
+  }
+
+  // ── STATS ──
+  function updateStats() {
+    const rows = document.querySelectorAll('.asset-row');
+    let done = 0, samoa = 0, tonga = 0, solomons = 0, vanuatu = 0;
+    rows.forEach(row => {
+      const isDone = row.classList.contains('done');
+      if (isDone) done++;
+      if (!isDone) {
+        const t = row.dataset.territory;
+        if (t === 'samoa') samoa++;
+        if (t === 'tonga') tonga++;
+        if (t === 'solomons') solomons++;
+        if (t === 'vanuatu') vanuatu++;
+      }
+    });
+    const open = TOTAL - done;
+    const pct = Math.round((done / TOTAL) * 100);
+    document.getElementById('progFill').style.width = pct + '%';
+    document.getElementById('progCount').textContent = done + ' / ' + TOTAL + ' (' + pct + '%)';
+    document.getElementById('sumOpen').textContent = open;
+    document.getElementById('sumDone').textContent = done;
+    document.getElementById('sumSamoa').textContent = samoa;
+    document.getElementById('sumTonga').textContent = tonga;
+    document.getElementById('sumSolomons').textContent = solomons;
+    document.getElementById('sumVanuatu').textContent = vanuatu;
+  }
+
+  // ── RESET ──
+  function resetAll() {
+    if (!confirm('Clear all checkboxes and notes? This cannot be undone.')) return;
+    document.querySelectorAll('.asset-row').forEach(row => {
+      const id = row.dataset.id;
+      localStorage.removeItem('slob_done_' + id);
+      localStorage.removeItem('slob_note_' + id);
+      row.querySelector('.done-check').checked = false;
+      row.querySelector('.notes-input').value = '';
+      row.classList.remove('done');
+    });
+    applyCurrentFilter();
+    updateStats();
+  }
+
+  init();
+</script>
+</body>
+</html>
