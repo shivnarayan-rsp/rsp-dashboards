@@ -1,1 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pacific SLOB — Upgrade Action Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1018;
+  --surface: #13161f;
+  --surface2: #1a1e2c;
+  --border: #242838;
+  --border2: #2e3448;
+  --red: #e04545;     --red-bg: rgba(224,69,69,0.10);   --red-bd: rgba(224,69,69,0.28);
+  --amber: #f0a020;   --amber-bg: rgba(240,160,32,0.10); --amber-bd: rgba(240,160,32,0.28);
+  --green: #2ecc8a;   --green-bg: rgba(46,204,138,0.10); --green-bd: rgba(46,204,138,0.28);
+  --blue: #4d96e0;    --blue-bg: rgba(77,150,224,0.10);  --blue-bd: rgba(77,150,224,0.28);
+  --violet: #9b72f0;  --violet-bg: rgba(155,114,240,0.12); --violet-bd: rgba(155,114,240,0.3);
+  --text: #dde2ef;
+  --muted: #6e7a99;
+  --dim: #3d4560;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
 
+/* ─── TOP BAR ─── */
+.topbar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 14px 28px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 200;
+}
+.topbar-left { display: flex; align-items: center; gap: 14px; }
+.logo { width: 32px; height: 32px; background: var(--red); border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 11px; font-weight: 600; color: #fff; flex-shrink: 0; }
+.topbar-title { font-size: 14px; font-weight: 600; }
+.topbar-sub { font-size: 11px; font-family: var(--mono); color: var(--muted); margin-top: 1px; }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.deadline { font-family: var(--mono); font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 4px;
+  background: var(--red-bg); border: 1px solid var(--red-bd); color: var(--red); }
+.global-progress { display: flex; align-items: center; gap: 8px; }
+.gp-label { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.gp-track { width: 100px; height: 3px; background: var(--border2); border-radius: 2px; overflow: hidden; }
+.gp-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.4s; }
+
+/* ─── TERRITORY TILES ─── */
+.tiles-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+  padding: 20px 28px; border-bottom: 1px solid var(--border);
+}
+.tile {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 14px 16px; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  user-select: none; position: relative; overflow: hidden;
+}
+.tile::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; opacity: 0; transition: opacity 0.15s; }
+.tile.samoa::after   { background: var(--blue);  }
+.tile.solomons::after { background: var(--amber); }
+.tile.tonga::after   { background: var(--green); }
+.tile.vanuatu::after  { background: var(--red);  }
+.tile:hover { border-color: var(--border2); transform: translateY(-1px); }
+.tile.active::after { opacity: 1; }
+.tile.samoa.active    { border-color: var(--blue-bd);  background: var(--blue-bg); }
+.tile.solomons.active { border-color: var(--amber-bd); background: var(--amber-bg); }
+.tile.tonga.active    { border-color: var(--green-bd); background: var(--green-bg); }
+.tile.vanuatu.active  { border-color: var(--red-bd);   background: var(--red-bg); }
+.tile-name { font-size: 12px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 8px; }
+.tile.samoa .tile-name    { color: var(--blue); }
+.tile.solomons .tile-name { color: var(--amber); }
+.tile.tonga .tile-name    { color: var(--green); }
+.tile.vanuatu .tile-name  { color: var(--red); }
+.tile-stats { display: flex; gap: 16px; }
+.tile-stat-val { font-family: var(--mono); font-size: 20px; font-weight: 600; color: var(--text); line-height: 1; }
+.tile-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 3px; font-family: var(--mono); }
+.tile-prog-track { height: 2px; background: var(--border2); border-radius: 1px; margin-top: 10px; overflow: hidden; }
+.tile-prog-fill  { height: 100%; border-radius: 1px; transition: width 0.4s; }
+.tile.samoa .tile-prog-fill    { background: var(--blue); }
+.tile.solomons .tile-prog-fill { background: var(--amber); }
+.tile.tonga .tile-prog-fill    { background: var(--green); }
+.tile.vanuatu .tile-prog-fill  { background: var(--red); }
+
+/* ─── TABLE ─── */
+.table-section { padding: 0 28px 40px; }
+.section-label { padding: 16px 0 10px; display: flex; align-items: center; gap: 10px; }
+.section-badge { font-family: var(--mono); font-size: 10px; font-weight: 600;
+  letter-spacing: 1px; text-transform: uppercase; padding: 3px 9px; border-radius: 3px; }
+.section-badge.samoa    { background: var(--blue-bg);  color: var(--blue);  border: 1px solid var(--blue-bd); }
+.section-badge.solomons { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+.section-badge.tonga    { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bd); }
+.section-badge.vanuatu  { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-bd); }
+.section-count { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+.section-done  { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: auto; }
+
+.tbl-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 1050px; }
+
+thead th {
+  background: var(--surface); text-align: left;
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.7px; text-transform: uppercase; color: var(--muted);
+  padding: 10px 12px; border-bottom: 1px solid var(--border);
+  white-space: nowrap; cursor: pointer; user-select: none;
+}
+thead th:hover { color: var(--text); }
+thead th.sorted-asc::after  { content: ' ↑'; color: var(--blue); }
+thead th.sorted-desc::after { content: ' ↓'; color: var(--blue); }
+thead th.no-sort { cursor: default; }
+thead th.no-sort:hover { color: var(--muted); }
+
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--surface); }
+tbody tr.done { opacity: 0.35; }
+tbody tr.done td { text-decoration: line-through; }
+tbody tr.done td.no-strike, tbody tr.done td.no-strike * { text-decoration: none !important; }
+
+td { padding: 11px 12px; vertical-align: top; }
+
+.c-done   { width: 36px; }
+.c-pri    { width: 34px; }
+.c-asset  { min-width: 170px; }
+.c-cust   { min-width: 150px; }
+.c-ctr    { width: 115px; }
+.c-calls  { width: 54px; text-align: center; }
+.c-sla    { width: 54px; }
+.c-expiry { width: 130px; }
+.c-rec    { min-width: 145px; }
+.c-reason { min-width: 165px; }
+.c-notes  { min-width: 155px; }
+
+/* checkbox */
+.cb { display: flex; align-items: center; justify-content: center; padding-top: 1px; }
+.cb-box { width: 15px; height: 15px; border-radius: 3px; flex-shrink: 0; cursor: pointer;
+  border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; transition: all 0.12s; }
+.cb-box:hover { border-color: var(--green); }
+.cb-box.on { background: var(--green); border-color: var(--green); }
+.cb-box.on::after { content: ''; display: block; width: 8px; height: 4.5px;
+  border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff; transform: rotate(-45deg) translateY(-1px); }
+
+/* priority */
+.pri-badge { font-family: var(--mono); font-size: 10px; font-weight: 600;
+  width: 20px; height: 20px; border-radius: 3px; display: flex; align-items: center; justify-content: center; }
+.pri-1 { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-bd); }
+.pri-2 { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+.pri-3 { background: var(--surface2); color: var(--muted); border: 1px solid var(--border2); }
+
+/* links */
+a.lnk { color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border2);
+  transition: color 0.12s, border-color 0.12s; line-height: 1.45; word-break: break-word; }
+a.lnk:hover { color: var(--blue); border-color: var(--blue); }
+.sub  { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 2px; }
+.sub2 { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 1px; }
+
+/* counter */
+.ctr-val { font-family: var(--mono); font-size: 12px; }
+.ctr-track { height: 3px; background: var(--border2); border-radius: 2px; margin-top: 5px; overflow: hidden; }
+.ctr-fill { height: 100%; border-radius: 2px; }
+.fill-red   { background: var(--red); }
+.fill-amber { background: var(--amber); }
+.fill-green { background: var(--green); }
+.fill-grey  { background: var(--dim); }
+.ctr-pct { font-family: var(--mono); font-size: 9px; color: var(--dim); margin-top: 3px; }
+
+/* calls */
+.calls-n { font-family: var(--mono); font-size: 13px; font-weight: 600;
+  display: block; text-align: center; width: 36px; height: 24px; line-height: 24px;
+  border-radius: 4px; margin: 0 auto; }
+.calls-hi  { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-bd); }
+.calls-med { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+.calls-lo  { background: var(--surface2); color: var(--muted); border: 1px solid var(--border2); }
+
+/* SLA */
+.sla-badge { font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: 0.5px;
+  padding: 2px 6px; border-radius: 3px; display: inline-block; }
+.sla-on  { background: var(--violet-bg); color: var(--violet); border: 1px solid var(--violet-bd); }
+.sla-off { background: var(--surface2);  color: var(--dim);    border: 1px solid var(--border); }
+
+/* ─── CONTRACT EXPIRY ─── */
+.expiry-badge {
+  display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 500;
+  padding: 3px 8px; border-radius: 4px; text-decoration: none !important;
+  border-bottom: none !important; transition: opacity 0.15s;
+}
+.expiry-badge:hover { opacity: 0.8; }
+.expiry-ok     { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-bd) !important; }
+.expiry-soon   { background: var(--amber-bg);  color: var(--amber);  border: 1px solid var(--amber-bd) !important; }
+.expiry-urgent { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-bd) !important; }
+.expiry-hint { font-family: var(--mono); font-size: 9px; color: var(--dim); margin-top: 4px; }
+.expiry-override { margin-top: 4px; }
+.expiry-override span { font-family: var(--mono); font-size: 9px; color: var(--dim); cursor: pointer;
+  border-bottom: 1px dashed var(--dim); transition: color 0.12s; }
+.expiry-override span:hover { color: var(--muted); }
+.expiry-input { font-family: var(--mono); font-size: 11px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); border-radius: 4px; padding: 4px 7px; width: 100%; transition: border-color 0.12s; }
+.expiry-input:focus { outline: none; border-color: var(--border2); }
+
+/* recommended */
+.rec-model { font-size: 12px; font-weight: 500; }
+.rec-code  { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 2px; }
+.rec-avail { font-family: var(--mono); font-size: 9px; margin-top: 3px; }
+.avail-yes { color: var(--green); }
+.avail-low { color: var(--amber); }
+
+/* reason */
+.reason-chip { display: inline-block; font-family: var(--mono); font-size: 9px; font-weight: 600;
+  letter-spacing: 0.4px; padding: 2px 6px; border-radius: 2px; margin-bottom: 4px; }
+.rc-past  { background: var(--red-bg);   color: var(--red); }
+.rc-freq  { background: var(--amber-bg); color: var(--amber); }
+.rc-age   { background: var(--blue-bg);  color: var(--blue); }
+.rc-fleet { background: var(--surface2); color: var(--muted); border: 1px solid var(--border2); }
+.reason-txt { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+
+/* notes */
+.notes-ta { width: 100%; min-height: 46px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; color: var(--text); font-family: var(--sans);
+  font-size: 12px; padding: 6px 8px; resize: vertical; line-height: 1.5;
+  transition: border-color 0.12s; text-decoration: none !important; }
+.notes-ta:focus { outline: none; border-color: var(--border2); }
+.notes-ta::placeholder { color: var(--dim); font-style: italic; }
+
+/* footer */
+.foot { padding: 20px 28px; border-top: 1px solid var(--border); display: flex; gap: 24px; flex-wrap: wrap; }
+.foot-note { font-family: var(--mono); font-size: 10px; color: var(--dim); line-height: 1.6; max-width: 260px; }
+.foot-note strong { color: var(--muted); }
+
+@media (max-width: 768px) {
+  .tiles-row { grid-template-columns: 1fr 1fr; padding: 12px 16px; }
+  .topbar { padding: 12px 16px; }
+  .topbar-right .global-progress { display: none; }
+  .table-section { padding: 0 12px 32px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="logo">RSP</div>
+    <div>
+      <div class="topbar-title">Pacific SLOB — Upgrade Action Tracker</div>
+      <div class="topbar-sub">Generated 1 April 2026 · 31 assets · 4 territories</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="global-progress">
+      <div class="gp-label" id="gp-label">0 / 31 actioned</div>
+      <div class="gp-track"><div class="gp-fill" id="gp-fill" style="width:0%"></div></div>
+    </div>
+    <div class="deadline">DEADLINE 30 APR 2026</div>
+  </div>
+</header>
+
+<div class="tiles-row" id="tiles-row"></div>
+<main class="table-section" id="main"></main>
+
+<footer class="foot">
+  <div class="foot-note"><strong>Counter %</strong> — Total Counter ÷ Service_Life__c (Salesforce Product2). Red ≥ 90%, Amber 60–90%, Green &lt; 60%, Grey = not set.</div>
+  <div class="foot-note"><strong>Service Calls</strong> — "Service Call" cases since Jan 2023. Red ≥ 20, Amber 13–19.</div>
+  <div class="foot-note"><strong>Contract Expiry</strong> — pulled from Salesforce ServiceContract where found (8 of 31 accounts). Remaining 23 need populating from BMS — editable inline, saves in this browser.</div>
+  <div class="foot-note"><strong>Recommended Product</strong> — drawn from current SLOB stock, 1 Apr 2026. Stock counts per territory shown.</div>
+  <div class="foot-note"><strong>Checkboxes &amp; notes</strong> — localStorage, browser only. Open on your own machine to retain data.</div>
+  <div class="foot-note"><strong>SF links</strong> — opens Salesforce directly. Log in to clearedgepacific.my.salesforce.com first.</div>
+</footer>
+
+<script>
+const SF  = 'https://clearedgepacific.my.salesforce.com';
+const LS  = 'rsp_slob_v3_';
+
+// ── SLOB stock on hand (Unleashed, 1 Apr 2026) ──
+const SLOB = {
+  'Ricoh IM C3010': { qty: { TONGA:4, VANUATU:3 },             code:'419309', total:7  },
+  'Ricoh IM C4510': { qty: { TONGA:1 },                        code:'419327', total:1  },
+  'Ricoh IM 5000':  { qty: { SAMOA:1, VANUATU:2 },             code:'418847', total:3  },
+  'Ricoh IM 4000':  { qty: { SAMOA:1, VANUATU:1 },             code:'418846', total:2  },
+  'Ricoh IM 6000':  { qty: { TONGA:1 },                        code:'418848', total:1  },
+  'Ricoh IM 3500':  { qty: { SOLOMONS:1 },                     code:'418845', total:1  },
+  'Ricoh IM 460':   { qty: { VANUATU:5 },                      code:'423509', total:5  },
+  'Ricoh IM 550F':  { qty: { VANUATU:7 },                      code:'418460', total:7  },
+  'Ricoh M 2701':   { qty: { SAMOA:1, TONGA:1, VANUATU:3 },    code:'418120', total:5  },
+  'Ricoh MC 251FW': { qty: { VANUATU:3 },                      code:'408545', total:3  },
+};
+
+// ── Salesforce ServiceContract expiry data (pulled 1 Apr 2026) ──
+// source:'SF' = confirmed from Salesforce ServiceContract object
+// source:null = not found in SF; populate from BMS manually
+const CONTRACTS = {
+  '3359P201320': { expiry:'22/08/2028', num:'00003045', scId:'810Mp00000AREVlIAP', source:'SF',  note:null },
+  '3921P952662': { expiry:'12/03/2029', num:'00003303', scId:'810Mp00000GNPKkIAP', source:'SF',  note:'NBS also has SC-00002962 expiring 09/07/2026 — check with Minoo which covers this asset' },
+  '3082R590343': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C737M430082': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C388PC00164': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C758M810267': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'G185R190250': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C409PA00069': { expiry:'04/11/2027', num:'00000513', scId:'8107F000000dBP5QAM', source:'SF',  note:'Two active contracts at same expiry (SC-00000513 and SC-00000522)' },
+  'C388PA00340': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C509P906161': { expiry:'04/11/2027', num:'00000522', scId:'8107F000000dBPjQAM', source:'SF',  note:null },
+  '3098RC20297': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'E334MA50112': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C758MA10054': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C738M130842': { expiry:'30/06/2027', num:'00000708', scId:'8107F000000D1FyQAK', source:'SF',  note:'Secondary SC-00003126 expires 05/09/2026 — likely covers the new C3003 placed Oct 2025' },
+  'E176M240011': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'G716M950200': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C400PA00015': { expiry:'19/02/2031', num:'00003288', scId:'810Mp00000FrA3pIAF', source:'SF',  note:'New 5-year contract signed Feb 2026. BSP Tonga is a long-term account.' },
+  'C379PA00429': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  '3102RC20031': { expiry:'25/03/2029', num:'00001348', scId:'810GA000000klrHYAQ', source:'SF',  note:'Longest of 4 active contracts at this account' },
+  'E175MA50358': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  '3099R620036': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  '3129MC20325': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C388P900040': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  '3922PC51347': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  '3129M920905': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  '3129MB20058': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C389P300398': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  '3099RA20382': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C509P103848': { expiry:null,         num:null,       scId:null,                 source:null,  note:null },
+  'C389P400184': { expiry:'20/11/2026', num:'00003294', scId:'810Mp00000G1sl7IAB', source:'SF',  note:'⚠ Expires in ~7 months — contract renewal conversation needed alongside device upgrade' },
+};
+
+// ── Asset data ──
+const ASSETS = [
+  // SAMOA
+  { serial:'3359P201320', assetId:'02i7F000009UyXIQA0', acctId:'0017F00001TFd6XQAT', territory:'SAMOA',    pri:1, asset:'Ricoh IM 430F',             customer:'Taumeasina Island Resort',                          installed:'2019-11-04', counter:588263,  svcLife:null,    calls:28, sla:true,  recModel:'Ricoh IM 550F',  reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'28 service calls since Jan 2023 — highest in the dataset. Device in distress. Downtime costs Taumeasina in guest-facing operations.' },
+  { serial:'3921P952662', assetId:'02i7F00000KA8QLQA1', acctId:'0017F00001Vt7RLQAZ', territory:'SAMOA',    pri:3, asset:'Ricoh IM C300F',            customer:'National Bank of Samoa',                            installed:null,         counter:291728,  svcLife:null,    calls:14, sla:true,  recModel:null,             reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'14 service calls since Jan 2023. Bank environment — reliability expectations are high.' },
+  { serial:'3082R590343', assetId:'02i7F00000MKN89QAH', acctId:'0017F000044G0bJQAS', territory:'SAMOA',    pri:3, asset:'Ricoh IM C2000',            customer:'M. Lemisio Law Firm',                               installed:null,         counter:86375,   svcLife:null,    calls:13, sla:true,  recModel:null,             reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'13 service calls. Low counter suggests recurring fault rather than normal wear.' },
+  { serial:'C737M430082', assetId:'02i7F000009RP83QAG', acctId:'0017F00001TFckNQAT', territory:'SAMOA',    pri:3, asset:'Ricoh MP C4504exSP w SPDF', customer:'Business Systems Limited',                         installed:'2019-01-14', counter:546458,  svcLife:null,    calls:12, sla:true,  recModel:'Ricoh IM 5000',  reasonChip:'AGE + CALLS',       reasonClass:'rc-age',  reason:'Installed Jan 2019 — 7+ years old. 12 service calls. Reseller — upgrade opens a fleet conversation.' },
+  // SOLOMONS
+  { serial:'C388PC00164', assetId:'02i7F000000FLjnQAG', acctId:'0017F00001TFcqyQAD', territory:'SOLOMONS', pri:1, asset:'Ricoh MP 5055',             customer:'Bank South Pacific (Solomon Islands)',               installed:'2019-02-28', counter:1492626, svcLife:1500000, calls:17, sla:true,  recModel:'Ricoh IM 3500',  reasonChip:'PAST SERVICE LIFE', reasonClass:'rc-past', reason:'Counter 1,492,626 vs Service Life 1,500,000 — at end of life. BSP has a second device at same site also in decline.' },
+  { serial:'C758M810267', assetId:'02i7F000000Ca5SQAS', acctId:'0017F00001TFcwFQAT', territory:'SOLOMONS', pri:2, asset:'Ricoh MP C6004exSP w SPDF', customer:'Woodford International School',                    installed:'2019-01-25', counter:1450956, svcLife:null,    calls:15, sla:true,  recModel:null,             reasonChip:'AGE + COUNTER',     reasonClass:'rc-age',  reason:'1,450,956 total counter. Installed Jan 2019 — over 7 years old. 15 service calls.' },
+  { serial:'G185R190250', assetId:'02iGA00000hKRPwYAO', acctId:'0017F00001TFd81QAD', territory:'SOLOMONS', pri:2, asset:'Sig. Series Ricoh MP 5054', customer:'University of the South Pacific (Solomons)',        installed:null,         counter:913093,  svcLife:null,    calls:14, sla:true,  recModel:null,             reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'14 calls in 18 months (Oct 2024–Mar 2026). Rapidly escalating fault pattern.' },
+  { serial:'C409PA00069', assetId:'02i7F000000Grk7QAC', acctId:'0017F00001TFcv6QAD', territory:'SOLOMONS', pri:2, asset:'Sig. Series Ricoh MP 6055', customer:'Solomon Airlines',                                 installed:'2020-08-10', counter:844043,  svcLife:null,    calls:15, sla:true,  recModel:null,             reasonChip:'AGE + CALLS',       reasonClass:'rc-age',  reason:'844k counter. Installed Aug 2020. 15 service calls. Also has an MP C307 — fleet refresh opportunity.' },
+  { serial:'C388PA00340', assetId:'02i7F000000FQJdQAO', acctId:'0017F00001TFcqyQAD', territory:'SOLOMONS', pri:2, asset:'Ricoh MP 5055',             customer:'Bank South Pacific (Solomon Islands)',               installed:'2019-03-01', counter:186589,  svcLife:1500000, calls:13, sla:true,  recModel:'Ricoh IM 3500',  reasonChip:'FLEET ACCOUNT',     reasonClass:'rc-fleet', reason:'Second BSP device at same site. Raise both in one upgrade conversation.' },
+  { serial:'C509P906161', assetId:'02i7F000009VBuiQAG', acctId:'0017F00001TFcv6QAD', territory:'SOLOMONS', pri:3, asset:'Ricoh MP C307',             customer:'Solomon Airlines',                                 installed:'2020-01-22', counter:241412,  svcLife:null,    calls:13, sla:true,  recModel:null,             reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'13 calls on a low-counter A4 device. Recurring fault. Same account as MP 6055 above.' },
+  { serial:'3098RC20297', assetId:'02i7F000009Uj7NQAS', acctId:null,                 territory:'SOLOMONS', pri:3, asset:'Ricoh IM C2500',            customer:'Solomon Water',                                    installed:'2019-06-18', counter:591542,  svcLife:1200000, calls:13, sla:true,  recModel:null,             reasonChip:'AGE + CALLS',       reasonClass:'rc-age',  reason:'Installed Jun 2019. 591k counter. 13 calls. Utility — uptime critical.' },
+  { serial:'E334MA50112', assetId:'02i7F000000xJsfQAE', acctId:'0017F00001TFcuiQAD', territory:'SOLOMONS', pri:3, asset:'Ricoh MP 2501SP',           customer:'Solomon Housing Limited',                          installed:'2017-10-17', counter:249100,  svcLife:null,    calls:15, sla:false, recModel:null,             reasonChip:'AGE',               reasonClass:'rc-age',  reason:'Installed Oct 2017 — nearly 9 years old. 15 calls. Legacy mono A3 overdue for retirement.' },
+  // TONGA
+  { serial:'C758MA10054', assetId:'02i7F000009Uq0dQAC', acctId:'0017F00001TFcylQAD', territory:'TONGA',    pri:1, asset:'Ricoh MP C6004 w SPDF',     customer:'LDS Liahona High School — Printing',                installed:'2019-09-24', counter:1877346, svcLife:1800000, calls:14, sla:true,  recModel:'Ricoh IM C3010', reasonChip:'PAST SERVICE LIFE', reasonClass:'rc-past', reason:'Counter 1,877,346 vs Service Life 1,800,000 — past end of life. High-volume print environment. Must replace, not repair.' },
+  { serial:'C738M130842', assetId:'02i7F000000GWm2QAG', acctId:'0017F00001TFd66QAD', territory:'TONGA',    pri:1, asset:'Ricoh MP C4504exSP w SPDF', customer:'Tupou Tertiary Institute',                         installed:'2018-05-01', counter:1105011, svcLife:null,    calls:19, sla:true,  recModel:'Ricoh IM C3010', reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'19 calls since 2023. 1.1M counter. Same account received a new C3003 Oct 2025 — this is a second device.' },
+  { serial:'E176M240011', assetId:'02i7F00000FlqWDQAZ', acctId:'0017F00001TFczuQAD', territory:'TONGA',    pri:1, asset:'Sig. Series Ricoh MP C4503', customer:'Ministry of Agriculture, Food, Forests & Fisheries', installed:null,        counter:513728,  svcLife:1200000, calls:20, sla:true,  recModel:'Ricoh IM C3010', reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'20 calls — highest call count in Tonga. SLOB IM C3010 is a direct replacement candidate.' },
+  { serial:'G716M950200', assetId:'02i7F000009OMQOQA4', acctId:'0017F00001TFd6BQAT', territory:'TONGA',    pri:2, asset:'Ricoh MP C4504exSP w SPDF', customer:'University of the South Pacific (Tonga)',           installed:'2017-04-04', counter:947375,  svcLife:null,    calls:17, sla:true,  recModel:'Ricoh IM C4510', reasonChip:'AGE + CALLS',       reasonClass:'rc-age',  reason:'Installed Apr 2017 — 9 years old. 947k counter. 17 calls. USP is a tier-1 account.' },
+  { serial:'C400PA00015', assetId:'02i7F00000HzgZMQAZ', acctId:'0017F00001TFd6IQAT', territory:'TONGA',    pri:2, asset:'Ricoh MP 6055',             customer:'Bank South Pacific (Tonga)',                        installed:null,         counter:801782,  svcLife:null,    calls:18, sla:true,  recModel:'Ricoh IM C3010', reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'18 calls. Bank account — strong upgrade story. IM C3010 in SLOB is a direct candidate.' },
+  { serial:'C379PA00429', assetId:'02i7F000009VMSCQA4', acctId:'0017F00001TFcxWQAT', territory:'TONGA',    pri:2, asset:'Ricoh MP 4055',             customer:'Free Wesleyan Church — Education Dept',            installed:'2020-03-24', counter:526769,  svcLife:null,    calls:17, sla:true,  recModel:'Ricoh IM C3010', reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'17 calls. Education sector. 526k counter. IM C3010 is a natural refresh device.' },
+  { serial:'3102RC20031', assetId:'02iGA000000WZw1YAG', acctId:'0017F00001TFcxKQAT', territory:'TONGA',    pri:3, asset:'Ricoh IM C3000',            customer:'Friendly Island Bookshop',                         installed:null,         counter:671870,  svcLife:null,    calls:13, sla:true,  recModel:null,             reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'13 calls in ~22 months. Retail environment. Monitor for escalation.' },
+  { serial:'E175MA50358', assetId:'02iGA00000hKw2BYAS', acctId:'0017F00001TFdY6QAL', territory:'TONGA',    pri:3, asset:'Sig. Series Ricoh MP C4503', customer:'Act Community School',                            installed:null,         counter:393693,  svcLife:1200000, calls:12, sla:true,  recModel:null,             reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'12 calls in 12 months. Rapid escalation — assess now before it becomes urgent.' },
+  // VANUATU
+  { serial:'3099R620036', assetId:'02i7F000009UszqQAC', acctId:'0017F00001TFccUQAT', territory:'VANUATU',  pri:1, asset:'Ricoh IM C2500',            customer:'Freedom School Port Vila',                         installed:'2019-08-29', counter:743172,  svcLife:1200000, calls:23, sla:true,  recModel:'Ricoh IM C3010', reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'23 calls — highest in Vanuatu. 743k counter approaching Service Life. School: replace before next academic year.' },
+  { serial:'3129MC20325', assetId:'02i7F000009VMkiQAG', acctId:'0017F00001TFccvQAD', territory:'VANUATU',  pri:1, asset:'Ricoh IM C4500',            customer:'Office of the Public Prosecutor (Vanuatu)',        installed:'2020-04-06', counter:927903,  svcLife:1200000, calls:12, sla:true,  recModel:'Ricoh IM C3010', reasonChip:'COUNTER',           reasonClass:'rc-past', reason:'927k vs 1.2M Service Life — at 77%. Government legal office. IM C3010 in SLOB is a direct candidate.' },
+  { serial:'C388P900040', assetId:'02i7F000009Oze3QAC', acctId:'0017F00001TFcXAQA1', territory:'VANUATU',  pri:2, asset:'Ricoh MP 5055',             customer:'Vanuatu National Provident Fund',                  installed:'2018-12-17', counter:883807,  svcLife:1500000, calls:13, sla:true,  recModel:'Ricoh IM 5000',  reasonChip:'AGE + CALLS',       reasonClass:'rc-age',  reason:'Installed Dec 2018. 883k counter. VNPF also has an MP C307 with 13 calls — fleet upgrade.' },
+  { serial:'3922PC51347', assetId:'02i7F000000WSe6QAG', acctId:'0017F00001TFdC5QAL', territory:'VANUATU',  pri:2, asset:'Ricoh IM C300F',            customer:'LDS — Port Vila Mission',                         installed:null,         counter:86718,   svcLife:null,    calls:16, sla:true,  recModel:'Ricoh MC 251FW', reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'16 calls on a low-counter device. Recurring fault. Repair cost approaching device value.' },
+  { serial:'3129M920905', assetId:'02i7F000009VH3KQAW', acctId:'0017F00001TFccfQAD', territory:'VANUATU',  pri:2, asset:'Ricoh IM C4500',            customer:'Office of Public Service Commission',             installed:'2020-02-13', counter:616924,  svcLife:1200000, calls:14, sla:true,  recModel:'Ricoh IM C3010', reasonChip:'AGE + CALLS',       reasonClass:'rc-age',  reason:'616k counter. 14 calls. Government — group upgrade with Public Prosecutor possible.' },
+  { serial:'3129MB20058', assetId:'02i7F000000GrWJQA0', acctId:'0017F00002ZfY2nQAF', territory:'VANUATU',  pri:2, asset:'Ricoh IM C4500',            customer:'Catholic Mission (Vanuatu)',                      installed:'2020-07-16', counter:561159,  svcLife:1200000, calls:14, sla:true,  recModel:'Ricoh IM C3010', reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'561k counter. 14 calls. Mission org — price-sensitive but long relationship.' },
+  { serial:'C389P300398', assetId:'02i7F000009V0fgQAC', acctId:'0017F00001dQkQmQAK', territory:'VANUATU',  pri:3, asset:'Sig. Series Ricoh MP 5055', customer:'Life Changer Christian College',                  installed:'2019-11-05', counter:611612,  svcLife:null,    calls:12, sla:false, recModel:'Ricoh IM 5000',  reasonChip:'AGE + CALLS',       reasonClass:'rc-age',  reason:'611k counter. Installed Nov 2019. 12 calls. Education — medium-term upgrade candidate.' },
+  { serial:'3099RA20382', assetId:'02i7F000009VFmbQAG', acctId:'0017F00001TFcb7QAD', territory:'VANUATU',  pri:3, asset:'Ricoh IM C2500',            customer:'Vanuatu National Bureau of Standards',            installed:'2020-02-11', counter:214788,  svcLife:1200000, calls:16, sla:true,  recModel:null,             reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'16 calls. Low counter — recurring fault pattern. Government standards body.' },
+  { serial:'C509P103848', assetId:'02i7F000000FYbDQAW', acctId:'0017F00001TFcXAQA1', territory:'VANUATU',  pri:3, asset:'Ricoh MP C307',             customer:'Vanuatu National Provident Fund',                  installed:'2019-03-15', counter:378522,  svcLife:null,    calls:13, sla:true,  recModel:null,             reasonChip:'FLEET ACCOUNT',     reasonClass:'rc-fleet', reason:'Second VNPF device. 13 calls. Raise both in one fleet conversation with the MP 5055 above.' },
+  { serial:'C389P400184', assetId:'02i7F000009V7FlQAK', acctId:'0017F00001TFccQQAT', territory:'VANUATU',  pri:3, asset:'Ricoh MP 5055',             customer:'National Archives of Vanuatu',                    installed:'2019-12-12', counter:164654,  svcLife:1500000, calls:13, sla:false, recModel:'Ricoh IM 550F',  reasonChip:'CALL FREQUENCY',    reasonClass:'rc-freq', reason:'13 calls on a low-counter device. Recurring fault. Archives: document integrity critical. Contract expires Nov 2026.' },
+];
+
+const TERRITORIES = ['SAMOA','SOLOMONS','TONGA','VANUATU'];
+const T_CLS  = { SAMOA:'samoa', SOLOMONS:'solomons', TONGA:'tonga', VANUATU:'vanuatu' };
+const T_LBL  = { SAMOA:'Samoa', SOLOMONS:'Solomon Islands', TONGA:'Tonga', VANUATU:'Vanuatu' };
+
+let activeFilter = 'ALL';
+let sortCol = null, sortDir = 1;
+
+function ls_get(k)    { return localStorage.getItem(LS+k) || ''; }
+function ls_set(k, v) { localStorage.setItem(LS+k, v); }
+function fmtN(n)      { return n.toLocaleString(); }
+
+function pct(c, l) {
+  if (!l || l === 0) return null;
+  return Math.min(100, Math.round(c / l * 100));
+}
+function fillCls(p) {
+  if (p === null) return 'fill-grey';
+  if (p >= 90)   return 'fill-red';
+  if (p >= 60)   return 'fill-amber';
+  return 'fill-green';
+}
+function callsCls(c) { return c >= 20 ? 'calls-hi' : c >= 13 ? 'calls-med' : 'calls-lo'; }
+
+// ── Contract expiry rendering ──
+function expiryCell(serial) {
+  const c   = CONTRACTS[serial] || {};
+  const ov  = ls_get('expiry_ov_' + serial);   // manual override
+  const bms = ls_get('expiry_bms_' + serial);  // BMS manual entry
+
+  // If SF data exists and no override, show badge
+  if (c.source === 'SF' && c.expiry && !ov) {
+    const parts    = c.expiry.split('/');
+    const expDate  = new Date(+parts[2], +parts[1]-1, +parts[0]);
+    const mLeft    = (expDate - new Date()) / (1000*60*60*24*30.4);
+    const urgCls   = mLeft <= 6 ? 'expiry-urgent' : mLeft <= 12 ? 'expiry-soon' : 'expiry-ok';
+    const href     = c.scId ? `href="${SF}/${c.scId}" target="_blank" rel="noopener"` : '';
+    const noteHtml = c.note
+      ? `<div class="expiry-hint" style="color:var(--amber);margin-top:3px" title="${c.note}">⚠ Note</div>`
+      : '';
+    return `<a class="expiry-badge ${urgCls}" ${href} title="${c.note || ''}">${c.expiry}</a>
+      <div class="expiry-hint">SC-${c.num} · Salesforce</div>
+      ${noteHtml}
+      <div class="expiry-override"><span onclick="showOverride('${serial}')">✎ override</span></div>`;
+  }
+
+  // BMS manual entry or override — show input
+  const currentVal = ov || bms || '';
+  const ph  = c.source === 'SF' && c.expiry ? c.expiry : 'dd/mm/yyyy';
+  const src = ov ? `Overrides SC-${c.num}` : 'Source: BMS — enter manually';
+  return `<input class="expiry-input" type="text" placeholder="${ph}"
+      value="${currentVal}"
+      onchange="saveExpiry('${serial}', this.value)"
+      title="Contract expiry date">
+    <div class="expiry-hint">${src}</div>`;
+}
+
+function showOverride(serial) {
+  const c = CONTRACTS[serial] || {};
+  const cell = document.querySelector(`tr[data-serial="${serial}"] .c-expiry`);
+  if (!cell) return;
+  cell.innerHTML = `<input class="expiry-input" type="text" placeholder="${c.expiry || 'dd/mm/yyyy'}"
+    value="" onchange="saveExpiry('${serial}', this.value)" title="Override Salesforce date">
+    <div class="expiry-hint">Overrides SC-${c.num}</div>`;
+  cell.querySelector('input')?.focus();
+}
+
+function saveExpiry(serial, v) {
+  const c = CONTRACTS[serial] || {};
+  if (c.source === 'SF') {
+    ls_set('expiry_ov_' + serial, v);
+  } else {
+    ls_set('expiry_bms_' + serial, v);
+  }
+}
+
+// ── Recommended product ──
+function recHtml(model, territory) {
+  if (!model) return '<span style="color:var(--dim)">—</span>';
+  const s = SLOB[model];
+  if (!s) return `<div class="rec-model">${model}</div>`;
+  const local = s.qty[territory] || 0;
+  const avail = local > 0
+    ? `<div class="rec-avail avail-yes">✓ ${local} in ${T_LBL[territory]} · ${s.total} total</div>`
+    : `<div class="rec-avail avail-low">~ ${s.total} avail. (other territories)</div>`;
+  return `<div class="rec-model">${model}</div><div class="rec-code">${s.code}</div>${avail}`;
+}
+
+// ── Row HTML ──
+function rowHtml(a) {
+  const done = ls_get('done_' + a.serial) === '1';
+  const note = ls_get('note_' + a.serial);
+  const p    = pct(a.counter, a.svcLife);
+  const pctW = p !== null ? p : 35;
+  const pctL = p !== null ? `${p}% of ${fmtN(a.svcLife)}` : 'No service life set';
+
+  const assetLnk = a.assetId
+    ? `<a class="lnk" href="${SF}/${a.assetId}" target="_blank" rel="noopener">${a.asset}</a>`
+    : `<span>${a.asset}</span>`;
+  const custLnk = a.acctId
+    ? `<a class="lnk" href="${SF}/${a.acctId}" target="_blank" rel="noopener">${a.customer}</a>`
+    : `<span style="color:var(--muted)">${a.customer}</span>`;
+
+  return `<tr data-serial="${a.serial}" class="${done?'done':''}">
+    <td class="c-done no-strike">
+      <div class="cb"><div class="cb-box ${done?'on':''}" onclick="toggleDone('${a.serial}',this)"></div></div>
+    </td>
+    <td class="c-pri"><div class="pri-badge pri-${a.pri}">${a.pri}</div></td>
+    <td class="c-asset">
+      ${assetLnk}
+      <div class="sub">${a.serial}</div>
+      <div class="sub2">${a.installed?'Installed '+a.installed:'Install date unknown'}</div>
+    </td>
+    <td class="c-cust">${custLnk}</td>
+    <td class="c-ctr">
+      <div class="ctr-val">${fmtN(a.counter)}</div>
+      <div class="ctr-track"><div class="ctr-fill ${fillCls(p)}" style="width:${pctW}%"></div></div>
+      <div class="ctr-pct">${pctL}</div>
+    </td>
+    <td class="c-calls"><span class="calls-n ${callsCls(a.calls)}">${a.calls}</span></td>
+    <td class="c-sla"><span class="sla-badge ${a.sla?'sla-on':'sla-off'}">${a.sla?'SLA':'T&M'}</span></td>
+    <td class="c-expiry no-strike">${expiryCell(a.serial)}</td>
+    <td class="c-rec">${recHtml(a.recModel, a.territory)}</td>
+    <td class="c-reason">
+      <span class="reason-chip ${a.reasonClass}">${a.reasonChip}</span>
+      <div class="reason-txt">${a.reason}</div>
+    </td>
+    <td class="c-notes no-strike">
+      <textarea class="notes-ta" placeholder="Add note…"
+        oninput="ls_set('note_${a.serial}',this.value)">${note}</textarea>
+    </td>
+  </tr>`;
+}
+
+// ── Tiles ──
+function renderTiles() {
+  const row = document.getElementById('tiles-row');
+  row.innerHTML = TERRITORIES.map(t => {
+    const tas  = ASSETS.filter(a => a.territory === t);
+    const done = tas.filter(a => ls_get('done_'+a.serial)==='1').length;
+    const dp   = tas.length ? Math.round(done/tas.length*100) : 0;
+    const ac   = activeFilter === t ? 'active' : '';
+    return `<div class="tile ${T_CLS[t]} ${ac}" onclick="setFilter('${t}')">
+      <div class="tile-name">${T_LBL[t]}</div>
+      <div class="tile-stats">
+        <div><div class="tile-stat-val">${tas.length}</div><div class="tile-stat-lbl">assets</div></div>
+        <div><div class="tile-stat-val">${done}</div><div class="tile-stat-lbl">done</div></div>
+      </div>
+      <div class="tile-prog-track"><div class="tile-prog-fill" style="width:${dp}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── Main table ──
+function sortedAssets(arr) {
+  if (!sortCol) return arr;
+  return [...arr].sort((a,b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (av==null) av = sortDir>0 ? Infinity : -Infinity;
+    if (bv==null) bv = sortDir>0 ? Infinity : -Infinity;
+    return av < bv ? -sortDir : av > bv ? sortDir : 0;
+  });
+}
+
+function renderAll() {
+  const toRender = activeFilter === 'ALL'
+    ? TERRITORIES.map(t => ({ t, assets: sortedAssets(ASSETS.filter(a=>a.territory===t)) }))
+    : [{ t: activeFilter, assets: sortedAssets(ASSETS.filter(a=>a.territory===activeFilter)) }];
+
+  document.getElementById('main').innerHTML = toRender.map(({t, assets}) => {
+    const done = assets.filter(a=>ls_get('done_'+a.serial)==='1').length;
+    return `<div class="section-label">
+        <span class="section-badge ${T_CLS[t]}">${T_LBL[t]}</span>
+        <span class="section-count">${assets.length} assets</span>
+        <span class="section-done">${done} / ${assets.length} actioned</span>
+      </div>
+      <div class="tbl-wrap"><table data-territory="${t}">
+        <thead><tr>
+          <th class="c-done no-sort"></th>
+          <th class="c-pri"    data-sort="pri">PRI</th>
+          <th class="c-asset  no-sort">Asset / Serial</th>
+          <th class="c-cust   no-sort">Customer</th>
+          <th class="c-ctr"   data-sort="counter">Counter</th>
+          <th class="c-calls" data-sort="calls">Calls</th>
+          <th class="c-sla    no-sort">SLA</th>
+          <th class="c-expiry no-sort">Contract Exp.</th>
+          <th class="c-rec    no-sort">Recommended</th>
+          <th class="c-reason no-sort">Reason</th>
+          <th class="c-notes  no-sort">Notes (Avi)</th>
+        </tr></thead>
+        <tbody>${assets.map(a=>rowHtml(a)).join('')}</tbody>
+      </table></div>`;
+  }).join('');
+
+  document.getElementById('main').querySelectorAll('thead th[data-sort]').forEach(th => {
+    const col = th.dataset.sort;
+    if (col === sortCol) th.classList.add(sortDir>0?'sorted-asc':'sorted-desc');
+    th.addEventListener('click', () => {
+      sortCol === col ? (sortDir *= -1) : (sortCol = col, sortDir = 1);
+      renderAll();
+    });
+  });
+}
+
+// ── Interactions ──
+function toggleDone(serial, el) {
+  const now = ls_get('done_'+serial) !== '1';
+  ls_set('done_'+serial, now?'1':'0');
+  el.classList.toggle('on', now);
+  document.querySelector(`tr[data-serial="${serial}"]`)?.classList.toggle('done', now);
+  updateProgress();
+  renderTiles();
+}
+
+function setFilter(t) {
+  activeFilter = activeFilter === t ? 'ALL' : t;
+  renderTiles();
+  renderAll();
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = ASSETS.length;
+  const done  = ASSETS.filter(a=>ls_get('done_'+a.serial)==='1').length;
+  const p = total ? Math.round(done/total*100) : 0;
+  document.getElementById('gp-label').textContent = `${done} / ${total} actioned`;
+  document.getElementById('gp-fill').style.width  = p+'%';
+}
+
+renderTiles();
+renderAll();
+updateProgress();
+</script>
+</body>
+</html>
